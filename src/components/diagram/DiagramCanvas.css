@@ -1,0 +1,46 @@
+.diagram-canvas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+}
+
+.diagram-band {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-height: 120px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--band-label);
+  background: var(--band-bg);
+  scroll-margin-top: var(--space-4);
+}
+
+.diagram-band__code {
+  font-weight: var(--fw-bold);
+  font-family: var(--font-mono);
+}
+
+.diagram-band__voltage {
+  margin-left: auto;
+  font-size: var(--fs-sm);
+}
+
+.diagram-band--l1 { --band-bg: var(--band-l1); }
+.diagram-band--l2 { --band-bg: var(--band-l2); }
+.diagram-band--l3 { --band-bg: var(--band-l3); }
+.diagram-band--l4 { --band-bg: var(--band-l4); }
+.diagram-band--l5 { --band-bg: var(--band-l5); }
+.diagram-band--l6 { --band-bg: var(--band-l6); }
+.diagram-band--l7 { --band-bg: var(--band-l7); }
+.diagram-band--ren { --band-bg: var(--band-ren); }
+.diagram-band--mon { --band-bg: var(--band-mon); }
+
+.diagram-empty {
+  padding: var(--space-8) var(--space-4);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--color-text-muted);
+}

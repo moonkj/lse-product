@@ -1,0 +1,1023 @@
+{
+  "width": 1600,
+  "height": 2160,
+  "layers": [
+    {
+      "id": "L1",
+      "label": "초고압 발전·송전",
+      "voltage": "765/345kV",
+      "y": 0,
+      "height": 300,
+      "x": 0,
+      "width": 1200
+    },
+    {
+      "id": "L2",
+      "label": "송변전",
+      "voltage": "154kV",
+      "y": 300,
+      "height": 300,
+      "x": 0,
+      "width": 1200
+    },
+    {
+      "id": "L3",
+      "label": "특고압 배전",
+      "voltage": "22.9kV",
+      "y": 600,
+      "height": 300,
+      "x": 0,
+      "width": 1200
+    },
+    {
+      "id": "L4",
+      "label": "수전설비",
+      "voltage": "22.9kV",
+      "y": 900,
+      "height": 300,
+      "x": 0,
+      "width": 1200
+    },
+    {
+      "id": "L5",
+      "label": "변압",
+      "voltage": "22.9kV→380/220V",
+      "y": 1200,
+      "height": 300,
+      "x": 0,
+      "width": 1200
+    },
+    {
+      "id": "L6",
+      "label": "저압 배전",
+      "voltage": "380/220V",
+      "y": 1500,
+      "height": 300,
+      "x": 0,
+      "width": 1200
+    },
+    {
+      "id": "L7",
+      "label": "분전반 및 부하",
+      "voltage": "380/220V 분기",
+      "y": 1800,
+      "height": 360,
+      "x": 0,
+      "width": 1200
+    },
+    {
+      "id": "MON",
+      "label": "감시·제어",
+      "voltage": "통신",
+      "x": 1220,
+      "width": 380,
+      "y": 0,
+      "height": 900
+    },
+    {
+      "id": "REN",
+      "label": "신재생·저장 연계",
+      "voltage": "계층별 연계",
+      "x": 1220,
+      "width": 380,
+      "y": 900,
+      "height": 1260
+    }
+  ],
+  "nodes": [
+    {
+      "id": "n-gen",
+      "equipmentTypeId": "generator",
+      "x": 100,
+      "y": 150
+    },
+    {
+      "id": "n-step-up",
+      "equipmentTypeId": "step-up-tr",
+      "x": 260,
+      "y": 150
+    },
+    {
+      "id": "n-ehv-gis",
+      "equipmentTypeId": "ehv-gis",
+      "x": 430,
+      "y": 150
+    },
+    {
+      "id": "n-la-ehv",
+      "equipmentTypeId": "la-ehv",
+      "x": 430,
+      "y": 50
+    },
+    {
+      "id": "n-ct-ehv",
+      "equipmentTypeId": "ct-pt-ehv",
+      "x": 430,
+      "y": 250
+    },
+    {
+      "id": "n-relay-tx",
+      "equipmentTypeId": "relay-tx",
+      "x": 260,
+      "y": 250
+    },
+    {
+      "id": "n-tline",
+      "equipmentTypeId": "transmission-line",
+      "x": 620,
+      "y": 150
+    },
+    {
+      "id": "n-hvdc",
+      "equipmentTypeId": "hvdc",
+      "x": 820,
+      "y": 100
+    },
+    {
+      "id": "n-facts",
+      "equipmentTypeId": "facts",
+      "x": 820,
+      "y": 210
+    },
+    {
+      "id": "n-substation",
+      "equipmentTypeId": "substation",
+      "x": 180,
+      "y": 450
+    },
+    {
+      "id": "n-gis154",
+      "equipmentTypeId": "gis-154",
+      "x": 620,
+      "y": 380
+    },
+    {
+      "id": "n-main-tr",
+      "equipmentTypeId": "main-tr",
+      "x": 620,
+      "y": 510
+    },
+    {
+      "id": "n-sas",
+      "equipmentTypeId": "sas",
+      "x": 860,
+      "y": 450
+    },
+    {
+      "id": "n-fcl",
+      "equipmentTypeId": "fcl",
+      "x": 620,
+      "y": 670
+    },
+    {
+      "id": "n-dline",
+      "equipmentTypeId": "dist-line",
+      "x": 620,
+      "y": 790
+    },
+    {
+      "id": "n-recloser",
+      "equipmentTypeId": "recloser",
+      "x": 800,
+      "y": 790
+    },
+    {
+      "id": "n-auto-sw",
+      "equipmentTypeId": "auto-switch",
+      "x": 980,
+      "y": 790
+    },
+    {
+      "id": "n-pole-tr",
+      "equipmentTypeId": "pole-tr",
+      "x": 1120,
+      "y": 790
+    },
+    {
+      "id": "n-mv-swgr",
+      "equipmentTypeId": "mv-swgr",
+      "x": 180,
+      "y": 1050
+    },
+    {
+      "id": "n-lbs",
+      "equipmentTypeId": "lbs",
+      "x": 620,
+      "y": 945
+    },
+    {
+      "id": "n-la",
+      "equipmentTypeId": "la",
+      "x": 470,
+      "y": 945
+    },
+    {
+      "id": "n-alts",
+      "equipmentTypeId": "alts",
+      "x": 800,
+      "y": 945
+    },
+    {
+      "id": "n-mof",
+      "equipmentTypeId": "mof",
+      "x": 620,
+      "y": 1015
+    },
+    {
+      "id": "n-meter",
+      "equipmentTypeId": "meter",
+      "x": 470,
+      "y": 1015
+    },
+    {
+      "id": "n-vcb",
+      "equipmentTypeId": "vcb",
+      "x": 620,
+      "y": 1095
+    },
+    {
+      "id": "n-ct-pt",
+      "equipmentTypeId": "ct-pt",
+      "x": 470,
+      "y": 1095
+    },
+    {
+      "id": "n-relay",
+      "equipmentTypeId": "protection-relay",
+      "x": 330,
+      "y": 1095
+    },
+    {
+      "id": "n-pf",
+      "equipmentTypeId": "pf",
+      "x": 800,
+      "y": 1095
+    },
+    {
+      "id": "n-vc",
+      "equipmentTypeId": "vc-vi",
+      "x": 960,
+      "y": 1095
+    },
+    {
+      "id": "n-mv-drive",
+      "equipmentTypeId": "mv-drive",
+      "x": 1110,
+      "y": 1095
+    },
+    {
+      "id": "n-cast-tr",
+      "equipmentTypeId": "cast-tr",
+      "x": 620,
+      "y": 1350
+    },
+    {
+      "id": "n-oil-tr",
+      "equipmentTypeId": "oil-tr",
+      "x": 800,
+      "y": 1350
+    },
+    {
+      "id": "n-lv-swgr",
+      "equipmentTypeId": "lv-swgr",
+      "x": 180,
+      "y": 1650
+    },
+    {
+      "id": "n-acb",
+      "equipmentTypeId": "acb",
+      "x": 620,
+      "y": 1550
+    },
+    {
+      "id": "n-pmeter",
+      "equipmentTypeId": "power-meter",
+      "x": 460,
+      "y": 1550
+    },
+    {
+      "id": "n-mccb",
+      "equipmentTypeId": "mccb",
+      "x": 460,
+      "y": 1650
+    },
+    {
+      "id": "n-busway",
+      "equipmentTypeId": "busway",
+      "x": 800,
+      "y": 1650
+    },
+    {
+      "id": "n-spd",
+      "equipmentTypeId": "spd",
+      "x": 800,
+      "y": 1550
+    },
+    {
+      "id": "n-cap",
+      "equipmentTypeId": "capacitor",
+      "x": 960,
+      "y": 1550
+    },
+    {
+      "id": "n-sag",
+      "equipmentTypeId": "sag-protector",
+      "x": 960,
+      "y": 1650
+    },
+    {
+      "id": "n-aps",
+      "equipmentTypeId": "aps",
+      "x": 1110,
+      "y": 1650
+    },
+    {
+      "id": "n-mcc",
+      "equipmentTypeId": "mcc",
+      "x": 620,
+      "y": 1745
+    },
+    {
+      "id": "n-ats",
+      "equipmentTypeId": "lv-ats",
+      "x": 960,
+      "y": 1745
+    },
+    {
+      "id": "n-egen",
+      "equipmentTypeId": "emergency-gen",
+      "x": 1110,
+      "y": 1745
+    },
+    {
+      "id": "n-panel",
+      "equipmentTypeId": "panelboard",
+      "x": 300,
+      "y": 1850
+    },
+    {
+      "id": "n-elcb",
+      "equipmentTypeId": "elcb",
+      "x": 180,
+      "y": 1960
+    },
+    {
+      "id": "n-mcb",
+      "equipmentTypeId": "mcb-rcbo",
+      "x": 300,
+      "y": 1960
+    },
+    {
+      "id": "n-bmccb",
+      "equipmentTypeId": "branch-mccb",
+      "x": 420,
+      "y": 1960
+    },
+    {
+      "id": "n-light",
+      "equipmentTypeId": "lighting-outlet",
+      "x": 240,
+      "y": 2080
+    },
+    {
+      "id": "n-evc",
+      "equipmentTypeId": "ev-charger",
+      "x": 420,
+      "y": 2080
+    },
+    {
+      "id": "n-mms",
+      "equipmentTypeId": "mms",
+      "x": 580,
+      "y": 1850
+    },
+    {
+      "id": "n-ms",
+      "equipmentTypeId": "ms",
+      "x": 580,
+      "y": 1960
+    },
+    {
+      "id": "n-empr",
+      "equipmentTypeId": "empr",
+      "x": 700,
+      "y": 1960
+    },
+    {
+      "id": "n-drive",
+      "equipmentTypeId": "lv-drive",
+      "x": 820,
+      "y": 1960
+    },
+    {
+      "id": "n-soft",
+      "equipmentTypeId": "soft-starter",
+      "x": 940,
+      "y": 1960
+    },
+    {
+      "id": "n-servo",
+      "equipmentTypeId": "servo",
+      "x": 1080,
+      "y": 1960
+    },
+    {
+      "id": "n-motor",
+      "equipmentTypeId": "motor",
+      "x": 700,
+      "y": 2085
+    },
+    {
+      "id": "n-plc",
+      "equipmentTypeId": "plc",
+      "x": 880,
+      "y": 2085
+    },
+    {
+      "id": "n-hmi",
+      "equipmentTypeId": "hmi",
+      "x": 1000,
+      "y": 2085
+    },
+    {
+      "id": "n-dmc",
+      "equipmentTypeId": "dmc",
+      "x": 1110,
+      "y": 1850
+    },
+    {
+      "id": "n-smart",
+      "equipmentTypeId": "smart-device",
+      "x": 100,
+      "y": 2080
+    },
+    {
+      "id": "n-scada",
+      "equipmentTypeId": "scada",
+      "x": 1320,
+      "y": 150
+    },
+    {
+      "id": "n-ems",
+      "equipmentTypeId": "ems",
+      "x": 1500,
+      "y": 150
+    },
+    {
+      "id": "n-dms",
+      "equipmentTypeId": "dms",
+      "x": 1320,
+      "y": 400
+    },
+    {
+      "id": "n-xems",
+      "equipmentTypeId": "xems",
+      "x": 1500,
+      "y": 400
+    },
+    {
+      "id": "n-care",
+      "equipmentTypeId": "care",
+      "x": 1320,
+      "y": 650
+    },
+    {
+      "id": "n-amrs",
+      "equipmentTypeId": "amrs",
+      "x": 1500,
+      "y": 650
+    },
+    {
+      "id": "n-pv",
+      "equipmentTypeId": "pv",
+      "x": 1320,
+      "y": 1000
+    },
+    {
+      "id": "n-dc",
+      "equipmentTypeId": "dc-devices",
+      "x": 1500,
+      "y": 1000
+    },
+    {
+      "id": "n-pcs",
+      "equipmentTypeId": "pcs",
+      "x": 1320,
+      "y": 1160
+    },
+    {
+      "id": "n-ess",
+      "equipmentTypeId": "ess",
+      "x": 1500,
+      "y": 1160
+    },
+    {
+      "id": "n-microgrid",
+      "equipmentTypeId": "microgrid",
+      "x": 1410,
+      "y": 1340
+    },
+    {
+      "id": "n-modular",
+      "equipmentTypeId": "modular-substation",
+      "x": 1320,
+      "y": 1550
+    },
+    {
+      "id": "n-railway",
+      "equipmentTypeId": "railway",
+      "x": 1500,
+      "y": 1550
+    }
+  ],
+  "edges": [
+    {
+      "id": "e001",
+      "from": "n-gen",
+      "to": "n-step-up",
+      "kind": "power",
+      "voltage": "발전전압"
+    },
+    {
+      "id": "e002",
+      "from": "n-step-up",
+      "to": "n-ehv-gis",
+      "kind": "power",
+      "voltage": "345kV"
+    },
+    {
+      "id": "e003",
+      "from": "n-ehv-gis",
+      "to": "n-tline",
+      "kind": "power",
+      "voltage": "345kV"
+    },
+    {
+      "id": "e004",
+      "from": "n-ehv-gis",
+      "to": "n-la-ehv",
+      "kind": "power"
+    },
+    {
+      "id": "e005",
+      "from": "n-ehv-gis",
+      "to": "n-ct-ehv",
+      "kind": "power"
+    },
+    {
+      "id": "e006",
+      "from": "n-ct-ehv",
+      "to": "n-relay-tx",
+      "kind": "signal"
+    },
+    {
+      "id": "e007",
+      "from": "n-tline",
+      "to": "n-hvdc",
+      "kind": "power"
+    },
+    {
+      "id": "e008",
+      "from": "n-tline",
+      "to": "n-facts",
+      "kind": "power"
+    },
+    {
+      "id": "e009",
+      "from": "n-tline",
+      "to": "n-gis154",
+      "kind": "power",
+      "voltage": "154kV"
+    },
+    {
+      "id": "e010",
+      "from": "n-gis154",
+      "to": "n-main-tr",
+      "kind": "power",
+      "voltage": "154kV"
+    },
+    {
+      "id": "e011",
+      "from": "n-gis154",
+      "to": "n-sas",
+      "kind": "signal"
+    },
+    {
+      "id": "e012",
+      "from": "n-main-tr",
+      "to": "n-fcl",
+      "kind": "power",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "e013",
+      "from": "n-fcl",
+      "to": "n-dline",
+      "kind": "power",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "e014",
+      "from": "n-dline",
+      "to": "n-recloser",
+      "kind": "power",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "e015",
+      "from": "n-recloser",
+      "to": "n-auto-sw",
+      "kind": "power",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "e016",
+      "from": "n-auto-sw",
+      "to": "n-pole-tr",
+      "kind": "power",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "e017",
+      "from": "n-dline",
+      "to": "n-lbs",
+      "kind": "power",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "e018",
+      "from": "n-lbs",
+      "to": "n-la",
+      "kind": "power"
+    },
+    {
+      "id": "e019",
+      "from": "n-auto-sw",
+      "to": "n-alts",
+      "kind": "power",
+      "voltage": "22.9kV 예비"
+    },
+    {
+      "id": "e020",
+      "from": "n-alts",
+      "to": "n-mof",
+      "kind": "power"
+    },
+    {
+      "id": "e021",
+      "from": "n-lbs",
+      "to": "n-mof",
+      "kind": "power"
+    },
+    {
+      "id": "e022",
+      "from": "n-mof",
+      "to": "n-meter",
+      "kind": "signal"
+    },
+    {
+      "id": "e023",
+      "from": "n-mof",
+      "to": "n-vcb",
+      "kind": "power"
+    },
+    {
+      "id": "e024",
+      "from": "n-vcb",
+      "to": "n-ct-pt",
+      "kind": "power"
+    },
+    {
+      "id": "e025",
+      "from": "n-ct-pt",
+      "to": "n-relay",
+      "kind": "signal"
+    },
+    {
+      "id": "e026",
+      "from": "n-relay",
+      "to": "n-vcb",
+      "kind": "signal",
+      "voltage": "트립"
+    },
+    {
+      "id": "e027",
+      "from": "n-vcb",
+      "to": "n-pf",
+      "kind": "power"
+    },
+    {
+      "id": "e028",
+      "from": "n-vcb",
+      "to": "n-vc",
+      "kind": "power"
+    },
+    {
+      "id": "e029",
+      "from": "n-vc",
+      "to": "n-mv-drive",
+      "kind": "power",
+      "voltage": "6.6kV"
+    },
+    {
+      "id": "e030",
+      "from": "n-vcb",
+      "to": "n-cast-tr",
+      "kind": "power",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "e031",
+      "from": "n-pf",
+      "to": "n-oil-tr",
+      "kind": "power",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "e032",
+      "from": "n-cast-tr",
+      "to": "n-acb",
+      "kind": "power",
+      "voltage": "380V"
+    },
+    {
+      "id": "e033",
+      "from": "n-oil-tr",
+      "to": "n-busway",
+      "kind": "power",
+      "voltage": "380V"
+    },
+    {
+      "id": "e034",
+      "from": "n-acb",
+      "to": "n-pmeter",
+      "kind": "signal"
+    },
+    {
+      "id": "e035",
+      "from": "n-acb",
+      "to": "n-mccb",
+      "kind": "power"
+    },
+    {
+      "id": "e036",
+      "from": "n-acb",
+      "to": "n-busway",
+      "kind": "power"
+    },
+    {
+      "id": "e037",
+      "from": "n-acb",
+      "to": "n-spd",
+      "kind": "power"
+    },
+    {
+      "id": "e038",
+      "from": "n-acb",
+      "to": "n-cap",
+      "kind": "power"
+    },
+    {
+      "id": "e039",
+      "from": "n-busway",
+      "to": "n-sag",
+      "kind": "power"
+    },
+    {
+      "id": "e040",
+      "from": "n-sag",
+      "to": "n-aps",
+      "kind": "power"
+    },
+    {
+      "id": "e041",
+      "from": "n-acb",
+      "to": "n-mcc",
+      "kind": "power"
+    },
+    {
+      "id": "e042",
+      "from": "n-busway",
+      "to": "n-ats",
+      "kind": "power"
+    },
+    {
+      "id": "e043",
+      "from": "n-egen",
+      "to": "n-ats",
+      "kind": "power",
+      "voltage": "비상"
+    },
+    {
+      "id": "e044",
+      "from": "n-mccb",
+      "to": "n-panel",
+      "kind": "power",
+      "voltage": "380/220V"
+    },
+    {
+      "id": "e045",
+      "from": "n-panel",
+      "to": "n-elcb",
+      "kind": "power"
+    },
+    {
+      "id": "e046",
+      "from": "n-panel",
+      "to": "n-mcb",
+      "kind": "power"
+    },
+    {
+      "id": "e047",
+      "from": "n-panel",
+      "to": "n-bmccb",
+      "kind": "power"
+    },
+    {
+      "id": "e048",
+      "from": "n-elcb",
+      "to": "n-light",
+      "kind": "power",
+      "voltage": "220V"
+    },
+    {
+      "id": "e049",
+      "from": "n-mcb",
+      "to": "n-light",
+      "kind": "power",
+      "voltage": "220V"
+    },
+    {
+      "id": "e050",
+      "from": "n-bmccb",
+      "to": "n-evc",
+      "kind": "power"
+    },
+    {
+      "id": "e051",
+      "from": "n-panel",
+      "to": "n-smart",
+      "kind": "signal"
+    },
+    {
+      "id": "e052",
+      "from": "n-mcc",
+      "to": "n-mms",
+      "kind": "power"
+    },
+    {
+      "id": "e053",
+      "from": "n-mms",
+      "to": "n-ms",
+      "kind": "power"
+    },
+    {
+      "id": "e054",
+      "from": "n-ms",
+      "to": "n-motor",
+      "kind": "power"
+    },
+    {
+      "id": "e055",
+      "from": "n-empr",
+      "to": "n-ms",
+      "kind": "signal"
+    },
+    {
+      "id": "e056",
+      "from": "n-mcc",
+      "to": "n-drive",
+      "kind": "power"
+    },
+    {
+      "id": "e057",
+      "from": "n-drive",
+      "to": "n-motor",
+      "kind": "power"
+    },
+    {
+      "id": "e058",
+      "from": "n-mcc",
+      "to": "n-soft",
+      "kind": "power"
+    },
+    {
+      "id": "e059",
+      "from": "n-soft",
+      "to": "n-motor",
+      "kind": "power"
+    },
+    {
+      "id": "e060",
+      "from": "n-busway",
+      "to": "n-servo",
+      "kind": "power"
+    },
+    {
+      "id": "e061",
+      "from": "n-mcc",
+      "to": "n-dmc",
+      "kind": "signal"
+    },
+    {
+      "id": "e062",
+      "from": "n-plc",
+      "to": "n-drive",
+      "kind": "signal"
+    },
+    {
+      "id": "e063",
+      "from": "n-plc",
+      "to": "n-servo",
+      "kind": "signal"
+    },
+    {
+      "id": "e064",
+      "from": "n-hmi",
+      "to": "n-plc",
+      "kind": "signal"
+    },
+    {
+      "id": "e065",
+      "from": "n-pv",
+      "to": "n-dc",
+      "kind": "power",
+      "voltage": "DC"
+    },
+    {
+      "id": "e066",
+      "from": "n-dc",
+      "to": "n-pcs",
+      "kind": "power",
+      "voltage": "DC"
+    },
+    {
+      "id": "e067",
+      "from": "n-ess",
+      "to": "n-pcs",
+      "kind": "power",
+      "voltage": "DC"
+    },
+    {
+      "id": "e068",
+      "from": "n-pcs",
+      "to": "n-acb",
+      "kind": "power",
+      "voltage": "380V 연계"
+    },
+    {
+      "id": "e069",
+      "from": "n-microgrid",
+      "to": "n-pcs",
+      "kind": "signal"
+    },
+    {
+      "id": "e070",
+      "from": "n-scada",
+      "to": "n-sas",
+      "kind": "signal"
+    },
+    {
+      "id": "e071",
+      "from": "n-dms",
+      "to": "n-auto-sw",
+      "kind": "signal"
+    },
+    {
+      "id": "e072",
+      "from": "n-dms",
+      "to": "n-recloser",
+      "kind": "signal"
+    },
+    {
+      "id": "e073",
+      "from": "n-amrs",
+      "to": "n-meter",
+      "kind": "signal"
+    },
+    {
+      "id": "e074",
+      "from": "n-scada",
+      "to": "n-relay",
+      "kind": "signal"
+    },
+    {
+      "id": "e075",
+      "from": "n-xems",
+      "to": "n-pmeter",
+      "kind": "signal"
+    },
+    {
+      "id": "e076",
+      "from": "n-care",
+      "to": "n-cast-tr",
+      "kind": "signal"
+    },
+    {
+      "id": "e077",
+      "from": "n-ems",
+      "to": "n-microgrid",
+      "kind": "signal"
+    }
+  ]
+}

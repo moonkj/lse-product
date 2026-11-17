@@ -132,6 +132,11 @@
 | `sol.ls-electric.com` | 자동화 제품 정보 | 보조 |
 
 - **PDF는 다시 올리지 않고 공식 자료실로 링크** → 자료가 항상 최신으로 유지되고 저작권·용량 문제가 없음. 사내망 오프라인 사용이 필요하면 그때 캐시 옵션을 추가.
+- **자료 수집 방식 (11-18 확정, T2 조사: docs/research/download-api.md)**
+  - www 자료실 `/ko/api/download.ashx`, ssq `/api/guest/zdata/ssqdoc/dlCenter` 공개 API 사용. 제품 페이지 `#hd_entity`의 `p_ssq_link` 유무로 자료실 선택
+  - **수집은 사람이 필요할 때 실행하는 스크립트**(`npm run fetch:docs`) → 결과를 `src/data/docs.json`으로 커밋. GitHub Actions 배포 때마다 수집하지 않음 (사이트 부하 최소화, 요청 간 1초 이상)
+  - 공개 문서만(ssq displayTarget=0). 작성자 이메일·고객 실명 등 개인정보 필드는 저장 금지. 다운로드 횟수 API 호출 금지
+  - 카탈로그·데이터시트·매뉴얼은 파일 직링크(유형별 최신 몇 건), CAD·인증서 등은 자료실 딥링크로 대체
 - 계층 매핑 및 공백 후보 초안: [docs/research/product-mapping.md](docs/research/product-mapping.md)
 - 연계·공통(신재생·ESS·DC·감시 SW)은 사용자 확인으로 "보유" 확정.
 
@@ -203,4 +208,11 @@ PLAN.md · Tasklist.md · process.md · README.md
    - 공개 사이트이므로 공식 홈페이지에 공개된 정보만 사용 (내부 자료·대외비 금지)
 4. ~~GitHub 저장소~~ → **확정: 당분간 로컬 git만 사용**, 원격 저장소는 배포 시점에 연결
 5. ~~도구 설치~~ → node v26.13.1 LTS, gh 2.104.0 설치 완료 (~/.local/bin, 체크섬 검증). **tmux는 Homebrew가 없어 보류** (Homebrew 설치에 관리자 비밀번호 필요)
+7. **리더 결정 (11-18, T3 리뷰 반영)**
+   - coverage는 데이터에 직접 적는 값이 원본. 자동 계산 대신 DI 테스트로 일관성 검증. 카테고리 코드는 하위 카테고리 제품 포함.
+   - 연결선 없는 system 노드(수배전반·저압배전반·변전소 일괄·모듈형 변전·철도)는 그룹 표시용으로 허용.
+   - 엣지 표현: power = 굵은 실선, signal = 가는 점선.
+   - Gap 모드: missing·partial 강조, affiliate 보통, owned·na 흐림. 보기 모드는 URL 쿼리(`?mode=gap|learn`)로 공유.
+   - **(사용자 확정 11-18) Gap 버튼 = 메인 계통도 위 강조 방식**. 공백 표(매트릭스)는 좌측 메뉴의 별도 링크(/gap)로 이동
+   - 자료(docs)가 없으면 공식 제품 페이지 링크로 대체. gapNote는 공개 사이트이므로 공개 가능한 문구만.
 6. **커버리지 상태 5종 확정 (11-18)**: 🟢 보유 · 🟡 일부 보유 · 🔵 **계열사 보유** · 🔴 **미보유(공백)** · ⚪ 해당 없음 — 색상 + 아이콘/패턴 병행

@@ -1,0 +1,188 @@
+{
+  "generatedAt": "2026-11-17T23:24:36.665Z",
+  "products": {
+    "P01062": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA015001&p_code=P01062",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[Susol VCB] for Generator",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_for_Generator_KO_C050H1-03-202610.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-10-29"
+        },
+        {
+          "type": "manual",
+          "title": "[Susol VCB] VL Type",
+          "url": "https://www.ls-electric.com/ko/cat/HPDT/%5BSusol%20VCB%5D%20VL%20Type_Manual_KO_202405.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-09-21"
+        },
+        {
+          "type": "manual",
+          "title": "[Susol VCB] VH Type",
+          "url": "https://www.ls-electric.com/ko/cat/HPDT/%5BSusol%20VCB%5D%20VH%20Type_Manual_KO_202405.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-09-21"
+        },
+        {
+          "type": "catalog",
+          "title": "[Susol VCB]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_KO_C05001-26-202609.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-09-21"
+        },
+        {
+          "type": "catalog",
+          "title": "[Susol VCB]_VL type 기반 전동인입출형",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_%EC%A0%84%EB%8F%99%EC%9D%B8%EC%9E%85%EC%B6%9C%ED%98%95_KO_C050M1-06-202507.pdf",
+          "lang": "ko",
+          "updatedAt": "2025-07-11"
+        }
+      ]
+    },
+    "P01072": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA016001&p_code=P01072",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[XGIPAM]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BXGIPAM%5D_KO_C16091-03-202412.pdf",
+          "lang": "ko",
+          "updatedAt": "2024-12-17"
+        },
+        {
+          "type": "manual",
+          "title": "[XGIPAM] 사용설명서",
+          "url": "https://www.ls-electric.com/ko/cat/HPDT/%5BXGIPAM%5D_Manual_KO_79562713001_200924.pdf",
+          "lang": "ko",
+          "updatedAt": "2023-03-26"
+        },
+        {
+          "type": "manual",
+          "title": "[XGIPAM] 사용설명서 (책받침형)",
+          "url": "https://www.ls-electric.com/ko/cat/HPDT/%5BXGIPAM%5D%20Quick%20Guide_Tech%20Doc_KO_202001.pdf",
+          "lang": "ko",
+          "updatedAt": "2023-03-26"
+        },
+        {
+          "type": "catalog",
+          "title": "[XGIPAM] Quick guide",
+          "url": "https://www.ls-electric.com/ko/cat/%5BXGIPAM%5D%20Quick%20Guide_KO_202201.pdf",
+          "lang": "ko",
+          "updatedAt": "2022-01-18"
+        }
+      ]
+    },
+    "P01110": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA010004&p_code=P01110",
+      "docs": [
+        {
+          "type": "manual",
+          "title": "Cast Resin Transformer Enclosure",
+          "url": "https://www.ls-electric.com/ko/cat/HPDT/Instruction%20Manual_CRT_IEEE_24%201%20(1).pdf",
+          "lang": "en",
+          "updatedAt": "2026-06-12"
+        },
+        {
+          "type": "manual",
+          "title": "Cast Resin Transformer_몰드변압기_사용설명서",
+          "url": "https://www.ls-electric.com/ko/cat/HPDT/Cast%20Resin%20Transformer_Manual_KO_202204.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-05-20"
+        },
+        {
+          "type": "catalog",
+          "title": "몰드변압기",
+          "url": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-02-02"
+        },
+        {
+          "type": "manual",
+          "title": "Cast Resin Transformer Instruction Manual",
+          "url": "https://www.ls-electric.com/ko/cat/HPDT/INSTALLATION%20MANUAL(TRP)_xAI%20PJT.pdf",
+          "lang": "en",
+          "updatedAt": "2025-04-25"
+        }
+      ]
+    },
+    "P01188": {
+      "source": "ssq",
+      "deepLink": "https://ssq.ls-electric.com/kr/ko/product/category/200",
+      "docs": [
+        {
+          "type": "manual",
+          "title": "iS7 간편본 사용설명서",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17812214879270/IS7_User%20Manual_Kor_Simple_V2.0_260610.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-06-11"
+        },
+        {
+          "type": "manual",
+          "title": "iS7 사용설명서",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17727722384570/iS7_User%20Manual_Kor_V2.0_260224.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-03-06"
+        },
+        {
+          "type": "manual",
+          "title": "iS7 Z Pulse Encoder 옵션 사용설명서",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17581819116670/iS7_User%20Manual_Zpulse%20Encoder_Eng_Kor_V1.8_250918.pdf",
+          "lang": "ko",
+          "updatedAt": "2025-09-18"
+        },
+        {
+          "type": "datasheet",
+          "title": "Datasheet iS7 400V급 22kW SV0220iS7-4SP",
+          "url": "https://ssq.ls-electric.com/uploads/document/17400213155300/Datasheet_SV0220iS7-4SP_kr.pdf",
+          "lang": "en",
+          "updatedAt": "2025-02-20"
+        },
+        {
+          "type": "datasheet",
+          "title": "Datasheet iS7 400V급 18.5kW SV0185iS7-4SP",
+          "url": "https://ssq.ls-electric.com/uploads/document/17400212797250/Datasheet_SV0185iS7-4SP_kr.pdf",
+          "lang": "en",
+          "updatedAt": "2025-02-20"
+        },
+        {
+          "type": "datasheet",
+          "title": "Datasheet iS7 400V급 15kW SV0150iS7-4SP",
+          "url": "https://ssq.ls-electric.com/uploads/document/17400212292150/Datasheet_SV0150iS7-4SP_kr.pdf",
+          "lang": "en",
+          "updatedAt": "2025-02-20"
+        },
+        {
+          "type": "catalog",
+          "title": "iS7 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16957054248320/iS7_Catalog_KR_202309.pdf",
+          "lang": "ko",
+          "updatedAt": "2023-09-27"
+        },
+        {
+          "type": "catalog",
+          "title": "Drive Solution - 종합 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17642013019120/Drive%20Solution_Catalog_KR_202507.pdf",
+          "lang": "ko",
+          "updatedAt": "2026-06-08"
+        },
+        {
+          "type": "catalog",
+          "title": "HFS(고조파저감필터) 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/16389359473220/HFS_%EA%B3%A0%EC%A1%B0%ED%8C%8C%EC%A0%80%EA%B0%90%ED%95%84%ED%84%B0__%EC%B9%B4%ED%83%88%EB%A1%9C%EA%B7%B8_KR_210217.pdf",
+          "lang": "ko",
+          "updatedAt": "2024-08-28"
+        }
+      ]
+    },
+    "P03087": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA014004&p_code=P03087",
+      "docs": []
+    }
+  }
+}

@@ -1,0 +1,2589 @@
+[
+  {
+    "id": "P01097",
+    "name": "MCSG",
+    "categoryCode": "AAA010001",
+    "categoryPath": [
+      "Power Distribution",
+      "MV SWGR"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01097",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01098",
+    "name": "특고압 일반배전반",
+    "categoryCode": "AAA010001",
+    "categoryPath": [
+      "Power Distribution",
+      "MV SWGR"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01098",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01100",
+    "name": "고압 일반배전반",
+    "categoryCode": "AAA010001",
+    "categoryPath": [
+      "Power Distribution",
+      "MV SWGR"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01100",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02201",
+    "name": "C-GIS",
+    "categoryCode": "AAA010001",
+    "categoryPath": [
+      "Power Distribution",
+      "MV SWGR"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02201",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02202",
+    "name": "DAIS",
+    "categoryCode": "AAA010001",
+    "categoryPath": [
+      "Power Distribution",
+      "MV SWGR"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02202",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03080",
+    "name": "고압가스 부하개폐기 (RMU)",
+    "categoryCode": "AAA010001",
+    "categoryPath": [
+      "Power Distribution",
+      "MV SWGR"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03080",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02203",
+    "name": "C-AIS",
+    "categoryCode": "AAA010001",
+    "categoryPath": [
+      "Power Distribution",
+      "MV SWGR"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02203",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01101",
+    "name": "Susol LV SWGR",
+    "categoryCode": "AAA010002",
+    "categoryPath": [
+      "Power Distribution",
+      "LV SWGR & MCC"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01101",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01103",
+    "name": "Solution 2000",
+    "categoryCode": "AAA010002",
+    "categoryPath": [
+      "Power Distribution",
+      "LV SWGR & MCC"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01103",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01104",
+    "name": "GCC H/V/N",
+    "categoryCode": "AAA010002",
+    "categoryPath": [
+      "Power Distribution",
+      "LV SWGR & MCC"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01104",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01245",
+    "name": "Smart MCC",
+    "categoryCode": "AAA010002",
+    "categoryPath": [
+      "Power Distribution",
+      "LV SWGR & MCC"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01245",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02204",
+    "name": "MDB",
+    "categoryCode": "AAA010002",
+    "categoryPath": [
+      "Power Distribution",
+      "LV SWGR & MCC"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02204",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01102",
+    "name": "Power Center",
+    "categoryCode": "AAA010002",
+    "categoryPath": [
+      "Power Distribution",
+      "LV SWGR & MCC"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01102",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01105",
+    "name": "Susol Busway",
+    "categoryCode": "AAA010003",
+    "categoryPath": [
+      "Power Distribution",
+      "Busway System"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01105",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01106",
+    "name": "GH-P Type Busway",
+    "categoryCode": "AAA010003",
+    "categoryPath": [
+      "Power Distribution",
+      "Busway System"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01106",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01910",
+    "name": "Susol Mini Busway",
+    "categoryCode": "AAA010003",
+    "categoryPath": [
+      "Power Distribution",
+      "Busway System"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01910",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01911",
+    "name": "NSPB",
+    "categoryCode": "AAA010003",
+    "categoryPath": [
+      "Power Distribution",
+      "Busway System"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01911",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01110",
+    "name": "Cast Resin Transformer",
+    "categoryCode": "AAA010004",
+    "categoryPath": [
+      "Power Distribution",
+      "Transformer"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01110",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01109",
+    "name": "Oil-immersed Transformer",
+    "categoryCode": "AAA010004",
+    "categoryPath": [
+      "Power Distribution",
+      "Transformer"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01109",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P00206",
+    "name": "Susol ACB",
+    "categoryCode": "AAA014001",
+    "categoryPath": [
+      "저압기기(LV)",
+      "기중차단기 (ACB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P00206",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02206",
+    "name": "Susol Compact ACB",
+    "categoryCode": "AAA014001",
+    "categoryPath": [
+      "저압기기(LV)",
+      "기중차단기 (ACB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02206",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02207",
+    "name": "Susol UL ACB",
+    "categoryCode": "AAA014001",
+    "categoryPath": [
+      "저압기기(LV)",
+      "기중차단기 (ACB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02207",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01030",
+    "name": "Metasol ACB",
+    "categoryCode": "AAA014001",
+    "categoryPath": [
+      "저압기기(LV)",
+      "기중차단기 (ACB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01030",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01900",
+    "name": "Smart MCCB",
+    "categoryCode": "AAA014002",
+    "categoryPath": [
+      "저압기기(LV)",
+      "배선용차단기 (MCCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01900",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01021",
+    "name": "Susol MCCB",
+    "categoryCode": "AAA014002",
+    "categoryPath": [
+      "저압기기(LV)",
+      "배선용차단기 (MCCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01021",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01022",
+    "name": "Susol UL MCCB",
+    "categoryCode": "AAA014002",
+    "categoryPath": [
+      "저압기기(LV)",
+      "배선용차단기 (MCCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01022",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01023",
+    "name": "Metasol MCCB",
+    "categoryCode": "AAA014002",
+    "categoryPath": [
+      "저압기기(LV)",
+      "배선용차단기 (MCCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01023",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01024",
+    "name": "분전반용 차단기",
+    "categoryCode": "AAA014002",
+    "categoryPath": [
+      "저압기기(LV)",
+      "배선용차단기 (MCCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01024",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01027",
+    "name": "Metasol ELCB",
+    "categoryCode": "AAA014003",
+    "categoryPath": [
+      "저압기기(LV)",
+      "누전차단기 (ELCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01027",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01028",
+    "name": "분전반용 ELCB",
+    "categoryCode": "AAA014003",
+    "categoryPath": [
+      "저압기기(LV)",
+      "누전차단기 (ELCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01028",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03087",
+    "name": "L-Series MCB",
+    "categoryCode": "AAA014004",
+    "categoryPath": [
+      "저압기기(LV)",
+      "초소형차단기 & 회로보호기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03087",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03088",
+    "name": "L-Series RCBO",
+    "categoryCode": "AAA014004",
+    "categoryPath": [
+      "저압기기(LV)",
+      "초소형차단기 & 회로보호기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03088",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02208",
+    "name": "BK63H",
+    "categoryCode": "AAA014004",
+    "categoryPath": [
+      "저압기기(LV)",
+      "초소형차단기 & 회로보호기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02208",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02209",
+    "name": "BK63HU",
+    "categoryCode": "AAA014004",
+    "categoryPath": [
+      "저압기기(LV)",
+      "초소형차단기 & 회로보호기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02209",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01059",
+    "name": "CP",
+    "categoryCode": "AAA014004",
+    "categoryPath": [
+      "저압기기(LV)",
+      "초소형차단기 & 회로보호기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01059",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01260",
+    "name": "Metasol MS",
+    "categoryCode": "AAA014005",
+    "categoryPath": [
+      "저압기기(LV)",
+      "전자접촉기 & 보호계전기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01260",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01261",
+    "name": "Susol MS",
+    "categoryCode": "AAA014005",
+    "categoryPath": [
+      "저압기기(LV)",
+      "전자접촉기 & 보호계전기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01261",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01043",
+    "name": "Mini MS",
+    "categoryCode": "AAA014005",
+    "categoryPath": [
+      "저압기기(LV)",
+      "전자접촉기 & 보호계전기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01043",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01053",
+    "name": "GMP",
+    "categoryCode": "AAA014007",
+    "categoryPath": [
+      "저압기기(LV)",
+      "전자식 모터보호 계전기 (EMPR)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01053",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01054",
+    "name": "DMPi",
+    "categoryCode": "AAA014007",
+    "categoryPath": [
+      "저압기기(LV)",
+      "전자식 모터보호 계전기 (EMPR)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01054",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01055",
+    "name": "IMP",
+    "categoryCode": "AAA014007",
+    "categoryPath": [
+      "저압기기(LV)",
+      "전자식 모터보호 계전기 (EMPR)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01055",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01056",
+    "name": "MMP",
+    "categoryCode": "AAA014007",
+    "categoryPath": [
+      "저압기기(LV)",
+      "전자식 모터보호 계전기 (EMPR)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01056",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01078",
+    "name": "IMC-III",
+    "categoryCode": "AAA014007",
+    "categoryPath": [
+      "저압기기(LV)",
+      "전자식 모터보호 계전기 (EMPR)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01078",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01227",
+    "name": "BK Series (Din/Box Type)",
+    "categoryCode": "AAA014008",
+    "categoryPath": [
+      "저압기기(LV)",
+      "서지보호기 (SPD)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01227",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01060",
+    "name": "SP Series (Box Type)",
+    "categoryCode": "AAA014008",
+    "categoryPath": [
+      "저압기기(LV)",
+      "서지보호기 (SPD)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01060",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03082",
+    "name": "USP Series(Din Type)",
+    "categoryCode": "AAA014008",
+    "categoryPath": [
+      "저압기기(LV)",
+      "서지보호기 (SPD)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03082",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03083",
+    "name": "USPV Series(Din Type)",
+    "categoryCode": "AAA014008",
+    "categoryPath": [
+      "저압기기(LV)",
+      "서지보호기 (SPD)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03083",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03084",
+    "name": "USPE Series(Panel Type)",
+    "categoryCode": "AAA014008",
+    "categoryPath": [
+      "저압기기(LV)",
+      "서지보호기 (SPD)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03084",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03085",
+    "name": "USPB Series(Panel Type)",
+    "categoryCode": "AAA014008",
+    "categoryPath": [
+      "저압기기(LV)",
+      "서지보호기 (SPD)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03085",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03086",
+    "name": "USPC Series(Panel Type)",
+    "categoryCode": "AAA014008",
+    "categoryPath": [
+      "저압기기(LV)",
+      "서지보호기 (SPD)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03086",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01252",
+    "name": "SPD 외부분리기",
+    "categoryCode": "AAA014008",
+    "categoryPath": [
+      "저압기기(LV)",
+      "서지보호기 (SPD)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01252",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02210",
+    "name": "LVSS Soft Starter",
+    "categoryCode": "AAA014010",
+    "categoryPath": [
+      "저압기기(LV)",
+      "소프트 스타터 (Soft Starter)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02210",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01045",
+    "name": "Motorsol Soft Starter",
+    "categoryCode": "AAA014010",
+    "categoryPath": [
+      "저압기기(LV)",
+      "소프트 스타터 (Soft Starter)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01045",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01062",
+    "name": "Susol VCB",
+    "categoryCode": "AAA015001",
+    "categoryPath": [
+      "고압기기(MV)",
+      "진공차단기 (VCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01062",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02216",
+    "name": "Susol UL VCB",
+    "categoryCode": "AAA015001",
+    "categoryPath": [
+      "고압기기(MV)",
+      "진공차단기 (VCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02216",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01065",
+    "name": "발전소용 VCB",
+    "categoryCode": "AAA015001",
+    "categoryPath": [
+      "고압기기(MV)",
+      "진공차단기 (VCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01065",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01064",
+    "name": "원자력 발전소용 VCB",
+    "categoryCode": "AAA015001",
+    "categoryPath": [
+      "고압기기(MV)",
+      "진공차단기 (VCB)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01064",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03077",
+    "name": "Load Break Switch / Auto Section Switch",
+    "categoryCode": "AAA015007",
+    "categoryPath": [
+      "고압기기(MV)",
+      "부하개폐기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03077",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03078",
+    "name": "UL Load Interrupter Switch",
+    "categoryCode": "AAA015007",
+    "categoryPath": [
+      "고압기기(MV)",
+      "부하개폐기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03078",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01072",
+    "name": "XGIPAM",
+    "categoryCode": "AAA016001",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 보호계전기 (Protection)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01072",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01249",
+    "name": "GIPAM3000",
+    "categoryCode": "AAA016001",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 보호계전기 (Protection)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01249",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01074",
+    "name": "GIPAM2200DG",
+    "categoryCode": "AAA016001",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 보호계전기 (Protection)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01074",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02212",
+    "name": "GIPAM1000",
+    "categoryCode": "AAA016001",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 보호계전기 (Protection)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02212",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01075",
+    "name": "GIPAM115FI",
+    "categoryCode": "AAA016001",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 보호계전기 (Protection)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01075",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01076",
+    "name": "GIPAM10",
+    "categoryCode": "AAA016001",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 보호계전기 (Protection)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01076",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01077",
+    "name": "DPR1000",
+    "categoryCode": "AAA016001",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 보호계전기 (Protection)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01077",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01084",
+    "name": "GIMAC-V",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01084",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01079",
+    "name": "GIMAC-IV",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01079",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01080",
+    "name": "GIMAC-PQ",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01080",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01081",
+    "name": "GIMAC-II Plus",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01081",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01255",
+    "name": "GIMAC1000",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01255",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01083",
+    "name": "GIMAC-DC",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01083",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01214",
+    "name": "GIMAC-B",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01214",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P21020",
+    "name": "IMD",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P21020",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01086",
+    "name": "Micro RTU-Ⅲ",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01086",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01087",
+    "name": "TWS",
+    "categoryCode": "AAA016002",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "디지털 계측기 (Measurement)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01087",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02213",
+    "name": "Digital Electricity Meter",
+    "categoryCode": "AAA016003",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "계량기 (Meter)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02213",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02214",
+    "name": "DC Meter",
+    "categoryCode": "AAA016003",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "계량기 (Meter)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02214",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01093",
+    "name": "SDC-500",
+    "categoryCode": "AAA016003",
+    "categoryPath": [
+      "계전/계측/계량기기",
+      "계량기 (Meter)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01093",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01263",
+    "name": "S300",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01263",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01247",
+    "name": "G100/G100C",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01247",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01184",
+    "name": "S100",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01184",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01183",
+    "name": "H100",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01183",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01215",
+    "name": "M100",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01215",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01188",
+    "name": "iS7",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01188",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01262",
+    "name": "L100",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01262",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01190",
+    "name": "iV5",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01190",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01187",
+    "name": "iG5A",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01187",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01189",
+    "name": "iP5A",
+    "categoryCode": "BBB005018",
+    "categoryPath": [
+      "저압드라이브",
+      "General"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01189",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01202",
+    "name": "Drive Panel",
+    "categoryCode": "BBB005014",
+    "categoryPath": [
+      "저압드라이브",
+      "System"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01202",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01248",
+    "name": "DriveView SW",
+    "categoryCode": "BBB005013",
+    "categoryPath": [
+      "저압드라이브",
+      "Drive Tool"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01248",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03079",
+    "name": "XGC-CPUX7",
+    "categoryCode": "BBB001001",
+    "categoryPath": [
+      "PLC",
+      "XGT CPU"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03079",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01505",
+    "name": "XGI-CPUZ",
+    "categoryCode": "BBB001001",
+    "categoryPath": [
+      "PLC",
+      "XGT CPU"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01505",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01113",
+    "name": "XGK-CPU",
+    "categoryCode": "BBB001001",
+    "categoryPath": [
+      "PLC",
+      "XGT CPU"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01113",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01114",
+    "name": "XGI-CPU",
+    "categoryCode": "BBB001001",
+    "categoryPath": [
+      "PLC",
+      "XGT CPU"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01114",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02036",
+    "name": "디지털 입력",
+    "categoryCode": "BBB001008",
+    "categoryPath": [
+      "PLC",
+      "XGT I/O모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02036",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02037",
+    "name": "디지털 출력",
+    "categoryCode": "BBB001008",
+    "categoryPath": [
+      "PLC",
+      "XGT I/O모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02037",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02038",
+    "name": "디지털 혼합",
+    "categoryCode": "BBB001008",
+    "categoryPath": [
+      "PLC",
+      "XGT I/O모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02038",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01122",
+    "name": "아날로그 입력",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01122",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01123",
+    "name": "아날로그 출력",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01123",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01129",
+    "name": "아날로그 혼합",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01129",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01126",
+    "name": "온도입력",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01126",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01132",
+    "name": "온도제어",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01132",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01128",
+    "name": "모션제어",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01128",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01124",
+    "name": "고속카운터",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01124",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01130",
+    "name": "위치결정",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01130",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02020",
+    "name": "이벤트입력",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02020",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02021",
+    "name": "데이터로그",
+    "categoryCode": "BBB001002",
+    "categoryPath": [
+      "PLC",
+      "XGT 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02021",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01133",
+    "name": "Cnet",
+    "categoryCode": "BBB001009",
+    "categoryPath": [
+      "PLC",
+      "XGT 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01133",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01134",
+    "name": "RAPIEnet+",
+    "categoryCode": "BBB001009",
+    "categoryPath": [
+      "PLC",
+      "XGT 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01134",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01135",
+    "name": "Rnet",
+    "categoryCode": "BBB001009",
+    "categoryPath": [
+      "PLC",
+      "XGT 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01135",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01136",
+    "name": "Dnet",
+    "categoryCode": "BBB001009",
+    "categoryPath": [
+      "PLC",
+      "XGT 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01136",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01137",
+    "name": "Pnet",
+    "categoryCode": "BBB001009",
+    "categoryPath": [
+      "PLC",
+      "XGT 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01137",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01139",
+    "name": "EtherNet/IP",
+    "categoryCode": "BBB001009",
+    "categoryPath": [
+      "PLC",
+      "XGT 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01139",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P03076",
+    "name": "IT 통신 & 데이터 관리",
+    "categoryCode": "BBB001009",
+    "categoryPath": [
+      "PLC",
+      "XGT 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P03076",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02022",
+    "name": "XGR-CPU",
+    "categoryCode": "BBB001011",
+    "categoryPath": [
+      "PLC",
+      "XGR(이중화 PLC)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02022",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02023",
+    "name": "증설드라이브",
+    "categoryCode": "BBB001011",
+    "categoryPath": [
+      "PLC",
+      "XGR(이중화 PLC)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02023",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01117",
+    "name": "U타입",
+    "categoryCode": "BBB001004",
+    "categoryPath": [
+      "PLC",
+      "XGB 기본유닛"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01117",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01118",
+    "name": "H타입",
+    "categoryCode": "BBB001004",
+    "categoryPath": [
+      "PLC",
+      "XGB 기본유닛"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01118",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01119",
+    "name": "SU타입",
+    "categoryCode": "BBB001004",
+    "categoryPath": [
+      "PLC",
+      "XGB 기본유닛"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01119",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01120",
+    "name": "E타입",
+    "categoryCode": "BBB001004",
+    "categoryPath": [
+      "PLC",
+      "XGB 기본유닛"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01120",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02025",
+    "name": "슬림 타입",
+    "categoryCode": "BBB001004",
+    "categoryPath": [
+      "PLC",
+      "XGB 기본유닛"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02025",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02026",
+    "name": "디지털 입력",
+    "categoryCode": "BBB001013",
+    "categoryPath": [
+      "PLC",
+      "XGB I/O모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02026",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02027",
+    "name": "디지털 출력",
+    "categoryCode": "BBB001013",
+    "categoryPath": [
+      "PLC",
+      "XGB I/O모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02027",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02028",
+    "name": "디지털 혼합",
+    "categoryCode": "BBB001013",
+    "categoryPath": [
+      "PLC",
+      "XGB I/O모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02028",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02029",
+    "name": "아날로그 입력",
+    "categoryCode": "BBB001014",
+    "categoryPath": [
+      "PLC",
+      "XGB 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02029",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02030",
+    "name": "아날로그 출력",
+    "categoryCode": "BBB001014",
+    "categoryPath": [
+      "PLC",
+      "XGB 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02030",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02031",
+    "name": "아날로그 혼합",
+    "categoryCode": "BBB001014",
+    "categoryPath": [
+      "PLC",
+      "XGB 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02031",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02032",
+    "name": "온도입력",
+    "categoryCode": "BBB001014",
+    "categoryPath": [
+      "PLC",
+      "XGB 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02032",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02033",
+    "name": "온도제어",
+    "categoryCode": "BBB001014",
+    "categoryPath": [
+      "PLC",
+      "XGB 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02033",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02041",
+    "name": "로드셀",
+    "categoryCode": "BBB001014",
+    "categoryPath": [
+      "PLC",
+      "XGB 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02041",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02042",
+    "name": "위치결정",
+    "categoryCode": "BBB001014",
+    "categoryPath": [
+      "PLC",
+      "XGB 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02042",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02043",
+    "name": "고속카운터",
+    "categoryCode": "BBB001014",
+    "categoryPath": [
+      "PLC",
+      "XGB 특수모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02043",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02046",
+    "name": "RAPIEnet",
+    "categoryCode": "BBB001015",
+    "categoryPath": [
+      "PLC",
+      "XGB 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02046",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02047",
+    "name": "Dnet",
+    "categoryCode": "BBB001015",
+    "categoryPath": [
+      "PLC",
+      "XGB 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02047",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02048",
+    "name": "Pnet",
+    "categoryCode": "BBB001015",
+    "categoryPath": [
+      "PLC",
+      "XGB 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02048",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02049",
+    "name": "Rnet",
+    "categoryCode": "BBB001015",
+    "categoryPath": [
+      "PLC",
+      "XGB 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02049",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02044",
+    "name": "Cnet",
+    "categoryCode": "BBB001015",
+    "categoryPath": [
+      "PLC",
+      "XGB 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02044",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02045",
+    "name": "FEnet",
+    "categoryCode": "BBB001015",
+    "categoryPath": [
+      "PLC",
+      "XGB 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02045",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02050",
+    "name": "Ethernet/IP",
+    "categoryCode": "BBB001015",
+    "categoryPath": [
+      "PLC",
+      "XGB 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02050",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02051",
+    "name": "CANopen",
+    "categoryCode": "BBB001015",
+    "categoryPath": [
+      "PLC",
+      "XGB 통신모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02051",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02055",
+    "name": "아날로그 입력",
+    "categoryCode": "BBB001016",
+    "categoryPath": [
+      "PLC",
+      "XGB 옵션모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02055",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02056",
+    "name": "아날로그 출력",
+    "categoryCode": "BBB001016",
+    "categoryPath": [
+      "PLC",
+      "XGB 옵션모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02056",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02057",
+    "name": "아날로그 혼합",
+    "categoryCode": "BBB001016",
+    "categoryPath": [
+      "PLC",
+      "XGB 옵션모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02057",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02058",
+    "name": "온도입력",
+    "categoryCode": "BBB001016",
+    "categoryPath": [
+      "PLC",
+      "XGB 옵션모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02058",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02052",
+    "name": "디지털 입력",
+    "categoryCode": "BBB001016",
+    "categoryPath": [
+      "PLC",
+      "XGB 옵션모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02052",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02053",
+    "name": "디지털 출력",
+    "categoryCode": "BBB001016",
+    "categoryPath": [
+      "PLC",
+      "XGB 옵션모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02053",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02054",
+    "name": "RTC",
+    "categoryCode": "BBB001016",
+    "categoryPath": [
+      "PLC",
+      "XGB 옵션모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02054",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01550",
+    "name": "RAPIEnet+",
+    "categoryCode": "BBB001005",
+    "categoryPath": [
+      "PLC",
+      "Smart I/O"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01550",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01551",
+    "name": "Rnet",
+    "categoryCode": "BBB001005",
+    "categoryPath": [
+      "PLC",
+      "Smart I/O"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01551",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01552",
+    "name": "DeviceNet",
+    "categoryCode": "BBB001005",
+    "categoryPath": [
+      "PLC",
+      "Smart I/O"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01552",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01553",
+    "name": "Profibus-DP",
+    "categoryCode": "BBB001005",
+    "categoryPath": [
+      "PLC",
+      "Smart I/O"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01553",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01554",
+    "name": "Cnet(Modbus)",
+    "categoryCode": "BBB001005",
+    "categoryPath": [
+      "PLC",
+      "Smart I/O"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01554",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01161",
+    "name": "기본유닛",
+    "categoryCode": "BBB001006",
+    "categoryPath": [
+      "PLC",
+      "XGS(Safety PLC) CPU"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01161",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02040",
+    "name": "디지털 입력",
+    "categoryCode": "BBB001017",
+    "categoryPath": [
+      "PLC",
+      "XGS(Safety PLC) I/O모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02040",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02035",
+    "name": "디지털 출력",
+    "categoryCode": "BBB001017",
+    "categoryPath": [
+      "PLC",
+      "XGS(Safety PLC) I/O모듈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02035",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02220",
+    "name": "XGT 일람표",
+    "categoryCode": "BBB001018",
+    "categoryPath": [
+      "PLC",
+      "제품 일람표"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02220",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02221",
+    "name": "XGB 일람표",
+    "categoryCode": "BBB001018",
+    "categoryPath": [
+      "PLC",
+      "제품 일람표"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02221",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02222",
+    "name": "Smart I/O 일람표",
+    "categoryCode": "BBB001018",
+    "categoryPath": [
+      "PLC",
+      "제품 일람표"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02222",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01165",
+    "name": "XMC",
+    "categoryCode": "BBB002001",
+    "categoryPath": [
+      "Servo/Motion",
+      "제어기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01165",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01310",
+    "name": "MXP",
+    "categoryCode": "BBB002001",
+    "categoryPath": [
+      "Servo/Motion",
+      "제어기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01310",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01302",
+    "name": "iX7NH",
+    "categoryCode": "BBB002002",
+    "categoryPath": [
+      "Servo/Motion",
+      "서보 드라이브"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01302",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01300",
+    "name": "L7NH",
+    "categoryCode": "BBB002002",
+    "categoryPath": [
+      "Servo/Motion",
+      "서보 드라이브"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01300",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01301",
+    "name": "L7NHF",
+    "categoryCode": "BBB002002",
+    "categoryPath": [
+      "Servo/Motion",
+      "서보 드라이브"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01301",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01303",
+    "name": "PEGA",
+    "categoryCode": "BBB002002",
+    "categoryPath": [
+      "Servo/Motion",
+      "서보 드라이브"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01303",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01304",
+    "name": "PHOX",
+    "categoryCode": "BBB002002",
+    "categoryPath": [
+      "Servo/Motion",
+      "서보 드라이브"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01304",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01306",
+    "name": "L7P",
+    "categoryCode": "BBB002002",
+    "categoryPath": [
+      "Servo/Motion",
+      "서보 드라이브"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01306",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01307",
+    "name": "L7C",
+    "categoryCode": "BBB002002",
+    "categoryPath": [
+      "Servo/Motion",
+      "서보 드라이브"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01307",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01350",
+    "name": "F Series",
+    "categoryCode": "BBB002003",
+    "categoryPath": [
+      "Servo/Motion",
+      "로터리 모터"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01350",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01351",
+    "name": "Standard DD모터",
+    "categoryCode": "BBB002007",
+    "categoryPath": [
+      "Servo/Motion",
+      "DD모터"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01351",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01400",
+    "name": "코어타입",
+    "categoryCode": "BBB002004",
+    "categoryPath": [
+      "Servo/Motion",
+      "리니어 모터"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01400",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01401",
+    "name": "코어리스",
+    "categoryCode": "BBB002004",
+    "categoryPath": [
+      "Servo/Motion",
+      "리니어 모터"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01401",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P45745",
+    "name": "iXP3 시리즈",
+    "categoryCode": "BBB003001",
+    "categoryPath": [
+      "HMI",
+      "XGT Panel"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P45745",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01225",
+    "name": "iXP2 시리즈",
+    "categoryCode": "BBB003001",
+    "categoryPath": [
+      "HMI",
+      "XGT Panel"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01225",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01506",
+    "name": "LXP 시리즈",
+    "categoryCode": "BBB003001",
+    "categoryPath": [
+      "HMI",
+      "XGT Panel"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01506",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P02010",
+    "name": "eXP2 시리즈",
+    "categoryCode": "BBB003001",
+    "categoryPath": [
+      "HMI",
+      "XGT Panel"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P02010",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01246",
+    "name": "iXP2H 핸디HMI",
+    "categoryCode": "BBB003001",
+    "categoryPath": [
+      "HMI",
+      "XGT Panel"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01246",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01173",
+    "name": "XP 시리즈",
+    "categoryCode": "BBB003001",
+    "categoryPath": [
+      "HMI",
+      "XGT Panel"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01173",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01224",
+    "name": "wXP",
+    "categoryCode": "BBB003002",
+    "categoryPath": [
+      "HMI",
+      "소프트웨어"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01224",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01217",
+    "name": "XP-Builder",
+    "categoryCode": "BBB003002",
+    "categoryPath": [
+      "HMI",
+      "소프트웨어"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01217",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01218",
+    "name": "XGT InfoU S/W",
+    "categoryCode": "BBB003003",
+    "categoryPath": [
+      "HMI",
+      "XGT InfoU(HMI/SCADA)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01218",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01220",
+    "name": "BF 시리즈",
+    "categoryCode": "BBB003004",
+    "categoryPath": [
+      "HMI",
+      "XPC 시리즈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01220",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01221",
+    "name": "KF 시리즈",
+    "categoryCode": "BBB003004",
+    "categoryPath": [
+      "HMI",
+      "XPC 시리즈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01221",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01222",
+    "name": "IPC",
+    "categoryCode": "BBB003004",
+    "categoryPath": [
+      "HMI",
+      "XPC 시리즈"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01222",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01800",
+    "name": "MSS",
+    "categoryCode": "BBB004001",
+    "categoryPath": [
+      "유성감속기",
+      "범용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01800",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01804",
+    "name": "MSR",
+    "categoryCode": "BBB004001",
+    "categoryPath": [
+      "유성감속기",
+      "범용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01804",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01807",
+    "name": "MSO",
+    "categoryCode": "BBB004001",
+    "categoryPath": [
+      "유성감속기",
+      "범용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01807",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01802",
+    "name": "MAS",
+    "categoryCode": "BBB004001",
+    "categoryPath": [
+      "유성감속기",
+      "범용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01802",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01805",
+    "name": "MAR",
+    "categoryCode": "BBB004001",
+    "categoryPath": [
+      "유성감속기",
+      "범용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01805",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01809",
+    "name": "MAO",
+    "categoryCode": "BBB004001",
+    "categoryPath": [
+      "유성감속기",
+      "범용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01809",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01231",
+    "name": "HSS",
+    "categoryCode": "BBB004005",
+    "categoryPath": [
+      "유성감속기",
+      "고정밀용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01231",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01233",
+    "name": "HSR",
+    "categoryCode": "BBB004005",
+    "categoryPath": [
+      "유성감속기",
+      "고정밀용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01233",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01235",
+    "name": "HSW",
+    "categoryCode": "BBB004005",
+    "categoryPath": [
+      "유성감속기",
+      "고정밀용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01235",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01237",
+    "name": "HSD",
+    "categoryCode": "BBB004005",
+    "categoryPath": [
+      "유성감속기",
+      "고정밀용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01237",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01232",
+    "name": "HAS",
+    "categoryCode": "BBB004005",
+    "categoryPath": [
+      "유성감속기",
+      "고정밀용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01232",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01234",
+    "name": "HAR",
+    "categoryCode": "BBB004005",
+    "categoryPath": [
+      "유성감속기",
+      "고정밀용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01234",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01236",
+    "name": "HAW",
+    "categoryCode": "BBB004005",
+    "categoryPath": [
+      "유성감속기",
+      "고정밀용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01236",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01238",
+    "name": "HAD",
+    "categoryCode": "BBB004005",
+    "categoryPath": [
+      "유성감속기",
+      "고정밀용 유성감속기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01238",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "P01504",
+    "name": "DEXA",
+    "categoryCode": "BBB009001",
+    "categoryPath": [
+      "SOFTWARE",
+      "Backup 프로그램"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/view/P01504",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  }
+]

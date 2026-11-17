@@ -1,0 +1,30 @@
+.cov-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+
+.cov-badge__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  color: var(--cov-on-color);
+  background: var(--cov-color);
+}
+
+.cov-badge--owned { --cov-color: var(--cov-owned); }
+.cov-badge--partial { --cov-color: var(--cov-partial); }
+.cov-badge--affiliate { --cov-color: var(--cov-affiliate); }
+.cov-badge--missing { --cov-color: var(--cov-missing); }
+.cov-badge--na { --cov-color: var(--cov-na); }
+
+/* 모양 차이를 더 키움: 계열사=마름모, 해당없음=사각 */
+.cov-badge--affiliate .cov-badge__icon { border-radius: 2px; transform: rotate(45deg); }
+.cov-badge--affiliate .cov-badge__icon { font-size: 0; }
+.cov-badge--na .cov-badge__icon { border-radius: 3px; }

@@ -1,0 +1,1201 @@
+[
+  {
+    "id": "generator",
+    "name": "발전기",
+    "layer": "L1",
+    "voltage": "수~25kV",
+    "category": "generation",
+    "description": "연료·수력·원자력 등의 에너지를 전기로 바꾸는 계통의 시작점.",
+    "learnPoints": [
+      "발전 전압은 보통 수십 kV 이하라 바로 승압이 필요",
+      "계통 주파수(60Hz)를 유지하는 주체"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "G",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "step-up-tr",
+    "name": "승압 변압기",
+    "layer": "L1",
+    "voltage": "발전전압→345kV",
+    "category": "transformation",
+    "description": "발전기 전압을 송전 전압(345/765kV)으로 올려 먼 거리를 적은 손실로 보낸다.",
+    "learnPoints": [
+      "전압을 높이면 같은 전력에서 전류가 줄어 선로 손실(I²R)이 감소",
+      "최고 전압 등급은 제품별 사양 확인"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA009005"
+    ],
+    "abbr": "MTR"
+  },
+  {
+    "id": "ehv-gis",
+    "name": "초고압 가스절연개폐장치",
+    "layer": "L1",
+    "voltage": "345kV급",
+    "category": "switching",
+    "description": "차단기·단로기·접지개폐기·CT/PT를 SF6 등 절연가스로 채운 금속함에 넣은 개폐장치.",
+    "learnPoints": [
+      "공기절연(AIS) 대비 설치 면적이 크게 작음",
+      "차단기(GCB)는 고장전류를 끊고, 단로기는 무부하 상태에서 회로를 분리"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA009004"
+    ],
+    "abbr": "GIS"
+  },
+  {
+    "id": "la-ehv",
+    "name": "피뢰기 (초고압)",
+    "layer": "L1",
+    "voltage": "345kV급",
+    "category": "protection",
+    "description": "낙뢰·개폐 서지가 들어오면 대지로 방전시켜 기기 절연을 보호한다.",
+    "learnPoints": [
+      "변압기·GIS 인입부에 설치",
+      "정상 전압에서는 절연체처럼 동작"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "LA",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "ct-pt-ehv",
+    "name": "계기용 변성기 (초고압 단독형)",
+    "layer": "L1",
+    "voltage": "345kV급",
+    "category": "measurement",
+    "description": "큰 전류·전압을 계측·보호용 작은 값(5A, 110V 등)으로 바꾼다.",
+    "learnPoints": [
+      "CT 2차측은 절대 개방하면 안 됨(고전압 발생)",
+      "GIS 내장형은 GIS 제품에 포함"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "CT/PT",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "transmission-line",
+    "name": "송전선로·전력케이블",
+    "layer": "L1",
+    "voltage": "345/765kV",
+    "category": "conductor",
+    "description": "발전소와 변전소를 잇는 가공선로 또는 지중 케이블.",
+    "learnPoints": [
+      "765kV는 국내 최고 송전 전압",
+      "케이블은 계열사 LS전선 영역"
+    ],
+    "coverage": "affiliate",
+    "lseCategoryCodes": [],
+    "affiliateName": "LS전선"
+  },
+  {
+    "id": "hvdc",
+    "name": "초고압 직류송전",
+    "layer": "L1",
+    "voltage": "±kV DC",
+    "category": "system",
+    "description": "교류를 직류로 바꿔 장거리·해저로 송전한 뒤 다시 교류로 변환하는 시스템.",
+    "learnPoints": [
+      "장거리·해저 송전에서 교류보다 손실이 적음",
+      "서로 다른 계통(주파수)을 연결할 수 있음"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA009003"
+    ],
+    "abbr": "HVDC"
+  },
+  {
+    "id": "facts",
+    "name": "유연송전시스템",
+    "layer": "L1",
+    "voltage": "송전급",
+    "category": "system",
+    "description": "전력전자 장치로 송전선의 전압·조류를 빠르게 제어해 송전 용량과 안정도를 높인다.",
+    "learnPoints": [
+      "STATCOM, SVC 등이 대표적"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA009002"
+    ],
+    "abbr": "FACTS"
+  },
+  {
+    "id": "relay-tx",
+    "name": "송전용 보호계전 시스템",
+    "layer": "L1",
+    "voltage": "송전급",
+    "category": "protection",
+    "description": "송전선·변압기 고장을 검출해 차단기에 트립 신호를 보낸다.",
+    "learnPoints": [
+      "거리계전·차동계전 방식이 주로 쓰임"
+    ],
+    "coverage": "partial",
+    "lseCategoryCodes": [
+      "AAA016001"
+    ],
+    "gapNote": "자사 디지털 보호계전기(GIPAM 등)는 배전·수전급 중심 — 송전급 라인업 확인 필요"
+  },
+  {
+    "id": "substation",
+    "name": "변전소 (일괄 공급)",
+    "layer": "L2",
+    "voltage": "154kV",
+    "category": "system",
+    "description": "송전 전압을 배전 전압으로 낮추고 계통을 나누는 설비 전체(EPC).",
+    "learnPoints": [
+      "GIS·주변압기·보호·감시를 묶어 공급"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA009001"
+    ]
+  },
+  {
+    "id": "gis-154",
+    "name": "154kV 가스절연개폐장치",
+    "layer": "L2",
+    "voltage": "154kV",
+    "category": "switching",
+    "description": "변전소의 154kV 모선과 선로를 개폐·보호한다.",
+    "learnPoints": [
+      "모선(Bus)은 여러 회선을 모으는 공통 도체"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA009004"
+    ],
+    "abbr": "GIS"
+  },
+  {
+    "id": "main-tr",
+    "name": "주변압기",
+    "layer": "L2",
+    "voltage": "154/22.9kV",
+    "category": "transformation",
+    "description": "154kV를 배전 전압 22.9kV로 낮추는 변전소 핵심 기기.",
+    "learnPoints": [
+      "용량 단위는 MVA",
+      "탭 절환으로 2차 전압을 조정"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA009005"
+    ],
+    "abbr": "MTR"
+  },
+  {
+    "id": "sas",
+    "name": "변전소 자동화 시스템",
+    "layer": "L2",
+    "voltage": "154kV",
+    "category": "monitoring",
+    "description": "변전소 내 보호·제어·계측 장치를 디지털 통신(IEC 61850)으로 통합한다.",
+    "learnPoints": [
+      "IEC 61850은 변전소 통신 국제 표준"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA003003"
+    ],
+    "abbr": "SAS"
+  },
+  {
+    "id": "fcl",
+    "name": "한류기",
+    "layer": "L3",
+    "voltage": "22.9kV",
+    "category": "protection",
+    "description": "고장 시 순간적으로 임피던스를 높여 고장전류 크기를 제한한다.",
+    "learnPoints": [
+      "차단기 차단용량 초과 문제를 해결"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA010005"
+    ],
+    "abbr": "FCL"
+  },
+  {
+    "id": "dist-line",
+    "name": "배전선로·케이블",
+    "layer": "L3",
+    "voltage": "22.9kV",
+    "category": "conductor",
+    "description": "변전소에서 수용가까지 전기를 나르는 22.9kV 선로.",
+    "learnPoints": [
+      "국내 배전은 22.9kV-Y 다중접지 방식"
+    ],
+    "coverage": "affiliate",
+    "lseCategoryCodes": [],
+    "affiliateName": "LS전선"
+  },
+  {
+    "id": "recloser",
+    "name": "리클로저",
+    "layer": "L3",
+    "voltage": "22.9kV",
+    "category": "protection",
+    "description": "선로 고장 시 차단 후 자동으로 재투입해 일시 고장을 스스로 복구한다.",
+    "learnPoints": [
+      "배전 고장의 대부분은 일시 고장(나뭇가지, 낙뢰 등)"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "R/C",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "auto-switch",
+    "name": "배전용 가스절연 부하개폐기",
+    "layer": "L3",
+    "voltage": "22.9kV",
+    "category": "switching",
+    "description": "배전선로를 구간별로 나누고 부하전류를 개폐한다. 배전자동화 단말과 연계된다.",
+    "learnPoints": [
+      "부하개폐기는 부하전류는 끊지만 고장전류는 못 끊음"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [],
+    "abbr": "RMU",
+    "productIds": [
+      "P03080"
+    ]
+  },
+  {
+    "id": "pole-tr",
+    "name": "주상변압기",
+    "layer": "L3",
+    "voltage": "22.9kV/220-380V",
+    "category": "transformation",
+    "description": "전주 위에 설치해 소규모 수용가(주택·상가)에 저압을 공급한다.",
+    "learnPoints": [
+      "대형 수용가는 자체 수전설비(L4)를 갖춤"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "P.Tr",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "mv-swgr",
+    "name": "특고압 수배전반",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "system",
+    "description": "수전설비 기기들을 넣은 함(패널). MCSG, C-GIS, C-AIS, DAIS 등 방식이 있다.",
+    "learnPoints": [
+      "C-GIS는 가스절연, C-AIS는 공기절연 방식"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [],
+    "productIds": [
+      "P01097",
+      "P01098",
+      "P01100",
+      "P02201",
+      "P02202",
+      "P02203"
+    ]
+  },
+  {
+    "id": "lbs",
+    "name": "부하개폐기 / 자동고장구분개폐기",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "switching",
+    "description": "수전 인입구에서 회로를 개폐하고(LBS), 수용가 고장을 계통에서 자동 분리한다(ASS).",
+    "learnPoints": [
+      "ASS는 수용가 내부 고장이 배전선로로 번지는 것을 막음"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA015007"
+    ],
+    "abbr": "LBS/ASS",
+    "productIds": [
+      "P03077",
+      "P03078"
+    ]
+  },
+  {
+    "id": "la",
+    "name": "피뢰기",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "protection",
+    "description": "인입선으로 들어오는 서지를 대지로 방전해 수전설비를 보호한다.",
+    "learnPoints": [
+      "보통 인입 개폐기 바로 뒤에 설치"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "LA",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "alts",
+    "name": "자동부하 전환개폐기",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "switching",
+    "description": "주 전원(상용) 정전 시 예비 전원 선로로 자동 전환한다.",
+    "learnPoints": [
+      "병원·데이터센터처럼 2회선 수전하는 곳에 사용"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA015006"
+    ],
+    "abbr": "ALTS"
+  },
+  {
+    "id": "mof",
+    "name": "전력수급용 계기용변성기",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "measurement",
+    "description": "한전 거래용 전력량계에 맞게 전압·전류를 낮추는 변성기(CT+PT 일체).",
+    "learnPoints": [
+      "한전과 요금을 정산하는 기준점"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "MOF",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "meter",
+    "name": "전력량계",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "measurement",
+    "description": "사용한 전력량(kWh)을 계량한다.",
+    "learnPoints": [
+      "MOF 2차측에 연결"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA016003"
+    ],
+    "abbr": "WHM"
+  },
+  {
+    "id": "pf",
+    "name": "한류형 전력퓨즈",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "protection",
+    "description": "단락 시 녹아 끊어지며 고장전류를 빠르게 제한·차단한다.",
+    "learnPoints": [
+      "소용량 변압기 보호에 차단기 대신 경제적으로 사용"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA015004"
+    ],
+    "abbr": "PF"
+  },
+  {
+    "id": "vcb",
+    "name": "진공차단기",
+    "layer": "L4",
+    "voltage": "7.2~25.8kV",
+    "category": "switching",
+    "description": "진공 속에서 아크를 소호해 부하전류와 고장전류를 모두 차단한다.",
+    "learnPoints": [
+      "보호계전기의 트립 신호로 동작",
+      "핵심 부품은 진공 인터럽터(VI)"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA015001"
+    ],
+    "abbr": "VCB"
+  },
+  {
+    "id": "ct-pt",
+    "name": "계기용 변류기·변압기",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "measurement",
+    "description": "보호계전기·계측기에 입력할 전류·전압 신호를 만든다.",
+    "learnPoints": [
+      "CT 2차 정격은 보통 5A 또는 1A"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "CT/PT",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "protection-relay",
+    "name": "디지털 보호계전기",
+    "layer": "L4",
+    "voltage": "22.9kV",
+    "category": "protection",
+    "description": "CT/PT 신호로 과전류·지락 등 고장을 판단해 차단기를 트립시킨다.",
+    "learnPoints": [
+      "GIPAM 시리즈가 대표 제품",
+      "OCR=과전류, OCGR=지락과전류"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA016001"
+    ],
+    "abbr": "OCR/OCGR"
+  },
+  {
+    "id": "vc-vi",
+    "name": "고압 전자접촉기·진공 인터럽터",
+    "layer": "L4",
+    "voltage": "3.3~6.6kV",
+    "category": "switching",
+    "description": "고압 전동기처럼 자주 켜고 끄는 부하를 개폐한다(VC). VI는 차단기·접촉기의 핵심 부품.",
+    "learnPoints": [
+      "VC는 개폐 수명이 길고, 차단은 PF와 조합"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA015002",
+      "AAA015003"
+    ],
+    "abbr": "VC/VI"
+  },
+  {
+    "id": "mv-drive",
+    "name": "고압 인버터",
+    "layer": "L4",
+    "voltage": "3.3~11kV",
+    "category": "control",
+    "description": "고압 전동기의 속도를 제어해 팬·펌프의 에너지를 크게 절감한다.",
+    "learnPoints": [
+      "유량 제어를 밸브 대신 회전수로 하면 에너지가 크게 줄어듦"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "BBB006"
+    ],
+    "abbr": "MV Drive"
+  },
+  {
+    "id": "cast-tr",
+    "name": "몰드변압기",
+    "layer": "L5",
+    "voltage": "22.9kV/380-220V",
+    "category": "transformation",
+    "description": "권선을 에폭시 수지로 몰딩한 건식 변압기. 화재 위험이 적어 건물 내부에 주로 사용.",
+    "learnPoints": [
+      "유입식보다 난연성이 우수",
+      "용량 단위는 kVA"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [],
+    "abbr": "TR",
+    "productIds": [
+      "P01110"
+    ]
+  },
+  {
+    "id": "oil-tr",
+    "name": "유입변압기",
+    "layer": "L5",
+    "voltage": "22.9kV/380-220V",
+    "category": "transformation",
+    "description": "절연유로 냉각·절연하는 변압기. 옥외·대용량에 유리.",
+    "learnPoints": [
+      "절연유 상태 관리(온도·가스 분석)가 중요"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [],
+    "abbr": "TR",
+    "productIds": [
+      "P01109"
+    ]
+  },
+  {
+    "id": "lv-swgr",
+    "name": "저압 배전반",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "system",
+    "description": "변압기 2차측 저압 전력을 각 부하 계통으로 나누는 함(패널).",
+    "learnPoints": [
+      "Susol LV SWGR, Power Center 등"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [],
+    "productIds": [
+      "P01101",
+      "P01103",
+      "P01104",
+      "P02204",
+      "P01102"
+    ]
+  },
+  {
+    "id": "acb",
+    "name": "기중차단기",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "switching",
+    "description": "변압기 2차 메인 등 대전류(수천 A) 저압 회로를 보호·개폐하는 주차단기.",
+    "learnPoints": [
+      "정격전류 범위가 MCCB보다 큼",
+      "전자식 트립 장치(OCR) 내장"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014001"
+    ],
+    "abbr": "ACB"
+  },
+  {
+    "id": "mccb",
+    "name": "배선용차단기",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "switching",
+    "description": "저압 간선·분기 회로를 과부하·단락으로부터 보호한다.",
+    "learnPoints": [
+      "가장 많이 쓰이는 저압 차단기",
+      "AF(프레임)와 AT(트립 정격)를 구분"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014002"
+    ],
+    "abbr": "MCCB"
+  },
+  {
+    "id": "busway",
+    "name": "버스웨이",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "conductor",
+    "description": "케이블 대신 금속 도체(부스바)를 덕트에 넣어 대전류를 공급하는 간선 시스템.",
+    "learnPoints": [
+      "대전류·고층 건물에서 케이블보다 공간·시공에 유리"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA010003"
+    ]
+  },
+  {
+    "id": "spd",
+    "name": "서지보호기",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "protection",
+    "description": "낙뢰·개폐 서지로부터 저압 기기를 보호한다.",
+    "learnPoints": [
+      "Type1/2/3 등급별로 설치 위치가 다름"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014008"
+    ],
+    "abbr": "SPD"
+  },
+  {
+    "id": "power-meter",
+    "name": "디지털 계측기",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "measurement",
+    "description": "전압·전류·전력·역률·고조파 등 전력 품질을 측정하고 통신으로 전송한다.",
+    "learnPoints": [
+      "GIMAC 시리즈가 대표 제품"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA016002"
+    ],
+    "abbr": "DPM"
+  },
+  {
+    "id": "capacitor",
+    "name": "진상콘덴서·역률제어기",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "measurement",
+    "description": "전동기 등 유도성 부하의 지상 무효전력을 보상해 역률을 개선한다.",
+    "learnPoints": [
+      "역률이 낮으면 전기요금 할증·선로 손실 증가"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "SC/APFC",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "sag-protector",
+    "name": "순간전압보상장치",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "protection",
+    "description": "순간 전압강하(Sag) 때 전원을 보상해 설비 정지를 막는다.",
+    "learnPoints": [
+      "반도체·정밀 공정에서 중요"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014009"
+    ]
+  },
+  {
+    "id": "aps",
+    "name": "무정전 전원 장치",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "system",
+    "description": "정전·순간정전 시에도 중요 부하에 전원을 계속 공급한다.",
+    "learnPoints": [
+      "배터리·인버터로 구성"
+    ],
+    "coverage": "partial",
+    "lseCategoryCodes": [
+      "AAA010006"
+    ],
+    "abbr": "APS",
+    "gapNote": "APS 제품 보유 — 범용 UPS 라인업과의 관계 확인 필요"
+  },
+  {
+    "id": "lv-ats",
+    "name": "저압 자동절환개폐기",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "switching",
+    "description": "상용 전원 정전 시 비상발전기 전원으로 자동 절환한다.",
+    "learnPoints": [
+      "비상 부하(소방·승강기)는 법으로 예비전원 의무"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "ATS",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "emergency-gen",
+    "name": "비상발전기",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "generation",
+    "description": "정전 시 비상 부하에 전원을 공급하는 디젤·가스 발전기.",
+    "learnPoints": [
+      "ATS와 함께 동작"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "EG",
+    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요"
+  },
+  {
+    "id": "mcc",
+    "name": "전동기 제어반",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "system",
+    "description": "여러 전동기의 기동·보호·제어 기기를 모아 둔 패널.",
+    "learnPoints": [
+      "Smart MCC는 통신으로 원격 감시·제어 가능"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [],
+    "abbr": "MCC",
+    "productIds": [
+      "P01245"
+    ]
+  },
+  {
+    "id": "panelboard",
+    "name": "분전반 (함체)",
+    "layer": "L7",
+    "voltage": "380/220V",
+    "category": "system",
+    "description": "층·구역별로 분기 차단기를 모아 조명·콘센트 회로를 나누는 함.",
+    "learnPoints": [
+      "주택·사무실 벽에 있는 차단기 함이 분전반"
+    ],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "gapNote": "분전반용 차단기는 공급 — 분전반 함체 완제품 보유 여부 확인 필요"
+  },
+  {
+    "id": "branch-mccb",
+    "name": "분전반용 차단기",
+    "layer": "L7",
+    "voltage": "380/220V",
+    "category": "switching",
+    "description": "분전반 메인 및 분기용으로 소형화한 배선용차단기.",
+    "learnPoints": [
+      "분전반 버스바에 플러그인 방식으로 설치하기도 함"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [],
+    "productIds": [
+      "P01024"
+    ]
+  },
+  {
+    "id": "elcb",
+    "name": "누전차단기",
+    "layer": "L7",
+    "voltage": "380/220V",
+    "category": "protection",
+    "description": "누설전류(감전·누전)를 검출하면 회로를 차단한다.",
+    "learnPoints": [
+      "감도전류 30mA는 인체 보호용",
+      "시험 버튼으로 정기 점검"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014003"
+    ],
+    "abbr": "ELCB"
+  },
+  {
+    "id": "mcb-rcbo",
+    "name": "초소형차단기·회로보호기",
+    "layer": "L7",
+    "voltage": "230/400V",
+    "category": "switching",
+    "description": "DIN 레일형 소형 차단기. RCBO는 누전 보호까지 겸한다.",
+    "learnPoints": [
+      "IEC 규격 분전반에서 주로 사용"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014004"
+    ],
+    "abbr": "MCB/RCBO"
+  },
+  {
+    "id": "lighting-outlet",
+    "name": "조명·콘센트 부하",
+    "layer": "L7",
+    "voltage": "220V",
+    "category": "load",
+    "description": "계통의 최종 소비처. 자사 사업 범위 밖.",
+    "learnPoints": [
+      "분기 회로마다 차단기가 하나씩 보호"
+    ],
+    "coverage": "na",
+    "lseCategoryCodes": []
+  },
+  {
+    "id": "ev-charger",
+    "name": "전기차 충전기",
+    "layer": "L7",
+    "voltage": "380/220V",
+    "category": "load",
+    "description": "급속(DC)·완속(AC) 전기차 충전 설비.",
+    "learnPoints": [
+      "급속은 DC로 차량 배터리에 직접 충전"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA007"
+    ],
+    "abbr": "EVC"
+  },
+  {
+    "id": "mms",
+    "name": "모터보호용 배선용차단기",
+    "layer": "L7",
+    "voltage": "380V",
+    "category": "protection",
+    "description": "전동기 회로에서 단락·과부하 보호를 함께 수행한다.",
+    "learnPoints": [
+      "MCCB + 열동계전기 기능을 하나로"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014006"
+    ],
+    "abbr": "MMS"
+  },
+  {
+    "id": "ms",
+    "name": "전자개폐기 (MC+열동계전기)",
+    "layer": "L7",
+    "voltage": "380/220V",
+    "category": "switching",
+    "description": "코일 신호로 전동기 회로를 자주 켜고 끈다(MC). 열동계전기(TOR)와 조합하면 MS.",
+    "learnPoints": [
+      "Metasol MS가 대표 제품",
+      "개폐 수명이 차단기보다 훨씬 김"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014005"
+    ],
+    "abbr": "MC/MS"
+  },
+  {
+    "id": "empr",
+    "name": "전자식 모터보호 계전기",
+    "layer": "L7",
+    "voltage": "380V",
+    "category": "protection",
+    "description": "전류를 정밀 측정해 과부하·결상·구속 등 전동기 이상을 보호한다.",
+    "learnPoints": [
+      "열동계전기보다 보호 기능이 다양하고 정확"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014007"
+    ],
+    "abbr": "EMPR"
+  },
+  {
+    "id": "soft-starter",
+    "name": "소프트 스타터",
+    "layer": "L7",
+    "voltage": "380V",
+    "category": "control",
+    "description": "전동기 기동 시 전압을 서서히 올려 기동전류와 충격을 줄인다.",
+    "learnPoints": [
+      "직입 기동 전류는 정격의 6~8배"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014010",
+      "BBB008"
+    ]
+  },
+  {
+    "id": "lv-drive",
+    "name": "저압 인버터",
+    "layer": "L7",
+    "voltage": "220/380V",
+    "category": "control",
+    "description": "주파수를 바꿔 전동기 속도를 제어한다.",
+    "learnPoints": [
+      "팬·펌프 에너지 절감의 핵심",
+      "iS7, S100, G100 등"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "BBB005"
+    ],
+    "abbr": "VFD"
+  },
+  {
+    "id": "motor",
+    "name": "전동기",
+    "layer": "L7",
+    "voltage": "380V",
+    "category": "load",
+    "description": "전기에너지를 회전력으로 바꾸는 대표 부하.",
+    "learnPoints": [
+      "산업 전력 소비의 큰 비중을 차지"
+    ],
+    "coverage": "partial",
+    "lseCategoryCodes": [
+      "BBB002003",
+      "BBB002004",
+      "BBB002007"
+    ],
+    "abbr": "M",
+    "gapNote": "서보·리니어·DD 모터는 보유, 범용 유도전동기는 미보유 — 확인 필요"
+  },
+  {
+    "id": "servo",
+    "name": "서보 드라이브·모션",
+    "layer": "L7",
+    "voltage": "220/380V",
+    "category": "control",
+    "description": "위치·속도를 정밀 제어하는 구동 시스템(드라이브+모터+컨트롤러).",
+    "learnPoints": [
+      "로봇·반도체 장비 등 정밀 위치 제어"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "BBB002"
+    ]
+  },
+  {
+    "id": "plc",
+    "name": "PLC",
+    "layer": "L7",
+    "voltage": "DC24V 제어",
+    "category": "control",
+    "description": "입력 신호에 따라 프로그램대로 기계를 제어하는 산업용 컨트롤러.",
+    "learnPoints": [
+      "XGT, XGB 시리즈",
+      "XG5000으로 프로그래밍"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "BBB001"
+    ],
+    "abbr": "PLC"
+  },
+  {
+    "id": "hmi",
+    "name": "HMI",
+    "layer": "L7",
+    "voltage": "제어",
+    "category": "control",
+    "description": "작업자가 설비 상태를 보고 조작하는 터치 화면.",
+    "learnPoints": [
+      "XGT Panel 시리즈"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "BBB003"
+    ],
+    "abbr": "HMI"
+  },
+  {
+    "id": "dmc",
+    "name": "디지털계측제어기",
+    "layer": "L7",
+    "voltage": "380V",
+    "category": "measurement",
+    "description": "MCC 등에서 계측·보호·제어를 하나로 통합한 장치.",
+    "learnPoints": [
+      "통신으로 상위 감시 시스템과 연결"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA014011"
+    ],
+    "abbr": "DMC"
+  },
+  {
+    "id": "smart-device",
+    "name": "분기 계측·데이터수집 기기",
+    "layer": "L7",
+    "voltage": "380/220V",
+    "category": "measurement",
+    "description": "분기 회로 계측기, 센서, 데이터수집장치로 현장 데이터를 모은다.",
+    "learnPoints": [
+      "스마트 배전반·에너지 관리의 기초 데이터"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA018"
+    ],
+    "abbr": "DAU"
+  },
+  {
+    "id": "pv",
+    "name": "태양광 발전",
+    "layer": "REN",
+    "voltage": "DC→AC",
+    "category": "generation",
+    "description": "태양전지 모듈로 직류 전력을 생산하는 신재생 발전 시스템.",
+    "learnPoints": [
+      "직류를 PCS(인버터)로 교류로 바꿔 계통에 연계"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA012"
+    ],
+    "abbr": "PV"
+  },
+  {
+    "id": "pcs",
+    "name": "전력변환장치",
+    "layer": "REN",
+    "voltage": "DC↔AC",
+    "category": "control",
+    "description": "PV·배터리의 직류와 계통의 교류를 상호 변환한다.",
+    "learnPoints": [
+      "ESS용 PCS는 충전·방전 양방향 동작"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA012",
+      "AAA013"
+    ],
+    "abbr": "PCS",
+    "gapNote": "PV·ESS 솔루션 내 포함 — 단품 라인업 확인 필요"
+  },
+  {
+    "id": "ess",
+    "name": "에너지저장장치",
+    "layer": "REN",
+    "voltage": "DC",
+    "category": "system",
+    "description": "배터리에 전기를 저장했다가 필요할 때 공급한다.",
+    "learnPoints": [
+      "피크 저감, 신재생 출력 안정화에 활용"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA013"
+    ],
+    "abbr": "ESS"
+  },
+  {
+    "id": "dc-devices",
+    "name": "DC 전력기기",
+    "layer": "REN",
+    "voltage": "DC 1500V 이하",
+    "category": "switching",
+    "description": "태양광·ESS·DC 배전용 차단기·개폐기·접촉기·SPD·릴레이.",
+    "learnPoints": [
+      "직류는 전류가 0이 되는 순간이 없어 차단이 더 어려움"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA017"
+    ]
+  },
+  {
+    "id": "microgrid",
+    "name": "마이크로그리드",
+    "layer": "REN",
+    "voltage": "계통 연계/독립",
+    "category": "system",
+    "description": "신재생·ESS·부하를 묶어 독립 운전도 가능한 소규모 전력망.",
+    "learnPoints": [
+      "섬·캠퍼스·산업단지에 적용"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA006"
+    ]
+  },
+  {
+    "id": "modular-substation",
+    "name": "모듈형 변전설비",
+    "layer": "REN",
+    "voltage": "MV/LV",
+    "category": "system",
+    "description": "변전·배전 기기를 공장에서 컨테이너형으로 조립해 현장에 설치한다.",
+    "learnPoints": [
+      "E-House, MGS, CSS",
+      "공기 단축에 유리"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA011"
+    ],
+    "abbr": "E-House"
+  },
+  {
+    "id": "railway",
+    "name": "철도 전력공급 시스템",
+    "layer": "REN",
+    "voltage": "AC/DC 급전",
+    "category": "system",
+    "description": "전기철도에 전력을 공급하는 AC·DC 급전 설비.",
+    "learnPoints": [
+      "도시철도는 주로 DC 1500V 급전"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA019"
+    ]
+  },
+  {
+    "id": "scada",
+    "name": "SCADA (ECMS·PQMS)",
+    "layer": "MON",
+    "voltage": "통신",
+    "category": "monitoring",
+    "description": "전력 설비를 원격으로 감시·제어하는 상위 시스템.",
+    "learnPoints": [
+      "ECMS=전력 제어, PQMS=전력 품질 감시"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA003"
+    ],
+    "abbr": "SCADA"
+  },
+  {
+    "id": "ems",
+    "name": "에너지관리시스템",
+    "layer": "MON",
+    "voltage": "통신",
+    "category": "monitoring",
+    "description": "에너지 생산·소비 데이터를 분석해 최적 운전과 비용 절감을 돕는다.",
+    "learnPoints": [
+      "계통 운영자용 EMS와 수용가용 xEMS를 구분"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA002"
+    ],
+    "abbr": "EMS"
+  },
+  {
+    "id": "dms",
+    "name": "배전관리시스템",
+    "layer": "MON",
+    "voltage": "통신",
+    "category": "monitoring",
+    "description": "배전선로의 개폐기·고장 정보를 모아 고장 구간을 자동 분리·복구한다.",
+    "learnPoints": [
+      "배전자동화의 상위 시스템"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA004"
+    ],
+    "abbr": "DMS"
+  },
+  {
+    "id": "xems",
+    "name": "BEMS·FEMS",
+    "layer": "MON",
+    "voltage": "통신",
+    "category": "monitoring",
+    "description": "빌딩(BEMS)·공장(FEMS)의 에너지를 관리한다.",
+    "learnPoints": [
+      "일정 규모 이상 건물은 BEMS 설치 의무화 추세"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA005"
+    ],
+    "abbr": "xEMS"
+  },
+  {
+    "id": "care",
+    "name": "설비 진단·자산관리",
+    "layer": "MON",
+    "voltage": "통신",
+    "category": "monitoring",
+    "description": "Smart MV/LV, Smart Diagnosis, AMS로 기기 상태를 진단하고 수명을 관리한다.",
+    "learnPoints": [
+      "고장이 나기 전에 예측 정비"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA001"
+    ],
+    "abbr": "CARE"
+  },
+  {
+    "id": "amrs",
+    "name": "원격검침시스템",
+    "layer": "MON",
+    "voltage": "통신",
+    "category": "monitoring",
+    "description": "전력량계 데이터를 원격으로 자동 수집한다.",
+    "learnPoints": [
+      "검침 인력과 오류를 줄임"
+    ],
+    "coverage": "owned",
+    "lseCategoryCodes": [
+      "AAA008"
+    ],
+    "abbr": "AMRS"
+  }
+]
