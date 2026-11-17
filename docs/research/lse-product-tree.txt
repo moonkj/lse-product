@@ -1,0 +1,343 @@
+사업소개  /ko/product/
+  Beyond X™ Power Solution  /ko/product/main/power
+    CARE  /ko/product/category/AAA001
+      Smart MV  /ko/product/category/AAA001001
+      Smart LV  /ko/product/category/AAA001002
+      Smart Diagnosis  /ko/product/category/AAA001003
+      AMS  /ko/product/category/AAA001004
+    EMS  /ko/product/category/AAA002
+    SCADA  /ko/product/category/AAA003
+      ECMS  /ko/product/category/AAA003001
+      PQMS  /ko/product/category/AAA003002
+      SAS  /ko/product/category/AAA003003
+    DMS  /ko/product/category/AAA004
+    xEMS  /ko/product/category/AAA005
+      BEMS  /ko/product/category/AAA005001
+      FEMS  /ko/product/category/AAA005002
+    Micro Grid  /ko/product/category/AAA006
+    EV-CHARGER  /ko/product/category/AAA007
+      EV-CHARGER Solution  /ko/product/category/AAA007001
+      급속 충전기  /ko/product/category/AAA007002
+      완속 충전기  /ko/product/category/AAA007003
+    AMRS  /ko/product/category/AAA008
+    Railway Power Supply  /ko/product/category/AAA019
+      AC System  /ko/product/category/AAA019001
+      DC System  /ko/product/category/AAA019002
+    Power Transmission  /ko/product/category/AAA009
+      Substation  /ko/product/category/AAA009001
+      FACTS  /ko/product/category/AAA009002
+      HVDC  /ko/product/category/AAA009003
+      GIS  /ko/product/category/AAA009004
+      Power Transformer  /ko/product/category/AAA009005
+    Power Distribution  /ko/product/category/AAA010
+      MV SWGR  /ko/product/category/AAA010001
+        MCSG  /ko/product/view/P01097
+        특고압 일반배전반  /ko/product/view/P01098
+        고압 일반배전반  /ko/product/view/P01100
+        C-GIS  /ko/product/view/P02201
+        DAIS  /ko/product/view/P02202
+        고압가스 부하개폐기 (RMU)  /ko/product/view/P03080
+        C-AIS  /ko/product/view/P02203
+      LV SWGR & MCC  /ko/product/category/AAA010002
+        Susol LV SWGR  /ko/product/view/P01101
+        Solution 2000  /ko/product/view/P01103
+        GCC H/V/N  /ko/product/view/P01104
+        Smart MCC  /ko/product/view/P01245
+        MDB  /ko/product/view/P02204
+        Power Center  /ko/product/view/P01102
+      Busway System  /ko/product/category/AAA010003
+        Susol Busway  /ko/product/view/P01105
+        GH-P Type Busway  /ko/product/view/P01106
+        Susol Mini Busway  /ko/product/view/P01910
+        NSPB  /ko/product/view/P01911
+      Transformer  /ko/product/category/AAA010004
+        Cast Resin Transformer  /ko/product/view/P01110
+        Oil-immersed Transformer  /ko/product/view/P01109
+      FCL  /ko/product/category/AAA010005
+      APS  /ko/product/category/AAA010006
+    Modular Substation  /ko/product/category/AAA011
+      E-House  /ko/product/category/AAA011001
+      MGS  /ko/product/category/AAA011002
+      CSS  /ko/product/category/AAA011003
+    PV System  /ko/product/category/AAA012
+    ESS  /ko/product/category/AAA013
+    저압기기(LV)  /ko/product/category/AAA014
+      기중차단기 (ACB)  /ko/product/category/AAA014001
+        Susol ACB  /ko/product/view/P00206
+        Susol Compact ACB  /ko/product/view/P02206
+        Susol UL ACB  /ko/product/view/P02207
+        Metasol ACB  /ko/product/view/P01030
+      배선용차단기 (MCCB)  /ko/product/category/AAA014002
+        Smart MCCB  /ko/product/view/P01900
+        Susol MCCB  /ko/product/view/P01021
+        Susol UL MCCB  /ko/product/view/P01022
+        Metasol MCCB  /ko/product/view/P01023
+        분전반용 차단기  /ko/product/view/P01024
+      누전차단기 (ELCB)  /ko/product/category/AAA014003
+        Metasol ELCB  /ko/product/view/P01027
+        분전반용 ELCB  /ko/product/view/P01028
+      초소형차단기 & 회로보호기  /ko/product/category/AAA014004
+        L-Series MCB  /ko/product/view/P03087
+        L-Series RCBO  /ko/product/view/P03088
+        BK63H  /ko/product/view/P02208
+        BK63HU  /ko/product/view/P02209
+        CP  /ko/product/view/P01059
+      전자접촉기 & 보호계전기  /ko/product/category/AAA014005
+        Metasol MS  /ko/product/view/P01260
+        Susol MS  /ko/product/view/P01261
+        Mini MS  /ko/product/view/P01043
+      모터보호용 배선용차단기 (MMS)  /ko/product/category/AAA014006
+      전자식 모터보호 계전기 (EMPR)  /ko/product/category/AAA014007
+        GMP  /ko/product/view/P01053
+        DMPi  /ko/product/view/P01054
+        IMP  /ko/product/view/P01055
+        MMP  /ko/product/view/P01056
+        IMC-III  /ko/product/view/P01078
+      서지보호기 (SPD)  /ko/product/category/AAA014008
+        BK Series (Din/Box Type)  /ko/product/view/P01227
+        SP Series (Box Type)  /ko/product/view/P01060
+        USP Series(Din Type)  /ko/product/view/P03082
+        USPV Series(Din Type)  /ko/product/view/P03083
+        USPE Series(Panel Type)  /ko/product/view/P03084
+        USPB Series(Panel Type)  /ko/product/view/P03085
+        USPC Series(Panel Type)  /ko/product/view/P03086
+        SPD 외부분리기  /ko/product/view/P01252
+      순간전압보상장치 (Sag Protector)  /ko/product/category/AAA014009
+      소프트 스타터 (Soft Starter)  /ko/product/category/AAA014010
+        LVSS Soft Starter  /ko/product/view/P02210
+        Motorsol Soft Starter  /ko/product/view/P01045
+      디지털계측제어기 (DMC)  /ko/product/category/AAA014011
+    고압기기(MV)  /ko/product/category/AAA015
+      진공차단기 (VCB)  /ko/product/category/AAA015001
+        Susol VCB  /ko/product/view/P01062
+         Susol UL VCB  /ko/product/view/P02216
+        발전소용 VCB  /ko/product/view/P01065
+        원자력 발전소용 VCB  /ko/product/view/P01064
+      고압전자접촉기 (VC)  /ko/product/category/AAA015002
+      진공 인터럽터 (VI)  /ko/product/category/AAA015003
+      한류형 전력퓨즈 (PF)  /ko/product/category/AAA015004
+      자동부하 전환개폐기 (ALTS)  /ko/product/category/AAA015006
+      부하개폐기  /ko/product/category/AAA015007
+        Load Break Switch / Auto Section Switch  /ko/product/view/P03077
+        UL Load Interrupter Switch  /ko/product/view/P03078
+    계전/계측/계량기기  /ko/product/category/AAA016
+      디지털 보호계전기 (Protection)  /ko/product/category/AAA016001
+        XGIPAM  /ko/product/view/P01072
+        GIPAM3000  /ko/product/view/P01249
+        GIPAM2200DG  /ko/product/view/P01074
+        GIPAM1000  /ko/product/view/P02212
+        GIPAM115FI  /ko/product/view/P01075
+        GIPAM10  /ko/product/view/P01076
+        DPR1000  /ko/product/view/P01077
+      디지털 계측기 (Measurement)  /ko/product/category/AAA016002
+        GIMAC-V  /ko/product/view/P01084
+        GIMAC-IV  /ko/product/view/P01079
+        GIMAC-PQ  /ko/product/view/P01080
+        GIMAC-II Plus  /ko/product/view/P01081
+        GIMAC1000  /ko/product/view/P01255
+        GIMAC-DC  /ko/product/view/P01083
+        GIMAC-B  /ko/product/view/P01214
+        IMD  /ko/product/view/P21020
+        Micro RTU-Ⅲ  /ko/product/view/P01086
+        TWS  /ko/product/view/P01087
+      계량기 (Meter)  /ko/product/category/AAA016003
+        Digital Electricity Meter  /ko/product/view/P02213
+        DC Meter  /ko/product/view/P02214
+        SDC-500  /ko/product/view/P01093
+    DC 전력기기  /ko/product/category/AAA017
+      Susol DC 기중차단기 및 개폐기  /ko/product/category/AAA017001
+      Susol DC 배선용차단기 및 개폐기  /ko/product/category/AAA017002
+      DC 접촉기 (MC)  /ko/product/category/AAA017003
+      DC 초소형차단기 (MCB)  /ko/product/category/AAA017004
+      DC 서지보호기 (SPD)  /ko/product/category/AAA017005
+      DC 릴레이 (Relay)  /ko/product/category/AAA017006
+    스마트 기기  /ko/product/category/AAA018
+      데이터수집장치 (DAU)  /ko/product/category/AAA018001
+      디지털 입출력기기 (I/O)  /ko/product/category/AAA018002
+      분기 계측기 (Feeder Meter)  /ko/product/category/AAA018003
+      센서 (Sensors)  /ko/product/category/AAA018004
+      표시장치 (Display)  /ko/product/category/AAA018005
+      통신장치 (Communication)  /ko/product/category/AAA018006
+      기타 스마트 기기  /ko/product/category/AAA018007
+  Beyond X™ Automation Solution  /ko/product/main/automation
+    자동차  /ko/product/category/BBB013
+    식/음료  /ko/product/category/BBB007
+    조선/선박  /ko/product/category/BBB014
+    수처리  /ko/product/category/BBB010
+    냉난방공조  /ko/product/category/BBB011
+    저압드라이브  /ko/product/category/BBB005
+      General  /ko/product/category/BBB005018
+        S300  /ko/product/view/P01263
+        G100/G100C  /ko/product/view/P01247
+        S100  /ko/product/view/P01184
+        H100  /ko/product/view/P01183
+        M100  /ko/product/view/P01215
+        iS7   /ko/product/view/P01188
+        L100  /ko/product/view/P01262
+        iV5   /ko/product/view/P01190
+        iG5A   /ko/product/view/P01187
+        iP5A   /ko/product/view/P01189
+      System  /ko/product/category/BBB005014
+        Drive Panel  /ko/product/view/P01202
+      Drive Tool  /ko/product/category/BBB005013
+        DriveView SW  /ko/product/view/P01248
+    고압드라이브  /ko/product/category/BBB006
+      M1000  /ko/product/category/BBB006001
+    에너지절감  /ko/product/category/BBB012
+      유리분야  /ko/product/category/BBB012001
+      금속분야  /ko/product/category/BBB012002
+      빌딩분야  /ko/product/category/BBB012003
+      정유분야  /ko/product/category/BBB012004
+      환경분야  /ko/product/category/BBB012005
+      제지분야  /ko/product/category/BBB012006
+    소프트스타터  /ko/product/category/BBB008
+      저압  /ko/product/category/BBB008001
+      고압  /ko/product/category/BBB008002
+    PLC  /ko/product/category/BBB001
+      XGT CPU  /ko/product/category/BBB001001
+        XGC-CPUX7  /ko/product/view/P03079
+        XGI-CPUZ  /ko/product/view/P01505
+        XGK-CPU  /ko/product/view/P01113
+        XGI-CPU  /ko/product/view/P01114
+      XGT I/O모듈  /ko/product/category/BBB001008
+        디지털 입력  /ko/product/view/P02036
+        디지털 출력  /ko/product/view/P02037
+        디지털 혼합  /ko/product/view/P02038
+      XGT 특수모듈  /ko/product/category/BBB001002
+        아날로그 입력  /ko/product/view/P01122
+        아날로그 출력  /ko/product/view/P01123
+        아날로그 혼합  /ko/product/view/P01129
+        온도입력  /ko/product/view/P01126
+        온도제어  /ko/product/view/P01132
+        모션제어  /ko/product/view/P01128
+        고속카운터  /ko/product/view/P01124
+        위치결정  /ko/product/view/P01130
+        이벤트입력  /ko/product/view/P02020
+        데이터로그  /ko/product/view/P02021
+      XGT 통신모듈  /ko/product/category/BBB001009
+        Cnet  /ko/product/view/P01133
+        RAPIEnet+  /ko/product/view/P01134
+        Rnet  /ko/product/view/P01135
+        Dnet  /ko/product/view/P01136
+        Pnet  /ko/product/view/P01137
+        EtherNet/IP  /ko/product/view/P01139
+        IT 통신 & 데이터 관리  /ko/product/view/P03076
+      XGR(이중화 PLC)  /ko/product/category/BBB001011
+        XGR-CPU  /ko/product/view/P02022
+        증설드라이브  /ko/product/view/P02023
+      XG5000 SW  /ko/product/category/BBB001012
+      XGB 기본유닛  /ko/product/category/BBB001004
+        U타입  /ko/product/view/P01117
+        H타입  /ko/product/view/P01118
+        SU타입  /ko/product/view/P01119
+        E타입  /ko/product/view/P01120
+        슬림 타입  /ko/product/view/P02025
+      XGB I/O모듈  /ko/product/category/BBB001013
+        디지털 입력  /ko/product/view/P02026
+        디지털 출력  /ko/product/view/P02027
+        디지털 혼합  /ko/product/view/P02028
+      XGB 특수모듈  /ko/product/category/BBB001014
+        아날로그 입력  /ko/product/view/P02029
+        아날로그 출력  /ko/product/view/P02030
+        아날로그 혼합  /ko/product/view/P02031
+        온도입력  /ko/product/view/P02032
+        온도제어  /ko/product/view/P02033
+        로드셀  /ko/product/view/P02041
+        위치결정  /ko/product/view/P02042
+        고속카운터  /ko/product/view/P02043
+      XGB 통신모듈  /ko/product/category/BBB001015
+        RAPIEnet  /ko/product/view/P02046
+        Dnet  /ko/product/view/P02047
+        Pnet  /ko/product/view/P02048
+        Rnet  /ko/product/view/P02049
+        Cnet  /ko/product/view/P02044
+        FEnet  /ko/product/view/P02045
+        Ethernet/IP  /ko/product/view/P02050
+        CANopen  /ko/product/view/P02051
+      XGB 옵션모듈  /ko/product/category/BBB001016
+        아날로그 입력  /ko/product/view/P02055
+        아날로그 출력  /ko/product/view/P02056
+        아날로그 혼합  /ko/product/view/P02057
+        온도입력  /ko/product/view/P02058
+        디지털 입력  /ko/product/view/P02052
+        디지털 출력  /ko/product/view/P02053
+        RTC  /ko/product/view/P02054
+      Smart I/O  /ko/product/category/BBB001005
+        RAPIEnet+  /ko/product/view/P01550
+        Rnet  /ko/product/view/P01551
+        DeviceNet  /ko/product/view/P01552
+        Profibus-DP  /ko/product/view/P01553
+        Cnet(Modbus)  /ko/product/view/P01554
+      통합형 Safety  /ko/product/category/BBB001021
+      XSC/XSR(Safey PLC/Relay)  /ko/product/category/BBB001022
+      XGS(Safety PLC) CPU  /ko/product/category/BBB001006
+        기본유닛  /ko/product/view/P01161
+      XGS(Safety PLC) I/O모듈  /ko/product/category/BBB001017
+        디지털 입력  /ko/product/view/P02040
+        디지털 출력  /ko/product/view/P02035
+      MASTER-K 시리즈 (단종)  /ko/product/category/BBB001019
+      GLOFA-GM 시리즈 (단종)  /ko/product/category/BBB001020
+      제품 일람표  /ko/product/category/BBB001018
+        XGT 일람표  /ko/product/view/P02220
+        XGB 일람표  /ko/product/view/P02221
+        Smart I/O 일람표  /ko/product/view/P02222
+    Servo/Motion  /ko/product/category/BBB002
+      제어기  /ko/product/category/BBB002001
+        XMC  /ko/product/view/P01165
+        MXP  /ko/product/view/P01310
+      서보 드라이브  /ko/product/category/BBB002002
+        iX7NH  /ko/product/view/P01302
+        L7NH  /ko/product/view/P01300
+        L7NHF  /ko/product/view/P01301
+        PEGA  /ko/product/view/P01303
+        PHOX  /ko/product/view/P01304
+        L7P  /ko/product/view/P01306
+        L7C  /ko/product/view/P01307
+      로터리 모터  /ko/product/category/BBB002003
+        F Series  /ko/product/view/P01350
+      DD모터  /ko/product/category/BBB002007
+        Standard DD모터  /ko/product/view/P01351
+      리니어 모터  /ko/product/category/BBB002004
+        코어타입  /ko/product/view/P01400
+        코어리스  /ko/product/view/P01401
+    HMI  /ko/product/category/BBB003
+      XGT Panel  /ko/product/category/BBB003001
+        iXP3 시리즈  /ko/product/view/P45745
+        iXP2 시리즈  /ko/product/view/P01225
+        LXP 시리즈  /ko/product/view/P01506
+        eXP2 시리즈  /ko/product/view/P02010
+        iXP2H 핸디HMI  /ko/product/view/P01246
+        XP 시리즈  /ko/product/view/P01173
+      소프트웨어  /ko/product/category/BBB003002
+        wXP  /ko/product/view/P01224
+        XP-Builder  /ko/product/view/P01217
+      XGT InfoU(HMI/SCADA)  /ko/product/category/BBB003003
+        XGT InfoU S/W  /ko/product/view/P01218
+      XPC 시리즈  /ko/product/category/BBB003004
+        BF 시리즈  /ko/product/view/P01220
+        KF 시리즈  /ko/product/view/P01221
+        IPC  /ko/product/view/P01222
+    유성감속기  /ko/product/category/BBB004
+      범용 유성감속기  /ko/product/category/BBB004001
+        MSS  /ko/product/view/P01800
+        MSR  /ko/product/view/P01804
+        MSO  /ko/product/view/P01807
+        MAS  /ko/product/view/P01802
+        MAR  /ko/product/view/P01805
+        MAO  /ko/product/view/P01809
+      고정밀용 유성감속기  /ko/product/category/BBB004005
+        HSS  /ko/product/view/P01231
+        HSR  /ko/product/view/P01233
+        HSW   /ko/product/view/P01235
+        HSD  /ko/product/view/P01237
+        HAS  /ko/product/view/P01232
+        HAR  /ko/product/view/P01234
+        HAW  /ko/product/view/P01236
+        HAD  /ko/product/view/P01238
+    SOFTWARE  /ko/product/category/BBB009
+      Backup 프로그램  /ko/product/category/BBB009001
+        DEXA  /ko/product/view/P01504
+  Beyond X™ for Smart Factory  https://beyondx-sf.ls-electric.com/
+    스마트팩토리 통합 솔루션  https://beyondx-sf.ls-electric.com/#
+  Beyond X™ Enable  https://enable.ls-electric.com/
+    에너지 컨설팅 서비스  https://enable.ls-electric.com/#
