@@ -16,6 +16,9 @@
  *
  * 리더 결정 반영: R-04(자료 없음 → 공식 페이지 링크), R-07(power 실선 / signal 점선),
  *   R-08(Gap 강조 규칙), R-09(?mode=gap|learn URL 공유)
+ * 사용자 확정(v0.3): Gap 버튼 = 같은 계통도 위 강조(/?mode=gap), 공백 표(/gap)는 좌측 내비 아래
+ *   "공백 표 보기" 링크(data-testid="gap-table-link"), 노드 선택은 ?node=<nodeId> 로 복원.
+ * 자료(docs)는 products.json 의 docs 가 아니라 src/data/docs.json 기준.
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -45,7 +48,16 @@ interface Prod {
   id: string;
   name: string;
   url: string;
-  docs: { type: string; url: string }[];
+}
+interface DocRef {
+  type: string;
+  title: string;
+  url: string;
+}
+interface ProductDocs {
+  source: 'www' | 'ssq';
+  deepLink: string;
+  docs: DocRef[];
 }
 
 const dataPath = (f: string) => fileURLToPath(new URL(`../../src/data/${f}`, import.meta.url));
@@ -54,7 +66,20 @@ const load = <T>(f: string): T => JSON.parse(readFileSync(dataPath(f), 'utf8')) 
 const equipment = load<Eq[]>('equipment-types.json');
 const diagram = load<{ nodes: DNode[] }>('diagram.json');
 const products = load<Prod[]>('products.json');
+const categories = load<{ code: string; productIds: string[] }[]>('categories.json');
+const docsJson = load<{ products: Record<string, ProductDocs> }>('docs.json');
 const eqById = new Map(equipment.map((e) => [e.id, e]));
+const catByCode = new Map(categories.map((c) => [c.code, c]));
+
+/** 자료 파일 허용 도메인: *.ls-electric.com + ssq 공식 대용량 파일 CDN (DI-62 와 같은 규칙) */
+const ALLOWED_DOC_URL_RE = /^https:\/\/(([a-z0-9-]+\.)*ls-electric\.com|ssqfd-abhdhraad3gkgbcg\.a03\.azurefd\.net)\//i;
+const docsOf = (productId: string): DocRef[] => docsJson.products[productId]?.docs ?? [];
+/** 앱의 resolveProducts 와 같은 규칙: productIds ∪ lseCategoryCodes 카테고리의 직속 productIds */
+function linkedProducts(e: Eq): string[] {
+  const ids = new Set(e.productIds ?? []);
+  for (const code of e.lseCategoryCodes) catByCode.get(code)?.productIds.forEach((id) => ids.add(id));
+  return [...ids].filter((id) => products.some((p) => p.id === id));
+}
 
 /** 해당 커버리지 기기를 가진 첫 노드 (없으면 테스트 skip) */
 function nodeWith(coverage: Coverage, extra: (e: Eq) => boolean = () => true): { node: DNode; eq: Eq } | undefined {
@@ -65,8 +90,21 @@ function nodeWith(coverage: Coverage, extra: (e: Eq) => boolean = () => true): {
   return undefined;
 }
 const hasDirectProducts = (e: Eq) => (e.productIds?.length ?? 0) > 0;
-const productWithDocs = products.find((p) => p.docs.length > 0);
-const productWithoutDocs = products.find((p) => p.docs.length === 0);
+const productWithDocs = products.find((p) => docsOf(p.id).length > 0);
+/** docs.json 에 항목 자체가 없는 제품 → 공식 제품 페이지 링크로 대체 (R-04) */
+const productWithoutEntry = products.find((p) => !docsJson.products[p.id]);
+/** docs.json 에 항목은 있으나 docs 가 빈 제품 → 공식 자료실 deepLink 로 대체 */
+const productWithEmptyEntry = products.find((p) => docsJson.products[p.id] && docsOf(p.id).length === 0);
+/** 상세 패널에 자료 링크가 보이는 기기: 연결 제품 ≤ 5 (EquipmentInfo 규칙) 이고 그중 자료 있는 제품이 있음 */
+const nodeWithDocs = (() => {
+  for (const node of diagram.nodes) {
+    const eq = eqById.get(node.equipmentTypeId);
+    if (!eq) continue;
+    const linked = linkedProducts(eq);
+    if (linked.length > 0 && linked.length <= 5 && linked.some((id) => docsOf(id).length > 0)) return { node, eq };
+  }
+  return undefined;
+})();
 const edges = load<{ edges: { id: string; kind?: 'power' | 'signal' }[] }>('diagram.json').edges;
 const powerEdge = edges.find((e) => (e.kind ?? 'power') === 'power');
 const signalEdge = edges.find((e) => e.kind === 'signal');
@@ -167,15 +205,15 @@ test.describe('E2E-2 영업 데이터시트 찾기', () => {
     await expect(official).toHaveAttribute('target', '_blank');
     await expect(official).toHaveAttribute('rel', /noopener/);
 
-    const prod = products.find((p) => p.id === firstProductId)!;
-    if (prod.docs.length > 0) {
+    if (docsOf(firstProductId).length > 0) {
       const doc = tid(page, 'doc-link').first();
       await expect(doc).toHaveAttribute('target', '_blank');
       await expect(doc).toHaveAttribute('rel', /noopener/);
-      await expect(doc).toHaveAttribute('href', /ls-electric\.com/);
-      // 실제 새 탭 이벤트 (외부 사이트 로딩은 기다리지 않음)
+      await expect(doc).toHaveAttribute('href', ALLOWED_DOC_URL_RE);
+      // 실제 새 탭 이벤트 (외부 사이트 로딩은 기다리지 않음 — 요청 자체를 차단)
+      await page.context().route(/^https:\/\/(?!localhost)/, (r) => r.fulfill({ status: 200, contentType: 'text/plain', body: 'stub' }));
       const [popup] = await Promise.all([page.waitForEvent('popup'), doc.click()]);
-      expect(popup.url()).toMatch(/ls-electric\.com/);
+      expect(popup.url()).toMatch(ALLOWED_DOC_URL_RE);
       await popup.close();
     } else {
       await expect(tid(page, 'docs-empty')).toBeVisible(); // "자료 준비 중"
@@ -204,6 +242,10 @@ test.describe('E2E-3 기획 Gap 확인', () => {
 
     await gotoHome(page);
     await tid(page, 'view-mode-gap').click();
+    // 사용자 확정: Gap = 같은 계통도 위 강조 (별도 페이지로 이동하지 않음)
+    await expect(page).toHaveURL(/#\/\?(.*&)?mode=gap/);
+    await expect(tid(page, 'diagram')).toBeVisible();
+    await expect(tid(page, 'gap-page')).toHaveCount(0);
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
 
     await expect(diagramNode(page, missing!.node.id)).toHaveAttribute('data-emphasized', 'true');
@@ -227,6 +269,15 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     await expect(tid(page, 'detail-gap-note')).toBeVisible();
     await expect(tid(page, 'detail-product-list')).toHaveCount(0);
     await expect(tid(page, 'detail-empty-products')).toBeVisible(); // "자사 제품 미보유(공백)" — 오류 아님
+  });
+
+  test('좌측 내비 아래 "공백 표 보기" 링크 → /gap 공백 표', async ({ page }) => {
+    await gotoHome(page);
+    const link = tid(page, 'gap-table-link');
+    await expect(link).toBeVisible();
+    await link.click();
+    await expect(page).toHaveURL(/#\/gap(\?|$)/);
+    await expect(tid(page, 'gap-page')).toBeVisible();
   });
 
   test('/gap 페이지의 공백 건수가 데이터의 missing 기기 수와 일치한다', async ({ page }) => {
@@ -281,6 +332,46 @@ test.describe('E2E-4 해시 라우팅', () => {
     await expect(tid(page, 'product-page')).toBeVisible();
     await page.goBack();
     await expect(tid(page, 'diagram')).toBeVisible();
+  });
+
+  test('?node=<nodeId> 로 열면 노드 선택 + 상세 패널 복원, 선택/닫기 시 URL 갱신', async ({ page }) => {
+    const t = nodeWith('owned') ?? nodeWith('missing');
+    const other = diagram.nodes.find((n) => n.id !== t?.node.id && eqById.has(n.equipmentTypeId));
+    test.skip(!t || !other, '노드 데이터 부족');
+
+    await page.goto(`./#/?node=${t!.node.id}`);
+    await expect(panel(page)).toBeVisible();
+    await expect(tid(page, 'detail-title')).toContainText(t!.eq.name);
+    await expect(diagramNode(page, t!.node.id)).toHaveAttribute('aria-pressed', 'true');
+    await page.reload();
+    await expect(tid(page, 'detail-title')).toContainText(t!.eq.name);
+
+    // 다른 노드 클릭 → URL 의 node 갱신
+    const otherEq = eqById.get(other!.equipmentTypeId)!;
+    await clickNode(page, other!.id, otherEq.layer);
+    await expect(page).toHaveURL(new RegExp(`[?&]node=${other!.id}(&|$)`));
+
+    // 닫기 → node 파라미터 제거
+    await tid(page, 'detail-panel-close').click();
+    await expect(panel(page)).toBeHidden();
+    await expect(page).not.toHaveURL(/[?&]node=/);
+  });
+
+  test('?mode=gap&node= 조합도 함께 복원된다', async ({ page }) => {
+    const t = nodeWith('missing');
+    test.skip(!t, 'missing 노드 데이터 없음');
+    await page.goto(`./#/?mode=gap&node=${t!.node.id}`);
+    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
+    await expect(tid(page, 'detail-coverage-badge')).toHaveAttribute('data-coverage', 'missing');
+  });
+
+  test('없는 ?node= 값 → 패널 닫힘, 오류 없음', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto('./#/?node=__no_such_node__');
+    await expect(tid(page, 'diagram')).toBeVisible();
+    await expect(panel(page)).toHaveCount(0);
+    expect(errors).toEqual([]);
   });
 
   test('존재하지 않는 id → not-found 안내 (흰 화면/크래시 아님)', async ({ page }) => {
@@ -394,25 +485,75 @@ test.describe('E2E-5 접근성·반응형', () => {
 });
 
 // ═════════════════════════════════════════════════════════════
-// 자료 없음 상태 (현재 products.json docs 가 비어 있을 가능성 높음)
+// 자료(docs.json) — 링크·새 탭·대체 상태
 // ═════════════════════════════════════════════════════════════
-test.describe('예외 상태', () => {
-  test('R-04 자료 없는 제품 → "자료 준비 중" + 공식 제품 페이지 링크로 대체, 깨진 링크 없음', async ({ page }) => {
-    test.skip(!productWithoutDocs, '모든 제품에 자료가 있음');
-    await page.goto(`./#/product/${productWithoutDocs!.id}`);
+test.describe('자료 링크 (docs.json)', () => {
+  test('R-04 docs.json 에 없는 제품 → "자료 준비 중" + 공식 제품 페이지 링크, 깨진 링크 없음', async ({ page }) => {
+    test.skip(!productWithoutEntry, '모든 제품이 docs.json 에 있음');
+    await page.goto(`./#/product/${productWithoutEntry!.id}`);
     await expect(tid(page, 'docs-empty')).toBeVisible();
     await expect(tid(page, 'doc-link')).toHaveCount(0);
     const official = tid(page, 'product-official-link');
     await expect(official).toBeVisible();
-    await expect(official).toHaveAttribute('href', productWithoutDocs!.url);
+    await expect(official).toHaveAttribute('href', productWithoutEntry!.url);
     await expect(official).toHaveAttribute('target', '_blank');
     await expect(official).toHaveAttribute('rel', /noopener/);
   });
 
-  test('자료 있는 제품 → 자료 종류 배지(data-doc-type) 표시', async ({ page }) => {
-    test.skip(!productWithDocs, '자료가 있는 제품 없음');
+  test('docs 가 빈 docs.json 항목 → "자료 준비 중" + 공식 자료실(deepLink) 새 탭 링크', async ({ page }) => {
+    test.skip(!productWithEmptyEntry, 'docs 가 빈 항목 없음');
+    const entry = docsJson.products[productWithEmptyEntry!.id];
+    await page.goto(`./#/product/${productWithEmptyEntry!.id}`);
+    await expect(tid(page, 'docs-empty')).toBeVisible();
+    const deep = page.locator(`a[href="${entry.deepLink}"]`).first();
+    await expect(deep).toHaveAttribute('target', '_blank');
+    await expect(deep).toHaveAttribute('rel', /noopener/);
+  });
+
+  test('제품 페이지: 자료 건수 = docs.json, 유형 배지(data-doc-type), 모든 링크 새 탭·noopener·허용 도메인', async ({
+    page,
+  }) => {
+    test.skip(!productWithDocs, 'docs.json 에 자료가 있는 제품 없음');
+    const docs = docsOf(productWithDocs!.id);
     await page.goto(`./#/product/${productWithDocs!.id}`);
-    await expect(tid(page, 'doc-link')).toHaveCount(productWithDocs!.docs.length);
-    await expect(tid(page, 'doc-link').first()).toHaveAttribute('data-doc-type', productWithDocs!.docs[0].type);
+    const links = tid(page, 'doc-link');
+    await expect(links).toHaveCount(docs.length);
+    await expect(links.first()).toHaveAttribute('data-doc-type', docs[0].type);
+    for (const a of await links.all()) {
+      await expect(a).toHaveAttribute('target', '_blank');
+      await expect(a).toHaveAttribute('rel', /noopener/);
+      await expect(a).toHaveAttribute('href', ALLOWED_DOC_URL_RE);
+    }
+    // 공식 자료실 전체 보기 링크
+    const deepLink = docsJson.products[productWithDocs!.id].deepLink;
+    await expect(page.locator(`a[href="${deepLink}"]`).first()).toHaveAttribute('target', '_blank');
+  });
+
+  test('상세 패널(detail-doc-link) → 클릭 시 새 탭(popup)으로 열리고 원래 탭은 그대로', async ({ page }) => {
+    test.skip(!nodeWithDocs, '상세 패널에 자료가 보일 기기 없음 (연결 제품 ≤5 + docs.json 자료)');
+    await page.context().route(/^https:\/\/(?!localhost)/, (r) => r.fulfill({ status: 200, contentType: 'text/plain', body: 'stub' })); // 외부 사이트 실제 요청 차단
+    await gotoHome(page);
+    await clickNode(page, nodeWithDocs!.node.id, nodeWithDocs!.eq.layer);
+    const link = tid(page, 'detail-doc-link').first();
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', /noopener/);
+    await expect(link).toHaveAttribute('href', ALLOWED_DOC_URL_RE);
+    const before = page.url();
+    const [popup] = await Promise.all([page.waitForEvent('popup'), link.click()]);
+    expect(popup.url()).toMatch(ALLOWED_DOC_URL_RE);
+    expect(await popup.evaluate(() => window.opener)).toBeNull(); // noopener 실제 효과
+    await popup.close();
+    expect(page.url()).toBe(before);
+  });
+
+  test('기기 페이지(equipment-doc-link) 자료 링크도 새 탭·noopener', async ({ page }) => {
+    test.skip(!nodeWithDocs, '자료가 보일 기기 없음');
+    await page.goto(`./#/equipment/${nodeWithDocs!.eq.id}`);
+    const link = tid(page, 'equipment-doc-link').first();
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', /noopener/);
+    await expect(link).toHaveAttribute('href', ALLOWED_DOC_URL_RE);
   });
 });

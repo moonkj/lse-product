@@ -20,6 +20,8 @@ import {
   ProductSchema,
   CategorySchema,
   DiagramSchema,
+  DocsFileSchema,
+  type DocsFile,
 } from '../../src/lib/schema';
 
 type EquipmentType = z.infer<typeof EquipmentTypeSchema>;
@@ -508,3 +510,115 @@ describe('교육·검색 품질 (DI-50 ~)', () => {
     );
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// DI-60 ~ : docs.json (제품별 자료 — scripts/fetch-docs.mjs 산출물)
+//   구조: { generatedAt, products: { [productId]: { source:'www'|'ssq', deepLink, docs: DocRef[] } } }
+// ─────────────────────────────────────────────────────────────
+/** 자료 파일 허용 도메인: 공식 사이트(*.ls-electric.com) + ssq 공식 대용량 파일 CDN */
+const SSQ_CDN_HOST = 'ssqfd-abhdhraad3gkgbcg.a03.azurefd.net';
+function isAllowedDocUrl(url: string): boolean {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return false;
+  }
+  if (u.protocol !== 'https:') return false;
+  const host = u.hostname.toLowerCase();
+  return host === 'ls-electric.com' || host.endsWith('.ls-electric.com') || host === SSQ_CDN_HOST;
+}
+/** 개인정보 의심 패턴: 이메일, 한국 전화번호(휴대폰·지역번호·대표번호) */
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+const PHONE_RE = /(?<!\d)(?:(?:01[016789]|0[2-6]\d?)[-.\s)]\d{3,4}[-.\s]\d{4}|1[5-9]\d{2}-\d{4})(?!\d)/;
+
+describe('docs.json 자료 (DI-60 ~)', () => {
+  const DOCS_FILE = 'docs.json';
+  let docsFile: DocsFile;
+  let entries: [string, DocsFile['products'][string]][] = [];
+
+  beforeAll(() => {
+    docsFile = DocsFileSchema.parse(readJson(DOCS_FILE));
+    entries = Object.entries(docsFile.products);
+  });
+
+  it('DI-60 docs.json 이 존재하고 DocsFileSchema 통과 (+ 잘못된 값은 거부)', () => {
+    expect(existsSync(DATA_DIR + DOCS_FILE)).toBe(true);
+    expect(docsFile.generatedAt).toBeTruthy();
+    expect(Number.isNaN(Date.parse(docsFile.generatedAt)), 'generatedAt 이 날짜 형식이 아님').toBe(false);
+    // 스키마가 너무 느슨하지 않은지
+    expect(
+      DocsFileSchema.safeParse({
+        generatedAt: 'x',
+        products: { P00001: { source: 'ftp', deepLink: 'https://www.ls-electric.com/', docs: [] } },
+      }).success,
+    ).toBe(false);
+    expect(
+      DocsFileSchema.safeParse({
+        generatedAt: 'x',
+        products: { P00001: { source: 'www', deepLink: 'http://www.ls-electric.com/', docs: [] } },
+      }).success,
+    ).toBe(false);
+  });
+
+  it('DI-61 docs.json 의 productId 키가 모두 products.json 에 존재', () => {
+    expect(entries.map(([id]) => id).filter((id) => !productById.has(id))).toEqual([]);
+  });
+
+  it('DI-62 모든 doc.url 은 https + 허용 도메인 (*.ls-electric.com, ssq CDN)', () => {
+    const bad = entries.flatMap(([id, e]) =>
+      e.docs.filter((d) => !isAllowedDocUrl(d.url)).map((d) => `${id}/${d.title}: ${d.url}`),
+    );
+    expect(bad).toEqual([]);
+  });
+
+  it('DI-63 deepLink 존재 + https + *.ls-electric.com (공식 자료실)', () => {
+    const bad = entries
+      .filter(([, e]) => !e.deepLink?.trim() || !LSE_URL_RE.test(e.deepLink))
+      .map(([id, e]) => `${id}: ${e.deepLink}`);
+    expect(bad).toEqual([]);
+  });
+
+  it('DI-64 개인정보 의심 패턴(이메일, 전화번호) 0건 — 제목·URL·deepLink 전체', () => {
+    const bad: string[] = [];
+    for (const [id, e] of entries) {
+      const fields = [e.deepLink, ...e.docs.flatMap((d) => [d.title, decodeURIComponentSafe(d.url)])];
+      for (const f of fields) {
+        if (EMAIL_RE.test(f)) bad.push(`${id}: 이메일 의심 "${f}"`);
+        if (PHONE_RE.test(f)) bad.push(`${id}: 전화번호 의심 "${f}"`);
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+
+  it('DI-65 같은 제품 안에서 doc.url 중복 없음', () => {
+    const bad = entries.flatMap(([id, e]) => duplicates(e.docs.map((d) => d.url)).map((u) => `${id}: ${u}`));
+    expect(bad).toEqual([]);
+  });
+
+  it('DI-66 doc.title 이 공백 문자열이 아님', () => {
+    const bad = entries.flatMap(([id, e]) => e.docs.filter((d) => !d.title.trim()).map((d) => `${id}: ${d.url}`));
+    expect(bad).toEqual([]);
+  });
+
+  it('DI-67 (SOFT) docs 가 빈 제품 → 경고만 (화면은 "자료 준비 중" + deepLink)', () => {
+    softWarn('DI-67', entries.filter(([, e]) => e.docs.length === 0).map(([id]) => id));
+  });
+
+  it('DI-68 (SOFT) source=ssq 인데 www 파일, 또는 그 반대 (출처 표기 오류 의심)', () => {
+    softWarn(
+      'DI-68',
+      entries
+        .filter(([, e]) => e.source === 'www' && e.docs.some((d) => new URL(d.url).hostname === SSQ_CDN_HOST))
+        .map(([id]) => `${id}: source=www 인데 ssq CDN 파일 포함`),
+    );
+  });
+});
+
+function decodeURIComponentSafe(s: string): string {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}

@@ -1,0 +1,415 @@
+{
+  "acb": {
+    "file": "images/equipment/acb.png",
+    "productId": "P00206",
+    "productName": "Susol ACB",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/kr_P00206_th(2).png",
+    "bytes": 117053
+  },
+  "alts": {
+    "file": "images/equipment/alts.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA015006_th.png",
+    "bytes": 159119
+  },
+  "amrs": {
+    "file": "images/equipment/amrs.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AMRS(4).png",
+    "bytes": 131915
+  },
+  "aps": {
+    "file": "images/equipment/aps.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA010006_th.png",
+    "bytes": 148836
+  },
+  "auto-switch": {
+    "file": "images/equipment/auto-switch.png",
+    "productId": "P03080",
+    "productName": "고압가스 부하개폐기 (RMU)",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA015005_th(4).png",
+    "bytes": 93550
+  },
+  "branch-mccb": {
+    "file": "images/equipment/branch-mccb.png",
+    "productId": "P01024",
+    "productName": "분전반용 차단기",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/(%EC%82%B0%EC%97%85%EC%9A%A9)%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9%EC%B0%A8%EB%8B%A8%EA%B8%B0.png",
+    "bytes": 169410
+  },
+  "busway": {
+    "file": "images/equipment/busway.png",
+    "productId": "P01105",
+    "productName": "Susol Busway",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01105_i.png",
+    "bytes": 76869
+  },
+  "care": {
+    "file": "images/equipment/care.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/GridSol(0).png",
+    "bytes": 212352
+  },
+  "cast-tr": {
+    "file": "images/equipment/cast-tr.png",
+    "productId": "P01110",
+    "productName": "Cast Resin Transformer",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01110_i.png",
+    "bytes": 151927
+  },
+  "dc-devices": {
+    "file": "images/equipment/dc-devices.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA017_th.png",
+    "bytes": 176725
+  },
+  "dmc": {
+    "file": "images/equipment/dmc.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/kr_AAA014011_th(0).png",
+    "bytes": 126747
+  },
+  "dms": {
+    "file": "images/equipment/dms.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/DMS_th.png",
+    "bytes": 300562
+  },
+  "ehv-gis": {
+    "file": "images/equipment/ehv-gis.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA009004_th.png",
+    "bytes": 219952
+  },
+  "elcb": {
+    "file": "images/equipment/elcb.png",
+    "productId": "P01027",
+    "productName": "Metasol ELCB",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01027_th(2).png",
+    "bytes": 188848
+  },
+  "empr": {
+    "file": "images/equipment/empr.png",
+    "productId": "P01053",
+    "productName": "GMP",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01053_th(0).png",
+    "bytes": 124439
+  },
+  "ems": {
+    "file": "images/equipment/ems.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/EMS_th.png",
+    "bytes": 259948
+  },
+  "ess": {
+    "file": "images/equipment/ess.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA013_th.png",
+    "bytes": 89982
+  },
+  "ev-charger": {
+    "file": "images/equipment/ev-charger.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/EV-C.png",
+    "bytes": 175268
+  },
+  "facts": {
+    "file": "images/equipment/facts.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA009002_th.png",
+    "bytes": 44373
+  },
+  "fcl": {
+    "file": "images/equipment/fcl.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA010005_th.png",
+    "bytes": 198222
+  },
+  "gis-154": {
+    "file": "images/equipment/gis-154.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA009004_th.png",
+    "bytes": 219952
+  },
+  "hmi": {
+    "file": "images/equipment/hmi.png",
+    "productId": "P45745",
+    "productName": "iXP3 시리즈",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/LS%20iXP3%20Series(%EC%A0%80%EC%9A%A9%EB%9F%89)(2).png",
+    "bytes": 513438
+  },
+  "hvdc": {
+    "file": "images/equipment/hvdc.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA009003_th.png",
+    "bytes": 212535
+  },
+  "lbs": {
+    "file": "images/equipment/lbs.png",
+    "productId": "P03077",
+    "productName": "Load Break Switch <br>/ Auto Section Switch",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/LBS(2).png",
+    "bytes": 210128
+  },
+  "lv-drive": {
+    "file": "images/equipment/lv-drive.png",
+    "productId": "P01263",
+    "productName": "S300",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/img_S300(2).png",
+    "bytes": 135448
+  },
+  "lv-swgr": {
+    "file": "images/equipment/lv-swgr.png",
+    "productId": "P01101",
+    "productName": "Susol LV SWGR",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/LV%20SWGR_th(1).png",
+    "bytes": 131928
+  },
+  "main-tr": {
+    "file": "images/equipment/main-tr.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA009005_th.png",
+    "bytes": 169817
+  },
+  "mcb-rcbo": {
+    "file": "images/equipment/mcb-rcbo.png",
+    "productId": "P03087",
+    "productName": "L-Series MCB",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/L-Series_MCB_02(2).png",
+    "bytes": 142658
+  },
+  "mcc": {
+    "file": "images/equipment/mcc.png",
+    "productId": "P01245",
+    "productName": "Smart MCC",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/smart_MCC_%EC%88%98%EC%A0%95(0).png",
+    "bytes": 214663
+  },
+  "mccb": {
+    "file": "images/equipment/mccb.png",
+    "productId": "P01900",
+    "productName": "Smart MCCB",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01900_th(0).png",
+    "bytes": 160629
+  },
+  "meter": {
+    "file": "images/equipment/meter.png",
+    "productId": "P02213",
+    "productName": "Digital Electricity Meter",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/Meter(11).png",
+    "bytes": 131689
+  },
+  "microgrid": {
+    "file": "images/equipment/microgrid.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EA%B7%B8%EB%A6%AC%EB%93%9C(0).png",
+    "bytes": 167694
+  },
+  "mms": {
+    "file": "images/equipment/mms.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA014006_th.png",
+    "bytes": 205346
+  },
+  "modular-substation": {
+    "file": "images/equipment/modular-substation.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA011_th.png",
+    "bytes": 68242
+  },
+  "motor": {
+    "file": "images/equipment/motor.png",
+    "productId": "P01350",
+    "productName": "F Series",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/F-series_th2(1)(1).png",
+    "bytes": 91293
+  },
+  "ms": {
+    "file": "images/equipment/ms.png",
+    "productId": "P01260",
+    "productName": "Metasol MS",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01260_th(0).png",
+    "bytes": 160463
+  },
+  "mv-drive": {
+    "file": "images/equipment/mv-drive.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/LS%EA%B3%A0%EC%95%95%EB%93%9C%EB%9D%BC%EC%9D%B4%EB%B8%8C(2)(0)(0).png",
+    "bytes": 121339
+  },
+  "mv-swgr": {
+    "file": "images/equipment/mv-swgr.png",
+    "productId": "P01097",
+    "productName": "MCSG",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA010001_th(0).png",
+    "bytes": 201728
+  },
+  "oil-tr": {
+    "file": "images/equipment/oil-tr.png",
+    "productId": "P01109",
+    "productName": "Oil-immersed Transformer",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/Oil-immersedTrans_th(0).png",
+    "bytes": 166590
+  },
+  "pcs": {
+    "file": "images/equipment/pcs.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA012_th.png",
+    "bytes": 370875
+  },
+  "pf": {
+    "file": "images/equipment/pf.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA015004_th.png",
+    "bytes": 183758
+  },
+  "plc": {
+    "file": "images/equipment/plc.png",
+    "productId": "P03079",
+    "productName": "XGC-CPUX7",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/XGC-CPUX7_thumb(12).png",
+    "bytes": 136299
+  },
+  "power-meter": {
+    "file": "images/equipment/power-meter.png",
+    "productId": "P01084",
+    "productName": "GIMAC-V",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01084_i.png",
+    "bytes": 153906
+  },
+  "protection-relay": {
+    "file": "images/equipment/protection-relay.png",
+    "productId": "P01072",
+    "productName": "XGIPAM",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01072_i.png",
+    "bytes": 150410
+  },
+  "pv": {
+    "file": "images/equipment/pv.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA012_th.png",
+    "bytes": 370875
+  },
+  "railway": {
+    "file": "images/equipment/railway.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/powersupply_crop.png",
+    "bytes": 366330
+  },
+  "relay-tx": {
+    "file": "images/equipment/relay-tx.png",
+    "productId": "P01072",
+    "productName": "XGIPAM",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01072_i.png",
+    "bytes": 150410
+  },
+  "sag-protector": {
+    "file": "images/equipment/sag-protector.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA014009_th.png",
+    "bytes": 79210
+  },
+  "sas": {
+    "file": "images/equipment/sas.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/SAS(3).png",
+    "bytes": 251375
+  },
+  "scada": {
+    "file": "images/equipment/scada.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/SCADA(1).png",
+    "bytes": 221548
+  },
+  "servo": {
+    "file": "images/equipment/servo.png",
+    "productId": "P01165",
+    "productName": "XMC",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/mxc(0).png",
+    "bytes": 114823
+  },
+  "smart-device": {
+    "file": "images/equipment/smart-device.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA018_th.png",
+    "bytes": 165946
+  },
+  "soft-starter": {
+    "file": "images/equipment/soft-starter.png",
+    "productId": "P02210",
+    "productName": "LVSS Soft Starter",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02210_th(0).png",
+    "bytes": 216345
+  },
+  "spd": {
+    "file": "images/equipment/spd.png",
+    "productId": "P01227",
+    "productName": "BK Series (Din/Box Type)",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/BK-Series_th_260203(6).png",
+    "bytes": 124845
+  },
+  "step-up-tr": {
+    "file": "images/equipment/step-up-tr.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA009005_th.png",
+    "bytes": 169817
+  },
+  "substation": {
+    "file": "images/equipment/substation.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/substation_th.png",
+    "bytes": 209537
+  },
+  "vc-vi": {
+    "file": "images/equipment/vc-vi.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA015002_th.png",
+    "bytes": 183150
+  },
+  "vcb": {
+    "file": "images/equipment/vcb.png",
+    "productId": "P01062",
+    "productName": "Susol VCB",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA015001_th(1).png",
+    "bytes": 122614
+  },
+  "xems": {
+    "file": "images/equipment/xems.png",
+    "productId": null,
+    "productName": null,
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/xEMS_th(0).png",
+    "bytes": 89934
+  }
+}

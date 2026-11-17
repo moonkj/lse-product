@@ -1,11 +1,12 @@
-# 테스트 계획서 (v0.2)
+# 테스트 계획서 (v0.3)
 
 > 작성: Teammate 3 (테스트 작성자 + 최종 리뷰어) · 2026-11-18
 > 대상: 전력계통도 기반 제품 포트폴리오 & 신입 교육 포털 (PLAN.md v0.1)
-> 코드: `tests/unit/data-integrity.test.ts`, `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`
+> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`
 > 설정: `vitest.config.ts`(jsdom, DI 테스트는 파일 상단 `@vitest-environment node`), `playwright.config.ts`(chromium, build+preview :4173), `tests/tsconfig.json`
 > 스크립트: `npm test`(vitest run) · `npm run test:watch` · `npm run test:data`(DI만) · `npm run test:e2e` · `npm run typecheck:tests`
 > v0.2 (11-18): 환경 구성·실행 완료, 리더 결정 R-01/04/05/07/08/09 반영 (§8)
+> v0.3 (11-18): docs.json 규칙 DI-60~68 추가, 컴포넌트 테스트 CT-01/02 추가, E2E 를 사용자 확정 UX(Gap=같은 계통도 `?mode=gap`, 공백 표 링크, `?node=` 복원)와 docs.json 기준 자료 링크로 갱신
 
 ---
 
@@ -38,7 +39,7 @@
 
 ---
 
-## 3. 데이터 무결성 규칙 (DI) — 총 48개 (HARD 43 · SOFT 5)
+## 3. 데이터 무결성 규칙 (DI) — 총 57개 (HARD 50 · SOFT 7)
 
 > HARD = 위반 시 테스트 실패(빌드 차단 권장) · SOFT = `console.warn`만 출력
 > 구현: `tests/unit/data-integrity.test.ts` (테스트 이름 앞에 ID 표기). 실제 데이터(제품 199 · 카테고리 137 · 기기 74 · 노드 74 · 엣지 77)로 **사전 점검(Python 포팅) 결과 전부 통과** — 단 DI-40은 예외 규칙 확정 후 기준 (§3.4 참고).
@@ -119,6 +120,30 @@
 | DI-51 | 같은 layer 안 기기 이름 중복 없음 (검색 결과 구분 불가) | SOFT |
 | DI-52 | 공개 사이트 — 대외비 키워드(대외비·내부용·confidential·사내한정) 없음 | SOFT |
 
+### 3.7 자료 파일 docs.json (v0.3)
+> 구조: `{ generatedAt, products: { [productId]: { source:'www'|'ssq', deepLink, docs: DocRef[] } } }` (`DocsFileSchema`). 생성: `scripts/fetch-docs.mjs`.
+> 허용 자료 도메인 = `*.ls-electric.com` + `ssqfd-abhdhraad3gkgbcg.a03.azurefd.net`(ssq 공식 대용량 파일 CDN). DI-17/19 는 products.json 의 (현재 빈) docs 필드에 계속 적용.
+
+| ID | 규칙 | 등급 |
+|---|---|---|
+| DI-60 | docs.json 존재 + `DocsFileSchema` 통과, generatedAt 날짜 형식, 잘못된 source·http deepLink 거부 | HARD |
+| DI-61 | docs.json 의 productId 키가 모두 products.json 에 존재 | HARD |
+| DI-62 | 모든 doc.url 은 https + 허용 도메인 (호스트 정확 비교, `URL` 파싱) | HARD |
+| DI-63 | deepLink 존재 + https + `*.ls-electric.com` | HARD |
+| DI-64 | 개인정보 의심 패턴 0건 — 이메일, 한국 전화번호(휴대폰·지역번호·15xx 대표번호). 제목·디코딩한 URL·deepLink 검사 | HARD |
+| DI-65 | 같은 제품 안에서 doc.url 중복 없음 | HARD |
+| DI-66 | doc.title 공백 문자열 아님 | HARD |
+| DI-67 | docs 가 빈 제품 → 경고만 (화면은 "자료 준비 중" + deepLink) | SOFT |
+| DI-68 | source=www 인데 ssq CDN 파일 포함 → 출처 표기 오류 의심 경고 | SOFT |
+
+---
+
+## 3b. 컴포넌트 테스트 (CT, Vitest + Testing Library + jsdom, v0.3)
+| ID | 대상 | 검증 | 테스트 수 |
+|---|---|---|---|
+| CT-01 | `common/CoverageBadge` | 5상태 아이콘·라벨이 서로 다름 / 상태별 색 클래스(`cov-badge--{c}`) + `coverage-icon-{c}` 아이콘(aria-hidden) + 라벨 텍스트 동시 렌더 / `showLabel=false` 여도 visually-hidden 라벨 유지 | 11 |
+| CT-02 | `common/ExternalLink` | https → `<a target=_blank rel="noopener noreferrer">` + "새 탭" 안내 / http·javascript:·data:·상대경로·`//`·ftp·빈 문자열 → `<a>` 미생성(텍스트만) | 9 |
+
 ---
 
 ## 4. 기능 테스트 케이스
@@ -128,7 +153,7 @@
 | FT-01 | 노드 클릭 → 상세 | owned 노드 클릭 | 우측 패널 열림, 제목=기기명, 커버리지 배지, 자사 제품 카드 목록, 학습 포인트. 노드 `aria-pressed=true` | 컴포넌트·E2E |
 | FT-02 | 다른 노드로 전환 | 패널 열린 상태에서 다른 노드 클릭 | 패널 내용 교체(닫혔다 열리지 않음), 이전 노드 선택 해제 | 컴포넌트 |
 | FT-03 | 빈 곳 클릭/닫기 | 캔버스 빈 곳 클릭 또는 닫기 버튼 | 패널 닫힘, 선택 해제. **패닝 드래그 후 놓기는 클릭으로 처리 안 됨** | 컴포넌트·E2E |
-| FT-04 | Gap 모드 | 보기 모드 → Gap | missing 노드 `data-emphasized`, owned 노드 `data-dimmed`, partial/affiliate 는 중간 강조. 범례 유지 | E2E |
+| FT-04 | Gap 모드 | 보기 모드 → Gap | **같은 계통도 위**에서 강조 (URL `#/?mode=gap`, 페이지 이동 없음). missing·partial `data-emphasized`, owned·na `data-dimmed`, affiliate 보통. 범례 유지 | E2E |
 | FT-05 | 공백 기기 상세 | missing 노드 클릭 | "자사 제품 미보유(공백)" 빈 상태 + gapNote. 오류 화면 아님, 제품 목록 없음 | 컴포넌트·E2E |
 | FT-06 | 계열사 기기 상세 | affiliate 노드 클릭 | affiliateName 표시, 계열사 색/아이콘 | 컴포넌트 |
 | FT-07 | 계층 점프 | 좌측 내비 L5 클릭 | L5 밴드가 뷰포트 안으로 이동(애니메이션 후), 내비 `aria-current` | E2E |
@@ -138,8 +163,8 @@
 | FT-11 | 검색 — 제품 모델명 | "GIPAM" / 제품 id "P01097" | 제품 결과 → 제품 페이지 이동 | 단위·E2E |
 | FT-12 | 검색 — 결과 없음 | "zzqx존재하지않는기기" | `search-empty` + 추천(유사 기기/용어), 콘솔 에러 없음 | E2E |
 | FT-13 | 검색 — 키보드 | ↓/↑/Enter/Esc | 결과 항목 이동·선택·닫기 (combobox 패턴, `aria-activedescendant`) | 컴포넌트 |
-| FT-14 | 자료 없음 | docs 빈 제품 페이지 | "자료 준비 중" 배지 + 공식 제품 페이지 링크, 깨진 링크 0 | 컴포넌트·E2E |
-| FT-15 | 외부 링크 새 탭 | 데이터시트/공식 페이지 링크 | `target=_blank` + `rel` 에 `noopener` (noreferrer 권장), 외부 아이콘/스크린리더 "새 탭" 안내 | 컴포넌트·E2E |
+| FT-14 | 자료 없음 | docs.json 에 없는 제품 / docs 빈 항목 | "자료 준비 중" 배지 + (항목 없음) 공식 제품 페이지 링크 · (빈 항목) 공식 자료실 deepLink, 깨진 링크 0 | 컴포넌트·E2E |
+| FT-15 | 외부 링크 새 탭 | 자료 링크(`doc-link`/`detail-doc-link`/`equipment-doc-link`)·공식 페이지 링크 | `target=_blank` + `rel` 에 `noopener`, popup 의 `window.opener === null`, href 가 허용 도메인, 스크린리더 "새 탭" 안내. https 아닌 URL 은 링크 미생성(CT-02) | 컴포넌트·E2E |
 | FT-16 | 모바일 폭 패널 | 390×844 에서 노드 탭 | 상세 패널이 **하단 시트**(`data-variant=sheet`), 화면 폭 가득, 가로 스크롤 없음, 시트 닫기 가능 | E2E |
 | FT-17 | 모바일 터치 | 핀치 줌 / 한 손가락 패닝 | 페이지 전체 스크롤과 충돌 없음 (`touch-action`) | 수동 |
 | FT-18 | 해시 라우트 새로고침 | `#/equipment/:id`, `#/product/:id`, `#/gap`, `#/learn` 에서 F5 | 같은 화면 복원 | E2E |
@@ -152,6 +177,8 @@
 | FT-25 | 교육 투어 | 교육 모드 → 투어 시작 → 다음 반복 | L1→L7 순서, 역행 없음, 각 단계 밴드 하이라이트·화면 이동, 마지막 단계에서 다음 비활성 | E2E |
 | FT-26 | /gap 매트릭스 | `#/gap` | 공백 건수 = 데이터 missing 수, 행(전압)×열(기능) 셀 클릭 → 해당 기기 | E2E |
 | FT-27 | 커버리지 통계 | 사이드바 % | (owned + partial×가중치?) / (전체 − na) — 공식 확정 후 단위 테스트 고정 | 단위 |
+| FT-29 | 선택 노드 URL 복원 | `#/?node=<nodeId>` 진입·새로고침 / 다른 노드 클릭 / 닫기 / 없는 id | 패널·`aria-pressed` 복원, 클릭 시 `node=` 갱신, 닫으면 파라미터 제거, 없는 id 는 패널 없이 정상 | E2E |
+| FT-30 | 공백 표 링크 | 좌측 내비 아래 "공백 표 보기" | `#/gap` 공백 표로 이동 | E2E |
 | FT-28 | 데이터 오류 | 스키마 위반 JSON | 빌드/테스트 단계에서 실패 (런타임 흰 화면 아님) | DI |
 
 ---
@@ -162,8 +189,9 @@
 |---|---|---|---|
 | E2E-1 | 신입 | 홈 → 교육 모드 → 투어 시작 → 다음×N → 투어 닫기 → owned 기기 클릭 | 투어가 L1에서 시작해 L7에서 끝남, 역행 없음, 각 단계 밴드가 뷰포트 안, 패널에 학습 포인트 |
 | E2E-2 | 영업 | 검색에 약어 입력 → 기기 결과 선택 → 패널 → 제품 카드 → 제품 페이지 → 데이터시트/공식 페이지 | 노드 선택 상태, 배지 owned, URL `#/product/:id`, 링크 새 탭+noopener+ls-electric.com, popup 이벤트. 자료가 없으면 "자료 준비 중" |
-| E2E-3 | 기획 | Gap 모드 → missing 강조/owned 흐림 → 공백 기기 클릭 → `/gap` 페이지 | 아이콘 병행, gapNote, 제품 목록 없음, 공백 건수 = 데이터 |
-| E2E-4 | 공통 | 딥링크·새로고침·뒤로가기·없는 id·자산 404 | GitHub Pages 시나리오 (preview 빌드 기준) |
+| E2E-3 | 기획 | Gap 버튼(같은 계통도, `?mode=gap`) → missing 강조/owned 흐림 → 공백 기기 클릭 → "공백 표 보기" 링크 → `/gap` | URL `mode=gap`·`gap-page` 미표시, 아이콘 병행, gapNote, 제품 목록 없음, 공백 건수 = 데이터 |
+| E2E-4 | 공통 | 딥링크·새로고침·뒤로가기·없는 id·자산 404, `?node=` 복원·갱신·제거, `?mode=gap&node=` 조합 | GitHub Pages 시나리오 (preview 빌드 기준) |
+| DOCS | 공통 | docs.json 기준: 항목 없음(R-04)·빈 항목(deepLink)·제품 페이지 전체 링크·상세 패널 popup·기기 페이지 | 건수 = docs.json, `data-doc-type`, 새 탭·noopener·허용 도메인. 외부 요청은 `context.route` 로 stub (네트워크 의존 없음) |
 | SMOKE | 공통 | 홈 진입 | 헤더·범례 5종 표시, 런타임 오류 없음 (`smoke.spec.ts`, Phase 1부터 항상 통과해야 함) |
 | E2E-5 | 접근성 | 키보드 Enter/Esc·포커스 복귀, 건너뛰기 링크, 계층 점프, 범례 5종, 모바일 하단 시트, 라이트/다크 axe 대비 | |
 
@@ -206,7 +234,7 @@
 ### 7.2 계통도
 | testid | 요소 | 추가 요구 속성 |
 |---|---|---|
-| `diagram` | SVG 루트(또는 래퍼) | `data-view-mode="product|gap|learn"` — R-09: `#/?mode=gap|learn` 쿼리와 동기화 |
+| `diagram` | SVG 루트(또는 래퍼) | `data-view-mode="product|gap|learn"` — R-09: `#/?mode=gap|learn` 쿼리와 동기화. 선택 노드는 `?node=<nodeId>` |
 | `diagram-edge-{edgeId}` | 연결선 | `data-kind="power|signal"` — R-07: power 굵은 실선, signal 가는 점선(stroke-dasharray) |
 | `diagram-node-{nodeId}` | 노드 `<g>` | `role=button`, `tabindex=0`, `aria-label="{기기명}, {커버리지 한글}"`, `aria-pressed`(선택), `data-coverage`, `data-dimmed`, `data-emphasized` (각 "true"/"false") |
 | `coverage-icon-{coverage}` | 노드·범례·배지 안 상태 아이콘 | |
@@ -233,6 +261,8 @@
 | `product-official-link` | 공식 제품 페이지 링크 | `target=_blank`, `rel="noopener noreferrer"` |
 | `doc-link` | 자료 링크 (여러 개) | `data-doc-type`, `target=_blank`, `rel` |
 | `docs-empty` | "자료 준비 중" 배지 | R-04: 이때 `product-official-link` 를 대체 자료로 반드시 표시 |
+| `detail-doc-link` / `equipment-doc-link` | 상세 패널·기기 페이지 자료 링크 | `doc-link` 와 동일 속성 (v0.3) |
+| `gap-table-link` | 좌측 내비 아래 "공백 표 보기" 링크 (→ `#/gap`) | **v0.3 신규 요청** |
 | `gap-page` / `gap-matrix` / `gap-list` / `gap-item-{equipmentId}` | `/gap` 페이지 | |
 | `learn-page` | `/learn` 페이지 | |
 | `tour-start` / `tour-step` / `tour-next` / `tour-close` | 교육 투어 | `tour-step` 에 `data-layer`, 마지막 단계 `tour-next` disabled |
@@ -274,3 +304,11 @@
 | E2E 스모크 (`smoke.spec.ts`) | **1 통과** | ARIA 셀렉터(banner, list "커버리지 범례") 사용 — 현재 셸에 testid 없음 |
 | E2E 핵심 (`core-flows.spec.ts`) | 기본 21 skip (Phase 2 게이트) / `E2E_STRICT=1` 시 20 실패 · 1 skip | 실패 원인 전부 testid 미구현(Phase 2 UI). skip 1 = 자료 있는 제품 없음(docs 0건) |
 
+
+## 10. 실행 결과 (2026-11-18, v0.3 — T1 Phase 2 진행 중 스냅샷)
+
+| 대상 | 결과 | 비고 |
+|---|---|---|
+| `npm run test` | **80 통과 / 0 실패** (파일 3) | DI 60 (기존 51 + DI-60~68 9) · CT 20. docs.json(제품 5 · 자료 22) 기준 위반 0, SOFT 경고 0 |
+| `npm run typecheck:tests` | 통과 | |
+| E2E (`npm run test:e2e`, 29건) | **12 통과 · 17 실패** | `diagram` testid 가 생겨 게이트가 열림. 실패 원인: 계통도 노드(`diagram-node-*`) 미렌더, 검색·투어·`/gap` testid, `?mode=gap`/`?node=`/`gap-table-link` 미구현 (Phase 2 진행 중). 통과: 스모크, 라우팅 4, 범례, axe 라이트/다크, docs.json 자료 링크 4(R-04·빈 항목·제품 페이지·기기 페이지) |
