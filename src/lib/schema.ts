@@ -259,14 +259,46 @@ export const SpecItemSchema = z.object({
 });
 export type SpecItem = z.infer<typeof SpecItemSchema>;
 
-export const ProductSpecsSchema = z.object({
+/**
+ * 모델 옵션(프레임·전압 등급·통신 옵션·용량 등)별 사양 (2026-11-18 사용자: "사양이 모델 옵션별로 다름").
+ * id 는 제품 안에서 고유한 kebab-case (URL 에 쓰임: /compare?type=product&ids=P00206:4000af)
+ */
+export const SpecVariantSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'kebab-case id 여야 합니다 (예: 4000af)'),
+  /** 화면 표시 이름 (카탈로그 표기 그대로, 예: "4000AF (G-Frame)") */
+  label: z.string().min(1),
   items: z.array(SpecItemSchema).min(1),
-  source: z.object({ title: z.string().min(1), url: httpsUrl, page: z.number().int().positive().optional() }),
-  extractedAt: isoDate,
-  /** 사람이 카탈로그와 대조해 검수했는지 */
-  reviewed: z.boolean(),
+  /** 이 옵션 표가 실린 페이지 */
+  page: z.number().int().positive().optional(),
   note: z.string().optional(),
 });
+export type SpecVariant = z.infer<typeof SpecVariantSchema>;
+
+export const ProductSpecsSchema = z
+  .object({
+    /** 시리즈 공통 사양 (옵션과 관계없이 같은 값, 또는 옵션이 없는 제품의 사양) */
+    items: z.array(SpecItemSchema),
+    /** 옵션별 사양 — 옵션마다 값이 다른 항목은 여기에 */
+    variants: z.array(SpecVariantSchema).optional(),
+    /** 옵션을 나누는 기준 이름 (예: "프레임", "정격전압 등급", "통신 옵션") */
+    variantAxis: z.string().optional(),
+    source: z.object({ title: z.string().min(1), url: httpsUrl, page: z.number().int().positive().optional() }),
+    extractedAt: isoDate,
+    /** 사람이 카탈로그와 대조해 검수했는지 */
+    reviewed: z.boolean(),
+    note: z.string().optional(),
+  })
+  .superRefine((p, ctx) => {
+    if (p.items.length === 0 && !(p.variants && p.variants.length > 0))
+      ctx.addIssue({ code: 'custom', path: ['items'], message: '공통 사양이나 옵션별 사양 중 하나는 있어야 합니다' });
+    if (p.variants && p.variants.length > 0 && !p.variantAxis)
+      ctx.addIssue({ code: 'custom', path: ['variantAxis'], message: '옵션별 사양이 있으면 variantAxis(옵션 기준 이름)가 필요합니다' });
+    const ids = new Set<string>();
+    for (const [i, v] of (p.variants ?? []).entries()) {
+      if (ids.has(v.id)) ctx.addIssue({ code: 'custom', path: ['variants', i, 'id'], message: `옵션 id 중복: ${v.id}` });
+      ids.add(v.id);
+    }
+  });
 export type ProductSpecs = z.infer<typeof ProductSpecsSchema>;
 
 export const SpecsFileSchema = z.object({

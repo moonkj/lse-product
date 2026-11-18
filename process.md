@@ -135,3 +135,8 @@
 - [수정 라운드] T1 = 화면·로딩 수정(M6에 한해 load.ts 수정 승인) / 데이터 담당 = specs.json 인용 페이지 9건 정정·대조표 갱신
 - [비교 수정 라운드 완료] T1: 비교 바 폭 대응(901~1299 본문 폭, ≤1099 칩 접기, 미니맵 위로), 탭 간 동기화, 모바일 여백(--cmp-tray-h), 차이만 보기 정규화(compareKey), 단위 위치(specValueText), 머리글 sticky, specs 지연 로딩(loadSpecs, 첫 화면 −5.5kB), 공통 기기 안내, B1·B2, axe 0 / 데이터: specs 인용 페이지 9건 정정·대조표 검수 상태 / T3: B1·B2 회귀 전환, 테스트 +30
   - 리더 재검증: typecheck(src·tests)·build 통과, unit 364/364, E2E 62 통과·1 skip·0 실패
+
+## 2026-11-18 · 사양 옵션별 분리
+- [사용자] "사양이 모델 옵션별로 다름" → 사양을 시리즈 공통(items) + 옵션별(variants: id·label·items·page, variantAxis)로 저장·비교
+- [리더] 스키마: SpecVariantSchema, ProductSpecs.variants·variantAxis(+ 규칙: 공통 또는 옵션 필수, 옵션 있으면 기준 이름 필수, 옵션 id 고유). URL 형식 /compare?type=product&ids=P00206:4000af
+- 병렬: 데이터 담당 = 카탈로그 옵션별 표 재추출 / T1 = 제품 상세 옵션별 사양표 + 비교 열 옵션 선택(URL 반영)
