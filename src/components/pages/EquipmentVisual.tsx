@@ -31,7 +31,7 @@ export default function EquipmentVisual({ eq, alt, className, thumb = false, siz
       <img
         src={src}
         alt={alt ?? ''}
-        className={className}
+        className={`eq-photo${className ? ` ${className}` : ''}`}
         width={size}
         height={size}
         loading={lazy ? 'lazy' : undefined}

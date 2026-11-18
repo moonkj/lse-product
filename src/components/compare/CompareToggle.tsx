@@ -14,13 +14,15 @@ interface Props {
   className?: string;
   /** full 버튼 글자 (기본 "비교에 담기" — 옵션 표에서는 "이 옵션 비교에 담기") */
   label?: string;
+  /** 스크린리더 이름을 직접 지정 (화면 글자를 포함해야 함 — WCAG 2.5.3). 옵션 표의 작은 "비교" 버튼용 */
+  ariaLabel?: string;
 }
 
 /**
  * "비교에 담기" 토글 (aria-pressed). 기기·제품 목록은 따로, 각 최대 4개 — 가득 차면 비활성 + 안내.
  * 라벨은 상태와 무관하게 고정하고 상태는 aria-pressed 로 전달 (토글 버튼 관례).
  */
-export default function CompareToggle({ kind, id, name, variant = 'full', className, label = '비교에 담기' }: Props) {
+export default function CompareToggle({ kind, id, name, variant = 'full', className, label = '비교에 담기', ariaLabel }: Props) {
   const list = useCompareStore((s) => s[kind]);
   const toggle = useCompareStore((s) => s.toggle);
   const pressed = list.includes(id);
@@ -36,7 +38,7 @@ export default function CompareToggle({ kind, id, name, variant = 'full', classN
       type="button"
       className={`cmp-toggle cmp-toggle--${variant}${pressed ? ' is-on' : ''}${className ? ` ${className}` : ''}`}
       aria-pressed={pressed}
-      aria-label={variant === 'icon' ? `${name} 비교에 담기` : label !== '비교에 담기' ? `${name} ${label}` : undefined}
+      aria-label={ariaLabel ? ariaLabel : variant === 'icon' ? `${name} 비교에 담기` : label !== '비교에 담기' ? `${name} ${label}` : undefined}
       disabled={full}
       title={title}
       data-testid={`compare-toggle-${id}`}

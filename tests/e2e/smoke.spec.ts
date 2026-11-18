@@ -38,7 +38,6 @@ test('스모크: 앱이 뜨고 헤더와 범례 6종(v0.6 R3)이 보인다 (런�
 // v1.2 브랜드 로고·파비콘 (public/brand, BrandLogo)
 // ─────────────────────────────────────────────────────────────
 const LOGO = 'brand/ls-electric-logo.png';
-const LOGO_DARK = 'brand/ls-electric-logo-gray.png';
 
 test.describe('브랜드 로고 (v1.2)', () => {
   test('로고 링크: 접근성 이름 "LS ELECTRIC 전력계통 제품맵", 다른 화면에서 누르면 계통도', async ({ page }) => {
@@ -52,18 +51,24 @@ test.describe('브랜드 로고 (v1.2)', () => {
   });
 
   for (const scheme of ['light', 'dark'] as const) {
-    test(`${scheme} 모드: ${scheme === 'dark' ? '회색' : '컬러'} 로고가 실제로 로드됨 (naturalWidth > 0)`, async ({ page }) => {
-      await page.emulateMedia({ colorScheme: scheme });
+    test(`${scheme} 모드: 흰 로고 상자 위 컬러 로고가 실제로 로드됨 (naturalWidth > 0)`, async ({ page }) => {
+      // 다크는 헤더 토글로 고른 경우만 (저장값 lse-theme=dark → <html data-theme="dark">)
+      if (scheme === 'dark') await page.addInitScript(() => localStorage.setItem('lse-theme', 'dark'));
       const failed: string[] = [];
       page.on('response', (r) => {
         if (r.url().includes('/brand/') && r.status() >= 400) failed.push(`${r.status()} ${r.url()}`);
       });
       await page.goto('./#/');
+      if (scheme === 'dark') await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+      else expect(await page.locator('html').getAttribute('data-theme')).toBeNull();
       const img = page.getByRole('banner').getByRole('img', { name: 'LS ELECTRIC' });
       await expect(img).toBeVisible();
       await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth)).toBeGreaterThan(0);
       const src = await img.evaluate((el: HTMLImageElement) => el.currentSrc);
-      expect(src.endsWith(scheme === 'dark' ? LOGO_DARK : LOGO), src).toBe(true);
+      expect(src.endsWith(LOGO), src).toBe(true);
+      // 로고 상자는 테마와 무관하게 흰색
+      const boxBg = await img.evaluate((el) => getComputedStyle(el.parentElement!).backgroundColor);
+      expect(boxBg).toBe('rgb(255, 255, 255)');
       const box = await img.boundingBox();
       expect(box!.height).toBeGreaterThan(0);
       expect(box!.height).toBeLessThanOrEqual(48); // 헤더 안에 맞는 크기 (원본 56px 그대로 늘어나지 않음)

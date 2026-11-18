@@ -42,6 +42,15 @@ input {
   outline-offset: 2px;
 }
 
+/* 제품 사진 (EquipmentVisual): 흰 판 위에 — 사각 배경 사진(pcs·pv·railway)도 모서리 r 6px.
+   사진을 담는 자리는 아래 :has() 로 흰 판(1px 선·안쪽 여백)이 된다. 원본(최대 455px)보다 크게 늘리지 않도록 최대 300px */
+img.eq-photo {
+  max-width: min(100%, 300px);
+  object-fit: contain;
+  border-radius: 6px;
+  background: var(--photo-plate-bg);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

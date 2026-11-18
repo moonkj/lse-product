@@ -1,18 +1,26 @@
-/* 디자인 토큰 — 색상·간격·폰트. 컴포넌트는 반드시 토큰을 통해 색을 사용 */
+/*
+ * 디자인 토큰 — 색상·간격·폰트. 컴포넌트는 반드시 토큰을 통해 색을 사용.
+ * 2026-11-18 LS ELECTRIC CI 시각 언어 적용 (참고: 사내 Market News 포털)
+ *  - CI 네이비 #00337F = 헤더 띠·주 버튼, CI 블루 #0068B7 = 링크·활성 칩·선택, CI 레드 #E60033 = 헤더 아래 강조선에만
+ *  - 커버리지 6상태 색은 의미 그대로 (보유 초록만 대비를 위해 한 단계 진하게)
+ * 테마: 기본은 라이트로 고정(시스템 설정과 무관 — 2026-11-18 사용자 결정).
+ *       헤더 토글로 다크를 고르면 <html data-theme="dark"> (index.html 인라인 스크립트가 첫 그리기 전에 복원).
+ */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
-  /* 폰트 */
-  --font-sans: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', system-ui, -apple-system, sans-serif;
+  /* 폰트 — 시스템 글꼴 (참고 포털과 같은 순서) */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --fs-xs: 0.75rem;
-  --fs-sm: 0.875rem;
-  --fs-md: 1rem;
-  --fs-lg: 1.125rem;
-  --fs-xl: 1.375rem;
-  --fs-2xl: 1.75rem;
+  --fs-xs: 0.75rem;     /* 12 */
+  --fs-sm: 0.8125rem;   /* 13 — 본문 보조 */
+  --fs-md: 0.9375rem;   /* 15 */
+  --fs-lg: 1.125rem;    /* 18 — 섹션 제목 */
+  --fs-xl: 1.5rem;      /* 24 */
+  --fs-2xl: 1.75rem;    /* 28 */
   --fw-regular: 400;
   --fw-medium: 500;
+  --fw-semibold: 600;
   --fw-bold: 700;
   --lh-tight: 1.25;
   --lh-normal: 1.5;
@@ -29,43 +37,67 @@
   --space-12: 48px;
 
   /* 모양·레이아웃 */
+  --radius-xs: 4px;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-pill: 999px;
-  --header-h: 56px;
+  --header-h: 56px;      /* 네이비 띠 높이 (아래 CI 레드 선 3px 별도) — 계통도 영역을 줄이지 않도록 기존과 같은 총높이 */
+  --header-accent-w: 3px;
   --nav-w: 200px;
   --panel-w: 360px;
   --bp-mobile: 900px; /* 참고값 (미디어쿼리는 리터럴 사용) */
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);
-  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.12);
+  --shadow-sm: 0 1px 2px rgb(20 23 28 / 0.08);
+  --shadow-md: 0 4px 12px rgb(20 23 28 / 0.12);
+  --shadow-sheet: 0 -6px 20px rgb(20 23 28 / 0.18);
+  --shadow-side: -6px 0 20px rgb(20 23 28 / 0.14);
   --transition-fast: 120ms ease;
 
-  /* 브랜드 */
-  --color-brand: #0056a6;
-  --color-brand-strong: #003f7d;
+  /* 브랜드 (LS ELECTRIC CI) */
+  --color-brand: #00337f;        /* CI 네이비 */
+  --color-brand-strong: #00255c;
   --color-on-brand: #ffffff;
+  --color-brand-2: #0068b7;      /* CI 블루 — 링크·활성 */
+  --color-accent: #e60033;       /* CI 레드 — 헤더 강조선 전용 (콘텐츠의 '미보유' 빨강과 섞지 않음) */
+
+  /* 헤더 (네이비 띠) */
+  --color-header-bg: #00337f;
+  --color-header-accent: #e60033;
+  --color-on-header: #ffffff;
+  --color-on-header-2: #c7d6ec;
+  --color-on-header-line: rgb(255 255 255 / 0.5);
+  --color-on-header-hover: rgb(255 255 255 / 0.12);
+  --color-on-header-seg: rgb(255 255 255 / 0.12);
+  --color-logo-bg: #ffffff;
+
+  /* 칩·태그 */
+  --color-chip-active-bg: #0068b7;
+  --color-chip-active-text: #ffffff;
+  --color-tag-bg: #eef1f6;
+  --color-notice-bg: #fff8e6;
 
   /* 표면·텍스트 */
-  --color-bg: #f5f7fa;
+  --color-bg: #f4f6f9;
   --color-surface: #ffffff;
   --color-surface-2: #eef1f5;
-  --color-border: #d7dce3;
-  --color-text: #1a1f29;
-  --color-text-muted: #5b6575;
-  --color-focus: #1f6feb;
-  --color-link: #0056a6;
+  --color-surface-3: #f7f9fc;
+  --color-border: #e3e7ed;
+  --color-border-strong: #d5dae2;
+  --color-text: #14171c;
+  --color-text-muted: #5b6270;
+  --color-focus: #0068b7;
+  --color-link: #0068b7;
 
   /* 계통도 선 */
-  --color-line-power: #1a1f29;
-  --color-line-signal: #7a8494;
+  --color-line-power: #14171c;
+  --color-line-signal: #7a8392;
 
-  /* 커버리지 5상태 (색 + 아이콘 병행) */
-  --cov-owned: #1e9e4a;      /* 초록: 보유 */
+  /* 커버리지 6상태 (색 + 아이콘 병행) — 흰 아이콘 대비는 모두 3:1 이상 */
+  --cov-owned: #1b8f44;      /* 초록: 보유 — 흰 아이콘 4.2:1 (옅은 밴드 위 테두리 3:1 확보 위해 한 단계 진하게) */
   --cov-partial: #a67c00;    /* 노랑(진한 황토): 일부 보유 — 흰 아이콘 대비 3.8:1 */
-  --cov-affiliate: #2f6fd6;  /* 파랑: 계열사 보유 */
+  --cov-affiliate: #2f6fd6;  /* 파랑: 계열사 보유 — 4.8:1 */
   --cov-sourced: #6d3aa8;    /* 보라(가장 어두움): 패널 구성품(타사 조달) — 흰 아이콘 대비 7.4:1 */
-  --cov-missing: #d93a3a;    /* 빨강: 미보유(공백) */
+  --cov-missing: #d93a3a;    /* 빨강: 미보유(공백) — 4.6:1 */
   --cov-na: #737c88;         /* 회색: 해당 없음 — 흰 아이콘 대비 4.2:1 */
   --cov-owned-bg: #e3f5e9;
   --cov-partial-bg: #fdf3d0;
@@ -75,29 +107,29 @@
   --cov-na-bg: #eef0f2;
   --cov-on-color: #ffffff;
 
-  /* 계층 L1~L7 + REN/MON 밴드 배경 */
-  --band-l1: #f3e8fb;
-  --band-l2: #ebe9fc;
-  --band-l3: #e6eefc;
-  --band-l4: #e3f4f8;
-  --band-l5: #e5f6ec;
-  --band-l6: #f6f4e1;
-  --band-l7: #fbeee3;
-  --band-ren: #e9f7e4;
-  --band-mon: #eceff3;
-  --band-label: #4a5363;
+  /* 계층 L1~L7 + REN/MON 밴드 배경 — 옅은 블루·그레이 계열로 낮추되 계층끼리 색조를 조금씩 달리 */
+  --band-l1: #eeedf7;
+  --band-l2: #eaeef8;
+  --band-l3: #e6f0fa;
+  --band-l4: #e5f2f5;
+  --band-l5: #e8f3ef;
+  --band-l6: #f1f2ea;
+  --band-l7: #f4f0eb;
+  --band-ren: #eaf4ec;
+  --band-mon: #eef0f4;
+  --band-label: #3d4450;
 
-  /* (Phase 2 추가) 계통도 노드·선택·Gap */
+  /* 계통도 노드·선택·Gap */
   --node-bg: #ffffff;
-  --node-selected-bg: #e2ecfb;
-  --color-selected: #0056a6;
-  --color-line-bus: #1a1f29;
-  --band-divider: rgb(0 0 0 / 0.07);
+  --node-selected-bg: #e6f0fa;
+  --color-selected: #0068b7;
+  --color-line-bus: #14171c;
+  --band-divider: rgb(0 51 127 / 0.08);
   --cov-owned-text: #146c33;
   --cov-partial-text: #6b5000;
   --cov-affiliate-text: #1f4f9c;
   --cov-sourced-text: #5b2a8f;
-  --cov-missing-text: #a12525;
+  --cov-missing-text: #b42828;
   --cov-na-text: #4a5363;
   --gap-banner-bg: #fff7f7;
   --gap-note-border: #f0c4c4;
@@ -107,100 +139,108 @@
   /* 택1(대체 관계) 연결선 — 전력선(진회색)·신호선(회색 점선)과 다른 청록 점선 */
   --color-line-alt: #0f766e;
   --color-line-alt-text: #0b5c55;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-brand: #4c9bff;
-    --color-brand-strong: #7db5ff;
-    --color-on-brand: #0b1220;
-
-    --color-bg: #0f141b;
-    --color-surface: #171d26;
-    --color-surface-2: #1f2732;
-    --color-border: #2e3846;
-    --color-text: #e6eaf0;
-    --color-text-muted: #9aa5b5;
-    --color-focus: #6ea8ff;
-    --color-link: #7db5ff;
-
-    --color-line-power: #dfe4ea;
-    --color-line-signal: #8792a3;
-
-    --cov-owned: #3cc16a;
-    --cov-partial: #f2c230;
-    --cov-affiliate: #5a93f0;
-    --cov-sourced: #cf9bff;   /* 어두운 배경 대비 7.9:1 */
-    --cov-missing: #f05a5a;
-    --cov-na: #7d8794;
-    --cov-owned-bg: #16301f;
-    --cov-partial-bg: #33290c;
-    --cov-affiliate-bg: #172742;
-    --cov-sourced-bg: #2a1d3d;
-    --cov-missing-bg: #3a1a1a;
-    --cov-na-bg: #232a33;
-    --cov-on-color: #0b1220;
-
-    --band-l1: #261c31;
-    --band-l2: #211f35;
-    --band-l3: #1a2336;
-    --band-l4: #172b31;
-    --band-l5: #182b20;
-    --band-l6: #2b2918;
-    --band-l7: #30231a;
-    --band-ren: #1b2c18;
-    --band-mon: #1e242c;
-    --band-label: #b5bfcc;
-
-    --node-bg: #171d26;
-    --node-selected-bg: #1c2c47;
-    --color-selected: #4c9bff;
-    --color-line-bus: #dfe4ea;
-    --band-divider: rgb(255 255 255 / 0.07);
-    --cov-owned-text: #7fe0a0;
-    --cov-partial-text: #f5d77a;
-    --cov-affiliate-text: #9cc1ff;
-    --cov-sourced-text: #e2c9ff;
-    --cov-missing-text: #ff9b9b;
-    --cov-na-text: #b5bfcc;
-    --gap-banner-bg: #2a1818;
-    --gap-note-border: #5a2a2a;
-    --gap-glow-missing: rgb(240 90 90 / 0.35);
-    --gap-glow-partial: rgb(242 194 48 / 0.3);
-    --sheet-handle: #4a5563;
-    --color-line-alt: #2dd4bf;
-    --color-line-alt-text: #7eeadb;
-
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow-md: 0 4px 12px rgb(0 0 0 / 0.5);
-  }
-}
-
-/* 상세 페이지(제품·기기·공백 표) 추가 토큰 — T1-B */
-:root {
-  --cov-owned-text: #146c33;
-  --cov-partial-text: #6b5000;
-  --cov-affiliate-text: #1f4f9c;
-  --cov-sourced-text: #5b2a8f;
-  --cov-missing-text: #b42828;
-  --cov-na-text: #4a5363;
-  --color-text-soft: #3b4452;
+  /* 상세 페이지(제품·기기·공백 표) */
+  --color-text-soft: #3d4450;
   --color-alert-bg: #fff7f7;
   --color-alert-border: #f0c4c4;
   --color-muted-dot: #8a939f;
+
+  /* 제품 사진 판 — 테마와 무관하게 흰 바탕 (헤더 흰 로고 상자와 같은 방식, 2026-11-18) */
+  --photo-plate-bg: #ffffff;
+  --photo-plate-border: #e3e7ed;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --cov-owned-text: #7ee2a0;
-    --cov-partial-text: #f5d36a;
-    --cov-affiliate-text: #a7c6ff;
-    --cov-sourced-text: #e2c9ff;
-    --cov-missing-text: #ff9b9b;
-    --cov-na-text: #c2cad6;
-    --color-text-soft: #c4ccd8;
-    --color-alert-bg: #2a1717;
-    --color-alert-border: #5a2b2b;
-    --color-muted-dot: #7d8794;
-  }
+/* 다크 — 헤더 토글로 고른 경우에만 (시스템 다크 설정으로 자동 적용하지 않음) */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-brand: #8ab4f8;
+  --color-brand-strong: #b0ccfa;
+  --color-on-brand: #0b1220;
+  --color-brand-2: #2563eb;
+  --color-accent: #ff4d6d;
+
+  --color-header-bg: #0e2a57;
+  --color-header-accent: #e60033;
+  --color-on-header: #ffffff;
+  --color-on-header-2: #c7d6ec;
+  --color-on-header-line: rgb(255 255 255 / 0.45);
+  --color-on-header-hover: rgb(255 255 255 / 0.1);
+  --color-on-header-seg: rgb(255 255 255 / 0.1);
+  --color-logo-bg: #ffffff;
+
+  --color-chip-active-bg: #2563eb;
+  --color-chip-active-text: #ffffff;
+  --color-tag-bg: #262d39;
+  --color-notice-bg: #2e2610;
+
+  --color-bg: #0f1217;
+  --color-surface: #171b22;
+  --color-surface-2: #1e2430;
+  --color-surface-3: #1b2029;
+  --color-border: #2c333f;
+  --color-border-strong: #3a4250;
+  --color-text: #e8ebf0;
+  --color-text-muted: #a3abb8;
+  --color-focus: #8ab4f8;
+  --color-link: #7fb2ff;
+
+  --color-line-power: #dfe4ea;
+  --color-line-signal: #8792a3;
+
+  --cov-owned: #3cc16a;
+  --cov-partial: #f2c230;
+  --cov-affiliate: #5a93f0;
+  --cov-sourced: #cf9bff;   /* 어두운 배경 대비 7.9:1 */
+  --cov-missing: #f05a5a;
+  --cov-na: #7d8794;
+  --cov-owned-bg: #16301f;
+  --cov-partial-bg: #33290c;
+  --cov-affiliate-bg: #172742;
+  --cov-sourced-bg: #2a1d3d;
+  --cov-missing-bg: #3a1a1a;
+  --cov-na-bg: #232a33;
+  --cov-on-color: #0b1220;
+
+  --band-l1: #1d1c2b;
+  --band-l2: #1a1f30;
+  --band-l3: #172334;
+  --band-l4: #162830;
+  --band-l5: #17282a;
+  --band-l6: #1d2524;
+  --band-l7: #232427;
+  --band-ren: #19271e;
+  --band-mon: #1c2029;
+  --band-label: #c9ced6;
+
+  --node-bg: #171b22;
+  --node-selected-bg: #1a2740;
+  --color-selected: #7fb2ff;
+  --color-line-bus: #dfe4ea;
+  --band-divider: rgb(255 255 255 / 0.07);
+  --cov-owned-text: #7ee2a0;
+  --cov-partial-text: #f5d36a;
+  --cov-affiliate-text: #a7c6ff;
+  --cov-sourced-text: #e2c9ff;
+  --cov-missing-text: #ff9b9b;
+  --cov-na-text: #c2cad6;
+  --gap-banner-bg: #2a1818;
+  --gap-note-border: #5a2a2a;
+  --gap-glow-missing: rgb(240 90 90 / 0.35);
+  --gap-glow-partial: rgb(242 194 48 / 0.3);
+  --sheet-handle: #4a5563;
+  --color-line-alt: #2dd4bf;
+  --color-line-alt-text: #7eeadb;
+
+  --color-text-soft: #c9ced6;
+  --color-alert-bg: #2a1717;
+  --color-alert-border: #5a2b2b;
+  --color-muted-dot: #7d8794;
+  --photo-plate-border: #3a4250;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.5);
+  --shadow-sheet: 0 -6px 20px rgb(0 0 0 / 0.5);
+  --shadow-side: -6px 0 20px rgb(0 0 0 / 0.5);
 }

@@ -381,18 +381,19 @@ test.describe('E2E-8 사양 옵션 (v1.1)', () => {
     await expect(tid(page, 'product-specs')).toHaveAttribute('data-state', 'ready');
     await expect(tid(page, 'product-specs').getByTestId(/^product-spec-variant-/)).toHaveCount(vs.length);
     for (const v of vs) await expect(tid(page, `product-spec-variant-${v.id}`)).toContainText(v.label);
-    // 셀 값 링크 = source.url#page=(item.page ?? variant.page)
-    const firstWithPage = vs.flatMap((v) => v.items.map((i) => i.page ?? v.page)).find((x) => !!x);
-    const cellLinks = tid(page, 'product-specs-variants').locator('td a');
-    expect(await cellLinks.count()).toBeGreaterThan(0);
-    await expect(cellLinks.first()).toHaveAttribute('href', `${detailSpecs.source.url}#page=${firstWithPage}`);
-    const hrefs = await cellLinks.evaluateAll((els) => els.map((e) => e.getAttribute('href') ?? ''));
+    // 출처 쪽은 한 번만 표시(2026-11-18 표 정리) — 그래도 값마다의 쪽(item.page ?? variant.page)은 모두
+    // 섹션 안 어딘가의 링크(source.url#page=N)로 추적 가능해야 한다 (출처 줄·블록 제목·열 머리·칸 중 하나)
+    const pages = new Set(vs.flatMap((v) => v.items.map((i) => i.page ?? v.page)).filter((x): x is number => !!x));
+    const links = tid(page, 'product-specs').locator('a[href*="#page="]');
+    const hrefs = await links.evaluateAll((els) => els.map((e) => e.getAttribute('href') ?? ''));
     expect(hrefs.every((h) => h.startsWith(`${detailSpecs.source.url}#page=`))).toBe(true);
+    for (const pg of pages) expect(hrefs, `p.${pg} 링크`).toContain(`${detailSpecs.source.url}#page=${pg}`);
     if (!detailSpecs.reviewed) await expect(tid(page, 'product-specs-unreviewed')).toBeVisible();
 
     const v0 = vs[0];
     const toggle = tid(page, `compare-toggle-${DETAIL_PID}:${v0.id}`);
-    await expect(toggle).toContainText('이 옵션 비교에 담기');
+    await expect(toggle).toContainText('비교');
+    await expect(toggle).toHaveAccessibleName(`비교: ${v0.label} 옵션 담기`);
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
     const productName = await page.getByRole('heading', { level: 1 }).first().innerText();

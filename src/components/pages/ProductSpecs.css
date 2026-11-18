@@ -17,42 +17,91 @@
 .ps-h3 { margin: 0; font-size: var(--fs-md); }
 .ps-axis { font-size: var(--fs-sm); font-weight: var(--fw-regular); color: var(--color-text-muted); }
 .ps-axis b { color: var(--color-text); }
-.ps-common { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px 16px; margin: 0; }
-.ps-common__row { display: flex; gap: 8px; min-width: 0; padding: 4px 0; border-bottom: 1px solid var(--color-border); }
-.ps-common__row dt { flex: none; width: 7.5em; color: var(--color-text-muted); font-size: var(--fs-sm); }
+.ps-common { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 24px; margin: 0; }
+.ps-common__row { display: flex; gap: 12px; min-width: 0; padding: 7px 0; border-bottom: 1px solid var(--color-border); }
+.ps-common__row dt { flex: none; width: 7.5em; color: var(--color-text-muted); font-size: var(--fs-sm); overflow-wrap: anywhere; }
 .ps-common__row dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
-.ps-value { font-weight: var(--fw-bold); color: var(--color-text); }
-.ps-page { margin-left: 6px; font-size: var(--fs-xs); color: var(--color-link); white-space: nowrap; }
+/* 값은 보통 굵기 — 옵션명(열 머리)만 600 */
+.ps-value { font-weight: var(--fw-regular); color: var(--color-text); }
+/* 쪽 링크: 위 단계와 다른 쪽일 때만 나오는 작은 표시 (24px 대상 크기) */
+.ps-page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  margin-left: 4px;
+  padding: 0 3px;
+  vertical-align: middle;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  color: var(--color-link);
+  white-space: nowrap;
+}
 .ps-none { color: var(--color-text-muted); }
 .ps-values { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.ps-hint { margin: 0; font-size: var(--fs-xs); color: var(--color-text-muted); }
 
-/* 옵션이 많으면 가로 스크롤 — 첫 열(사양 이름) 고정 */
-.ps-scroll { position: relative; overflow-x: auto; max-width: 100%; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+/* 옵션이 많으면 가로 스크롤 — 첫 열(사양 이름) 고정, 넘친 쪽 가장자리에 그림자 */
+.ps-scrollwrap { position: relative; min-width: 0; }
+.ps-scrollwrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  pointer-events: none;
+  background: linear-gradient(to left, rgb(20 23 28 / 0.14), transparent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+.ps-scrollwrap[data-edge-right='true']::after { opacity: 1; }
+:root[data-theme='dark'] .ps-scrollwrap::after { background: linear-gradient(to left, rgb(0 0 0 / 0.55), transparent); }
+.ps-scroll { position: relative; overflow-x: auto; max-width: 100%; scrollbar-width: thin; }
 .ps-scroll:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .ps-table { border-collapse: separate; border-spacing: 0; min-width: 100%; font-size: var(--fs-sm); }
+/* 선은 행 구분선만 — 세로선·칸 상자 없음 */
 .ps-table th,
-.ps-table td { padding: 8px 10px; border-bottom: 1px solid var(--color-border); text-align: left; vertical-align: top; }
+.ps-table td { padding: 9px 12px; border-bottom: 1px solid var(--color-border); text-align: left; vertical-align: top; }
+.ps-table thead th { border-bottom-color: var(--color-border-strong); }
 .ps-table tbody tr:last-child > * { border-bottom: 0; }
-.ps-table thead th { background: var(--color-surface-2); }
 .ps-table th[scope='row'],
 .ps-corner {
   position: sticky;
   left: 0;
   z-index: 1;
-  min-width: 7.5em;
-  border-right: 1px solid var(--color-border);
-  background: var(--color-surface);
+  min-width: 8.5em;
+  max-width: 11em;
+  background: var(--color-surface-3);
   color: var(--color-text-muted);
   font-weight: var(--fw-regular);
+  overflow-wrap: anywhere;
+  transition: box-shadow var(--transition-fast);
 }
-.ps-corner { background: var(--color-surface-2); }
-.ps-table td { min-width: 9em; overflow-wrap: anywhere; }
-.ps-vhead { min-width: 10em; }
+.ps-scrollwrap[data-edge-left='true'] .ps-table th[scope='row'],
+.ps-scrollwrap[data-edge-left='true'] .ps-corner { box-shadow: 6px 0 8px -6px rgb(20 23 28 / 0.25); }
+.ps-table td { min-width: 8.5em; overflow-wrap: anywhere; }
+.ps-vhead { min-width: 8.5em; font-weight: var(--fw-regular); }
 .ps-vhead > * { display: block; }
-.ps-vhead__label { color: var(--color-text); font-weight: var(--fw-bold); }
-.ps-vhead .ps-page { margin: 2px 0 0; }
+.ps-vhead > .ps-page { display: flex; width: fit-content; margin: 0; padding: 0; justify-content: flex-start; }
+.ps-vhead__label { color: var(--color-text); font-weight: var(--fw-semibold); overflow-wrap: anywhere; }
 .ps-vhead__note { margin-top: 2px; font-size: var(--fs-xs); font-weight: var(--fw-regular); color: var(--color-text-muted); }
-.ps-vhead__toggle { margin-top: 6px; white-space: nowrap; }
+/* 작은 보조 버튼 "＋ 비교" — 높이 28px (터치 화면은 ::before 로 44px 히트 영역) */
+.ps-vhead .ps-vhead__toggle {
+  position: relative;
+  display: inline-flex;
+  min-height: 28px;
+  margin-top: 6px;
+  padding: 0 10px;
+  gap: 4px;
+  border-color: var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
 .ps-foot { margin: 0; font-size: var(--fs-xs); }
 
 /* 검색에서 고른 옵션 열 강조 (?opt=, UX 토론 B6) — 색만이 아니라 "검색한 옵션" 글자 + 테두리로도 구분 */
@@ -64,7 +113,9 @@
 
 /* 터치 대상 44px (모바일·터치) — 카탈로그 쪽 링크·출처 링크 */
 @media (max-width: 900px), (pointer: coarse) {
-  .ps-page,
   .ps-source { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
-  .ps-vhead .ps-page { display: flex; }
+  .ps-page,
+  .ps-vhead .ps-vhead__toggle { position: relative; }
+  .ps-page::before,
+  .ps-vhead .ps-vhead__toggle::before { content: ''; position: absolute; inset: -8px -6px; }
 }

@@ -263,11 +263,14 @@
 .dnode--na { --node-border: var(--cov-na); }
 
 /* 사진·심볼 60px — 이름 두 줄 자리를 확보 (타일 120×116 유지) */
+/* 사진 영역은 테마와 무관하게 흰 바탕 (다크 타일 위에서도 사진 외곽이 깔끔하게) */
 .dnode__img {
   flex: none;
   width: 60px;
   height: 60px;
   object-fit: contain;
+  border-radius: 6px;
+  background: var(--photo-plate-bg);
   pointer-events: none;
 }
 

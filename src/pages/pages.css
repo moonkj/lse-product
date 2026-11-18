@@ -36,7 +36,7 @@
   gap: var(--space-4);
 }
 .pg-card--tight { padding: var(--space-5); gap: var(--space-3); }
-.pg-card h2 { font-size: var(--fs-lg); }
+.pg-card h2 { font-size: var(--fs-lg); font-weight: var(--fw-bold); letter-spacing: -0.01em; }
 .pg-card--tight h2 { font-size: var(--fs-md); }
 .pg-count { font-weight: var(--fw-regular); color: var(--color-text-muted); }
 
@@ -48,6 +48,7 @@
   padding: var(--space-6);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-brand); /* 강조 카드: 위 3px 네이비 */
   border-radius: var(--radius-lg);
 }
 .pg-hero__media {
@@ -59,6 +60,10 @@
   padding: var(--space-4);
   background: var(--color-bg);
   border-radius: var(--radius-lg);
+}
+.pg-hero__media:has(> img.eq-photo) {
+  background: var(--photo-plate-bg);
+  border: 1px solid var(--photo-plate-border);
 }
 .pg-hero__media img,
 .pg-hero__media .eq-symbol {
@@ -151,8 +156,9 @@
 .pg-chip {
   display: inline-block;
   padding: 6px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
   color: var(--color-text);
   text-decoration: none;
   font-size: var(--fs-sm);

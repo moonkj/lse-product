@@ -582,8 +582,10 @@ test.describe('E2E-5 접근성·반응형', () => {
 
   for (const scheme of ['light', 'dark'] as const) {
     test(`${scheme} 모드 색 대비 (axe color-contrast, WCAG AA)`, async ({ page }) => {
-      await page.emulateMedia({ colorScheme: scheme });
+      // 다크는 헤더 토글 저장값으로 켠다 (시스템 다크 설정은 따르지 않음 — 기본 라이트 고정)
+      if (scheme === 'dark') await page.addInitScript(() => localStorage.setItem('lse-theme', 'dark'));
       await gotoHome(page);
+      if (scheme === 'dark') await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
       const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
       const contrast = result.violations.filter((v) => v.id === 'color-contrast');
       expect(contrast.flatMap((v) => v.nodes.map((n) => n.target.join(' ')))).toEqual([]);

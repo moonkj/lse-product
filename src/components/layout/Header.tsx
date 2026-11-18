@@ -4,6 +4,7 @@ import { parseMode, useSetViewMode } from '../../lib/diagram/url';
 import SearchBox from './SearchBox';
 import BrandLogo from '../common/BrandLogo';
 import { useUiStore } from '../../store/useUiStore';
+import ThemeToggle from './ThemeToggle';
 
 const MODES: { value: ViewMode; label: string }[] = [
   { value: 'product', label: '제품' },
@@ -63,6 +64,8 @@ export default function Header() {
         </svg>
         <span className="present-toggle__label">발표 보기</span>
       </button>
+
+      <ThemeToggle />
     </header>
   );
 }

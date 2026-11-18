@@ -85,6 +85,12 @@
   object-fit: contain;
 }
 
+/* 사진이 있으면 흰 사진 판 (다크 모드에서도) */
+.dp-hero:has(> img.eq-photo) {
+  background: var(--photo-plate-bg);
+  border: 1px solid var(--photo-plate-border);
+}
+
 .dp-hero--symbol {
   min-height: 160px;
   color: var(--color-text-muted);
@@ -344,7 +350,7 @@
   background: var(--color-surface);
   border: 0;
   border-radius: 16px 16px 0 0;
-  box-shadow: 0 -6px 20px rgb(0 0 0 / 0.18);
+  box-shadow: var(--shadow-sheet);
   gap: 12px;
   overscroll-behavior: contain;
 }
