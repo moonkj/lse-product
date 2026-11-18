@@ -7,6 +7,7 @@ import { getDiagramModel, layerTitle } from '../../lib/diagram/model';
 import { productsForEquipment } from '../../lib/pages/catalog';
 import { MOBILE_QUERY, focusNode, useMediaQuery, useSelectNode, useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
 import CoverageBadge from '../common/CoverageBadge';
+import CompareToggle from '../compare/CompareToggle';
 import DocsList from '../common/DocsList';
 import EmptyProducts from '../common/EmptyProducts';
 import GapAssessmentSection from './GapAssessmentSection';
@@ -124,6 +125,7 @@ export default function DetailPanel() {
             label={pillText(eq.coverage, products.length, gapConfidence(eq) === 'confirmed')}
             testId="detail-coverage-badge"
           />
+          <CompareToggle kind="equipment" id={eq.id} name={eq.name} className="cmp-toggle--sm dp-compare" />
         </div>
         <button type="button" className="dp-close" aria-label="상세 정보 닫기" data-testid="detail-panel-close" onClick={close}>
           ×
@@ -193,11 +195,12 @@ export default function DetailPanel() {
               {products.slice(0, MAX_PRODUCTS).map((p) => {
                 const n = docsByProductId(p.id)?.docs.length ?? 0;
                 return (
-                  <li key={p.id}>
+                  <li key={p.id} className="dp-product-row">
                     <Link to={`/product/${p.id}`} className="dp-product" data-testid={`product-card-${p.id}`}>
                       <strong>{p.name}</strong>
                       <span className={n > 0 ? 'dp-product__docs' : 'dp-muted'}>{n > 0 ? `자료 ${n} →` : '→'}</span>
                     </Link>
+                    <CompareToggle kind="product" id={p.id} name={p.name} variant="icon" />
                   </li>
                 );
               })}

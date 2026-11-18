@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { DOC_TYPE_LABELS, LAYER_LABELS, type DocRef, type EquipmentType, type Product, type ProductDocs } from '../lib/schema';
 import { docsByProductId, useData } from '../data/load';
 import ExternalLink from '../components/common/ExternalLink';
+import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import {
   DOC_SOURCE_LABELS,
@@ -119,6 +120,7 @@ export default function ProductPage() {
                 자료실에서 전체 자료 보기 ↗
               </ExternalLink>
             )}
+            <CompareToggle kind="product" id={product.id} name={product.name} />
           </div>
         </div>
       </section>

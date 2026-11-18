@@ -42,3 +42,8 @@
 .eqp-docs__title { font-size: var(--fs-sm); }
 
 .eqp-points { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+
+/* 제품 카드 "비교에 담기" (2026-11-18 비교 기능) — 카드 오른쪽 위 작은 버튼, 링크 안에 넣지 않음 */
+.eqp-product-item { position: relative; }
+.eqp-product-item > .eqp-product { padding-right: 52px; }
+.eqp-product__compare { position: absolute; top: 8px; right: 8px; z-index: 1; }

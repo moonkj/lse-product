@@ -4,6 +4,7 @@ import Header from './Header';
 import LayerNav from './LayerNav';
 import DetailPanel from '../panel/DetailPanel';
 import PageErrorBoundary from '../common/PageErrorBoundary';
+import CompareTray, { useCompareTrayVisible } from '../compare/CompareTray';
 import { useData } from '../../data/load';
 import './AppLayout.css';
 
@@ -19,6 +20,7 @@ function PageLoading() {
 export default function AppLayout() {
   useData(); // 데이터 검증을 렌더 중에 실행 → 실패 시 RootErrorBoundary 가 표시
   const { pathname } = useLocation();
+  const trayVisible = useCompareTrayVisible();
 
   // 화면을 옮기면 본문 스크롤을 맨 위로 (스크롤 컨테이너 .app-main 이 라우트 사이에 유지되므로)
   useLayoutEffect(() => {
@@ -36,7 +38,7 @@ export default function AppLayout() {
   };
 
   return (
-    <div className={`app-shell${showPanel ? '' : ' app-shell--no-panel'}${pathname === '/' ? ' app-shell--home' : ''}`}>
+    <div className={`app-shell${showPanel ? '' : ' app-shell--no-panel'}${pathname === '/' ? ' app-shell--home' : ''}${trayVisible ? ' app-shell--tray' : ''}`}>
       <a href="#main" className="skip-link" data-testid="skip-to-diagram" onClick={skipToMain}>
         {pathname === '/' ? '계통도로 건너뛰기' : '본문으로 건너뛰기'}
       </a>
@@ -50,6 +52,7 @@ export default function AppLayout() {
         </PageErrorBoundary>
       </main>
       {showPanel && <DetailPanel />}
+      <CompareTray />
     </div>
   );
 }

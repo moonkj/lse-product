@@ -125,3 +125,5 @@
 - [사용자 요청] 기기별 비교 기능 → 결정: 기기 종류끼리 + 같은 기기의 제품끼리 모두, 정격 사양은 공개 카탈로그에서 추출, Gap 배너는 후보가 있을 때만 표시
 - [리더] 스키마: SPEC_KEYS(표준 사양 키 13종), SpecItem/ProductSpecs(출처 카탈로그·URL·페이지, extractedAt, reviewed)/SpecsFile, src/data/specs.json(빈 파일), load.ts specsByProductId
 - 병렬: 데이터 담당 = 카탈로그 PDF에서 주요 제품 정격 추출(값마다 페이지, reviewed=false) / T1 = 비교 화면(/compare, 비교 담기, 차이만 보기) + Gap 배너
+- [T1 완료] 비교 기능: 비교에 담기(기기·제품 각 4개, localStorage), 하단 비교 바(모바일 시트 대응), /compare(URL 공유, 차이만 보기, 기기 10행·제품 기본+사양 행, 출처·검수 전 배지), Gap 배너 후보 문구 조건부(gap-candidate-note, 현재 숨김)
+  - 리더 재검증: typecheck·build 통과, unit 270, E2E 46·1 skip

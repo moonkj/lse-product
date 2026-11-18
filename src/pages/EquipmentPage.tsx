@@ -5,6 +5,7 @@ import { docsByProductId, useData } from '../data/load';
 import CoverageBadge from '../components/common/CoverageBadge';
 import DocsList from '../components/common/DocsList';
 import EmptyProducts from '../components/common/EmptyProducts';
+import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import { CATEGORY_LABELS, isGapCoverage, isMainLayer, pageTitle } from '../lib/labels';
 import { diagramHref, layerStyle, nodeForEquipment, productsForEquipment } from '../lib/pages/catalog';
@@ -94,6 +95,7 @@ export default function EquipmentPage() {
                 공백 표에서 보기
               </Link>
             )}
+            <CompareToggle kind="equipment" id={eq.id} name={eq.name} />
           </div>
         </div>
       </section>
@@ -107,7 +109,8 @@ export default function EquipmentPage() {
             {products.length > 0 ? (
               <ul className="eqp-products" data-testid="equipment-product-list">
                 {products.map((p) => (
-                  <li key={p.id}>
+                  <li key={p.id} className="eqp-product-item">
+                    <CompareToggle kind="product" id={p.id} name={p.name} variant="icon" className="eqp-product__compare" />
                     <Link to={`/product/${p.id}`} className="eqp-product" data-testid={`product-card-${p.id}`}>
                       <EquipmentVisual eq={eq} className="eqp-product__img" thumb />
                       <span className="eqp-product__body">

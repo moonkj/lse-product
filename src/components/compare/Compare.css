@@ -1,0 +1,155 @@
+/* 비교 담기 버튼 + 하단 비교 바 (2026-11-18 비교 기능) */
+.cmp-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-link);
+  font: inherit;
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.cmp-toggle:hover:not(:disabled) { border-color: var(--color-brand); }
+.cmp-toggle.is-on {
+  border-color: var(--color-brand);
+  background: var(--node-selected-bg);
+  color: var(--color-brand-strong);
+  font-weight: var(--fw-bold);
+}
+.cmp-toggle:disabled { opacity: 0.5; cursor: not-allowed; }
+.cmp-toggle__icon { font-weight: var(--fw-bold); }
+.cmp-toggle--sm { min-height: 32px; padding: 0 12px; font-size: var(--fs-sm); }
+.cmp-toggle--icon {
+  min-height: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  flex: none;
+}
+.cmp-toggle:focus-visible,
+.cmp-tray button:focus-visible,
+.cmp-tray a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* 하단 고정 비교 바 — 데스크톱: 본문(좌측 내비 오른쪽) 왼쪽 아래, 계통도 미니맵(오른쪽 아래)을 피한다 */
+.cmp-tray {
+  position: fixed;
+  z-index: 45;
+  left: calc(var(--nav-w) + 16px);
+  bottom: 16px;
+  max-width: min(760px, calc(100vw - var(--nav-w) - 32px));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  font-size: var(--fs-sm);
+}
+.app-shell--home .cmp-tray {
+  max-width: min(760px, calc(100vw - var(--nav-w) - var(--panel-w) - 260px));
+}
+.cmp-tray__title { white-space: nowrap; }
+.cmp-tray__count { font-weight: var(--fw-regular); color: var(--color-text-muted); }
+.cmp-tray__kinds { display: inline-flex; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+.cmp-tray__kind {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+.cmp-tray__kind[aria-pressed='true'] { background: var(--color-brand); color: var(--color-on-brand); font-weight: var(--fw-bold); }
+.cmp-tray__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+.cmp-tray__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 200px;
+  padding: 2px 2px 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-2);
+}
+.cmp-tray__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmp-tray__remove {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+.cmp-tray__remove:hover { background: var(--color-border); color: var(--color-text); }
+.cmp-tray__actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.cmp-tray__clear {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.cmp-tray__go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cmp-tray__go:hover { background: var(--color-brand-strong); }
+.cmp-tray__go.is-disabled { background: var(--color-surface-2); color: var(--color-text-muted); font-weight: var(--fw-medium); }
+
+/* 비교 바가 있을 때 본문 아래 여백 (페이지 끝이 바에 가리지 않게) */
+.app-shell--tray .app-main > * { padding-bottom: 96px; }
+.app-shell--tray.app-shell--home .app-main > * { padding-bottom: 0; }
+
+@media (max-width: 900px) {
+  .cmp-tray {
+    left: 8px;
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    max-width: none;
+    padding: 8px 10px;
+  }
+  .app-shell--home .cmp-tray { max-width: none; }
+  .cmp-tray__item { max-width: 140px; }
+  /* 하단 시트가 열리면 바를 시트 위로 접어 올리고(칩 숨김), 시트를 끝까지 펼치면 숨긴다 */
+  .app-shell:has(.detail-panel--sheet) .cmp-tray {
+    bottom: calc(46dvh + 8px);
+    flex-wrap: nowrap;
+  }
+  .app-shell:has(.detail-panel--sheet) .cmp-tray__items,
+  .app-shell:has(.detail-panel--sheet) .cmp-tray__clear { display: none; }
+  .app-shell:has(.detail-panel--sheet.is-expanded) .cmp-tray { display: none; }
+  .app-shell--tray .app-main > * { padding-bottom: 140px; }
+}

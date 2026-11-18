@@ -4,12 +4,22 @@ import { getDiagramController, useView } from '../../lib/diagram/view';
 import { layerTitle } from '../../lib/diagram/model';
 import type { ViewMode } from '../../lib/diagram/url';
 import type { Diagram } from '../../lib/schema';
+import { getData } from '../../data/load';
+import { gapConfidence } from '../../lib/labels';
 
 interface Props {
   mode: ViewMode;
   total: number;
   /** 계통 검수 상태 — pending 이면 "계통 검수 대기" 배지 */
   review?: Diagram['review'];
+}
+
+/**
+ * 공백 후보(gapConfidence = candidate — 재확인 기한 경과 포함)인 공백류 기기가 1개 이상일 때만
+ * Gap 배너의 "홈페이지 기준" 안내를 보인다 (2026-11-18 사용자 결정: 모두 확정이면 숨김)
+ */
+function hasGapCandidate(): boolean {
+  return getData().equipmentTypes.some((eq) => gapConfidence(eq) === 'candidate');
 }
 
 /** 계통 연결 정정 후 설계팀 검수 전까지 표시. 툴팁·스크린리더에 review.note */
@@ -100,7 +110,11 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
       {mode === 'gap' && (
         <div className="dtool__row dtool__banner" role="status">
           <span className="dtool__pill">Gap 모드 · 미보유와 일부 보유만 강조 중</span>
-          <span className="dtool__note">공백 후보는 홈페이지 제품 목록 기준이며 실제 보유 여부 확인이 필요합니다</span>
+          {hasGapCandidate() && (
+            <span className="dtool__note" data-testid="gap-candidate-note">
+              공백 후보는 홈페이지 제품 목록 기준이며 실제 보유 여부 확인이 필요합니다
+            </span>
+          )}
           <CopyLink />
         </div>
       )}
