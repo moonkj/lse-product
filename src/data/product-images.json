@@ -1,173 +1,388 @@
 {
+  "D420271": {
+    "file": "images/products/D420271.png",
+    "thumb": "images/products/thumb/D420271.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/MV_CTTS_KO_C800%E2%93%931-01-202606.pdf",
+    "bytes": 195625,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/MV_CTTS_KO_C800%E2%93%931-01-202606.pdf",
+    "catalogTitle": "MV CTTS 카탈로그",
+    "page": 3
+  },
   "D421413": {
     "file": "images/products/D421413.png",
     "thumb": "images/products/thumb/D421413.png",
     "sourceUrl": "https://www.ls-electric.com/ko/cat/LV_CTTS_KO_C800%E2%93%961-01-202610.pdf",
-    "bytes": 46730,
-    "width": 455,
+    "bytes": 76199,
+    "width": 600,
     "origin": "catalog",
     "catalogUrl": "https://www.ls-electric.com/ko/cat/LV_CTTS_KO_C800%E2%93%961-01-202610.pdf",
-    "catalogTitle": "LV CTTS 카탈로그"
+    "catalogTitle": "LV CTTS 카탈로그",
+    "page": 5
+  },
+  "EN-AAA010002": {
+    "file": "images/products/EN-AAA010002.png",
+    "thumb": "images/products/thumb/EN-AAA010002.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMobile_Substation%5D_EN_C19992-03-201905.pdf",
+    "bytes": 194511,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMobile_Substation%5D_EN_C19992-03-201905.pdf",
+    "catalogTitle": "[Mobile Substation]",
+    "page": 1
+  },
+  "EN-AAA012001": {
+    "file": "images/products/EN-AAA012001.png",
+    "thumb": "images/products/thumb/EN-AAA012001.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BESS%5D_Energy_Storage_System_EN_C820F2-01-202209.pdf",
+    "bytes": 241260,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BESS%5D_Energy_Storage_System_EN_C820F2-01-202209.pdf",
+    "catalogTitle": "[ESS] Energy Storage System",
+    "page": 11
+  },
+  "EN-AAA012002": {
+    "file": "images/products/EN-AAA012002.png",
+    "thumb": "images/products/thumb/EN-AAA012002.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BESS%5D_Modular_Scalable_String_Platform_KO_C820A1-01-202302.pdf",
+    "bytes": 133819,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BESS%5D_Modular_Scalable_String_Platform_KO_C820A1-01-202302.pdf",
+    "catalogTitle": "[ESS] Modular Scalable String Platform",
+    "page": 1
+  },
+  "EN-AAA016008": {
+    "file": "images/products/EN-AAA016008.png",
+    "thumb": "images/products/thumb/EN-AAA016008.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDC_UL_DSU%5D_EN_C06032-05-202512.pdf",
+    "bytes": 202760,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDC_UL_DSU%5D_EN_C06032-05-202512.pdf",
+    "catalogTitle": "[DC UL DSU]",
+    "page": 1
+  },
+  "EN-P00009": {
+    "file": "images/products/EN-P00009.png",
+    "thumb": "images/products/thumb/EN-P00009.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCC%5D_EN_C80002-01-201809.pdf",
+    "bytes": 150104,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCC%5D_EN_C80002-01-201809.pdf",
+    "catalogTitle": "[Solution Power MCC]",
+    "page": 1
+  },
+  "EN-P00024": {
+    "file": "images/products/EN-P00024.png",
+    "thumb": "images/products/thumb/EN-P00024.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_MCB_RCD_EN_C01502-50-202609.pdf",
+    "bytes": 168478,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_MCB_RCD_EN_C01502-50-202609.pdf",
+    "catalogTitle": "[MCB] MCB_RCD",
+    "page": 1
+  },
+  "EN-P00025": {
+    "file": "images/products/EN-P00025.png",
+    "thumb": "images/products/thumb/EN-P00025.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Electric_Product_Leaflet_UL_EN_C19922-16-202507.pdf",
+    "bytes": 94475,
+    "width": 401,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Electric_Product_Leaflet_UL_EN_C19922-16-202507.pdf",
+    "catalogTitle": "[Device] Electric Product_UL type",
+    "page": 21
+  },
+  "EN-P00037": {
+    "file": "images/products/EN-P00037.png",
+    "thumb": "images/products/thumb/EN-P00037.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_VCB%5D_EN_C050B2-01-202210.pdf",
+    "bytes": 181030,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_VCB%5D_EN_C050B2-01-202210.pdf",
+    "catalogTitle": "Metasol VCB",
+    "page": 5
+  },
+  "EN-P00039": {
+    "file": "images/products/EN-P00039.png",
+    "thumb": "images/products/thumb/EN-P00039.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_for_Generator_EN_C050H2-03-202610.pdf",
+    "bytes": 127314,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_for_Generator_EN_C050H2-03-202610.pdf",
+    "catalogTitle": "[Susol VCB] for generator VCB",
+    "page": 1
+  },
+  "EN-P00041": {
+    "file": "images/products/EN-P00041.png",
+    "thumb": "images/products/thumb/EN-P00041.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Electric_Product_Leaflet_UL_EN_C19922-16-202507.pdf",
+    "bytes": 192607,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Electric_Product_Leaflet_UL_EN_C19922-16-202507.pdf",
+    "catalogTitle": "[Device] Electric Product_UL type",
+    "page": 3
+  },
+  "EN-P00217": {
+    "file": "images/products/EN-P00217.png",
+    "thumb": "images/products/thumb/EN-P00217.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 234675,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 130
+  },
+  "EN-P01260": {
+    "file": "images/products/EN-P01260.png",
+    "thumb": "images/products/thumb/EN-P01260.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDC_Compact_DSU%5D_up_to_1500Vdc_EN_C06012-01-202405.pdf",
+    "bytes": 300584,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDC_Compact_DSU%5D_up_to_1500Vdc_EN_C06012-01-202405.pdf",
+    "catalogTitle": "[DC Compact DSU] up to 1500Vdc",
+    "page": 1
+  },
+  "EN-P01265": {
+    "file": "images/products/EN-P01265.png",
+    "thumb": "images/products/thumb/EN-P01265.png",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDC_Compact_DSU%5D_UL_type_EN_C060A2-04-202512.pdf",
+    "bytes": 215294,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDC_Compact_DSU%5D_UL_type_EN_C060A2-04-202512.pdf",
+    "catalogTitle": "[DC Compact DSU] UL type",
+    "page": 1
   },
   "P00206": {
     "file": "images/products/P00206.png",
     "thumb": "images/products/thumb/P00206.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/kr_P00206_th(2).png",
-    "bytes": 101107,
-    "width": 331,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_KO_C06061-23-202511.pdf",
+    "bytes": 224072,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_KO_C06061-23-202511.pdf",
+    "catalogTitle": "[Susol ACB]",
+    "page": 1
   },
   "P01021": {
     "file": "images/products/P01021.png",
     "thumb": "images/products/thumb/P01021.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01021_th(0).png",
-    "bytes": 173482,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_MCCB%5D_KO_C01091-24-202509.pdf",
+    "bytes": 266852,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_MCCB%5D_KO_C01091-24-202509.pdf",
+    "catalogTitle": "[Susol MCCB]",
+    "page": 1
   },
   "P01022": {
     "file": "images/products/P01022.png",
     "thumb": "images/products/thumb/P01022.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01022_th(0).png",
-    "bytes": 159497,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_UL_MCCB%5D_KO_C01081-17-202607.pdf",
+    "bytes": 228222,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_UL_MCCB%5D_KO_C01081-17-202607.pdf",
+    "catalogTitle": "[Susol UL MCCB]",
+    "page": 1
   },
   "P01023": {
     "file": "images/products/P01023.png",
     "thumb": "images/products/thumb/P01023.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01023_th(0).png",
-    "bytes": 134729,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_MCCB%5D_KO_C01031-35-202610.pdf",
+    "bytes": 200199,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_MCCB%5D_KO_C01031-35-202610.pdf",
+    "catalogTitle": "[Metasol MCCB]",
+    "page": 1
   },
   "P01024": {
     "file": "images/products/P01024.png",
     "thumb": "images/products/thumb/P01024.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/(%EC%82%B0%EC%97%85%EC%9A%A9)%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9%EC%B0%A8%EB%8B%A8%EA%B8%B0.png",
-    "bytes": 155593,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_Fb_type_%EC%B0%A8%EB%8B%A8%EA%B8%B0_(CE%EC%9D%B8%EC%A6%9D)_KO_C83061-01-201903.pdf",
+    "bytes": 107820,
+    "width": 339,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_Fb_type_%EC%B0%A8%EB%8B%A8%EA%B8%B0_(CE%EC%9D%B8%EC%A6%9D)_KO_C83061-01-201903.pdf",
+    "catalogTitle": "[분전반] 분전반용 Fb type 차단기 (CE인증)",
+    "page": 2
   },
   "P01027": {
     "file": "images/products/P01027.png",
     "thumb": "images/products/thumb/P01027.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01027_th(2).png",
-    "bytes": 179013,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_ELCB%5D_A_Type_KO_C02021-02-202202.pdf",
+    "bytes": 365946,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_ELCB%5D_A_Type_KO_C02021-02-202202.pdf",
+    "catalogTitle": "[Metasol ELCB] A Type",
+    "page": 1
   },
   "P01028": {
     "file": "images/products/P01028.png",
     "thumb": "images/products/thumb/P01028.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01028_th(0).png",
-    "bytes": 144476,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EC%82%B0%EC%97%85%EC%9A%A9_%EB%B0%B0%EC%84%A0_%EB%88%84%EC%A0%84_%EC%B0%A8%EB%8B%A8%EA%B8%B0_KO_C830A1-19-202607.pdf",
+    "bytes": 225068,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EC%82%B0%EC%97%85%EC%9A%A9_%EB%B0%B0%EC%84%A0_%EB%88%84%EC%A0%84_%EC%B0%A8%EB%8B%A8%EA%B8%B0_KO_C830A1-19-202607.pdf",
+    "catalogTitle": "[분전반] 산업용 배선_누전 차단기",
+    "page": 20
   },
   "P01030": {
     "file": "images/products/P01030.png",
     "thumb": "images/products/thumb/P01030.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/kr_P01030_th(2).png",
-    "bytes": 131579,
-    "width": 359,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_ACB%5D_KO_C06091-28-202607.pdf",
+    "bytes": 298776,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_ACB%5D_KO_C06091-28-202607.pdf",
+    "catalogTitle": "[Metasol ACB]",
+    "page": 1
   },
   "P01043": {
     "file": "images/products/P01043.png",
     "thumb": "images/products/thumb/P01043.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01043_th(0).png",
-    "bytes": 155402,
-    "width": 454,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMini_MS%5D_KO_C04061-03-202609.pdf",
+    "bytes": 160787,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMini_MS%5D_KO_C04061-03-202609.pdf",
+    "catalogTitle": "[Mini MS]",
+    "page": 1
   },
   "P01045": {
     "file": "images/products/P01045.png",
     "thumb": "images/products/thumb/P01045.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01045(0).png",
-    "bytes": 187988,
-    "width": 449,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSoft_Starter%5D_KO_C01581-07-201803.pdf",
+    "bytes": 179921,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSoft_Starter%5D_KO_C01581-07-201803.pdf",
+    "catalogTitle": "[Soft Starter]",
+    "page": 1
   },
   "P01053": {
     "file": "images/products/P01053.png",
     "thumb": "images/products/thumb/P01053.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01053_th(0).png",
-    "bytes": 115959,
-    "width": 351,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGMP%5D_KO_C15041-07-202409.pdf",
+    "bytes": 281145,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGMP%5D_KO_C15041-07-202409.pdf",
+    "catalogTitle": "[GMP]",
+    "page": 1
   },
   "P01054": {
     "file": "images/products/P01054.png",
     "thumb": "images/products/thumb/P01054.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/dmpi_th_mark(2)(3).png",
-    "bytes": 91330,
-    "width": 351,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDMPi%5D_KO_C15021-06-202504.pdf",
+    "bytes": 161796,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDMPi%5D_KO_C15021-06-202504.pdf",
+    "catalogTitle": "[DMPi]",
+    "page": 1
   },
   "P01055": {
     "file": "images/products/P01055.png",
     "thumb": "images/products/thumb/P01055.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01055_th(0).png",
-    "bytes": 120400,
-    "width": 330,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BIMP%5D_KO_C15051-04-202409.pdf",
+    "bytes": 142881,
+    "width": 436,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BIMP%5D_KO_C15051-04-202409.pdf",
+    "catalogTitle": "[IMP]",
+    "page": 1
   },
   "P01056": {
     "file": "images/products/P01056.png",
     "thumb": "images/products/thumb/P01056.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01056_th(0).png",
-    "bytes": 110692,
-    "width": 415,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMMP%5D%20Quick%20guide_KO_202007.pdf",
+    "bytes": 200094,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMMP%5D%20Quick%20guide_KO_202007.pdf",
+    "catalogTitle": "[MMP] Quick guide",
+    "page": 2
   },
   "P01059": {
     "file": "images/products/P01059.png",
     "thumb": "images/products/thumb/P01059.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01059_th(0).png",
-    "bytes": 125798,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+    "bytes": 62878,
+    "width": 341,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+    "catalogTitle": "[MCB and CP] 분전반용",
+    "page": 34
   },
   "P01060": {
     "file": "images/products/P01060.png",
     "thumb": "images/products/thumb/P01060.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01060_th(0).png",
-    "bytes": 168939,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+    "bytes": 91153,
+    "width": 385,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+    "catalogTitle": "[SPD]",
+    "page": 17
   },
   "P01062": {
     "file": "images/products/P01062.png",
     "thumb": "images/products/thumb/P01062.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA015001_th(1).png",
-    "bytes": 109791,
-    "width": 417,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_KO_C05001-26-202609.pdf",
+    "bytes": 231100,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_KO_C05001-26-202609.pdf",
+    "catalogTitle": "[Susol VCB]",
+    "page": 1
   },
   "P01064": {
     "file": "images/products/P01064.png",
     "thumb": "images/products/thumb/P01064.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01064_i.png",
-    "bytes": 135995,
-    "width": 351,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_%EC%9B%90%EC%A0%84%EC%9A%A9_KO_C05041-01-202307.pdf",
+    "bytes": 212451,
+    "width": 534,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_%EC%9B%90%EC%A0%84%EC%9A%A9_KO_C05041-01-202307.pdf",
+    "catalogTitle": "[Susol VCB] 원전용",
+    "page": 1
   },
   "P01065": {
     "file": "images/products/P01065.png",
     "thumb": "images/products/thumb/P01065.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01065_i.png",
-    "bytes": 120743,
-    "width": 344,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5B%EB%B0%9C%EC%A0%84%EC%86%8C%EC%9A%A9_VCB%5D_KO_C050I1-02-202311.pdf",
+    "bytes": 357474,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5B%EB%B0%9C%EC%A0%84%EC%86%8C%EC%9A%A9_VCB%5D_KO_C050I1-02-202311.pdf",
+    "catalogTitle": "발전소용 VCB",
+    "page": 1
   },
   "P01072": {
     "file": "images/products/P01072.png",
     "thumb": "images/products/thumb/P01072.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01072_i.png",
-    "bytes": 126239,
-    "width": 398,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BXGIPAM%5D_KO_C16091-03-202412.pdf",
+    "bytes": 227044,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BXGIPAM%5D_KO_C16091-03-202412.pdf",
+    "catalogTitle": "[XGIPAM]",
+    "page": 1
   },
   "P01074": {
     "file": "images/products/P01074.png",
@@ -180,26 +395,35 @@
   "P01075": {
     "file": "images/products/P01075.png",
     "thumb": "images/products/thumb/P01075.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01075_i.png",
-    "bytes": 158641,
-    "width": 441,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIPAM115%5D_KO_C160E1-01-202304.pdf",
+    "bytes": 157645,
+    "width": 544,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIPAM115%5D_KO_C160E1-01-202304.pdf",
+    "catalogTitle": "[GIPAM115]",
+    "page": 3
   },
   "P01076": {
     "file": "images/products/P01076.png",
     "thumb": "images/products/thumb/P01076.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01076_i.png",
-    "bytes": 101792,
-    "width": 411,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIPAM10%5D_KO_C16011-03-202304.pdf",
+    "bytes": 129367,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIPAM10%5D_KO_C16011-03-202304.pdf",
+    "catalogTitle": "[GIPAM10]",
+    "page": 1
   },
   "P01077": {
     "file": "images/products/P01077.png",
     "thumb": "images/products/thumb/P01077.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01077_i.png",
-    "bytes": 131227,
-    "width": 442,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDPR1000%5D_KO_C160F1-01-202304.pdf",
+    "bytes": 108419,
+    "width": 428,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDPR1000%5D_KO_C160F1-01-202304.pdf",
+    "catalogTitle": "[DPR1000]",
+    "page": 3
   },
   "P01078": {
     "file": "images/products/P01078.png",
@@ -212,42 +436,57 @@
   "P01079": {
     "file": "images/products/P01079.png",
     "thumb": "images/products/thumb/P01079.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/GIMAC-IV_S(8).png",
-    "bytes": 123185,
-    "width": 378,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-IV%5D_KO_C160I1-02-202406.pdf",
+    "bytes": 107469,
+    "width": 525,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-IV%5D_KO_C160I1-02-202406.pdf",
+    "catalogTitle": "[GIMA-IV]",
+    "page": 3
   },
   "P01080": {
     "file": "images/products/P01080.png",
     "thumb": "images/products/thumb/P01080.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/GIMAC-PQ_S(4).png",
-    "bytes": 122734,
-    "width": 378,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-PQ%5D_KO_C160J1-01-202304.pdf",
+    "bytes": 108052,
+    "width": 342,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-PQ%5D_KO_C160J1-01-202304.pdf",
+    "catalogTitle": "[GIMAC-PQ]",
+    "page": 2
   },
   "P01081": {
     "file": "images/products/P01081.png",
     "thumb": "images/products/thumb/P01081.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/GIMAC-2Plus_S(4).png",
-    "bytes": 122943,
-    "width": 378,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-II_Plus%5D_KO_C160K1-02-202406.pdf",
+    "bytes": 78471,
+    "width": 448,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-II_Plus%5D_KO_C160K1-02-202406.pdf",
+    "catalogTitle": "[GIMAC-II Plus]",
+    "page": 3
   },
   "P01083": {
     "file": "images/products/P01083.png",
     "thumb": "images/products/thumb/P01083.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01083_i.png",
-    "bytes": 206407,
-    "width": 435,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-DC%5D_KO_C160L1-01-202304.pdf",
+    "bytes": 261965,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-DC%5D_KO_C160L1-01-202304.pdf",
+    "catalogTitle": "[GIMAC-DC]",
+    "page": 1
   },
   "P01084": {
     "file": "images/products/P01084.png",
     "thumb": "images/products/thumb/P01084.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01084_i.png",
-    "bytes": 141355,
-    "width": 378,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-V%5D_KO_C160H1-01-202304.pdf",
+    "bytes": 70288,
+    "width": 309,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-V%5D_KO_C160H1-01-202304.pdf",
+    "catalogTitle": "[GIMAC-V]",
+    "page": 2
   },
   "P01086": {
     "file": "images/products/P01086.png",
@@ -260,210 +499,288 @@
   "P01087": {
     "file": "images/products/P01087.png",
     "thumb": "images/products/thumb/P01087.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01087_i.png",
-    "bytes": 104337,
-    "width": 332,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BTWS%5D_KO_C16041-04-202209.pdf",
+    "bytes": 157705,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BTWS%5D_KO_C16041-04-202209.pdf",
+    "catalogTitle": "[TWS]",
+    "page": 1
   },
   "P01093": {
     "file": "images/products/P01093.png",
     "thumb": "images/products/thumb/P01093.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01093_t(2).png",
-    "bytes": 73689,
-    "width": 293,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%EC%B5%9C%EB%8C%80%EC%88%98%EC%9A%94%EC%A0%84%EB%A0%A5%EC%A0%9C%EC%96%B4%EA%B8%B0(SDC-500)_Catalog_KO_202010.pdf",
+    "bytes": 72583,
+    "width": 418,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%EC%B5%9C%EB%8C%80%EC%88%98%EC%9A%94%EC%A0%84%EB%A0%A5%EC%A0%9C%EC%96%B4%EA%B8%B0(SDC-500)_Catalog_KO_202010.pdf",
+    "catalogTitle": "[SDC-500] 최대수요전력제어기",
+    "page": 4
   },
   "P01097": {
     "file": "images/products/P01097.png",
     "thumb": "images/products/thumb/P01097.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA010001_th(0).png",
-    "bytes": 168569,
-    "width": 453,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCSG%5D_KO_C80051-11-202605.pdf",
+    "bytes": 296719,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCSG%5D_KO_C80051-11-202605.pdf",
+    "catalogTitle": "[MCSG]",
+    "page": 1
   },
   "P01098": {
     "file": "images/products/P01098.png",
     "thumb": "images/products/thumb/P01098.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/%ED%8A%B9%EA%B3%A0%EC%95%95%20%EC%9D%BC%EB%B0%98%EB%B0%B0%EC%A0%84%EB%B0%98_%EC%A0%9C%ED%92%88%EC%9D%B4%EB%AF%B8%EC%A7%80(0).png",
-    "bytes": 124118,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGSH-20V%5D_KO_C80081-01-202411.pdf",
+    "bytes": 242802,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGSH-20V%5D_KO_C80081-01-202411.pdf",
+    "catalogTitle": "[GSH-20V]_국문",
+    "page": 1
   },
   "P01100": {
     "file": "images/products/P01100.png",
     "thumb": "images/products/thumb/P01100.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01100_t(2).png",
-    "bytes": 129405,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGSM%5D_KO_C80061-06-202609.pdf",
+    "bytes": 304327,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGSM%5D_KO_C80061-06-202609.pdf",
+    "catalogTitle": "[GSM] 3.6/7.2kV 고압폐쇄배전반",
+    "page": 1
   },
   "P01101": {
     "file": "images/products/P01101.png",
     "thumb": "images/products/thumb/P01101.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/LV%20SWGR_th(1).png",
-    "bytes": 123013,
-    "width": 356,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_LV_SWGR%5D_KO_C80041-02-201904.pdf",
+    "bytes": 365514,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_LV_SWGR%5D_KO_C80041-02-201904.pdf",
+    "catalogTitle": "[Susol LV SWGR]",
+    "page": 1
   },
   "P01102": {
     "file": "images/products/P01102.png",
     "thumb": "images/products/thumb/P01102.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01102_th_new(4).png",
-    "bytes": 167813,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BPower_Center%5D_KO_C80071-09-202103.pdf",
+    "bytes": 76990,
+    "width": 516,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BPower_Center%5D_KO_C80071-09-202103.pdf",
+    "catalogTitle": "[Power Center]",
+    "page": 3
   },
   "P01103": {
     "file": "images/products/P01103.png",
     "thumb": "images/products/thumb/P01103.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/MCC2000(0).png",
-    "bytes": 180600,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSolution_2000_MCC%5D_KO_C80011-01-201902.pdf",
+    "bytes": 162386,
+    "width": 587,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSolution_2000_MCC%5D_KO_C80011-01-201902.pdf",
+    "catalogTitle": "[Solution 2000 MCC]",
+    "page": 1
   },
   "P01104": {
     "file": "images/products/P01104.png",
     "thumb": "images/products/thumb/P01104.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01104_th(0).png",
-    "bytes": 105198,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCC%5D_KO_C80001-07-202005.pdf",
+    "bytes": 137030,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCC%5D_KO_C80001-07-202005.pdf",
+    "catalogTitle": "[MCC]",
+    "page": 2
   },
   "P01105": {
     "file": "images/products/P01105.png",
     "thumb": "images/products/thumb/P01105.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01105_i.png",
-    "bytes": 61045,
-    "width": 313,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_Busway%5D_KO_C800A1-16-202608.pdf",
+    "bytes": 290927,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_Busway%5D_KO_C800A1-16-202608.pdf",
+    "catalogTitle": "[Susol Busway]",
+    "page": 1
   },
   "P01106": {
     "file": "images/products/P01106.png",
     "thumb": "images/products/thumb/P01106.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/GH-P-Type-Busway2(0)(3).png",
-    "bytes": 93490,
-    "width": 358,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGH-P_type_Busway%5D_KO_C800C1-20-202403.pdf",
+    "bytes": 248732,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGH-P_type_Busway%5D_KO_C800C1-20-202403.pdf",
+    "catalogTitle": "[GH-P type Busway]",
+    "page": 1
   },
   "P01109": {
     "file": "images/products/P01109.png",
     "thumb": "images/products/thumb/P01109.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/Oil-immersedTrans_th(0).png",
-    "bytes": 153049,
-    "width": 440,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+    "bytes": 265896,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+    "catalogTitle": "유입변압기(초고압+배전)",
+    "page": 2
   },
   "P01110": {
     "file": "images/products/P01110.png",
     "thumb": "images/products/thumb/P01110.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01110_i.png",
-    "bytes": 141671,
-    "width": 389,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+    "bytes": 210903,
+    "width": 582,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+    "catalogTitle": "몰드변압기",
+    "page": 1
   },
   "P01113": {
     "file": "images/products/P01113.png",
     "thumb": "images/products/thumb/P01113.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01113_i.png",
-    "bytes": 177630,
-    "width": 426,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 52220,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 16
   },
   "P01114": {
     "file": "images/products/P01114.png",
     "thumb": "images/products/thumb/P01114.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01114_i.png",
-    "bytes": 177630,
-    "width": 426,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 51510,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 16
   },
   "P01117": {
     "file": "images/products/P01117.png",
     "thumb": "images/products/thumb/P01117.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01117_i.png",
-    "bytes": 78074,
-    "width": 322,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 224579,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 16
   },
   "P01118": {
     "file": "images/products/P01118.png",
     "thumb": "images/products/thumb/P01118.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01118_i(0).png",
-    "bytes": 118562,
-    "width": 351,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 382773,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 26
   },
   "P01119": {
     "file": "images/products/P01119.png",
     "thumb": "images/products/thumb/P01119.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01119_i(0).png",
-    "bytes": 146904,
-    "width": 417,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 306723,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 36
   },
   "P01120": {
     "file": "images/products/P01120.png",
     "thumb": "images/products/thumb/P01120.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01120_i(0).png",
-    "bytes": 102115,
-    "width": 386,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 319240,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 46
   },
   "P01122": {
     "file": "images/products/P01122.png",
     "thumb": "images/products/thumb/P01122.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01122_t(0).png",
-    "bytes": 39829,
-    "width": 211,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 33648,
+    "width": 300,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 99
   },
   "P01123": {
     "file": "images/products/P01123.png",
     "thumb": "images/products/thumb/P01123.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01123_t(0).png",
-    "bytes": 43753,
-    "width": 211,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 63255,
+    "width": 299,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 103
   },
   "P01124": {
     "file": "images/products/P01124.png",
     "thumb": "images/products/thumb/P01124.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01124_t(0).png",
-    "bytes": 43306,
-    "width": 212,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 60550,
+    "width": 298,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 108
   },
   "P01126": {
     "file": "images/products/P01126.png",
     "thumb": "images/products/thumb/P01126.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01126_t(0).png",
-    "bytes": 25705,
-    "width": 216,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 35600,
+    "width": 300,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 127
   },
   "P01128": {
     "file": "images/products/P01128.png",
     "thumb": "images/products/thumb/P01128.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01128_t(0).png",
-    "bytes": 19671,
-    "width": 216,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 50866,
+    "width": 298,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 116
   },
   "P01129": {
     "file": "images/products/P01129.png",
     "thumb": "images/products/thumb/P01129.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01129_t(0).png",
-    "bytes": 29728,
-    "width": 221,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 35687,
+    "width": 317,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 105
   },
   "P01130": {
     "file": "images/products/P01130.png",
     "thumb": "images/products/thumb/P01130.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01130_t(0).png",
-    "bytes": 72241,
-    "width": 236,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 113475,
+    "width": 476,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 112
   },
   "P01132": {
     "file": "images/products/P01132.png",
@@ -476,114 +793,343 @@
   "P01133": {
     "file": "images/products/P01133.png",
     "thumb": "images/products/thumb/P01133.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01133_t(2).png",
-    "bytes": 95803,
-    "width": 365,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 103492,
+    "width": 424,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 72
   },
   "P01134": {
     "file": "images/products/P01134.png",
     "thumb": "images/products/thumb/P01134.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01134_t(0).png",
-    "bytes": 54679,
-    "width": 277,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 141778,
+    "width": 409,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 54
   },
   "P01135": {
     "file": "images/products/P01135.png",
     "thumb": "images/products/thumb/P01135.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01135_t(0).png",
-    "bytes": 58553,
-    "width": 267,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 85514,
+    "width": 377,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 82
   },
   "P01136": {
     "file": "images/products/P01136.png",
     "thumb": "images/products/thumb/P01136.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01136_t(0).png",
-    "bytes": 61779,
-    "width": 277,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 75580,
+    "width": 426,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 76
   },
   "P01137": {
     "file": "images/products/P01137.png",
     "thumb": "images/products/thumb/P01137.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01137_t(0).png",
-    "bytes": 48323,
-    "width": 277,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 73849,
+    "width": 386,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 78
   },
   "P01139": {
     "file": "images/products/P01139.png",
     "thumb": "images/products/thumb/P01139.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01139_t(0).png",
-    "bytes": 52430,
-    "width": 269,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 86185,
+    "width": 444,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 88
+  },
+  "P01161": {
+    "file": "images/products/P01161.png",
+    "thumb": "images/products/thumb/P01161.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17645462469540/Safety%20PLC_K_202511.pdf",
+    "bytes": 58919,
+    "width": 380,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17645462469540/Safety%20PLC_K_202511.pdf",
+    "catalogTitle": "통합형 Safety PLC 카탈로그",
+    "page": 8
+  },
+  "P01165": {
+    "file": "images/products/P01165.png",
+    "thumb": "images/products/thumb/P01165.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389302566440/Motion%20Controller_KR__01__201124.pdf",
+    "bytes": 230447,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389302566440/Motion%20Controller_KR__01__201124.pdf",
+    "catalogTitle": "XMC Motion Controller 카탈로그",
+    "page": 3
   },
   "P01183": {
     "file": "images/products/P01183.png",
     "thumb": "images/products/thumb/P01183.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/H100(4)(2).png",
-    "bytes": 121802,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17936100709070/H100_KO_C55041-31-202611.pdf",
+    "bytes": 159781,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17936100709070/H100_KO_C55041-31-202611.pdf",
+    "catalogTitle": "H100 카탈로그",
+    "page": 1
+  },
+  "P01184": {
+    "file": "images/products/P01184.png",
+    "thumb": "images/products/thumb/P01184.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17070989202140/S100_Catalog_KR_202402.pdf",
+    "bytes": 270589,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17070989202140/S100_Catalog_KR_202402.pdf",
+    "catalogTitle": "S100 카탈로그",
+    "page": 2
   },
   "P01188": {
     "file": "images/products/P01188.png",
     "thumb": "images/products/thumb/P01188.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01188_i(455x455)(0).png",
-    "bytes": 146899,
-    "width": 444,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16957054248320/iS7_Catalog_KR_202309.pdf",
+    "bytes": 147276,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16957054248320/iS7_Catalog_KR_202309.pdf",
+    "catalogTitle": "iS7 카탈로그",
+    "page": 1
   },
   "P01202": {
     "file": "images/products/P01202.png",
     "thumb": "images/products/thumb/P01202.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb/P01202_i.png",
-    "bytes": 67946,
-    "width": 451,
-    "origin": "product-page"
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16388648845550/Drive%20Panel_Catalog_KR__06__202005.pdf",
+    "bytes": 183611,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16388648845550/Drive%20Panel_Catalog_KR__06__202005.pdf",
+    "catalogTitle": "LVP 카탈로그(LS System Drive Panel)",
+    "page": 1
   },
   "P01214": {
     "file": "images/products/P01214.png",
     "thumb": "images/products/thumb/P01214.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/GIMAC_B_thumb(0).png",
-    "bytes": 145652,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-B%5D_KO_C16001-08-202306.pdf",
+    "bytes": 236160,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC-B%5D_KO_C16001-08-202306.pdf",
+    "catalogTitle": "[GIMAC-B]",
+    "page": 1
   },
   "P01215": {
     "file": "images/products/P01215.png",
     "thumb": "images/products/thumb/P01215.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/m100(2).png",
-    "bytes": 97188,
-    "width": 370,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17642013019120/Drive%20Solution_Catalog_KR_202507.pdf",
+    "bytes": 129597,
+    "width": 442,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17642013019120/Drive%20Solution_Catalog_KR_202507.pdf",
+    "catalogTitle": "Drive Solution - 종합 카탈로그",
+    "page": 14
+  },
+  "P01218": {
+    "file": "images/products/P01218.png",
+    "thumb": "images/products/thumb/P01218.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16388593314180/XGT_PC_1802014.pdf",
+    "bytes": 16726,
+    "width": 231,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16388593314180/XGT_PC_1802014.pdf",
+    "catalogTitle": "XGT PC (Industrial/Panel PC) 리플릿",
+    "page": 2
+  },
+  "P01220": {
+    "file": "images/products/P01220.png",
+    "thumb": "images/products/thumb/P01220.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16388650148810/XGT%20PC_Catalog_KR_200828.pdf",
+    "bytes": 166536,
+    "width": 426,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16388650148810/XGT%20PC_Catalog_KR_200828.pdf",
+    "catalogTitle": "XGT PC 카탈로그",
+    "page": 3
+  },
+  "P01221": {
+    "file": "images/products/P01221.png",
+    "thumb": "images/products/thumb/P01221.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16388650148810/XGT%20PC_Catalog_KR_200828.pdf",
+    "bytes": 143145,
+    "width": 472,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16388650148810/XGT%20PC_Catalog_KR_200828.pdf",
+    "catalogTitle": "XGT PC 카탈로그",
+    "page": 11
+  },
+  "P01222": {
+    "file": "images/products/P01222.png",
+    "thumb": "images/products/thumb/P01222.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16388593314180/XGT_PC_1802014.pdf",
+    "bytes": 169752,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16388593314180/XGT_PC_1802014.pdf",
+    "catalogTitle": "XGT PC (Industrial/Panel PC) 리플릿",
+    "page": 4
+  },
+  "P01225": {
+    "file": "images/products/P01225.png",
+    "thumb": "images/products/thumb/P01225.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866626280/Factory%20Automaion_KO_202607.pdf",
+    "bytes": 127198,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866626280/Factory%20Automaion_KO_202607.pdf",
+    "catalogTitle": "Factory Automation 종합 카탈로그",
+    "page": 24
   },
   "P01227": {
     "file": "images/products/P01227.png",
     "thumb": "images/products/thumb/P01227.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/BK-Series_th_260203(6).png",
-    "bytes": 122365,
-    "width": 379,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+    "bytes": 40244,
+    "width": 353,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+    "catalogTitle": "[SPD]",
+    "page": 4
+  },
+  "P01231": {
+    "file": "images/products/P01231.png",
+    "thumb": "images/products/thumb/P01231.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 62143,
+    "width": 272,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 47
+  },
+  "P01232": {
+    "file": "images/products/P01232.png",
+    "thumb": "images/products/thumb/P01232.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 70917,
+    "width": 309,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 47
+  },
+  "P01233": {
+    "file": "images/products/P01233.png",
+    "thumb": "images/products/thumb/P01233.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 65446,
+    "width": 267,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 57
+  },
+  "P01234": {
+    "file": "images/products/P01234.png",
+    "thumb": "images/products/thumb/P01234.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 69038,
+    "width": 305,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 57
+  },
+  "P01235": {
+    "file": "images/products/P01235.png",
+    "thumb": "images/products/thumb/P01235.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 73851,
+    "width": 295,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 67
+  },
+  "P01236": {
+    "file": "images/products/P01236.png",
+    "thumb": "images/products/thumb/P01236.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 69161,
+    "width": 318,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 67
+  },
+  "P01237": {
+    "file": "images/products/P01237.png",
+    "thumb": "images/products/thumb/P01237.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 65824,
+    "width": 267,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 77
+  },
+  "P01238": {
+    "file": "images/products/P01238.png",
+    "thumb": "images/products/thumb/P01238.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 69302,
+    "width": 299,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 77
   },
   "P01245": {
     "file": "images/products/P01245.png",
     "thumb": "images/products/thumb/P01245.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/smart_MCC_%EC%88%98%EC%A0%95(0).png",
-    "bytes": 178241,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSmart_MCC%5D_KO_C800I1-02-202504.pdf",
+    "bytes": 151586,
+    "width": 578,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSmart_MCC%5D_KO_C800I1-02-202504.pdf",
+    "catalogTitle": "[Smart MCC]",
+    "page": 3
+  },
+  "P01246": {
+    "file": "images/products/P01246.png",
+    "thumb": "images/products/thumb/P01246.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866626280/Factory%20Automaion_KO_202607.pdf",
+    "bytes": 149708,
+    "width": 382,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866626280/Factory%20Automaion_KO_202607.pdf",
+    "catalogTitle": "Factory Automation 종합 카탈로그",
+    "page": 27
   },
   "P01247": {
     "file": "images/products/P01247.png",
     "thumb": "images/products/thumb/P01247.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/G100_P(0).png",
-    "bytes": 64081,
-    "width": 412,
-    "origin": "product-page"
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17531425436680/G100%20Series_Catalog_KR_202506.pdf",
+    "bytes": 317499,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17531425436680/G100%20Series_Catalog_KR_202506.pdf",
+    "catalogTitle": "G100(C) 카탈로그",
+    "page": 1
   },
   "P01248": {
     "file": "images/products/P01248.png",
@@ -596,130 +1142,442 @@
   "P01249": {
     "file": "images/products/P01249.png",
     "thumb": "images/products/thumb/P01249.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/GIPAM3000(4).png",
-    "bytes": 140707,
-    "width": 409,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIPAM3000%5D_KO_C16071-10-202605.pdf",
+    "bytes": 92838,
+    "width": 324,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIPAM3000%5D_KO_C16071-10-202605.pdf",
+    "catalogTitle": "[GIPAM3000]",
+    "page": 3
   },
   "P01252": {
     "file": "images/products/P01252.png",
     "thumb": "images/products/thumb/P01252.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01252_th(0).png",
-    "bytes": 89122,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+    "bytes": 81951,
+    "width": 320,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+    "catalogTitle": "[SPD]",
+    "page": 56
   },
   "P01255": {
     "file": "images/products/P01255.png",
     "thumb": "images/products/thumb/P01255.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01255_th(0).png",
-    "bytes": 133699,
-    "width": 374,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC1000%5D_KO_C16081-06-202412.pdf",
+    "bytes": 216215,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIMAC1000%5D_KO_C16081-06-202412.pdf",
+    "catalogTitle": "[GIMAC1000]",
+    "page": 8
   },
   "P01260": {
     "file": "images/products/P01260.png",
     "thumb": "images/products/thumb/P01260.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01260_th(0).png",
-    "bytes": 133162,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_MS%5D_KO_C04001-37-202609.pdf",
+    "bytes": 357361,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMetasol_MS%5D_KO_C04001-37-202609.pdf",
+    "catalogTitle": "[Metasol MS]",
+    "page": 1
   },
   "P01261": {
     "file": "images/products/P01261.png",
     "thumb": "images/products/thumb/P01261.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01261_th(0).png",
-    "bytes": 167619,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_MC%5D_KO_C04071-07-202005.pdf",
+    "bytes": 64012,
+    "width": 459,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_MC%5D_KO_C04071-07-202005.pdf",
+    "catalogTitle": "[Susol MC]",
+    "page": 7
   },
   "P01262": {
     "file": "images/products/P01262.png",
     "thumb": "images/products/thumb/P01262.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/L100_tn(0).png",
-    "bytes": 98421,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389350358190/_AC%20Drive_%20L100_Catalog_KR__01__210318.pdf",
+    "bytes": 44993,
+    "width": 394,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389350358190/_AC%20Drive_%20L100_Catalog_KR__01__210318.pdf",
+    "catalogTitle": "L100 카탈로그",
+    "page": 12
   },
   "P01263": {
     "file": "images/products/P01263.png",
     "thumb": "images/products/thumb/P01263.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/img_S300(2).png",
-    "bytes": 127759,
-    "width": 427,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17840729866150/S300_Catalog_KR_0707.pdf",
+    "bytes": 221666,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17840729866150/S300_Catalog_KR_0707.pdf",
+    "catalogTitle": "S300 카탈로그",
+    "page": 1
+  },
+  "P01300": {
+    "file": "images/products/P01300.png",
+    "thumb": "images/products/thumb/P01300.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 261533,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 30
+  },
+  "P01301": {
+    "file": "images/products/P01301.png",
+    "thumb": "images/products/thumb/P01301.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 212591,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 40
+  },
+  "P01302": {
+    "file": "images/products/P01302.png",
+    "thumb": "images/products/thumb/P01302.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389370233610/iX7NH%20Series_KR_202104.pdf",
+    "bytes": 267013,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389370233610/iX7NH%20Series_KR_202104.pdf",
+    "catalogTitle": "iX7NH 카탈로그",
+    "page": 2
+  },
+  "P01303": {
+    "file": "images/products/P01303.png",
+    "thumb": "images/products/thumb/P01303.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 171940,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 68
+  },
+  "P01304": {
+    "file": "images/products/P01304.png",
+    "thumb": "images/products/thumb/P01304.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 181462,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 74
+  },
+  "P01306": {
+    "file": "images/products/P01306.png",
+    "thumb": "images/products/thumb/P01306.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 314379,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 60
+  },
+  "P01307": {
+    "file": "images/products/P01307.png",
+    "thumb": "images/products/thumb/P01307.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 194071,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 56
+  },
+  "P01310": {
+    "file": "images/products/P01310.png",
+    "thumb": "images/products/thumb/P01310.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17459125552320/MXP3.0%20final.pdf",
+    "bytes": 241319,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17459125552320/MXP3.0%20final.pdf",
+    "catalogTitle": "MXP3(GMC) 모션컨트롤러 브로셔",
+    "page": 1
+  },
+  "P01350": {
+    "file": "images/products/P01350.png",
+    "thumb": "images/products/thumb/P01350.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 135666,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 98
+  },
+  "P01351": {
+    "file": "images/products/P01351.png",
+    "thumb": "images/products/thumb/P01351.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 123724,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 120
+  },
+  "P01400": {
+    "file": "images/products/P01400.png",
+    "thumb": "images/products/thumb/P01400.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17364838772660/%EC%9E%90%EB%8F%99%ED%99%94%EC%86%94%EB%A3%A8%EC%85%98%20%EA%B3%B5%EC%82%AC%EC%A7%80%EB%AA%85%EC%9B%90_202404_KR.pdf",
+    "bytes": 41807,
+    "width": 288,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17364838772660/%EC%9E%90%EB%8F%99%ED%99%94%EC%86%94%EB%A3%A8%EC%85%98%20%EA%B3%B5%EC%82%AC%EC%A7%80%EB%AA%85%EC%9B%90_202404_KR.pdf",
+    "catalogTitle": "자동화솔루션 공사지명원 202404",
+    "page": 15
   },
   "P01505": {
     "file": "images/products/P01505.png",
     "thumb": "images/products/thumb/P01505.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/%EC%8D%B8%EB%84%A4%EC%9D%BC_455X455(0).png",
-    "bytes": 125806,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16589884733050/XGI-CPUZ_KO_202207.pdf",
+    "bytes": 122075,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16589884733050/XGI-CPUZ_KO_202207.pdf",
+    "catalogTitle": "XGI CPUZ 카탈로그",
+    "page": 8
+  },
+  "P01506": {
+    "file": "images/products/P01506.png",
+    "thumb": "images/products/thumb/P01506.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866947030/XGT%20Panel_KR_202607.pdf",
+    "bytes": 34534,
+    "width": 400,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866947030/XGT%20Panel_KR_202607.pdf",
+    "catalogTitle": "XGT Panel 카탈로그",
+    "page": 20
+  },
+  "P01550": {
+    "file": "images/products/P01550.png",
+    "thumb": "images/products/thumb/P01550.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "bytes": 80629,
+    "width": 572,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "catalogTitle": "Smart I/O 카탈로그",
+    "page": 14
+  },
+  "P01551": {
+    "file": "images/products/P01551.png",
+    "thumb": "images/products/thumb/P01551.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "bytes": 58252,
+    "width": 518,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "catalogTitle": "Smart I/O 카탈로그",
+    "page": 38
+  },
+  "P01552": {
+    "file": "images/products/P01552.png",
+    "thumb": "images/products/thumb/P01552.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "bytes": 85798,
+    "width": 506,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "catalogTitle": "Smart I/O 카탈로그",
+    "page": 33
+  },
+  "P01553": {
+    "file": "images/products/P01553.png",
+    "thumb": "images/products/thumb/P01553.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "bytes": 74506,
+    "width": 511,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "catalogTitle": "Smart I/O 카탈로그",
+    "page": 25
+  },
+  "P01554": {
+    "file": "images/products/P01554.png",
+    "thumb": "images/products/thumb/P01554.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "bytes": 69590,
+    "width": 564,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389295559810/Smart%20IO_Catalog_KR_202008.pdf",
+    "catalogTitle": "Smart I/O 카탈로그",
+    "page": 45
+  },
+  "P01800": {
+    "file": "images/products/P01800.png",
+    "thumb": "images/products/thumb/P01800.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 49467,
+    "width": 266,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 17
+  },
+  "P01802": {
+    "file": "images/products/P01802.png",
+    "thumb": "images/products/thumb/P01802.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 59447,
+    "width": 298,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 17
+  },
+  "P01804": {
+    "file": "images/products/P01804.png",
+    "thumb": "images/products/thumb/P01804.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 54229,
+    "width": 284,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 27
+  },
+  "P01805": {
+    "file": "images/products/P01805.png",
+    "thumb": "images/products/thumb/P01805.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 58492,
+    "width": 310,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 27
+  },
+  "P01807": {
+    "file": "images/products/P01807.png",
+    "thumb": "images/products/thumb/P01807.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 58778,
+    "width": 290,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 37
+  },
+  "P01809": {
+    "file": "images/products/P01809.png",
+    "thumb": "images/products/thumb/P01809.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "bytes": 69230,
+    "width": 327,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+    "catalogTitle": "유성감속기 카탈로그",
+    "page": 37
   },
   "P01900": {
     "file": "images/products/P01900.png",
     "thumb": "images/products/thumb/P01900.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01900_th(0).png",
-    "bytes": 135698,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSmart_MCCB%5D_KO_C010L1-07-202509.pdf",
+    "bytes": 354058,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSmart_MCCB%5D_KO_C010L1-07-202509.pdf",
+    "catalogTitle": "[Smart MCCB]",
+    "page": 7
   },
   "P01910": {
     "file": "images/products/P01910.png",
     "thumb": "images/products/thumb/P01910.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01910_th(0).png",
-    "bytes": 78159,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_Mini_Busway%5D_KO_C800Y1-01-202109.pdf",
+    "bytes": 138246,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_Mini_Busway%5D_KO_C800Y1-01-202109.pdf",
+    "catalogTitle": "[Susol Mini Busway]",
+    "page": 1
   },
   "P01911": {
     "file": "images/products/P01911.png",
     "thumb": "images/products/thumb/P01911.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P01911_th(0).png",
-    "bytes": 122599,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BNSPB%5D_KO_C80091-07-202403.pdf",
+    "bytes": 172377,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BNSPB%5D_KO_C80091-07-202403.pdf",
+    "catalogTitle": "[NSPB]",
+    "page": 1
+  },
+  "P02010": {
+    "file": "images/products/P02010.png",
+    "thumb": "images/products/thumb/P02010.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16389375461890/eXP2%20Series_Catalog_KR_20210625.pdf",
+    "bytes": 146166,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16389375461890/eXP2%20Series_Catalog_KR_20210625.pdf",
+    "catalogTitle": "eXP2 시리즈 카탈로그",
+    "page": 1
   },
   "P02020": {
     "file": "images/products/P02020.png",
     "thumb": "images/products/thumb/P02020.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/XGT-Special-module_th(0)(1).png",
-    "bytes": 89571,
-    "width": 388,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 28703,
+    "width": 316,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 132
   },
   "P02021": {
     "file": "images/products/P02021.png",
     "thumb": "images/products/thumb/P02021.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/XGT-Special-module_th(0)(4).png",
-    "bytes": 89571,
-    "width": 388,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 31437,
+    "width": 307,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 133
   },
   "P02022": {
     "file": "images/products/P02022.png",
     "thumb": "images/products/thumb/P02022.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/XGR-CPU_TH(0)(1).png",
-    "bytes": 60609,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 58228,
+    "width": 339,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 34
   },
   "P02023": {
     "file": "images/products/P02023.png",
     "thumb": "images/products/thumb/P02023.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/noimg(0).png",
-    "bytes": 29693,
-    "width": 296,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 10942,
+    "width": 570,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 37
   },
   "P02025": {
     "file": "images/products/P02025.png",
     "thumb": "images/products/thumb/P02025.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/xgb_th(0)(1).png",
-    "bytes": 166131,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 267668,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 54
   },
   "P02026": {
     "file": "images/products/P02026.png",
@@ -761,21 +1619,71 @@
     "width": 455,
     "origin": "product-page"
   },
+  "P02031": {
+    "file": "images/products/P02031.png",
+    "thumb": "images/products/thumb/P02031.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 32445,
+    "width": 320,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 93
+  },
+  "P02032": {
+    "file": "images/products/P02032.png",
+    "thumb": "images/products/thumb/P02032.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 34229,
+    "width": 348,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 94
+  },
+  "P02033": {
+    "file": "images/products/P02033.png",
+    "thumb": "images/products/thumb/P02033.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 46908,
+    "width": 370,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 96
+  },
+  "P02035": {
+    "file": "images/products/P02035.png",
+    "thumb": "images/products/thumb/P02035.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17645462469540/Safety%20PLC_K_202511.pdf",
+    "bytes": 65357,
+    "width": 360,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17645462469540/Safety%20PLC_K_202511.pdf",
+    "catalogTitle": "통합형 Safety PLC 카탈로그",
+    "page": 10
+  },
   "P02036": {
     "file": "images/products/P02036.png",
     "thumb": "images/products/thumb/P02036.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/XGT-Input_Output-module_th(4).png",
-    "bytes": 85595,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 33740,
+    "width": 335,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 28
   },
   "P02037": {
     "file": "images/products/P02037.png",
     "thumb": "images/products/thumb/P02037.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/XGT-Input_Output-module_th(2).png",
-    "bytes": 85595,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "bytes": 33355,
+    "width": 332,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878867366010/XGT%20Series_KO_202607.pdf",
+    "catalogTitle": "XGT 시리즈 카탈로그",
+    "page": 29
   },
   "P02038": {
     "file": "images/products/P02038.png",
@@ -784,6 +1692,94 @@
     "bytes": 85595,
     "width": 455,
     "origin": "product-page"
+  },
+  "P02040": {
+    "file": "images/products/P02040.png",
+    "thumb": "images/products/thumb/P02040.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17645462469540/Safety%20PLC_K_202511.pdf",
+    "bytes": 65373,
+    "width": 361,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17645462469540/Safety%20PLC_K_202511.pdf",
+    "catalogTitle": "통합형 Safety PLC 카탈로그",
+    "page": 9
+  },
+  "P02041": {
+    "file": "images/products/P02041.png",
+    "thumb": "images/products/thumb/P02041.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 49017,
+    "width": 380,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 98
+  },
+  "P02042": {
+    "file": "images/products/P02042.png",
+    "thumb": "images/products/thumb/P02042.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 32631,
+    "width": 304,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 99
+  },
+  "P02047": {
+    "file": "images/products/P02047.png",
+    "thumb": "images/products/thumb/P02047.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 26700,
+    "width": 280,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 124
+  },
+  "P02048": {
+    "file": "images/products/P02048.png",
+    "thumb": "images/products/thumb/P02048.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 33661,
+    "width": 333,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 121
+  },
+  "P02052": {
+    "file": "images/products/P02052.png",
+    "thumb": "images/products/thumb/P02052.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 50027,
+    "width": 304,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 108
+  },
+  "P02053": {
+    "file": "images/products/P02053.png",
+    "thumb": "images/products/thumb/P02053.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 50268,
+    "width": 304,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 109
+  },
+  "P02054": {
+    "file": "images/products/P02054.png",
+    "thumb": "images/products/thumb/P02054.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "bytes": 48188,
+    "width": 258,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+    "catalogTitle": "XGB 시리즈 카탈로그",
+    "page": 107
   },
   "P02201": {
     "file": "images/products/P02201.png",
@@ -796,201 +1792,419 @@
   "P02202": {
     "file": "images/products/P02202.png",
     "thumb": "images/products/thumb/P02202.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02202_th.png",
-    "bytes": 101319,
-    "width": 362,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDAIS%5D_25.8kV_KO_C81071-02-202212.pdf",
+    "bytes": 151435,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDAIS%5D_25.8kV_KO_C81071-02-202212.pdf",
+    "catalogTitle": "[DAIS] 25.8kV",
+    "page": 1
   },
   "P02203": {
     "file": "images/products/P02203.png",
     "thumb": "images/products/thumb/P02203.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02203_th(0).png",
-    "bytes": 85764,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BC-AIS%5D_KO_C800E1-01-202212.pdf",
+    "bytes": 193318,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BC-AIS%5D_KO_C800E1-01-202212.pdf",
+    "catalogTitle": "[C-AIS] 국문",
+    "page": 1
   },
   "P02204": {
     "file": "images/products/P02204.png",
     "thumb": "images/products/thumb/P02204.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/MDB(6).png",
-    "bytes": 101802,
-    "width": 350,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/Modular_MDB_EN_C800%E2%93%952-01-202607.pdf",
+    "bytes": 232975,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/Modular_MDB_EN_C800%E2%93%952-01-202607.pdf",
+    "catalogTitle": "Modular MDB",
+    "page": 1
   },
   "P02206": {
     "file": "images/products/P02206.png",
     "thumb": "images/products/thumb/P02206.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02206_th(0).png",
-    "bytes": 137581,
-    "width": 431,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_Compact_ACB%5D_KO_C06001-04-202201.pdf",
+    "bytes": 266391,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_Compact_ACB%5D_KO_C06001-04-202201.pdf",
+    "catalogTitle": "[Susol Compact ACB]",
+    "page": 1
   },
   "P02207": {
     "file": "images/products/P02207.png",
     "thumb": "images/products/thumb/P02207.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/kr_P02207_th(2).png",
-    "bytes": 101107,
-    "width": 331,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_UL_ACB%5D_EN_C06072-27-202608.pdf",
+    "bytes": 181032,
+    "width": 515,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_UL_ACB%5D_EN_C06072-27-202608.pdf",
+    "catalogTitle": "[Susol UL ACB] Catalog",
+    "page": 10
   },
   "P02208": {
     "file": "images/products/P02208.png",
     "thumb": "images/products/thumb/P02208.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02208_th(0).png",
-    "bytes": 118600,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+    "bytes": 221567,
+    "width": 561,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+    "catalogTitle": "[MCB and CP] 분전반용",
+    "page": 6
   },
   "P02209": {
     "file": "images/products/P02209.png",
     "thumb": "images/products/thumb/P02209.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02209_th(0).png",
-    "bytes": 107938,
-    "width": 386,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+    "bytes": 193053,
+    "width": 586,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+    "catalogTitle": "[MCB and CP] 분전반용",
+    "page": 24
   },
   "P02210": {
     "file": "images/products/P02210.png",
     "thumb": "images/products/thumb/P02210.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02210_th(0).png",
-    "bytes": 177073,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BLV_Soft_Stater%5D_KO_C040C1-01-202203.pdf",
+    "bytes": 284963,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BLV_Soft_Stater%5D_KO_C040C1-01-202203.pdf",
+    "catalogTitle": "[LV Soft Stater]",
+    "page": 1
   },
   "P02212": {
     "file": "images/products/P02212.png",
     "thumb": "images/products/thumb/P02212.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02212_th(4).png",
-    "bytes": 156948,
-    "width": 447,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BGIPAM1000%5D_KO_C160M1-08-202512.pdf",
+    "bytes": 177987,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BGIPAM1000%5D_KO_C160M1-08-202512.pdf",
+    "catalogTitle": "[GIPAM1000] 국문 카타로그",
+    "page": 1
   },
   "P02213": {
     "file": "images/products/P02213.png",
     "thumb": "images/products/thumb/P02213.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/Meter(11).png",
-    "bytes": 93163,
-    "width": 441,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/Electric_Meter_Reading_System_KO_C11551-04-202611.pdf",
+    "bytes": 109968,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/Electric_Meter_Reading_System_KO_C11551-04-202611.pdf",
+    "catalogTitle": "[AMR] 전력량계&원격검침시스템",
+    "page": 1
   },
   "P02214": {
     "file": "images/products/P02214.png",
     "thumb": "images/products/thumb/P02214.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02214_th(0).png",
-    "bytes": 76134,
-    "width": 447,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BDC_Meter%5D_Leaflet_KO_C12051-05-202609.pdf",
+    "bytes": 120165,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BDC_Meter%5D_Leaflet_KO_C12051-05-202609.pdf",
+    "catalogTitle": "[DC Meter] Leaflet",
+    "page": 1
   },
   "P02216": {
     "file": "images/products/P02216.png",
     "thumb": "images/products/thumb/P02216.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P02215(0).png",
-    "bytes": 93037,
-    "width": 392,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/UL_VCB_EN_C050E2-13-202610.pdf",
+    "bytes": 228991,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/UL_VCB_EN_C050E2-13-202610.pdf",
+    "catalogTitle": "UL VCB",
+    "page": 8
   },
   "P03076": {
     "file": "images/products/P03076.png",
     "thumb": "images/products/thumb/P03076.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/thumb_XGL-EDGT_240821(2)(0).png",
-    "bytes": 29295,
-    "width": 225,
-    "origin": "product-page"
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17108331897920/XGT%20Series%20XGL_EDGT_K_4P_202403.pdf",
+    "bytes": 183896,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17108331897920/XGT%20Series%20XGL_EDGT_K_4P_202403.pdf",
+    "catalogTitle": "XGL-EDGT 카탈로그",
+    "page": 2
   },
   "P03077": {
     "file": "images/products/P03077.png",
     "thumb": "images/products/thumb/P03077.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/LBS(2).png",
-    "bytes": 201175,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BLBS__ASS%5D_KO_C09501-02-201903.pdf",
+    "bytes": 159715,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BLBS__ASS%5D_KO_C09501-02-201903.pdf",
+    "catalogTitle": "[LBS & ASS]",
+    "page": 1
   },
   "P03078": {
     "file": "images/products/P03078.png",
     "thumb": "images/products/thumb/P03078.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/UL(4).png",
-    "bytes": 126141,
-    "width": 434,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_LIS%5DLoad_Interrupter_Switch_EN_C050N2-14-202609.pdf",
+    "bytes": 212989,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSusol_LIS%5DLoad_Interrupter_Switch_EN_C050N2-14-202609.pdf",
+    "catalogTitle": "[Susol LIS]Load Interrupter Switch",
+    "page": 53
   },
   "P03079": {
     "file": "images/products/P03079.png",
     "thumb": "images/products/thumb/P03079.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/XGC-CPUX7_thumb(12).png",
-    "bytes": 119493,
-    "width": 400,
-    "origin": "product-page"
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17636064955130/XGC-CPUX7_KO_202509.pdf",
+    "bytes": 170444,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17636064955130/XGC-CPUX7_KO_202509.pdf",
+    "catalogTitle": "XGC-CPUX7 카탈로그",
+    "page": 1
   },
   "P03080": {
     "file": "images/products/P03080.png",
     "thumb": "images/products/thumb/P03080.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/AAA015005_th(4).png",
-    "bytes": 88091,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BRMU%5D_KO_C09001-07-202310.pdf",
+    "bytes": 104150,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BRMU%5D_KO_C09001-07-202310.pdf",
+    "catalogTitle": "[RMU]",
+    "page": 1
   },
   "P03082": {
     "file": "images/products/P03082.png",
     "thumb": "images/products/thumb/P03082.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/USP-Series(4).png",
-    "bytes": 86786,
-    "width": 365,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "bytes": 122553,
+    "width": 442,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "catalogTitle": "[UL SPD]UL SPD 카달로그_국문",
+    "page": 33
   },
   "P03083": {
     "file": "images/products/P03083.png",
     "thumb": "images/products/thumb/P03083.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/USPV-Series(2).png",
-    "bytes": 78958,
-    "width": 396,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "bytes": 220190,
+    "width": 545,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "catalogTitle": "[UL SPD]UL SPD 카달로그_국문",
+    "page": 39
   },
   "P03084": {
     "file": "images/products/P03084.png",
     "thumb": "images/products/thumb/P03084.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/USPE-Series(2).png",
-    "bytes": 71449,
-    "width": 351,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "bytes": 94717,
+    "width": 393,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "catalogTitle": "[UL SPD]UL SPD 카달로그_국문",
+    "page": 42
   },
   "P03085": {
     "file": "images/products/P03085.png",
     "thumb": "images/products/thumb/P03085.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/USPB-Series(2).png",
-    "bytes": 60413,
-    "width": 408,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "bytes": 78319,
+    "width": 489,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "catalogTitle": "[UL SPD]UL SPD 카달로그_국문",
+    "page": 45
   },
   "P03086": {
     "file": "images/products/P03086.png",
     "thumb": "images/products/thumb/P03086.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/USPC-Series(2).png",
-    "bytes": 67896,
-    "width": 404,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "bytes": 94687,
+    "width": 531,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+    "catalogTitle": "[UL SPD]UL SPD 카달로그_국문",
+    "page": 51
   },
   "P03087": {
     "file": "images/products/P03087.png",
     "thumb": "images/products/thumb/P03087.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/L-Series_MCB_02(2).png",
-    "bytes": 141069,
-    "width": 407,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_L-Series_MCB_RCBO_KO_C015X1-03-202609.pdf",
+    "bytes": 127501,
+    "width": 445,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_L-Series_MCB_RCBO_KO_C015X1-03-202609.pdf",
+    "catalogTitle": "[MCB] L-Series MCB_RCBO_국문",
+    "page": 8
   },
   "P03088": {
     "file": "images/products/P03088.png",
     "thumb": "images/products/thumb/P03088.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/L-Series_RCBO_02(2).png",
-    "bytes": 167753,
-    "width": 455,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_L-Series_MCB_RCBO_KO_C015X1-03-202609.pdf",
+    "bytes": 224734,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_L-Series_MCB_RCBO_KO_C015X1-03-202609.pdf",
+    "catalogTitle": "[MCB] L-Series MCB_RCBO_국문",
+    "page": 22
   },
   "P21020": {
     "file": "images/products/P21020.png",
     "thumb": "images/products/thumb/P21020.png",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/P21020_th(0).png",
-    "bytes": 142671,
-    "width": 453,
-    "origin": "product-page"
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/%5BIMD%5D_KO_C160B1-04-202403.pdf",
+    "bytes": 88299,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://www.ls-electric.com/ko/cat/%5BIMD%5D_KO_C160B1-04-202403.pdf",
+    "catalogTitle": "[IMD] Catalog_국문",
+    "page": 1
+  },
+  "P45745": {
+    "file": "images/products/P45745.png",
+    "thumb": "images/products/thumb/P45745.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866947030/XGT%20Panel_KR_202607.pdf",
+    "bytes": 39015,
+    "width": 265,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866947030/XGT%20Panel_KR_202607.pdf",
+    "catalogTitle": "XGT Panel 카탈로그",
+    "page": 2
+  },
+  "SSQ-216": {
+    "file": "images/products/SSQ-216.png",
+    "thumb": "images/products/thumb/SSQ-216.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "bytes": 176425,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+    "catalogTitle": "Xmotion 서보 시스템 카탈로그",
+    "page": 46
+  },
+  "SSQ-323": {
+    "file": "images/products/SSQ-323.png",
+    "thumb": "images/products/thumb/SSQ-323.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+    "bytes": 36105,
+    "width": 250,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+    "catalogTitle": "X-Trak 무빙마그넷 카탈로그",
+    "page": 7
+  },
+  "SSQ-324": {
+    "file": "images/products/SSQ-324.png",
+    "thumb": "images/products/thumb/SSQ-324.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+    "bytes": 53702,
+    "width": 216,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+    "catalogTitle": "X-Trak 무빙마그넷 카탈로그",
+    "page": 7
+  },
+  "SSQ-325": {
+    "file": "images/products/SSQ-325.png",
+    "thumb": "images/products/thumb/SSQ-325.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+    "bytes": 89585,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+    "catalogTitle": "X-Trak 무빙마그넷 카탈로그",
+    "page": 12
+  },
+  "SSQ-420": {
+    "file": "images/products/SSQ-420.png",
+    "thumb": "images/products/thumb/SSQ-420.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17857364136280/EDGE%20Hub_KO_202608.pdf",
+    "bytes": 36786,
+    "width": 231,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17857364136280/EDGE%20Hub_KO_202608.pdf",
+    "catalogTitle": "EdgeHub 카탈로그",
+    "page": 7
+  },
+  "SSQ-423": {
+    "file": "images/products/SSQ-423.png",
+    "thumb": "images/products/thumb/SSQ-423.png",
+    "sourceUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16780633741940/Smart%20Workbench_catalog_K_202212.pdf",
+    "bytes": 127832,
+    "width": 592,
+    "origin": "catalog",
+    "catalogUrl": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16780633741940/Smart%20Workbench_catalog_K_202212.pdf",
+    "catalogTitle": "Smart Workbench 제품 카탈로그",
+    "page": 3
+  },
+  "SSQ-685": {
+    "file": "images/products/SSQ-685.png",
+    "thumb": "images/products/thumb/SSQ-685.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17162668947510/%EB%8B%A4%EC%B6%95%20%EB%93%9C%EB%9D%BC%EC%9D%B4%EB%B8%8C%20iX7M%EB%B8%8C%EB%A1%9C%EC%85%94%20final0816.pdf",
+    "bytes": 352126,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17162668947510/%EB%8B%A4%EC%B6%95%20%EB%93%9C%EB%9D%BC%EC%9D%B4%EB%B8%8C%20iX7M%EB%B8%8C%EB%A1%9C%EC%85%94%20final0816.pdf",
+    "catalogTitle": "iX7M 다축 서보 드라이브 카탈로그",
+    "page": 1
+  },
+  "SSQ-828": {
+    "file": "images/products/SSQ-828.png",
+    "thumb": "images/products/thumb/SSQ-828.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17730206374430/Mobile%20PC_K_202407.pdf",
+    "bytes": 236788,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17730206374430/Mobile%20PC_K_202407.pdf",
+    "catalogTitle": "mPC 카탈로그",
+    "page": 1
+  },
+  "SSQ-849": {
+    "file": "images/products/SSQ-849.png",
+    "thumb": "images/products/thumb/SSQ-849.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17521982065790/LSLVSS%20Series_K_Leaflet_202502.pdf",
+    "bytes": 157373,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17521982065790/LSLVSS%20Series_K_Leaflet_202502.pdf",
+    "catalogTitle": "진동 센서 카탈로그",
+    "page": 1
+  },
+  "SSQ-858": {
+    "file": "images/products/SSQ-858.png",
+    "thumb": "images/products/thumb/SSQ-858.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17720587610380/IE5%20Motor_K_20250801.pdf",
+    "bytes": 259148,
+    "width": 600,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17720587610380/IE5%20Motor_K_20250801.pdf",
+    "catalogTitle": "IE5 모터 카탈로그",
+    "page": 1
+  },
+  "SSQ-863": {
+    "file": "images/products/SSQ-863.png",
+    "thumb": "images/products/thumb/SSQ-863.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17527915575550/NTS%20_%20NPS%20Series_K_202507.pdf",
+    "bytes": 189254,
+    "width": 566,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17527915575550/NTS%20_%20NPS%20Series_K_202507.pdf",
+    "catalogTitle": "NTS & NPS 시리즈 카탈로그",
+    "page": 10
+  },
+  "SSQ-864": {
+    "file": "images/products/SSQ-864.png",
+    "thumb": "images/products/thumb/SSQ-864.png",
+    "sourceUrl": "https://ssq.ls-electric.com/uploads/document/17527915575550/NTS%20_%20NPS%20Series_K_202507.pdf",
+    "bytes": 193447,
+    "width": 573,
+    "origin": "catalog",
+    "catalogUrl": "https://ssq.ls-electric.com/uploads/document/17527915575550/NTS%20_%20NPS%20Series_K_202507.pdf",
+    "catalogTitle": "NTS & NPS 시리즈 카탈로그",
+    "page": 6
   }
 }
