@@ -1,0 +1,155 @@
+<title>제품맵 UX 토론</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #f6f7f9; --paper: #ffffff; --ink: #18202b; --muted: #586273; --line: #d9dee6;
+  --accent: #1d5fb8; --accent-soft: #e4edfa; --agree: #17724a; --agree-soft: #e2f3ea;
+  --dissent: #a3540a; --dissent-soft: #fbefe1; --bug: #b3261e; --bug-soft: #fbe7e5;
+  --font: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151b; --paper: #181e26; --ink: #e5e9ef; --muted: #9ba5b4; --line: #2c3542;
+    --accent: #7fb0f5; --accent-soft: #1b2a40; --agree: #5fcf96; --agree-soft: #15291f;
+    --dissent: #f0a75c; --dissent-soft: #2d2114; --bug: #f2867e; --bug-soft: #2e1817; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151b; --paper: #181e26; --ink: #e5e9ef; --muted: #9ba5b4; --line: #2c3542;
+  --accent: #7fb0f5; --accent-soft: #1b2a40; --agree: #5fcf96; --agree-soft: #15291f;
+  --dissent: #f0a75c; --dissent-soft: #2d2114; --bug: #f2867e; --bug-soft: #2e1817; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.65; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 40px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(26px, 4vw, 34px); }
+h2 { font-size: 21px; }
+h3 { font-size: 16px; }
+p { margin: 0; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+header { display: flex; flex-direction: column; gap: 12px; }
+.lede { color: var(--muted); max-width: 68ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 13px; padding: 3px 10px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); }
+section { display: flex; flex-direction: column; gap: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.tag { display: inline-block; font-size: 12px; font-weight: 500; padding: 1px 8px; border-radius: 6px; }
+.tag.bug { background: var(--bug-soft); color: var(--bug); }
+.tag.ok { background: var(--agree-soft); color: var(--agree); }
+.tag.ask { background: var(--dissent-soft); color: var(--dissent); }
+.tag.hold { background: var(--accent-soft); color: var(--accent); }
+.dots { display: inline-flex; gap: 3px; vertical-align: middle; }
+.dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--agree); display: block; }
+.dots i.off { background: var(--line); }
+.tbl { overflow-x: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: .04em; }
+tr:last-child td { border-bottom: 0; }
+.shift { border-left: 3px solid var(--dissent); }
+.shift b { color: var(--dissent); }
+.leader { background: var(--accent-soft); border-radius: 10px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.leader ol { margin: 0; padding-left: 20px; }
+.no li { color: var(--muted); }
+.no li::marker { content: "✕  "; color: var(--bug); }
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">LS ELECTRIC 전력계통 제품맵 · UX/UI 고도화 토론 · 2026-11-18</span>
+  <h1>다섯 명이 실제로 써 보고 내린 결론</h1>
+  <p class="lede">페르소나 5명이 실행 중인 앱을 Playwright로 직접 조작해 측정했습니다(1라운드). 그다음 서로의 보고서를 읽고 반박했습니다(2라운드). 버그 10건은 전원이 합의했고, 화면 확보 방식은 네 갈래 제안이 하나의 규칙으로 모였습니다.</p>
+  <div class="chips">
+    <span class="chip">기술영업 과장 · 태블릿 1024 / 노트북 1280</span>
+    <span class="chip">시니어 디자이너 · 1440 라이트/다크</span>
+    <span class="chip">접근성 전문가 · 키보드 · 200%/400% 확대</span>
+    <span class="chip">신입사원 · 첫 방문</span>
+    <span class="chip">현장 엔지니어 · 모바일 390/360 · 저속 회선</span>
+  </div>
+</header>
+
+<section>
+  <h2>측정으로 확인된 버그 10건</h2>
+  <p class="muted">화면 모양은 바꾸지 않고 동작만 고치는 항목이라 바로 진행할 수 있습니다.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>문제</th><th>측정 근거</th><th>제기</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">B1</td><td>제품 상세에서 문서가 넘쳐 헤더가 사라짐 · 모바일에서 폭이 1,168px로 늘어 비교 바가 화면 밖으로 밀림</td><td class="mono">+400px · top 2455</td><td>디자이너 · 현장 · 접근성</td></tr>
+      <tr><td class="mono">B2</td><td>검색·선택해도 지도가 그 기기로 이동하지 않음, L1을 눌러도 "L2"로 표시</td><td>전체 보기 18% 고정</td><td>디자이너 · 신입</td></tr>
+      <tr><td class="mono">B3</td><td>자동 팬으로 맞춘 타일이 상세 패널·미니맵 밑에 숨음</td><td>버스웨이 등 6개</td><td>접근성 · 현장</td></tr>
+      <tr><td class="mono">B4</td><td>선택한 뒤 상세 패널까지 Tab을 51번 눌러야 하고, Esc를 누르면 포커스가 화면 밖에 남음</td><td class="mono">Tab 51 · y=-779</td><td>접근성</td></tr>
+      <tr><td class="mono">B5</td><td>연결 기기를 따라간 뒤 뒤로가기를 누르면 이전 기기가 아니라 첫 화면으로 돌아감</td><td>모바일·데스크톱</td><td>현장 · 신입</td></tr>
+      <tr><td class="mono">B6</td><td>명판에 적힌 형식명으로 검색하면 0건</td><td class="mono">TS250 · ABN · TD100</td><td>현장</td></tr>
+      <tr><td class="mono">B7</td><td>LA 배지는 "패널 구성품"인데 상세 패널은 "공백 확정", Gap 모드는 "보통"으로 표시</td><td>세 화면 대조</td><td>신입</td></tr>
+      <tr><td class="mono">B8</td><td>같은 대상을 다르게 부름("4종/4개", L7 이름 3가지), 개발 메모가 그대로 노출됨</td><td>"docs.json" · "draft"</td><td>디자이너 · 신입</td></tr>
+      <tr><td class="mono">B9</td><td>Gap 모드에서 흐리게 처리한 타일의 글자 대비가 부족함</td><td class="mono">1.9:1 (기준 4.5:1)</td><td>접근성</td></tr>
+      <tr><td class="mono">B10</td><td>오프라인 상태에서 제품 페이지에 영문 오류가 뜨고, 화면 변화 안내(live region)가 흩어져 있음</td><td>오프라인 에뮬</td><td>현장 · 접근성</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>2라운드에서 입장을 바꾼 사람</h2>
+  <div class="grid">
+    <div class="card shift"><h3>접근성 전문가</h3><p><b>철회</b> "스크롤하면 헤더 숨기기": 헤더가 키보드 포커스를 가릴 위험이 있습니다. <b>하향</b> 로빙 tabindex는 P1로: 포커스 이동만 고쳐도 Tab 51회가 0회가 됩니다.</p></div>
+    <div class="card shift"><h3>기술영업 과장</h3><p><b>철회</b> "발표 보기에서만 내부 메모 숨김": 보기 모드마다 내용이 달라지면 안 된다는 데 동의했습니다. 발표 보기는 사이드바와 빈 패널을 접는 기능으로만 남깁니다.</p></div>
+    <div class="card shift"><h3>신입사원</h3><p><b>철회</b> 별도 범례 필터: Gap 모드와 겹칩니다. <b>변경</b> Gap 모드에서 공백 계층으로 자동 이동하던 안을 안내 링크로 바꿨습니다.</p></div>
+    <div class="card shift"><h3>현장 엔지니어</h3><p><b>하향</b> 오프라인 캐시는 P2로: 사양 갱신이 늦게 반영될 위험이 있습니다. 한글 오류 안내와 재시도만 먼저 합니다.</p></div>
+    <div class="card shift"><h3>시니어 디자이너</h3><p><b>확대</b> "사이드바는 계통도 화면에만"에서 기본·압축·발표 3단계 밀도 규칙으로 넓혔습니다.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>쟁점별 결론</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>쟁점</th><th>결론</th><th>지지</th></tr></thead>
+    <tbody>
+      <tr><td>화면 확보</td><td>하나의 <b>압축 화면 규칙</b>을 둡니다. 낮은 화면(높이 600px 이하)·200% 확대·모바일 가로에서는 자동으로 켜고, <b>발표 보기</b> 토글로 손으로도 켤 수 있습니다. 사이드바(범례)는 계통도 화면에만 둡니다. 데스크톱 기본값은 지금처럼 펼친 상태를 유지합니다.</td><td><span class="dots"><i></i><i></i><i></i><i></i><i></i></span></td></tr>
+      <tr><td>상세 패널 운영 정보</td><td>판정 근거·재확인 기한은 요약 1줄만 보이고 기본으로 접습니다. 위치는 학습 포인트 뒤로 옮깁니다. 데이터는 그대로입니다.</td><td><span class="dots"><i></i><i></i><i></i><i></i><i></i></span></td></tr>
+      <tr><td>Gap 모드</td><td>흐림 대신 회색 채움을 쓰고 글자 대비 4.5:1을 지킵니다. 공백 타일 강조는 그대로입니다. 공백이 없는 계층에서는 <b>"공백 있는 계층 보기" 링크</b>를 보여 주고 자동으로 이동하지 않습니다. 범례 클릭은 Gap 강조로 합칩니다.</td><td><span class="dots"><i></i><i></i><i></i><i></i><i></i></span></td></tr>
+      <tr><td>첫 방문 시작 카드</td><td>주소에 파라미터가 없는 첫 방문에서 한 번만 보여 줍니다. 닫으면 다시 뜨지 않습니다. 모바일에서는 1줄 배너로 줄입니다.</td><td><span class="dots"><i></i><i></i><i></i><i></i><i class="off"></i></span></td></tr>
+      <tr><td>제품 자료 바로가기</td><td>순서는 그대로 둡니다. 기존 "자료 N건" 칩을 <b>[옵션별 사양][카탈로그 n][매뉴얼 n]</b> 바로가기 칩으로 바꾸고, 새 버튼은 추가하지 않습니다.</td><td><span class="dots"><i></i><i></i><i></i><i></i><i class="off"></i></span></td></tr>
+      <tr><td>비교 링크 공유</td><td>비교 화면에 링크 복사 버튼을 두고, "차이만 보기" 상태도 주소에 저장합니다.</td><td><span class="dots"><i></i><i></i><i></i><i class="off"></i><i class="off"></i></span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>하지 말 것</h2>
+  <div class="card"><ul class="no">
+    <li>Gap 모드에 들어갈 때 다른 계층으로 자동 이동 (5명 전원)</li>
+    <li>스크롤하면 헤더 숨기기 (포커스를 가림)</li>
+    <li>발표 보기 전용 콘텐츠, 보기 모드별로 다른 내용</li>
+    <li>자동 팬을 고치기 전에 비교 바·미니맵 키우기</li>
+    <li>이번 라운드에 서비스워커 전체 캐시 적용</li>
+    <li>데스크톱에서 범례를 기본으로 접기</li>
+  </ul></div>
+</section>
+
+<section>
+  <h2>리더 판정</h2>
+  <div class="leader">
+    <p><span class="tag ok">U1 바로 진행</span> 버그 B1~B10, "차이만 보기" 상태 주소 저장, 용어집 4개 추가(택1·참조 타일·공백 후보/확정·패널 구성품), 터치 대상 44px.</p>
+    <p><span class="tag ask">U2 사용자 확인 후</span> 기존 화면 요소를 바꾸는 항목입니다.</p>
+    <ol>
+      <li>압축 화면 규칙 + 발표 보기 토글 + 사이드바를 계통도 화면에만</li>
+      <li>상세 패널 운영 정보 요약 1줄 + 기본 접힘</li>
+      <li>Gap 모드 회색 채움 + 안내 링크 + 범례 클릭으로 강조</li>
+      <li>첫 방문 시작 카드</li>
+      <li>제품 페이지 자료 바로가기 칩</li>
+      <li>비교 화면 링크 복사 버튼</li>
+    </ol>
+    <p><span class="tag hold">보류</span> 계통도 로빙 tabindex(P1), 다크 모드 컬러 로고, 다크 모드 사진 대비, 미니맵 가림, 오프라인 캐시(P2), 비교 정원 확대.</p>
+  </div>
+</section>
+
+<p class="muted">원문: docs/personas-ux/round1/*.md · round2/*.md · ROUND2.md · DEBATE.md</p>
+</div>
