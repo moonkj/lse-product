@@ -127,3 +127,6 @@
 - 병렬: 데이터 담당 = 카탈로그 PDF에서 주요 제품 정격 추출(값마다 페이지, reviewed=false) / T1 = 비교 화면(/compare, 비교 담기, 차이만 보기) + Gap 배너
 - [T1 완료] 비교 기능: 비교에 담기(기기·제품 각 4개, localStorage), 하단 비교 바(모바일 시트 대응), /compare(URL 공유, 차이만 보기, 기기 10행·제품 기본+사양 행, 출처·검수 전 배지), Gap 배너 후보 문구 조건부(gap-candidate-note, 현재 숨김)
   - 리더 재검증: typecheck·build 통과, unit 270, E2E 46·1 skip
+- [사양 추출 완료] specs.json: 35개 제품·229항목(공개 카탈로그 PDF 값만, 값마다 페이지, reviewed=false), 다운로드 44건(1.3초 간격). 대조표 docs/research/specs-extraction.md(신뢰도 낮은 값 11건 표시)
+  - 미수집: 40MB 초과 카탈로그(Metasol ACB/MCCB, Compact ACB, Susol UL VCB, LIS), 카탈로그 없음(VC, PF, MMS, MCB/RCBO, 고압 인버터, GIS, 주변압기)
+  - 리더 확인: unit 270 통과, 보호계전기·VCB 제품 비교 화면에 사양·출처·검수 전 배지 표시
