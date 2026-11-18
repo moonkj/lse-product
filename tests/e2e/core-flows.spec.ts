@@ -771,4 +771,46 @@ test.describe('E2E-6 계통도 개선 R3', () => {
     await expect(section).toContainText('공백 판정');
     await expect(section).toContainText('후보'); // confidence=candidate (홈페이지 메뉴 기준)
   });
+  // ── v0.7 (개선 R4) ──
+  test('v0.7 R4 참조 타일 패널: detail-meta = "참조 타일", detail-ref-origin = 원래 위치(계층·분류), "원래 위치로 이동" → 원래 기기 노드', async ({ page }) => {
+    const ref = refNodes.find((n) => n.label) ?? refNodes[0];
+    test.skip(!ref, '참조 타일 없음');
+    const eq = eqById.get(ref.equipmentTypeId!)!;
+    const main = diagram.nodes.find((n) => n.equipmentTypeId === eq.id)!;
+    await page.goto(`./#/?node=${ref.id}`);
+    await expect(panel(page)).toBeVisible();
+    await expect(tid(page, 'detail-meta')).toContainText('참조 타일');
+    const note = tid(page, 'detail-ref-note');
+    await expect(note).toBeVisible();
+    if (ref.label) await expect(note).toContainText(ref.label);
+    const origin = tid(page, 'detail-ref-origin');
+    await expect(origin).toContainText('원래 위치');
+    await expect(origin).toContainText(eq.layer); // "L5 변압" 처럼 기기의 원래 계층
+    await tid(page, 'detail-ref-go').click();
+    await expect(page).toHaveURL(new RegExp(`node=${main.id}(&|$)`));
+    await expect(tid(page, 'detail-meta')).not.toContainText('참조 타일');
+    await expect(tid(page, 'detail-ref-note')).toHaveCount(0);
+  });
+
+  test('v0.7 R4 모선 형제 피더 칩: 같은 모선에서 갈라진 회로는 화살표 없음, 모선에 전원을 넣는 쪽은 ↑', async ({ page }) => {
+    const allEdges = load<{ edges: { id: string; from: string; to: string }[] }>('diagram.json').edges;
+    const bus = busNodes.find((b) => allEdges.filter((e) => e.from === b.id).length >= 2);
+    test.skip(!bus, '피더 2개 이상인 모선 없음');
+    const isEq = (id: string) => diagram.nodes.some((n) => n.id === id);
+    const feeders = allEdges.filter((e) => e.from === bus!.id && isEq(e.to)).map((e) => e.to);
+    const feeding = allEdges.filter((e) => e.to === bus!.id && isEq(e.from)).map((e) => e.from);
+    const [self, sibling] = feeders;
+    await page.goto(`./#/?node=${self}`);
+    await expect(panel(page)).toBeVisible();
+    const chip = tid(page, `neighbor-chip-${sibling}`);
+    await expect(chip).toBeVisible();
+    await expect(chip).toHaveAttribute('title', /같은 모선에서 갈라진 회로/);
+    expect((await chip.innerText()).trim()).not.toMatch(/^[↑↓←→]/);
+    if (feeding[0]) {
+      const up = tid(page, `neighbor-chip-${feeding[0]}`);
+      await expect(up).toBeVisible();
+      expect((await up.innerText()).trim()).toMatch(/^↑/);
+      await expect(up).not.toHaveAttribute('title', /갈라진/);
+    }
+  });
 });

@@ -104,3 +104,5 @@
 - [(개선 R4) T1 완료] src/lib/integrity/ 공용 검사(checkDataset/checkEquipment/RULES, HARD·SOFT = DI 테스트와 동일), 관리자 검사 전환, router 단일화(model 사본 삭제), 자동 모선 잔재 삭제, geometry.ts·topology.ts, 모선 수직 연결·겹침·자동 배치 선 회피, review 자동 갱신, 참조 타일 패널 정정, CSV 판정 열, 낮음 5건
   - 현재 데이터 errors 0·warnings 0, T2 시나리오 17종 결과가 DI와 규칙 ID까지 일치, 라우터 86/86
   - 리더 재검증: typecheck·build 통과, unit 141/145(UT-01 CSV 열 변경 4건 — T3 갱신 대기), E2E 40·1 skip
+- [(개선 R4) T3 완료] DI 테스트를 공용 모듈로 전환(RULES 64개 전부, 삭제 0, DI-RULES 누락 방지), 새 테스트: 공용 검사 79·라우터 골든 12(86/86)·관리자 초안 16·관리자 E2E 4, UT-01 10열
+  - 리더 재검증: typecheck(src·tests) 통과, unit 260/260, E2E 46 통과·1 skip·0 실패

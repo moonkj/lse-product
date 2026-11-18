@@ -1,8 +1,8 @@
-# 테스트 계획서 (v0.6)
+# 테스트 계획서 (v0.7)
 
 > 작성: Teammate 3 (테스트 작성자 + 최종 리뷰어) · 2026-11-18
 > 대상: 전력계통도 기반 제품 포트폴리오 & 신입 교육 포털 (PLAN.md v0.1)
-> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/unit/lib/*.test.ts`, `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`
+> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/unit/lib/*.test.ts`(v0.7: `integrity`·`router`·`admin-draft` 추가), `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`, `tests/e2e/admin.spec.ts`(v0.7)
 > 설정: `vitest.config.ts`(jsdom, DI 테스트는 파일 상단 `@vitest-environment node`), `playwright.config.ts`(chromium, build+preview :4173), `tests/tsconfig.json`
 > 스크립트: `npm test`(vitest run) · `npm run test:watch` · `npm run test:data`(DI만) · `npm run test:e2e` · `npm run typecheck:tests`
 > v0.2 (11-18): 환경 구성·실행 완료, 리더 결정 R-01/04/05/07/08/09 반영 (§8)
@@ -10,6 +10,7 @@
 > v0.4 (11-18): Phase 2~5 구현(1ce6811) 기준. 리더 결정 반영 — E2E-1 투어 = `/learn` 페이지(승인 디자인 Learn, 계통도 밴드 하이라이트 없음), 공백 표 기본 필터 = "전체"(승인 디자인 GapTable). DI-70~79(learn.json)·DI-80~86(equipment-images.json) 추가, CT-03 DiagramNode·CT-04 DetailPanel·UT-01 CSV 추가, E2E Phase 2 게이트 제거. 코드 리뷰: `docs/reviews/phase2-code-review.md`
 > v0.5 (11-18, 개선 R2): DI-44 연결선 타일 관통 0건(+ points 직교·타일 가장자리) 추가, DI-80 thumb 필드 반영·DI-82b 썸네일 존재, UT-01 CSV 수식 주입 방지, UT-02 resolveProducts 하위 카테고리(M3), UT-03 사진 URL(타일=thumb/패널=원본). E2E: L7 `tour-finish` → 완료 요약, `gap-filter-all` 기본 선택, "iS7"+Enter 1순위, 한글 조합 중 Enter 무시, 타일 썸네일·패널 원본 경로
 > v0.6 (11-18, 개선 R3): 노드 종류(equipment·ref·bus·endpoint) 반영 — DI-30/33~36/39~43 갱신, DI-43b review·DI-43c 택1(alt) 추가, DI-44 종류별 크기·모선 얇은 장애물, **DI-45 전력선끼리 교차 0**, **DI-46 모선 연결 수직**. 공백 판정 근거 **DI-27a~h**(gapAssessment). 6번째 상태 sourced (DI-28·CT-01·범례). 퀴즈·진도·수료 제거 → DI-75·76(퀴즈) 삭제, DI-75 = 퀴즈 제거 확인, E2E `tour-finish`·완료 요약 테스트 삭제. CT-03 ref·candidate, E2E-6 (모선·끝점·참조 타일·alt·검수 배지·sourced 범례·공백 후보·공백 판정 섹션·범례 합 74)
+> v0.7 (11-18, 개선 R4): **DI 판정 단일화** — 규칙 판정은 공용 모듈 `src/lib/integrity`(`checkDataset`·`RULES`, 관리자 "검사 후 내보내기"와 같은 함수). DI 테스트는 beforeAll 에서 checkDataset 1회 → RULES 규칙마다 it 하나(HARD = 오류 0, SOFT = softWarn). 스키마·판정 함수 자기검증, 파일 시스템(DI-00a·82·82b·86), docs.json·learn.json·사진 스키마(DI-80)는 DI 테스트에 직접 유지 (§3.10 매핑표). 새 단위 테스트 UT-10 공용 검사(규칙별 위반 → ID, T2 R3 관리자 실패 시나리오), UT-11 라우터 골든(diagram.json 86/86)·모선 거부, UT-12 관리자 초안 편집·검수 상태. UT-01 CSV 판정 열(10열). E2E-ADM 1~4(관리자), E2E-6 참조 타일 패널(`detail-meta`·`detail-ref-origin`)·모선 형제 피더 칩 화살표 없음
 
 ---
 
@@ -43,6 +44,8 @@
 ---
 
 ## 3. 데이터 무결성 규칙 (DI) — 총 87개 (HARD 74 · SOFT 13, v0.6)
+
+> **v0.7 (개선 R4)**: 규칙 ID·내용은 그대로, 판정 코드만 `src/lib/integrity`(공용 모듈) 로 옮김. 공용 모듈 대상 64개 ID(`RULES` 표, DI-00 포함)는 DI 테스트·관리자 검사가 같은 함수로 판정하고, 규칙별 "위반 데이터 → 그 ID" 는 UT-10 이 검증한다. 전환 매핑은 §3.10.
 
 > HARD = 위반 시 테스트 실패(빌드 차단 권장) · SOFT = `console.warn`만 출력
 > 구현: `tests/unit/data-integrity.test.ts` (테스트 이름 앞에 ID 표기). 실제 데이터(제품 199 · 카테고리 137 · 기기 74 · 노드 74 · 엣지 77)로 **사전 점검(Python 포팅) 결과 전부 통과** — 단 DI-40은 예외 규칙 확정 후 기준 (§3.4 참고).
@@ -183,6 +186,23 @@
 | DI-85 | missing·na 기기에 사진 지정 → 경고 (디자인: 미보유는 심볼 + 빨간 점선) — 현재 0건 | SOFT |
 | DI-86 | 실제 파일 크기 ≠ bytes, 또는 500KB 초과(원본·thumb 모두) → 경고 — v0.5: 원본 320px 축소 후 0건 | SOFT |
 
+
+### 3.10 (v0.7) 공용 모듈 전환 매핑 — v0.6 DI 테스트 → v0.7
+
+`tests/unit/data-integrity.test.ts` 의 v0.6 테스트 94건(it 90 + DI-00a 4)을 전환한 결과. **삭제된 규칙 0** — 테스트 `DI-RULES` 가 v0.6 ID 64개가 `RULES` 에 모두 있는지·SOFT 등급이 같은지 확인하고, UT-10 이 RULES 의 HARD·SOFT 규칙 전부를 위반 데이터로 한 번 이상 검증했는지 확인한다.
+
+| 구분 | 규칙 ID | v0.7 판정 위치 | 위반 검증 (UT-10) |
+|---|---|---|---|
+| **전환** (공용 모듈, 63개 + DI-00) | DI-00(스키마), 01~08, 10~19, 20~29, 27a~27h, 30~43, 43b, 43c, 44a, 44b, 45a, 46, 50~52, 81, 83~85 | `checkDataset` 결과를 `RULES` 순서로 규칙마다 it 하나: error → `errors(rule) = []`, warning → `softWarn`, both → 둘 다. HARD 규칙이 경고로 보고되면 실패 | 규칙마다 합성 데이터 위반 1개 이상 (HARD 표 49 + 시나리오 10, SOFT 표 10 + DI-40·29) |
+| 정보 (유지) | DI-27a·28·43c console.info, DI-45b 신호선 교차 수 | `(정보)` it 1개 + DI-45b (`edgeCrossings` 공용 함수) | — |
+| **유지** (이 파일에서 직접) | DI-00a 파일 존재(4), DI-00b parse, DI-00c 스키마 거부(+ DI-43b 잘못된 status 거부) | 파일·스키마 | — |
+| 유지 — 자기검증 | DI-27c·27d 스키마 거부, DI-27e·27f `isRealDate`·`isHttpsUrl`·`LSE_URL_RE`, DI-44 `segHitsNode`·`defaultRoute`(타일·모선·끝점·꺾인 경로·모선 범위 밖 null), DI-45 `segsCross`(십자·T·겹침·이어짐·평행·세로 겹침) | 공용 모듈의 판정 함수를 직접 호출 — 판정이 느슨해지는 회귀 방지 | — |
+| 유지 — 파일 시스템 | DI-82, DI-82b, DI-86 | `public/` 파일 존재·크기 | — |
+| 유지 — 범위 밖 파일 | DI-60~68 (docs.json), DI-70~75·77~79 (learn.json), DI-80 (사진 스키마 거부 예시) | 그대로 | — |
+| 삭제 | 없음 (v0.6 DI 테스트 안의 로컬 판정 함수 `halfSize`·`defaultRoute`·`segHitsNode`·`segsCross`·`crossings`·`productsUnderCategory` 사본은 삭제 — 공용 모듈로 대체) | | |
+
+결과: DI 테스트 94 → **101** (RULES 64 + 표 검사 2 + 정보 2 + 자기검증 5 + 파일·스키마 6 + docs 9 + learn 9 + 사진 스키마·파일 4). v0.6 의 DI-81·83·84·85 로컬 판정 it 은 RULES 루프와 중복이라 삭제(규칙은 RULES 로 유지).
+
 ---
 
 ## 3b. 컴포넌트 테스트 (CT, Vitest + Testing Library + jsdom, v0.3)
@@ -196,9 +216,12 @@
 ### 3c. 단위 테스트 (UT, v0.4)
 | ID | 대상 | 검증 | 테스트 수 |
 |---|---|---|---|
-| UT-01 | `lib/pages/catalog.ts` `buildGapCsv` | UTF-8 BOM(U+FEFF) 시작·CRLF 줄 끝 / 헤더 9열·행 값 / 쉼표·큰따옴표·LF·CRLF 값 → `"…"` 감싸기 + `""` escape, RFC 4180 파서로 되읽어 열 수·값 보존 / 특수문자 없는 값은 그대로, 빈 목록 = 헤더만 / (v0.5) `= + - @` 로 시작하는 셀 앞에 `'` (수식 주입 방지), 중간 기호는 그대로 | 5 |
+| UT-01 | `lib/pages/catalog.ts` `buildGapCsv` | UTF-8 BOM(U+FEFF) 시작·CRLF 줄 끝 / 헤더 **10열**(v0.7 마지막 열 "판정")·행 값 / (v0.7) 판정 = 공백류 "공백 후보"·"공백 확정"(재확인 기한 지나면 후보), 보유·해당 없음 빈칸 / 쉼표·큰따옴표·LF·CRLF 값 → `"…"` 감싸기 + `""` escape, RFC 4180 파서로 되읽어 열 수·값 보존 / 특수문자 없는 값은 그대로, 빈 목록 = 헤더만(`…,메모,판정`) / (v0.5) `= + - @` 로 시작하는 셀 앞에 `'` (수식 주입 방지), 중간 기호는 그대로 | 6 |
 | UT-02 | (v0.5) `data/load.ts` `resolveProducts` | 상위 코드만 지정해도 하위·손자 카테고리 제품 포함(M3) / 하위 코드 지정 시 상위·형제 제외 / productIds 합치기·중복 제거·없는 id 무시 / 빈 경우 [] (합성 AppData) | 4 |
 | UT-03 | (v0.5) 사진 URL | `equipmentImageUrl` = 원본 file, `equipmentThumbUrl` = thumb / 없는 기기 undefined / `getDiagramModel().nodes[].imageUrl` 은 모두 `images/equipment/thumb/` | 3 |
+| UT-10 | (v0.7) `lib/integrity` 공용 검사 (`tests/unit/lib/integrity.test.ts`) | 합성 데이터셋(밴드 L1~L7 · 기기 9 · 사슬 n1~n7 · L6 모선 1 + 피더 2) = 오류 0·경고 DI-29 만 / 최상위 형태 오류 → 예외 없이 DI-00 / `Collector.run` 예외 → 그 규칙 오류 / **T2 R3 관리자 실패 시나리오 → 규칙 ID**: 모선 끝 가로 출발·범위 밖·points 없음 DI-46, 모선이 타일과 겹침 DI-39, 모선 연결 1개 DI-40, 참조 타일 라벨 없음 DI-43, 택1 단독·라벨 없음 DI-43c, sourced+unknown DI-27b·없는 날짜 DI-27e·http 근거 DI-27f, 전력선 같은 가로선 겹침 DI-45a(신호선이면 통과), 타일 관통 DI-44a / HARD 규칙 표 49건(규칙마다 위반 → 그 ID) / SOFT 10건(경고만·오류 0) + DI-40 SOFT / RULES 의 HARD·SOFT 규칙이 모두 한 번 이상 검증됨 / `checkEquipment` field·하위 카테고리 연결·재확인 기한 / 모든 시나리오에서 error·warning 등급 = RULES 표 | 79 |
+| UT-11 | (v0.7) `lib/diagram/router.ts` (`tests/unit/lib/router.test.ts`) | **골든**: diagram.json 모든 연결선 `routeEdge` = 저장된 points(없으면 points 없음) — 현재 86/86 / 모선 연결선 모두 points, points 없는 선의 기본 경로는 관통 0 / `pyRound`·`boxOf`(모선 정수 반폭) / 막힌 경로 → A* 직교 우회, 완전 포위 → no-path, 없는 노드 → missing-node / 모선: 수직 points(양방향), 범위 밖 bus-range, 수직 막힘 bus-blocked(막는 노드), 모선끼리 bus-to-bus / 관리자 draft 거부: addEdge 범위 밖·수직 막힘, moveNode 피더·모선 이동, updateNode 모선 61px | 12 |
+| UT-12 | (v0.7) `lib/admin/draft.ts`·`integrity.ts` (`tests/unit/lib/admin-draft.test.ts`) | `validateDraft(현재 데이터)` = 오류 0·경고 0, Issue 에 nodeId / 기기 추가(DI-43) → 자동 배치(DI-40) → 380V 모선 연결(수직 points) → 오류 0 / 배치 거부(밴드 밖·30px·모선 20px·모선 60px 미만·라벨 없음) / 이동(같은 자리 무변경, 모선 y 이동 시 피더 points 갱신) / 모선 길이(늘리기 허용, 61 거부, 60 미만) / 노드 삭제(연결선 함께, DI-40), 기기 삭제는 노드 먼저 / 연결 추가·삭제(중복·자기·없는 노드 거부, 고립 DI-40, 다시 연결) / alt 단독 DI-43c / 참조 타일(원래 노드 필요, 라벨 없음 DI-43) / **review**: 편집 → pending+오늘+안내, approved 도 pending, 되돌리면 원본 review(approved) 복원, 사진만 변경은 그대로 / sourced+다른 공급 방식 DI-27b·`coverageIssues` field / `upsertEquipment` 키 순서·사진 삭제·원본 텍스트 동일 / `suggestId` | 16 |
 
 ---
 
@@ -246,7 +269,8 @@
 | E2E-1 | 신입 | 홈 → 교육 모드 → "투어 시작" 카드 → `/learn?step=L1` → 다음×6 → L7 핵심 기기 카드 클릭 / `/learn?step=L4` 딥링크·새로고침 / (v0.6) L1·L4·L7 에 퀴즈·완료·진도 없음 | `tour-step[data-layer]` = L1…L7 정확히 순서대로, `?step=` 동기화, L7 에서 `tour-next` disabled, 카드 → `#/?node=<nodeId>` + `aria-pressed` + 패널 제목·학습 포인트. v0.6: `tour-finish`·`tour-summary`·`tour-complete`·`tour-progress`·`learn-progress`·`quiz*` testid 0개 (v0.5 완료 요약 테스트 **삭제**) |
 | E2E-2 | 영업 | 검색에 약어 입력 → 기기 결과 선택 → 패널 → 제품 카드 → 제품 페이지 → 데이터시트/공식 페이지 / (v0.5) "iS7"+Enter / 한글 조합 중 Enter | 노드 선택 상태, 배지 owned, URL `#/product/:id`, 링크 새 탭+noopener+ls-electric.com, popup 이벤트. 자료가 없으면 "자료 준비 중". iS7 → 제품 P01188(이름 iS7) 또는 iS7 연결/인버터 기기가 1순위, GIS 아님. 조합 중(keydown isComposing=true, keyCode 229) Enter → URL·입력값 그대로, compositionend 후 Enter 는 정상 이동 |
 | E2E-3 | 기획 | Gap 버튼(같은 계통도, `?mode=gap`) → missing 강조/owned 흐림 → 공백 기기 클릭 → "공백 표 보기" 링크 → `/gap` | URL `mode=gap`·`gap-page` 미표시, 아이콘 병행, gapNote, 제품 목록 없음, 공백 건수 = 데이터. v0.6: affiliate·**sourced = 보통**, 공백 표 "전체" = missing+partial+affiliate+**sourced** (현재 17) |
-| E2E-6 | 공통 (v0.6) | 계통도 개선 R3 | `diagram-bus-{id}` 2개·`diagram-endpoint-{id}` 4개 보임 / ref 노드 `data-ref="true"` 3개, 클릭 → 같은 기기 상세 / alt 엣지 `data-kind="alt"` 7개 + 점선 / `diagram-review-badge` 보임(review pending) / `legend-item-sourced` "패널 구성품" / 범례 개수 합 = 74(ref 제외), 미보유 = 9, 패널 구성품 = 3 (데이터 기준) / Gap 모드 공백 후보 노드 `data-confidence="candidate"` / CT/PT 선택 → `detail-gap-assessment` "공백 판정"·"후보" |
+| E2E-6 | 공통 (v0.6) | 계통도 개선 R3 | `diagram-bus-{id}` 2개·`diagram-endpoint-{id}` 4개 보임 / ref 노드 `data-ref="true"` 3개, 클릭 → 같은 기기 상세 / alt 엣지 `data-kind="alt"` 7개 + 점선 / `diagram-review-badge` 보임(review pending) / `legend-item-sourced` "패널 구성품" / 범례 개수 합 = 74(ref 제외), 미보유 = 9, 패널 구성품 = 3 (데이터 기준) / Gap 모드 공백 후보 노드 `data-confidence="candidate"` / CT/PT 선택 → `detail-gap-assessment` "공백 판정"·"후보" / **(v0.7)** 참조 타일 `?node=` → `detail-meta` "참조 타일", `detail-ref-note`(라벨), `detail-ref-origin` "원래 위치"+기기 계층, `detail-ref-go` → 원래 노드(`node=` 갱신, 메타에 참조 타일 없음) / 모선 형제 피더 칩: 같은 모선 피더 칩은 화살표 없음 + title "같은 모선에서 갈라진 회로", 모선 전원 쪽 칩은 ↑ |
+| E2E-ADM | 관리자 (v0.7, `admin.spec.ts`) | `/#/admin` (빈 localStorage). 캔버스 노드·모선 클릭은 `dispatchEvent('click')`(팬/줌 화면 밖 대비) | ADM-1 제목 "관리자 모드"·"보안 장치가 아닙니다 … 이 브라우저에만 저장" 안내·"기기 종류 74"·되돌리기 비활성·원본 검사 `admin-check-ok` / ADM-2 `admin-add-equipment` → 폼(이름·약어→id 자동 `tcb`·L6·380V·해당 없음·설명·학습 포인트) → `admin-save` → 배치 모드 → `admin-auto-place` → `admin-connect-mode` → 380V 모선 클릭 → "연결선 eNNN 추가" → `admin-export` 활성·클릭 → `admin-check-ok`·`admin-exported`·diagram.json·equipment-types.json 다운로드 / ADM-3 연결 모드 모선 → 범위 밖 기기 → `admin-toast` role=alert "모선 범위 밖 … 수직", 되돌리기 비활성·변경 내역 0 / ADM-4 폼 커버리지 sourced → `admin-gap-supply` = panel-sourced + disabled + "고정됩니다" |
 | E2E-4 | 공통 | 딥링크·새로고침·뒤로가기·없는 id·자산 404, `?node=` 복원·갱신·제거, `?mode=gap&node=` 조합 | GitHub Pages 시나리오 (preview 빌드 기준) |
 | DOCS | 공통 | docs.json 기준: 항목 없음(R-04)·빈 항목(deepLink)·제품 페이지 전체 링크·상세 패널 popup·기기 페이지 | 건수 = docs.json, `data-doc-type`, 새 탭·noopener·허용 도메인. 외부 요청은 `context.route` 로 stub (네트워크 의존 없음) |
 | (게이트) | — | v0.4: Phase 2 게이트(`diagram` testid 없으면 전체 skip, `E2E_STRICT`) **제거** — 회귀가 skip 으로 숨지 않게 | |
@@ -414,6 +438,18 @@
 |---|---|---|
 | DI-46 | **실제 버그 (데이터·생성기, 리더)** | e033 `bus-229 → n-tr-66`: 모선 width 551(홀수) → 오른쪽 끝 x=1449.5, 참조 타일 n-tr-66 x=1450 이 모선 범위 밖 0.5px. 생성기 A* 가 모선 끝(1449)에서 1px 가로 꺾임 `(1449,2097)→(1450,2097)→(1450,2156)` 을 만듦. 수정안: 모선 길이를 n-tr-66 까지 덮도록(예: 기준 길이 382 → 짝수 width) 또는 Box hw 를 올림 처리 |
 | E2E-6 공백 판정 섹션 | 구현 대기 (T1) | 패널 `detail-gap-assessment` 섹션 없음 |
+
+
+## 11d. 실행 결과 (2026-11-18, v0.7 — 개선 R4, T1 R4 반영 커밋 기준)
+
+| 명령 | 결과 | 비고 |
+|---|---|---|
+| `npm run test` | **260 통과 / 0 실패** (파일 10) | DI 101 · UT-10 79 · UT-11 12 · UT-12 16 · UT-01 6 · load 7 · CT 39. (R4 T1 직후 141/145 — UT-01 CSV 열 4건 → 해소) |
+| `npm run typecheck:tests` | 통과 | |
+| `npm run test:e2e` (47건) | **46 통과 · 0 실패 · 1 skip** | 새 6건(ADM-1~4, E2E-6 참조 타일 패널·형제 피더 칩) 통과. skip 1 = R-04(정상) |
+
+- 공용 검사 현재 데이터: 오류 0 · 경고 0. 라우터 골든 86/86.
+- 실제 버그: 이번 라운드 발견 없음 (T2 R3 관리자 실패 시나리오 10종 모두 공용 검사가 해당 규칙 ID 로 차단, 관리자 draft 가 모선 범위 밖·수직 막힘을 편집 단계에서 거부).
 
 ## 12. CI 의견 — deploy.yml 에 E2E 단계 (넣지 않음, 의견만)
 
