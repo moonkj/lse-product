@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { pageTitle } from '../lib/labels';
 
 interface Props {
   /** '기기' | '제품' — 없으면 일반 경로 404 */
@@ -15,7 +16,7 @@ function objectParticle(word: string) {
 
 export default function NotFoundPage({ kind, id }: Props) {
   useEffect(() => {
-    document.title = '찾을 수 없음 · LS ELECTRIC 전력계통 제품맵';
+    document.title = pageTitle('찾을 수 없음');
   }, []);
   return (
     <div className="page" data-testid="not-found">

@@ -75,6 +75,26 @@ describe('UT-01 buildGapCsv', () => {
     expect(rows[1][8]).toBe('1줄\n2줄\r\n3줄');
   });
 
+  it('CSV 수식 주입 방지 (v0.5 R2, T2 L8): = + - @ 로 시작하는 셀은 앞에 \' 를 붙여 텍스트로', () => {
+    const evil = eq({
+      name: '=HYPERLINK("http://x","클릭")',
+      abbr: '+SUM(1,2)',
+      affiliateName: '-2+3',
+      gapNote: '@cmd',
+    });
+    const rows = parseCsv(csvOf([evil]).slice(1));
+    expect(rows[1]).toHaveLength(9);
+    expect(rows[1][4]).toBe('\'=HYPERLINK("http://x","클릭")');
+    expect(rows[1][5]).toBe("'+SUM(1,2)");
+    expect(rows[1][7]).toBe("'-2+3");
+    expect(rows[1][8]).toBe("'@cmd");
+    // 중간에 있는 기호·일반 값은 그대로
+    const plain = parseCsv(csvOf([eq({ name: 'A=B', abbr: 'VCB', gapNote: '정상 메모 - 비고' })]).slice(1));
+    expect(plain[1][4]).toBe('A=B');
+    expect(plain[1][5]).toBe('VCB');
+    expect(plain[1][8]).toBe('정상 메모 - 비고');
+  });
+
   it('특수문자 없는 값은 따옴표로 감싸지 않음, 빈 목록이면 헤더만', () => {
     const csv = csvOf([]);
     expect(csv).toBe('﻿상태,계층,계층명,기기 ID,기기명,약어,기능,계열사,메모\r\n');

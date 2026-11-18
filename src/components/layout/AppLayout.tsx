@@ -1,36 +1,29 @@
-import { useEffect } from 'react';
+import { Suspense, useLayoutEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import LayerNav from './LayerNav';
 import DetailPanel from '../panel/DetailPanel';
-import { useAppStore } from '../../store/useAppStore';
+import PageErrorBoundary from '../common/PageErrorBoundary';
 import { useData } from '../../data/load';
-import { useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
 import './AppLayout.css';
 
-/**
- * URL(원본) → store 동기화. 보기 모드는 계통도의 `?mode=`, /gap·/learn 직접 진입도 반영.
- * 선택 노드는 `?node=` (store 는 다른 컴포넌트 호환용 사본).
- */
-function useSyncStoreWithUrl(pathname: string) {
-  const setViewMode = useAppStore((s) => s.setViewMode);
-  const setSelectedNodeId = useAppStore((s) => s.setSelectedNodeId);
-  const mode = useViewMode();
-  const selected = useSelectedNodeId();
-  useEffect(() => {
-    if (pathname === '/') setViewMode(mode);
-    else if (pathname.startsWith('/gap')) setViewMode('gap');
-    else if (pathname.startsWith('/learn')) setViewMode('learn');
-  }, [pathname, mode, setViewMode]);
-  useEffect(() => {
-    setSelectedNodeId(selected);
-  }, [selected, setSelectedNodeId]);
+/** 지연 로딩되는 페이지 청크를 받는 동안 */
+function PageLoading() {
+  return (
+    <p className="app-main__loading" role="status">
+      화면을 불러오는 중…
+    </p>
+  );
 }
 
 export default function AppLayout() {
   useData(); // 데이터 검증을 렌더 중에 실행 → 실패 시 RootErrorBoundary 가 표시
   const { pathname } = useLocation();
-  useSyncStoreWithUrl(pathname);
+
+  // 화면을 옮기면 본문 스크롤을 맨 위로 (스크롤 컨테이너 .app-main 이 라우트 사이에 유지되므로)
+  useLayoutEffect(() => {
+    document.getElementById('main')?.scrollTo?.({ top: 0, left: 0 });
+  }, [pathname]);
 
   // 상세 패널은 계통도(/)에서만 — 선택은 ?node= 로 표현
   const showPanel = pathname === '/';
@@ -50,7 +43,11 @@ export default function AppLayout() {
       <Header />
       <LayerNav />
       <main className="app-main" id="main" tabIndex={-1}>
-        <Outlet />
+        <PageErrorBoundary resetKey={pathname}>
+          <Suspense fallback={<PageLoading />}>
+            <Outlet />
+          </Suspense>
+        </PageErrorBoundary>
       </main>
       {showPanel && <DetailPanel />}
     </div>

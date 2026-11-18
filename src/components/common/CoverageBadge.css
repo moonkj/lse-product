@@ -28,3 +28,36 @@
 .cov-badge--affiliate .cov-badge__icon { border-radius: 2px; transform: rotate(45deg); }
 .cov-badge--affiliate .cov-badge__icon { font-size: 0; }
 .cov-badge--na .cov-badge__icon { border-radius: 3px; }
+
+/* pill: 상세 패널 헤더 (배경색 알약) */
+.cov-pill {
+  align-self: flex-start;
+  gap: 6px;
+  padding: 3px 10px 3px 4px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+}
+.cov-pill.cov-badge--owned { background: var(--cov-owned-bg); color: var(--cov-owned-text); }
+.cov-pill.cov-badge--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
+.cov-pill.cov-badge--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
+.cov-pill.cov-badge--missing { background: var(--cov-missing-bg); color: var(--cov-missing-text); }
+.cov-pill.cov-badge--na { background: var(--cov-na-bg); color: var(--cov-na-text); }
+
+/* chip: 공백 표·교육 (배경색 사각 칩 + 문자 아이콘) */
+.cov-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3em;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+.cov-chip--owned { background: var(--cov-owned-bg); color: var(--cov-owned-text); }
+.cov-chip--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
+.cov-chip--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
+.cov-chip--missing { background: var(--cov-missing-bg); color: var(--cov-missing-text); }
+.cov-chip--na { background: var(--cov-na-bg); color: var(--cov-na-text); }
+/* chip 안에 badge 를 넣던 기존 기기 페이지 배치 호환 */
+.cov-chip .cov-badge { font-size: inherit; }

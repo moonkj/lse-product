@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import type { ViewMode } from '../../store/useAppStore';
+import type { ViewMode } from '../../lib/diagram/url';
 import { parseMode, useSetViewMode } from '../../lib/diagram/url';
 import SearchBox from './SearchBox';
 

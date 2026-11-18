@@ -36,9 +36,10 @@ export class PanZoom {
   private readonly pad: number;
   private readonly maxScale: number;
   private raf = 0;
-  private drag: { x: number; y: number; sl: number; st: number; active: boolean; id: number } | null = null;
+  /** 드래그 상태: 시작점(x,y)은 임계 판정용, 직전 위치(lx,ly)는 증분 이동용 — 드래그 중 휠 줌이 섞여도 튀지 않게 */
+  private drag: { x: number; y: number; lx: number; ly: number; active: boolean; id: number } | null = null;
   private suppressClick = false;
-  private pinch: { dist: number; scale: number } | null = null;
+  private pinch: { dist: number; scale: number; mx: number; my: number } | null = null;
   private ro?: ResizeObserver;
   private lastSize = { w: 0, h: 0 };
   private readonly cleanups: (() => void)[] = [];
@@ -211,7 +212,9 @@ export class PanZoom {
 
   private onPointerDown = (e: PointerEvent) => {
     if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    this.drag = { x: e.clientX, y: e.clientY, sl: this.vp.scrollLeft, st: this.vp.scrollTop, active: false, id: e.pointerId };
+    // 네이티브 스크롤바를 잡은 경우는 브라우저에 맡긴다 (커스텀 드래그와 겹치지 않게)
+    if (e.target === this.vp && (e.offsetX >= this.vp.clientWidth || e.offsetY >= this.vp.clientHeight)) return;
+    this.drag = { x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, active: false, id: e.pointerId };
   };
 
   private onPointerMove = (e: PointerEvent) => {
@@ -225,8 +228,10 @@ export class PanZoom {
       this.vp.classList.add('is-panning');
     }
     e.preventDefault();
-    this.vp.scrollLeft = d.sl - mx;
-    this.vp.scrollTop = d.st - my;
+    this.vp.scrollLeft -= e.clientX - d.lx;
+    this.vp.scrollTop -= e.clientY - d.ly;
+    d.lx = e.clientX;
+    d.ly = e.clientY;
   };
 
   private onPointerUp = (e: PointerEvent) => {
@@ -255,7 +260,8 @@ export class PanZoom {
 
   private onTouchStart = (e: TouchEvent) => {
     if (e.touches.length === 2) {
-      this.pinch = { dist: PanZoom.dist(e.touches), scale: this.scale };
+      const [a, b] = [e.touches[0], e.touches[1]];
+      this.pinch = { dist: PanZoom.dist(e.touches), scale: this.scale, mx: (a.clientX + b.clientX) / 2, my: (a.clientY + b.clientY) / 2 };
     }
   };
 
@@ -266,6 +272,13 @@ export class PanZoom {
     const px = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
     const py = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
     this.zoomAt((this.pinch.scale * PanZoom.dist(e.touches)) / this.pinch.dist, px, py);
+    // 두 손가락 중점이 움직이면 그만큼 패닝
+    const mx = px + rect.left;
+    const my = py + rect.top;
+    this.vp.scrollLeft -= mx - this.pinch.mx;
+    this.vp.scrollTop -= my - this.pinch.my;
+    this.pinch.mx = mx;
+    this.pinch.my = my;
   };
 
   private onTouchEnd = (e: TouchEvent) => {

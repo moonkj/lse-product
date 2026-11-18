@@ -13,36 +13,10 @@ import {
   type Layer,
   type Product,
 } from '../schema';
+import { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER } from '../labels';
 
-/** 기기 기능 분류 한국어 라벨 (schema 에 없어 페이지 쪽 상수로 둔다) */
-export const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
-  switching: '개폐',
-  protection: '보호',
-  transformation: '변성',
-  measurement: '계측',
-  control: '제어',
-  monitoring: '감시',
-  generation: '발전',
-  conductor: '선로',
-  load: '부하',
-  system: '시스템',
-};
-
-export const CATEGORY_ORDER: EquipmentCategory[] = [
-  'switching',
-  'protection',
-  'transformation',
-  'measurement',
-  'control',
-  'monitoring',
-  'generation',
-  'conductor',
-  'load',
-  'system',
-];
-
-/** 공백 표·칩 표시 순서 */
-export const COVERAGE_ORDER: Coverage[] = ['owned', 'partial', 'affiliate', 'missing', 'na'];
+// 라벨·순서 상수는 lib/labels.ts 가 단일 출처 (기존 import 경로 호환용 재수출)
+export { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER } from '../labels';
 
 /** 계통도 화면으로 가는 링크 (메인 화면은 ?node=, ?mode= 쿼리로 상태 복원) */
 export function diagramHref(nodeId?: string, mode?: 'gap' | 'learn'): string {
@@ -177,7 +151,6 @@ export function ownedRate(c: CoverageCounts): { owned: number; total: number; pc
   return { owned: c.owned, total, pct: total === 0 ? 0 : Math.round((c.owned / total) * 100) };
 }
 
-export const GAP_COVERAGES: Coverage[] = ['missing', 'partial', 'affiliate'];
 
 export interface MatrixRow {
   layer: Layer;
@@ -200,7 +173,9 @@ export function gapMemo(eq: EquipmentType): string {
   return eq.gapNote ?? eq.affiliateName ?? '';
 }
 
-function csvCell(v: string): string {
+function csvCell(raw: string): string {
+  // 수식 주입 방지: = + - @ 탭 CR 로 시작하는 셀은 앞에 ' 를 붙여 Excel 이 텍스트로 읽게 한다
+  const v = /^[=+\-@\t\r]/.test(raw) ? `'${raw}` : raw;
   return /[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
 }
 

@@ -1,13 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { COVERAGE_LABELS, LAYER_LABELS, type Coverage, type EquipmentCategory, type Layer } from '../lib/schema';
+import { LAYER_LABELS, type Coverage, type EquipmentCategory, type Layer } from '../lib/schema';
 import { useData } from '../data/load';
-import { COVERAGE_ICONS } from '../components/common/CoverageBadge';
+import CoverageBadge from '../components/common/CoverageBadge';
 import {
   CATEGORY_LABELS,
   CATEGORY_ORDER,
+  COVERAGE_ICONS,
+  COVERAGE_LABELS,
   COVERAGE_ORDER,
-  GAP_COVERAGES,
+  COVERAGE_SHORT_LABELS,
+  GAP_LIST_COVERAGES,
+  isMainLayer,
+  pageTitle,
+} from '../lib/labels';
+import {
   buildGapCsv,
   buildMatrix,
   countCoverage,
@@ -28,15 +35,8 @@ interface CellSel {
 
 /** 목록 정렬: 계층 순 → 미보유·일부·계열사·보유·해당없음 */
 const LIST_COVERAGE_RANK: Record<Coverage, number> = { missing: 0, partial: 1, affiliate: 2, owned: 3, na: 4 };
-const SHORT_LABELS: Record<Coverage, string> = {
-  owned: '보유',
-  partial: '일부',
-  affiliate: '계열사',
-  missing: '미보유',
-  na: '해당 없음',
-};
-
-const FILTER_LABELS: Record<Coverage, string> = { ...COVERAGE_LABELS, missing: '미보유' };
+/** 필터 버튼 라벨: 정식 라벨에서 "미보유(공백)" 만 짧게 */
+const FILTER_LABELS: Record<Coverage, string> = { ...COVERAGE_LABELS, missing: COVERAGE_SHORT_LABELS.missing };
 
 export default function GapPage() {
   const data = useData();
@@ -47,20 +47,20 @@ export default function GapPage() {
   const totals = useMemo(() => countCoverage(equipment), [equipment]);
   const rate = ownedRate(totals);
 
-  // 기본 필터 = 미보유: 첫 화면의 목록 건수가 "공백(미보유) 건수"와 같도록 (FT-26)
-  const [status, setStatus] = useState<StatusFilter>('missing');
+  // 기본 필터 = 전체 (디자인 승인안·리더 결정, FT-26): 첫 화면 목록 = 미보유·일부·계열사 전체
+  const [status, setStatus] = useState<StatusFilter>('all');
   const [cell, setCell] = useState<CellSel | null>(null);
   const listRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    document.title = '공백 표 · LS ELECTRIC 전력계통 제품맵';
+    document.title = pageTitle('공백 표');
   }, []);
 
   /** 칸 선택 시: 그 칸의 모든 기기 / 아니면: 미보유·일부·계열사 */
   const scope = useMemo(() => {
     const base = cell
       ? equipment.filter((e) => e.layer === cell.layer && e.category === cell.category)
-      : equipment.filter((e) => GAP_COVERAGES.includes(e.coverage));
+      : equipment.filter((e) => GAP_LIST_COVERAGES.includes(e.coverage));
     return [...base].sort(
       (a, b) =>
         (layerOrder.get(a.layer) ?? 0) - (layerOrder.get(b.layer) ?? 0) ||
@@ -68,13 +68,13 @@ export default function GapPage() {
     );
   }, [equipment, cell, layerOrder]);
   const scopeCounts = countCoverage(scope);
-  const chipCoverages = cell ? COVERAGE_ORDER.filter((c) => scopeCounts[c] > 0) : GAP_COVERAGES;
+  const chipCoverages = cell ? COVERAGE_ORDER.filter((c) => scopeCounts[c] > 0) : GAP_LIST_COVERAGES;
   const visible = status === 'all' ? scope : scope.filter((e) => e.coverage === status);
 
   const selectCell = (sel: CellSel) => {
     const same = cell && cell.layer === sel.layer && cell.category === sel.category;
     setCell(same ? null : sel);
-    setStatus(same ? 'missing' : 'all');
+    setStatus('all');
     if (!same) {
       const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
       requestAnimationFrame(() => listRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }));
@@ -83,7 +83,7 @@ export default function GapPage() {
 
   const clearCell = () => {
     setCell(null);
-    setStatus('missing');
+    setStatus('all');
   };
 
   const exportCsv = () => {
@@ -131,7 +131,7 @@ export default function GapPage() {
         <div className="gp-card__head">
           <h2 id="mx-h">커버리지 매트릭스</h2>
           <span className="gp-legend">
-            ✓ 보유 · ◐ 일부 · ◆ 계열사 · ✕ 미보유 · – 해당 없음 · 숫자 = 기기 종류 수
+            {COVERAGE_ORDER.map((c) => `${COVERAGE_ICONS[c]} ${COVERAGE_SHORT_LABELS[c]}`).join(' · ')} · 숫자 = 기기 종류 수
           </span>
         </div>
         <div className="gp-scroll" tabIndex={0} role="region" aria-label="커버리지 매트릭스 (가로 스크롤)">
@@ -156,8 +156,8 @@ export default function GapPage() {
                 return (
                   <tr key={row.layer} data-layer={row.layer}>
                     <th scope="row" className="gp-matrix__rowhead">
-                      {/^L[1-7]$/.test(row.layer) && <b>{row.layer}</b>} {LAYER_LABELS[row.layer]}
-                      {layerVoltage.get(row.layer) && /^L[1-7]$/.test(row.layer) && (
+                      {isMainLayer(row.layer) && <b>{row.layer}</b>} {LAYER_LABELS[row.layer]}
+                      {layerVoltage.get(row.layer) && isMainLayer(row.layer) && (
                         <span className="gp-matrix__volt"> {layerVoltage.get(row.layer)}</span>
                       )}
                     </th>
@@ -187,10 +187,7 @@ export default function GapPage() {
                             onClick={() => selectCell({ layer: row.layer, category: cat })}
                           >
                             {COVERAGE_ORDER.filter((c) => counts[c] > 0).map((c) => (
-                              <span key={c} className={`cov-chip cov-chip--${c}`} aria-hidden="true">
-                                {COVERAGE_ICONS[c]}
-                                {counts[c]}
-                              </span>
+                              <CoverageBadge key={c} coverage={c} variant="chip" label={counts[c]} decorative />
                             ))}
                           </button>
                         </td>
@@ -223,6 +220,7 @@ export default function GapPage() {
               type="button"
               className="gp-filter"
               aria-pressed={status === 'all'}
+              data-testid="gap-filter-all"
               onClick={() => setStatus('all')}
             >
               전체 {scope.length}
@@ -270,9 +268,7 @@ export default function GapPage() {
                   return (
                     <tr key={eq.id} data-testid={`gap-item-${eq.id}`} data-coverage={eq.coverage}>
                       <td>
-                        <span className={`cov-chip cov-chip--${eq.coverage}`}>
-                          <span aria-hidden="true">{COVERAGE_ICONS[eq.coverage]}</span> {SHORT_LABELS[eq.coverage]}
-                        </span>
+                        <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_SHORT_LABELS[eq.coverage]} />
                       </td>
                       <td>{eq.layer}</td>
                       <td>

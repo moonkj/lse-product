@@ -1,7 +1,8 @@
-import { COVERAGE_LABELS, COVERAGES, type Coverage } from '../../lib/schema';
+import { COVERAGES, type Coverage } from '../../lib/schema';
+import { COVERAGE_LABELS, isDimmedCoverage } from '../../lib/labels';
 import { getDiagramModel } from '../../lib/diagram/model';
-import type { ViewMode } from '../../store/useAppStore';
-import { COVERAGE_ICONS } from '../common/CoverageBadge';
+import type { ViewMode } from '../../lib/diagram/url';
+import CoverageBadge from '../common/CoverageBadge';
 
 const GAP_ORDER: Coverage[] = ['missing', 'partial', 'affiliate', 'owned', 'na'];
 const GAP_RULE: Record<Coverage, string> = {
@@ -39,14 +40,10 @@ export default function CoverageLegend({ mode = 'product' }: { mode?: ViewMode }
       )}
       <ul className="legend" aria-label="커버리지 범례" data-testid="legend">
         {order.map((c) => {
-          const faded = gap && (c === 'owned' || c === 'na');
+          const faded = gap && isDimmedCoverage(c);
           return (
             <li key={c} className={`legend__item${faded ? ' legend__item--faded' : ''}`} data-testid={`legend-item-${c}`}>
-              <span className={`cov-badge cov-badge--${c}`}>
-                <span className="cov-badge__icon" aria-hidden="true" data-testid={`coverage-icon-${c}`}>
-                  {COVERAGE_ICONS[c]}
-                </span>
-              </span>
+              <CoverageBadge coverage={c} variant="icon" />
               <span className="legend__label">{gap ? GAP_RULE[c] : COVERAGE_LABELS[c]}</span>
               <span className="legend__count">{counts[c]}</span>
             </li>

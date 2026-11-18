@@ -1,33 +1,12 @@
-import {
-  COVERAGES,
-  LAYER_LABELS,
-  type Coverage,
-  type DiagramEdge,
-  type DiagramLayer,
-  type EquipmentCategory,
-  type EquipmentType,
-  type Layer,
-} from '../schema';
-import { equipmentImageUrl, getData, type AppData } from '../../data/load';
+import { COVERAGES, LAYER_LABELS, type Coverage, type DiagramEdge, type DiagramLayer, type EquipmentType, type Layer } from '../schema';
+import { equipmentThumbUrl, getData, type AppData } from '../../data/load';
+import { isGapCoverage, isMainLayer } from '../labels';
 
 /** 노드 사진 타일 크기 (diagram.json 좌표 = 타일 중심, 리더가 이 크기 기준으로 겹침 없음 보장) */
 export const TILE_W = 120;
 export const TILE_H = 116;
 const HW = TILE_W / 2;
 const HH = TILE_H / 2;
-
-export const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
-  switching: '개폐',
-  protection: '보호',
-  transformation: '변압·변성',
-  measurement: '계측',
-  control: '제어',
-  monitoring: '감시',
-  generation: '발전·저장',
-  conductor: '선로',
-  load: '부하',
-  system: '설비 시스템',
-};
 
 export interface NodeItem {
   id: string;
@@ -40,6 +19,7 @@ export interface NodeItem {
   title: string;
   /** 타일 아래 작은 글씨 (약어가 있을 때만 이름) */
   subtitle?: string;
+  /** 타일용 160px 썸네일 (없으면 단선결선도 심볼) */
   imageUrl?: string;
 }
 
@@ -89,8 +69,7 @@ export interface DiagramModel {
 }
 
 const isSideLayer = (l: Layer) => l === 'MON' || l === 'REN';
-const isGap = (c: Coverage) => c === 'missing' || c === 'partial';
-export const isGapCoverage = isGap;
+const isGap = isGapCoverage;
 
 /** 직교 경로 (타일 가장자리에서 출발 → 꺾어서 → 타일 가장자리 도착) */
 function route(ax: number, ay: number, bx: number, by: number, busY?: number): string {
@@ -110,6 +89,11 @@ function route(ax: number, ay: number, bx: number, by: number, busY?: number): s
   if (Math.abs(dy) < 4) return `M${x1} ${ay}H${x2}`;
   const mx = Math.round((x1 + x2) / 2);
   return `M${x1} ${ay}H${mx}V${by}H${x2}`;
+}
+
+/** 데이터가 지정한 우회 경로(타일 가장자리 → … → 타일 가장자리, 직교)를 그대로 잇는다 */
+function polyline(points: { x: number; y: number }[]): string {
+  return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`).join('');
 }
 
 function arrowOf(from: NodeItem, to: NodeItem): string {
@@ -139,7 +123,7 @@ export function getDiagramModel(data: AppData = getData()): DiagramModel {
       layer: eq.layer,
       title: eq.abbr ?? name,
       subtitle: eq.abbr ? name : undefined,
-      imageUrl: equipmentImageUrl(eq.id),
+      imageUrl: equipmentThumbUrl(eq.id),
     });
   }
   const nodeById = new Map(nodes.map((n) => [n.id, n]));
@@ -152,7 +136,8 @@ export function getDiagramModel(data: AppData = getData()): DiagramModel {
   const buses: BusItem[] = [];
   const downGroups = new Map<string, DiagramEdge[]>();
   for (const e of valid) {
-    if (kindOf(e) !== 'power') continue;
+    // 우회 경로(points)가 지정된 엣지는 모선으로 묶지 않는다 — 데이터 경로를 그대로 그림
+    if (kindOf(e) !== 'power' || e.points) continue;
     const a = nodeById.get(e.from)!;
     const b = nodeById.get(e.to)!;
     if (b.y - a.y >= TILE_H + 20) {
@@ -176,7 +161,8 @@ export function getDiagramModel(data: AppData = getData()): DiagramModel {
     const a = nodeById.get(e.from)!;
     const b = nodeById.get(e.to)!;
     const far = isSideLayer(a.layer) !== isSideLayer(b.layer);
-    return { id: e.id, from: e.from, to: e.to, kind: kindOf(e), d: route(a.x, a.y, b.x, b.y, busYByEdge.get(e.id)), far };
+    const d = e.points ? polyline(e.points) : route(a.x, a.y, b.x, b.y, busYByEdge.get(e.id));
+    return { id: e.id, from: e.from, to: e.to, kind: kindOf(e), d, far };
   });
 
   const edgesByNode = new Map<string, string[]>();
@@ -248,4 +234,4 @@ export function layerAt(model: DiagramModel, x: number, y: number): Layer | null
 }
 
 /** "L4 수전설비" / "감시·제어" */
-export const layerTitle = (l: Layer) => (/^L\d$/.test(l) ? `${l} ${LAYER_LABELS[l]}` : LAYER_LABELS[l]);
+export const layerTitle = (l: Layer) => (isMainLayer(l) ? `${l} ${LAYER_LABELS[l]}` : LAYER_LABELS[l]);

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDiagramController, useView } from '../../lib/diagram/view';
 import { layerTitle } from '../../lib/diagram/model';
-import type { ViewMode } from '../../store/useAppStore';
+import type { ViewMode } from '../../lib/diagram/url';
 
 interface Props {
   mode: ViewMode;

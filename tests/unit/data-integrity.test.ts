@@ -490,6 +490,113 @@ describe('계통도 구조 (DI-30 ~ DI-49)', () => {
     const used = new Set(diagram.nodes.map((n) => n.equipmentTypeId));
     expect(equipment.filter((e) => !used.has(e.id)).map((e) => e.id)).toEqual([]);
   });
+
+  // DI-44 (v0.5 R2): 연결선이 양 끝 기기 외의 타일을 관통하지 않음.
+  // 타일 120×116 (src/lib/diagram/model.ts TILE_W/TILE_H). points 가 있으면 그 폴리라인, 없으면 model.ts route() 기본 직교 경로.
+  // 모선 그룹(한 기기에서 아래로 3개 이상 갈라지는 전력선)은 busY 가 달라 제외 (points 가 있으면 검사).
+  // 같은 로직: scripts/build-diagram-data.py default_route / path_hits_tiles (Python 쪽 CLEAR=10 은 생성 여유, 여기는 판정 여유 1px).
+  describe('DI-44 연결선 타일 관통 0건 (+ points 는 직교·타일 가장자리에서 시작/끝)', () => {
+    const TW = 120;
+    const TH = 116;
+    const HW = TW / 2;
+    const HH = TH / 2;
+    const CLEAR = 1;
+    type Pt = { x: number; y: number };
+    const nodeById = () => new Map(diagram.nodes.map((n) => [n.id, n]));
+
+    const defaultRoute = (a: Pt, b: Pt): Pt[] => {
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      if (Math.abs(dy) >= TH + 20) {
+        const s = Math.sign(dy);
+        const y1 = a.y + s * HH;
+        const y2 = b.y - s * HH;
+        if (Math.abs(dx) < 4) return [{ x: a.x, y: y1 }, { x: a.x, y: y2 }];
+        const my = Math.round((y1 + y2) / 2);
+        return [{ x: a.x, y: y1 }, { x: a.x, y: my }, { x: b.x, y: my }, { x: b.x, y: y2 }];
+      }
+      const s = Math.sign(dx) || 1;
+      const x1 = a.x + s * HW;
+      const x2 = b.x - s * HW;
+      if (Math.abs(dy) < 4) return [{ x: x1, y: a.y }, { x: x2, y: a.y }];
+      const mx = Math.round((x1 + x2) / 2);
+      return [{ x: x1, y: a.y }, { x: mx, y: a.y }, { x: mx, y: b.y }, { x: x2, y: b.y }];
+    };
+
+    const busEdgeIds = () => {
+      const byId = nodeById();
+      const groups = new Map<string, string[]>();
+      for (const e of diagram.edges) {
+        if ((e.kind ?? 'power') !== 'power') continue;
+        const a = byId.get(e.from);
+        const b = byId.get(e.to);
+        if (!a || !b || b.y - a.y < TH + 20) continue;
+        groups.set(e.from, [...(groups.get(e.from) ?? []), e.id]);
+      }
+      return new Set([...groups.values()].filter((g) => g.length >= 3).flat());
+    };
+
+    it('DI-44a 각 선분이 양 끝 기기 외 타일(120×116, 여유 1px)을 지나가지 않음', () => {
+      const byId = nodeById();
+      const bus = busEdgeIds();
+      const bad: string[] = [];
+      for (const e of diagram.edges) {
+        const a = byId.get(e.from);
+        const b = byId.get(e.to);
+        if (!a || !b) continue;
+        if (!e.points && bus.has(e.id)) continue;
+        const pts = e.points ?? defaultRoute(a, b);
+        for (let i = 0; i + 1 < pts.length; i++) {
+          const p = pts[i];
+          const q = pts[i + 1];
+          const [lx, hx, ly, hy] = [Math.min(p.x, q.x), Math.max(p.x, q.x), Math.min(p.y, q.y), Math.max(p.y, q.y)];
+          for (const n of diagram.nodes) {
+            if (n.id === e.from || n.id === e.to) continue;
+            const hit = lx < n.x + HW - CLEAR && hx > n.x - HW + CLEAR && ly < n.y + HH - CLEAR && hy > n.y - HH + CLEAR;
+            if (hit) bad.push(`${e.id} (${e.from}→${e.to}${e.points ? ', points' : ''}) 선분 ${i}이 ${n.id} 관통`);
+          }
+        }
+      }
+      expect(bad).toEqual([]);
+    });
+
+    it('DI-44b points: 연속한 두 점은 x 또는 y 가 같음(직교), 첫/끝 점은 from/to 타일 가장자리 위', () => {
+      const byId = nodeById();
+      const onEdge = (p: Pt, c: Pt) => {
+        const ex = Math.abs(Math.abs(p.x - c.x) - HW) <= 1 && Math.abs(p.y - c.y) <= HH + 1;
+        const ey = Math.abs(Math.abs(p.y - c.y) - HH) <= 1 && Math.abs(p.x - c.x) <= HW + 1;
+        return ex || ey;
+      };
+      const bad: string[] = [];
+      for (const e of diagram.edges) {
+        if (!e.points) continue;
+        const pts = e.points;
+        pts.slice(1).forEach((q, i) => {
+          const p = pts[i];
+          if (p.x !== q.x && p.y !== q.y) bad.push(`${e.id}: 점 ${i}→${i + 1} 사선 (${p.x},${p.y})→(${q.x},${q.y})`);
+        });
+        const a = byId.get(e.from);
+        const b = byId.get(e.to);
+        if (a && !onEdge(pts[0], a)) bad.push(`${e.id}: 첫 점 (${pts[0].x},${pts[0].y}) 이 ${a.id}(${a.x},${a.y}) 가장자리 밖`);
+        const last = pts[pts.length - 1];
+        if (b && !onEdge(last, b)) bad.push(`${e.id}: 끝 점 (${last.x},${last.y}) 이 ${b.id}(${b.x},${b.y}) 가장자리 밖`);
+      }
+      expect(bad).toEqual([]);
+    });
+
+    it('DI-44 판정 함수 자기검증: 중간 타일을 지나는 경로는 잡아낸다', () => {
+      const a = { x: 100, y: 100 };
+      const b = { x: 500, y: 100 };
+      const pts = defaultRoute(a, b);
+      const mid = { x: 300, y: 100 };
+      const crosses = pts.slice(1).some((q, i) => {
+        const p = pts[i];
+        return Math.min(p.x, q.x) < mid.x + HW && Math.max(p.x, q.x) > mid.x - HW && Math.min(p.y, q.y) < mid.y + HH && Math.max(p.y, q.y) > mid.y - HH;
+      });
+      expect(pts).toEqual([{ x: 160, y: 100 }, { x: 440, y: 100 }]);
+      expect(crosses).toBe(true);
+    });
+  });
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -746,12 +853,15 @@ describe('기기 사진 equipment-images.json (DI-80 ~)', () => {
   it('DI-80 파일 존재 + EquipmentImagesSchema 통과 (+ 잘못된 값은 거부)', () => {
     expect(existsSync(DATA_DIR + IMAGES_FILE)).toBe(true);
     expect(EquipmentImagesSchema.safeParse(raw).success).toBe(true);
-    const ok = { file: 'images/equipment/vcb.png', productId: null, productName: null, sourceUrl: 'https://www.ls-electric.com/a.png', bytes: 1 };
+    const ok = { file: 'images/equipment/vcb.png', thumb: 'images/equipment/thumb/vcb.png', productId: null, productName: null, sourceUrl: 'https://www.ls-electric.com/a.png', bytes: 1 };
     expect(EquipmentImagesSchema.safeParse({ vcb: ok }).success).toBe(true);
     expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, file: '/images/equipment/vcb.png' } }).success, '절대경로(base ./ 깨짐)').toBe(false);
     expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, file: 'images/equipment/../x.png' } }).success, '경로 탈출').toBe(false);
     expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, sourceUrl: 'http://x.com/a.png' } }).success, 'http 출처').toBe(false);
     expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, bytes: 0 } }).success, 'bytes 0').toBe(false);
+    const { thumb: _t, ...noThumb } = ok;
+    expect(EquipmentImagesSchema.safeParse({ vcb: noThumb }).success, 'thumb 누락 (v0.5 R2 필수)').toBe(false);
+    expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, thumb: 'images/equipment/vcb.png' } }).success, 'thumb 이 thumb/ 폴더 밖').toBe(false);
   });
 
   it('DI-81 키(기기 id)가 equipment-types.json 에 존재', () => {
@@ -760,6 +870,16 @@ describe('기기 사진 equipment-images.json (DI-80 ~)', () => {
 
   it('DI-82 사진 파일이 public/ 아래 실제로 존재 (배포 후 깨진 이미지 방지)', () => {
     expect(images.filter(([, v]) => !existsSync(PUBLIC_DIR + v.file)).map(([id, v]) => `${id}: public/${v.file}`)).toEqual([]);
+  });
+
+  it('DI-82b 썸네일(thumb, 160px) 파일이 public/ 아래 실제로 존재 + 원본보다 크지 않음 (v0.5 R2)', () => {
+    expect(images.filter(([, v]) => !existsSync(PUBLIC_DIR + v.thumb)).map(([id, v]) => `${id}: public/${v.thumb}`)).toEqual([]);
+    expect(
+      images
+        .filter(([, v]) => existsSync(PUBLIC_DIR + v.thumb) && existsSync(PUBLIC_DIR + v.file))
+        .filter(([, v]) => statSync(PUBLIC_DIR + v.thumb).size > statSync(PUBLIC_DIR + v.file).size)
+        .map(([id]) => `${id}: thumb 이 원본보다 큼`),
+    ).toEqual([]);
   });
 
   it('DI-83 productId 가 있으면 products.json 에 존재', () => {
@@ -788,6 +908,7 @@ describe('기기 사진 equipment-images.json (DI-80 ~)', () => {
       const size = statSync(PUBLIC_DIR + v.file).size;
       if (size !== v.bytes) warn.push(`${id}: 실제 ${size}B ≠ bytes ${v.bytes}`);
       if (size > 500 * 1024) warn.push(`${id}: ${Math.round(size / 1024)}KB`);
+      if (existsSync(PUBLIC_DIR + v.thumb) && statSync(PUBLIC_DIR + v.thumb).size > 500 * 1024) warn.push(`${id}: thumb ${Math.round(statSync(PUBLIC_DIR + v.thumb).size / 1024)}KB`);
     }
     softWarn('DI-86', warn);
   });

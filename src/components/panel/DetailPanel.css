@@ -69,20 +69,6 @@
   background: var(--color-surface-2);
 }
 
-.cov-pill {
-  align-self: flex-start;
-  gap: 6px;
-  padding: 3px 10px 3px 4px;
-  border-radius: var(--radius-pill);
-  font-size: 13px;
-  font-weight: var(--fw-bold);
-}
-
-.cov-pill.cov-badge--owned { background: var(--cov-owned-bg); color: var(--cov-owned-text); }
-.cov-pill.cov-badge--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
-.cov-pill.cov-badge--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
-.cov-pill.cov-badge--missing { background: var(--cov-missing-bg); color: var(--cov-missing-text); }
-.cov-pill.cov-badge--na { background: var(--cov-na-bg); color: var(--cov-na-text); }
 
 .dp-hero {
   display: flex;
@@ -305,7 +291,8 @@
   cursor: pointer;
 }
 
-.dp-related__item img {
+.dp-related__item img,
+.dp-related__item .eq-symbol {
   flex: none;
   width: 40px;
   height: 40px;

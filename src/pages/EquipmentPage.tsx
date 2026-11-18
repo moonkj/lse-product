@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { LAYER_LABELS } from '../lib/schema';
-import { docsByProductId, resolveCategories, useData } from '../data/load';
+import { docsByProductId, useData } from '../data/load';
 import CoverageBadge from '../components/common/CoverageBadge';
 import DocsList from '../components/common/DocsList';
-import ExternalLink from '../components/common/ExternalLink';
+import EmptyProducts from '../components/common/EmptyProducts';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
-import { CATEGORY_LABELS, diagramHref, layerStyle, nodeForEquipment, productsForEquipment } from '../lib/pages/catalog';
+import { CATEGORY_LABELS, isGapCoverage, isMainLayer, pageTitle } from '../lib/labels';
+import { diagramHref, layerStyle, nodeForEquipment, productsForEquipment } from '../lib/pages/catalog';
 import NotFoundPage from './NotFoundPage';
 import './pages.css';
 import './EquipmentPage.css';
@@ -20,15 +21,14 @@ export default function EquipmentPage() {
   const eq = useData().equipmentTypeById.get(id);
 
   useEffect(() => {
-    if (eq) document.title = `${eq.name} · LS ELECTRIC 전력계통 제품맵`;
+    if (eq) document.title = pageTitle(eq.name);
   }, [eq]);
 
   if (!eq) return <NotFoundPage kind="기기" id={id} />;
 
   const node = nodeForEquipment(eq.id);
   const products = productsForEquipment(eq.id);
-  const categories = products.length === 0 ? resolveCategories(eq) : [];
-  const isGap = eq.coverage === 'missing' || eq.coverage === 'partial';
+  const isGap = isGapCoverage(eq.coverage);
   const docProducts = products.filter((p) => (docsByProductId(p.id)?.docs.length ?? 0) > 0).slice(0, DOC_PRODUCTS_MAX);
 
   return (
@@ -109,7 +109,7 @@ export default function EquipmentPage() {
                 {products.map((p) => (
                   <li key={p.id}>
                     <Link to={`/product/${p.id}`} className="eqp-product" data-testid={`product-card-${p.id}`}>
-                      <EquipmentVisual eq={eq} className="eqp-product__img" />
+                      <EquipmentVisual eq={eq} className="eqp-product__img" thumb />
                       <span className="eqp-product__body">
                         <b className="eqp-product__name">{p.name}</b>
                         <span className="eqp-product__meta">{p.categoryPath.join(' › ')}</span>
@@ -120,30 +120,13 @@ export default function EquipmentPage() {
                 ))}
               </ul>
             ) : (
-              <div className="eqp-empty" data-testid="equipment-empty-products">
-                {eq.coverage === 'missing' ? (
-                  <p>자사 제품 미보유(공백)</p>
-                ) : eq.coverage === 'affiliate' ? (
-                  <p>계열사 제품으로 공급합니다.</p>
-                ) : eq.coverage === 'na' ? (
-                  <p>자사 사업 범위 밖입니다 (해당 없음).</p>
-                ) : categories.length > 0 ? (
-                  <>
-                    <p>개별 제품 대신 공식 제품군 페이지에서 확인하세요.</p>
-                    <ul className="pg-chips" data-testid="equipment-category-links">
-                      {categories.map((c) => (
-                        <li key={c.code}>
-                          <ExternalLink className="pg-chip" href={c.url}>
-                            {c.path.join(' › ')} ↗
-                          </ExternalLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : (
-                  <p>자료 준비 중</p>
-                )}
-              </div>
+              <EmptyProducts
+                eq={eq}
+                testIdPrefix="equipment"
+                className="eqp-empty"
+                listClassName="pg-chips"
+                linkClassName="pg-chip"
+              />
             )}
           </section>
 
@@ -177,7 +160,7 @@ export default function EquipmentPage() {
             ) : (
               <p className="pg-muted">등록된 학습 포인트가 없습니다.</p>
             )}
-            <Link to={`/learn?step=${/^L[1-7]$/.test(eq.layer) ? eq.layer : 'L1'}`} className="pg-muted">
+            <Link to={`/learn?step=${isMainLayer(eq.layer) ? eq.layer : 'L1'}`} className="pg-muted">
               교육 투어에서 이 계층 배우기 →
             </Link>
           </section>

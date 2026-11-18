@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import type { ViewMode } from '../../store/useAppStore';
 import { getDiagramModel } from './model';
+
+/** 계통도 보기 모드 (URL `?mode=` 가 원본) */
+export type ViewMode = 'product' | 'gap' | 'learn';
 
 /**
  * 계통도 화면 상태는 URL 이 원본: `#/?mode=gap|learn&node=<nodeId>` (제품 모드는 mode 생략)
@@ -47,16 +49,20 @@ export function useSelectNode() {
 /** 보기 모드 전환 — 항상 계통도(/)로, 선택 노드는 유지 */
 export function useSetViewMode() {
   const navigate = useNavigate();
-  const { pathname, search } = useLocation();
+  const location = useLocation();
+  // 렌더 시점 값이 아니라 호출 시점의 최신 위치로 계산 (노드 선택 전환 중 모드 변경 시 node 유실 방지)
+  const locRef = useRef(location);
+  locRef.current = location;
   return useCallback(
     (mode: ViewMode) => {
+      const { pathname, search } = locRef.current;
       const next = new URLSearchParams(pathname === '/' ? search : '');
       if (mode === 'product') next.delete('mode');
       else next.set('mode', mode);
       const q = next.toString();
       navigate({ pathname: '/', search: q ? `?${q}` : '' });
     },
-    [navigate, pathname, search],
+    [navigate],
   );
 }
 
@@ -79,6 +85,16 @@ export function useMediaQuery(query: string): boolean {
     return () => mql.removeEventListener('change', on);
   }, [query]);
   return matches;
+}
+
+/** 다른 화면에서 계통도로 이동하며 노드 포커스를 요청할 때 navigate state 로 넘기는 값 */
+export interface FocusState {
+  focusNode?: string;
+}
+
+/** 계통도 노드로 키보드 포커스 이동 (화면 스크롤은 PanZoom 이 담당하므로 preventScroll) */
+export function focusNode(id: string) {
+  document.querySelector<HTMLElement>(`[data-node-id="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
 }
 
 export const MOBILE_QUERY = '(max-width: 900px)';

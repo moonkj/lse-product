@@ -20,6 +20,7 @@
 - [x] (T2) 스캐폴딩 점검 (빌드/린트/타입 오류) — 빌드·tsc 통과, 이슈 높음2/중간7/낮음11 → docs/reviews/phase0-debug-report.md
 - [x] (T3) 테스트 환경 구성 (Vitest, Playwright) + 스모크 테스트 — vitest/playwright 설정, npm scripts, CI test 단계, 스모크 1 통과
 - [x] (T1) 디버거 리포트 반영: H1(ErrorBoundary·지연 로딩), H2(카테고리 링크 대체), M1(헤더 버튼=location), M2, M3, M4(패널 정리), M5, M6, M7, L2·L3·L4·L5·L6 — 보류: M1 구조, L1·L7·L8·L9·L10·L11
+- [x] (T1) 개선 R2: 엣지 points 렌더·타일 썸네일, T2 H1·H2·M1~M8·L1·L3~L8·L10·L12~L14, T3 M1·M2·M4·M5·M6·R1·R3·R4·R6·R7·R8·R10·O3·O9 + CSV 수식 주입 방지, 투어 완료(tour-finish·tour-summary). vitest 126/126, E2E 33통과/1skip — 보류: L2(히스토리 정책 팀 결정), L9 일부, R2 일부, R5·R9(보고만), O8
 
 ## Phase 1 — 데이터
 - [x] (리더) 표준 계통 기기 목록(EquipmentType) 74종 + 계통도 배치(노드 74/엣지 77) → scripts/build-diagram-data.py
@@ -45,7 +46,7 @@
 
 ## Phase 4 — Gap 분석
 - [~] (T1) 커버리지 계산, Gap 보기 모드, 매트릭스 페이지 — **T1-B: 공백 표 /gap 완료** (요약 카드·계층×기능 매트릭스·칸 필터·공백 목록·CSV 내보내기). Gap 보기 모드(계통도 강조)는 T1-A
-- [~] (T2/T3) 계산 로직 검증 + 테스트 — T2: 커버리지·보유율·CSV escape 검증 완료(공백 정의 불일치 L13, CSV 수식주입 L8), 테스트는 T3 / T3: UT-01 buildGapCsv(BOM·CRLF·escape) + E2E FT-26(전체 17·미보유 12) 작성. countCoverage·ownedRate 단위 테스트는 미작성
+- [~] (T2/T3) 계산 로직 검증 + 테스트 — T2: 커버리지·보유율·CSV escape 검증 완료(공백 정의 불일치 L13, CSV 수식주입 L8), 테스트는 T3 / T3: UT-01 buildGapCsv(BOM·CRLF·escape·수식주입) + E2E FT-26(전체 17·미보유 12, gap-filter-all) 작성. countCoverage·ownedRate 단위 테스트는 미작성 / T3 R2(v0.5): DI-44 연결선 타일 관통·DI-82b thumb·UT-02 resolveProducts 하위 카테고리·UT-03 사진 URL·E2E iS7/IME/tour-finish/썸네일 → unit 126 통과, E2E 31통과·2실패(tour-finish 구현 대기)·1skip
 
 ## Phase 5 — 교육
 - [~] (T1) 계통 따라가기 투어, 용어집, (퀴즈/진도) — **T1-B: /learn 완료** (7단계 투어·퀴즈 20문항·진도 localStorage·용어집 36개, src/content/learn.json draft — 교육 담당자 검토 필요). 계통도 위 교육 모드 투어(E2E-1)는 T1-A

@@ -1,11 +1,14 @@
+import { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import HomePage from './pages/HomePage';
-import EquipmentPage from './pages/EquipmentPage';
-import ProductPage from './pages/ProductPage';
-import GapPage from './pages/GapPage';
-import LearnPage from './pages/LearnPage';
 import NotFoundPage from './pages/NotFoundPage';
+
+// 첫 화면(계통도)만 기본 번들에, 나머지 페이지는 라우트별 청크로 지연 로딩 (리뷰 R10)
+const EquipmentPage = lazy(() => import('./pages/EquipmentPage'));
+const ProductPage = lazy(() => import('./pages/ProductPage'));
+const GapPage = lazy(() => import('./pages/GapPage'));
+const LearnPage = lazy(() => import('./pages/LearnPage'));
 
 export default function App() {
   return (

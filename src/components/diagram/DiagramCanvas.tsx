@@ -5,15 +5,24 @@ import type { Layer } from '../../lib/schema';
 import { TILE_H, TILE_W, getDiagramModel, layerAt, type DiagramModel } from '../../lib/diagram/model';
 import { PanZoom, type Rect } from '../../lib/diagram/panzoom';
 import { registerDiagramController, viewStore } from '../../lib/diagram/view';
-import { MOBILE_QUERY, useMediaQuery, useSelectNode, useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
-import type { ViewMode } from '../../store/useAppStore';
+import {
+  MOBILE_QUERY,
+  focusNode,
+  useMediaQuery,
+  useSelectNode,
+  useSelectedNodeId,
+  useViewMode,
+  type FocusState,
+  type ViewMode,
+} from '../../lib/diagram/url';
+import { isMainLayer, pageTitle } from '../../lib/labels';
 import DiagramNode from './DiagramNode';
 import DiagramToolbar from './DiagramToolbar';
 import Minimap from './Minimap';
 import './DiagramCanvas.css';
 
 /** 다른 페이지에서 계층 점프 시 navigate state 로 넘기는 값 */
-export interface JumpState {
+export interface JumpState extends FocusState {
   jumpTo?: Layer;
 }
 
@@ -63,7 +72,7 @@ const Bands = memo(function Bands({ model, mode }: { model: DiagramModel; mode: 
       {model.layers.map((l) => {
         const r = model.layerRect.get(l.id)!;
         const gaps = model.layerStats.get(l.id)?.gaps ?? 0;
-        const name = /^L\d$/.test(l.id) ? `${l.id} ${l.label}` : l.label;
+        const name = isMainLayer(l.id) ? `${l.id} ${l.label}` : l.label;
         const suffix = mode === 'gap' ? (gaps > 0 ? `공백 ${gaps}` : '공백 없음') : l.voltage;
         return (
           <div
@@ -109,7 +118,9 @@ export default function DiagramCanvas() {
   );
 
   // 엔진 생성 + 초기 뷰 (레이아웃 직후 → 첫 페인트 전에 위치가 잡힘)
-  const jumpTo = (location.state as JumpState | null)?.jumpTo;
+  const navState = location.state as JumpState | null;
+  const jumpTo = navState?.jumpTo;
+  const focusTarget = navState?.focusNode;
   const initialRef = useRef({ jumpTo, selectedId, isMobile });
   useLayoutEffect(() => {
     const vp = vpRef.current;
@@ -178,11 +189,17 @@ export default function DiagramCanvas() {
     return () => io.disconnect();
   }, [model]);
 
-  // 다른 페이지에서 계층 점프로 들어온 경우: 뒤로가기 시 반복되지 않게 state 제거
   useEffect(() => {
-    if (!jumpTo) return;
+    document.title = pageTitle();
+  }, []);
+
+  // 다른 페이지에서 계층 점프·검색 선택으로 들어온 경우: 화면 전환이 끝난(커밋 후) 지금 노드로 포커스,
+  // 뒤로가기 시 반복되지 않게 state 제거
+  useEffect(() => {
+    if (!jumpTo && !focusTarget) return;
+    if (focusTarget) focusNode(focusTarget);
     navigate(location.pathname + location.search, { replace: true, state: null });
-  }, [jumpTo, navigate, location.pathname, location.search]);
+  }, [jumpTo, focusTarget, navigate, location.pathname, location.search]);
 
   // 선택이 바뀌면(검색·연결 기기 칩·URL) 화면 밖 노드를 가운데로.
   // 모바일은 하단 시트가 아래쪽을 덮으므로 시트 위 남은 영역의 가운데로 옮긴다.

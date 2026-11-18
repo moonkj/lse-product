@@ -48,6 +48,7 @@ interface Prod {
   id: string;
   name: string;
   url: string;
+  categoryCode: string;
 }
 interface DocRef {
   type: string;
@@ -78,10 +79,13 @@ const catByCode = new Map(categories.map((c) => [c.code, c]));
 /** 자료 파일 허용 도메인: *.ls-electric.com + ssq 공식 대용량 파일 CDN (DI-62 와 같은 규칙) */
 const ALLOWED_DOC_URL_RE = /^https:\/\/(([a-z0-9-]+\.)*ls-electric\.com|ssqfd-abhdhraad3gkgbcg\.a03\.azurefd\.net)\//i;
 const docsOf = (productId: string): DocRef[] => docsJson.products[productId]?.docs ?? [];
-/** 앱의 resolveProducts 와 같은 규칙: productIds ∪ lseCategoryCodes 카테고리의 직속 productIds */
+/** 앱의 resolveProducts 와 같은 규칙 (v0.5 M3): productIds ∪ 카테고리 productIds ∪ 하위 카테고리(코드 접두사) 제품 */
 function linkedProducts(e: Eq): string[] {
   const ids = new Set(e.productIds ?? []);
-  for (const code of e.lseCategoryCodes) catByCode.get(code)?.productIds.forEach((id) => ids.add(id));
+  for (const code of e.lseCategoryCodes) {
+    catByCode.get(code)?.productIds.forEach((id) => ids.add(id));
+    products.filter((p) => p.categoryCode.startsWith(code)).forEach((p) => ids.add(p.id));
+  }
   return [...ids].filter((id) => products.some((p) => p.id === id));
 }
 
@@ -108,6 +112,15 @@ const nodeWithDocs = (() => {
     const eq = eqById.get(node.equipmentTypeId);
     if (!eq) continue;
     if (linkedProducts(eq).some((id) => docsOf(id).length > 0)) return { node, eq };
+  }
+  return undefined;
+})();
+/** equipment-images.json (v0.5 R2: thumb 160px = 계통도 타일, file 320px = 패널 큰 사진) */
+const equipmentImages = load<Record<string, { file: string; thumb: string }>>('equipment-images.json');
+const nodeWithImage = (() => {
+  for (const node of diagram.nodes) {
+    const eq = eqById.get(node.equipmentTypeId);
+    if (eq && equipmentImages[eq.id]) return { node, eq };
   }
   return undefined;
 })();
@@ -168,6 +181,9 @@ test.describe('E2E-1 신입 학습 흐름', () => {
     expect(visited).toEqual(['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']); // 순서대로, 건너뛰기·역행 없음
     await expect(step).toHaveAttribute('data-layer', 'L7');
     await expect(tid(page, 'tour-next')).toBeDisabled();
+    // v0.5 R2: L7 에는 "다음" 대신 완료 버튼 (클릭 → 완료 요약은 아래 별도 테스트)
+    await expect(tid(page, 'tour-finish')).toBeVisible();
+    await expect(tid(page, 'tour-finish')).toBeEnabled();
 
     // L7 핵심 기기 카드 → 계통도에서 그 노드 선택 (/?node=)
     const keyId = learn.steps[6].keyEquipmentIds.find((id) => diagram.nodes.some((n) => n.equipmentTypeId === id));
@@ -179,6 +195,18 @@ test.describe('E2E-1 신입 학습 흐름', () => {
     await expect(diagramNode(page, keyNode.id)).toHaveAttribute('aria-pressed', 'true');
     await expect(tid(page, 'detail-title')).toContainText(eqById.get(keyId!)!.name);
     await expect(tid(page, 'detail-learn-points').locator('li').first()).toBeVisible();
+  });
+
+  test('v0.5 R2: L7 에서 tour-next 비활성 + tour-finish 클릭 → 완료 요약 표시 (M8)', async ({ page }) => {
+    await page.goto('./#/learn?step=L7');
+    await expect(tid(page, 'tour-step')).toHaveAttribute('data-layer', 'L7');
+    await expect(tid(page, 'tour-next')).toBeDisabled();
+    await tid(page, 'tour-finish').click();
+    // 완료 요약 testid: tour-summary (T1 구현 시 이름 확정 — tour-complete 도 허용)
+    const summary = page.getByTestId(/^tour-(summary|complete)$/);
+    await expect(summary).toBeVisible();
+    // 요약에 7개 계층(L1~L7)이 모두 언급된다
+    for (const l of ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']) await expect(summary).toContainText(l);
   });
 
   test('/learn?step=L4 딥링크 → L4 단계로 열리고 새로고침해도 유지', async ({ page }) => {
@@ -234,6 +262,48 @@ test.describe('E2E-2 영업 데이터시트 찾기', () => {
     } else {
       await expect(tid(page, 'docs-empty')).toBeVisible(); // "자료 준비 중"
     }
+  });
+
+  test('v0.5 R2: "iS7" + Enter → iS7 제품(P01188) 또는 저압 인버터 기기가 1순위 (초고압 GIS 아님)', async ({ page }) => {
+    const is7 = products.find((p) => p.id === 'P01188');
+    test.skip(!is7, 'P01188(iS7) 제품 데이터 없음');
+    await gotoHome(page);
+    await tid(page, 'search-input').fill('iS7');
+    await expect(tid(page, 'search-results')).toBeVisible();
+    await tid(page, 'search-input').press('Enter');
+    await expect(page).toHaveURL(/#\/(product\/P\d+|\?(.*&)?node=)/);
+    const url = page.url();
+    const prodMatch = url.match(/#\/product\/(P\d+)/);
+    if (prodMatch) {
+      expect(products.find((p) => p.id === prodMatch[1])?.name ?? '').toMatch(/iS7/i);
+    } else {
+      const nodeId = decodeURIComponent(url.match(/[?&]node=([^&]+)/)![1]);
+      const eq = eqById.get(diagram.nodes.find((n) => n.id === nodeId)!.equipmentTypeId)!;
+      expect(`${eq.id} ${eq.name}`, '1순위 기기').not.toMatch(/gis|가스절연/i);
+      expect(linkedProducts(eq).includes('P01188') || /인버터|드라이브|inverter|drive/i.test(`${eq.id} ${eq.name}`), `${eq.id} ${eq.name}`).toBe(true);
+    }
+  });
+
+  test('v0.5 R2: 한글 조합(IME) 중 Enter 는 무시 — 결과 선택·이동 없음', async ({ page }) => {
+    await gotoHome(page);
+    const input = tid(page, 'search-input');
+    await input.fill('인버');
+    await expect(tid(page, 'search-results')).toBeVisible();
+    const before = page.url();
+    // 조합 중 Enter: 브라우저는 keydown 에 isComposing=true, keyCode=229 를 실어 보낸다 (CDP IME 이벤트는 isComposing 을 설정하지 않아 직접 dispatch)
+    await input.evaluate((el) => {
+      el.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true, data: '' }));
+      const ev = new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true, cancelable: true, isComposing: true });
+      Object.defineProperty(ev, 'keyCode', { get: () => 229 });
+      el.dispatchEvent(ev);
+    });
+    await page.waitForTimeout(200);
+    expect(page.url()).toBe(before);
+    await expect(input).toHaveValue('인버');
+    await input.evaluate((el) => el.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: '인버' })));
+    // 조합이 끝난 뒤 Enter 는 정상 동작 (결과 선택 → 이동)
+    await input.press('Enter');
+    await expect(page).not.toHaveURL(before);
   });
 
   test('검색 결과 없음 → 빈 상태 + 추천 표시, 오류 없음', async ({ page }) => {
@@ -303,6 +373,7 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     await page.goto('./#/gap');
     await expect(tid(page, 'gap-page')).toBeVisible();
     await expect(tid(page, 'gap-matrix')).toBeVisible();
+    await expect(tid(page, 'gap-filter-all')).toHaveAttribute('aria-pressed', 'true'); // v0.5 R2
     const items = tid(page, 'gap-list').getByTestId(/^gap-item-/);
     await expect(items).toHaveCount(gapTotal);
 
@@ -471,6 +542,25 @@ test.describe('E2E-5 접근성·반응형', () => {
     expect(p.dash === 'none' || p.dash === '').toBe(true);
     expect(s.dash).not.toMatch(/^(none)?$/);
     expect(p.width).toBeGreaterThan(s.width);
+  });
+
+  test('v0.5 R2: 계통도 타일 사진 = 썸네일(/images/equipment/thumb/), 상세 패널 큰 사진 = 원본', async ({ page }) => {
+    test.skip(!nodeWithImage, '사진이 있는 계통도 노드 없음');
+    const { node, eq } = nodeWithImage!;
+    await gotoHome(page);
+    const tileImg = diagramNode(page, node.id).locator('img').first();
+    await expect(tileImg).toBeAttached();
+    const tileSrc = (await tileImg.getAttribute('data-src')) ?? (await tileImg.getAttribute('src')) ?? '';
+    expect(tileSrc).toContain('images/equipment/thumb/');
+    expect(tileSrc).toMatch(new RegExp(`${equipmentImages[eq.id].thumb.split('/').pop()!.replace('.', '\\.')}$`));
+
+    await page.goto(`./#/?node=${node.id}`);
+    await expect(panel(page)).toBeVisible();
+    const hero = panel(page).locator('.dp-hero img').first();
+    await expect(hero).toBeVisible();
+    const heroSrc = (await hero.getAttribute('src')) ?? '';
+    expect(heroSrc).toContain(equipmentImages[eq.id].file);
+    expect(heroSrc).not.toContain('/thumb/');
   });
 
   test('범례에 5개 커버리지 상태가 색 + 아이콘으로 모두 표시', async ({ page }) => {

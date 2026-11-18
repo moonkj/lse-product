@@ -15,6 +15,7 @@ import {
   nodeForEquipment,
   productsForEquipment,
 } from '../lib/pages/catalog';
+import { pageTitle } from '../lib/labels';
 import NotFoundPage from './NotFoundPage';
 import './pages.css';
 import './ProductPage.css';
@@ -26,7 +27,7 @@ export default function ProductPage() {
   const product = useData().productById.get(id);
 
   useEffect(() => {
-    if (product) document.title = `${product.name} · LS ELECTRIC 전력계통 제품맵`;
+    if (product) document.title = pageTitle(product.name);
   }, [product]);
 
   if (!product) return <NotFoundPage kind="제품" id={id} />;
@@ -239,7 +240,7 @@ function PositionCard({ nodeId, eq }: { nodeId: string; eq: EquipmentType }) {
                   aria-current={self ? 'true' : undefined}
                   title={l.eq.name}
                 >
-                  <EquipmentVisual eq={l.eq} />
+                  <EquipmentVisual eq={l.eq} thumb />
                   <b>{short(l.eq)}</b>
                 </Link>
               </li>

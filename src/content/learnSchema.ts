@@ -57,7 +57,7 @@ let cache: LearnContent | undefined;
 export function getLearnContent(): LearnContent {
   if (cache) return cache;
   const r = LearnContentSchema.safeParse(learnJson);
-  if (!r.success) throw new DataValidationError('../content/learn.json', r.error);
+  if (!r.success) throw new DataValidationError('src/content/learn.json', r.error);
   cache = r.data;
   return cache;
 }

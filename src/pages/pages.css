@@ -160,18 +160,6 @@
 .pg-chip:hover { border-color: var(--color-brand); color: var(--color-link); }
 
 /* 커버리지 칩 (✓n ◐n …) */
-.cov-chip {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-weight: var(--fw-bold);
-  white-space: nowrap;
-}
-.cov-chip--owned { background: var(--cov-owned-bg); color: var(--cov-owned-text); }
-.cov-chip--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
-.cov-chip--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
-.cov-chip--missing { background: var(--cov-missing-bg); color: var(--cov-missing-text); }
-.cov-chip--na { background: var(--cov-na-bg); color: var(--cov-na-text); }
 
 /* 미니 체인 (계통 속 위치) */
 .pg-chain {

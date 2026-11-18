@@ -1,181 +1,34 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { COVERAGE_LABELS, type Coverage, type EquipmentType, type Product } from '../../lib/schema';
-import { docsByProductId, equipmentImageUrl, getData, resolveCategories, resolveProducts } from '../../data/load';
-import { CATEGORY_LABELS, getDiagramModel, isGapCoverage, layerTitle, type NodeItem } from '../../lib/diagram/model';
-import { MOBILE_QUERY, useMediaQuery, useSelectNode, useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
-import { COVERAGE_ICONS } from '../common/CoverageBadge';
+import type { Coverage, Product } from '../../lib/schema';
+import { docsByProductId } from '../../data/load';
+import { CATEGORY_LABELS, COVERAGE_LABELS, isGapCoverage } from '../../lib/labels';
+import { getDiagramModel, layerTitle } from '../../lib/diagram/model';
+import { productsForEquipment } from '../../lib/pages/catalog';
+import { MOBILE_QUERY, focusNode, useMediaQuery, useSelectNode, useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
+import CoverageBadge from '../common/CoverageBadge';
 import DocsList from '../common/DocsList';
-import ExternalLink from '../common/ExternalLink';
-import EquipmentSymbol from '../diagram/EquipmentSymbol';
+import EmptyProducts from '../common/EmptyProducts';
+import GapSections from './GapSections';
+import NeighborChips from './NeighborChips';
+import PanelHero from './PanelHero';
 import './DetailPanel.css';
 
 const MAX_PRODUCTS = 8;
 
-function CoveragePill({ coverage, productCount }: { coverage: Coverage; productCount: number }) {
-  let text = COVERAGE_LABELS[coverage];
-  if (coverage === 'missing') text = '미보유 · 공백 후보';
-  else if (productCount > 0 && (coverage === 'owned' || coverage === 'partial')) text += ` · 제품 ${productCount}종`;
-  return (
-    <span className={`cov-badge cov-badge--${coverage} cov-pill`} data-testid="detail-coverage-badge" data-coverage={coverage}>
-      <span className="cov-badge__icon" aria-hidden="true" data-testid={`coverage-icon-${coverage}`}>
-        {COVERAGE_ICONS[coverage]}
-      </span>
-      <span className="cov-pill__label">{text}</span>
-    </span>
-  );
+/** 패널 헤더 커버리지 문구 */
+function pillText(coverage: Coverage, productCount: number): string {
+  if (coverage === 'missing') return '미보유 · 공백 후보';
+  const base = COVERAGE_LABELS[coverage];
+  return productCount > 0 && (coverage === 'owned' || coverage === 'partial') ? `${base} · 제품 ${productCount}종` : base;
 }
 
-function Hero({ eq, compact }: { eq: EquipmentType; compact: boolean }) {
-  const img = equipmentImageUrl(eq.id);
-  const meta = getData().equipmentImageById.get(eq.id);
-  const size = compact ? 72 : 200;
-  if (img) {
-    return (
-      <div className={`dp-hero${compact ? ' dp-hero--compact' : ''}`}>
-        <img
-          src={img}
-          alt={meta?.productName ? `${meta.productName} 제품 사진` : ''}
-          width={size}
-          height={size}
-          decoding="async"
-        />
-      </div>
-    );
-  }
-  return (
-    <div className={`dp-hero dp-hero--symbol dp-hero--${eq.coverage}${compact ? ' dp-hero--compact' : ''}`}>
-      <EquipmentSymbol category={eq.category} equipmentId={eq.id} size={compact ? 56 : 110} />
-    </div>
-  );
-}
+/** gapNote 라벨: 상태에 맞게 (보유 기기 메모에 "공백"이 붙지 않게) */
+const NOTE_LABELS: Partial<Record<Coverage, string>> = { partial: '일부 보유 메모', missing: '공백 메모' };
 
 /** 자료를 보여줄 대표 제품: 자료가 있는 첫 제품, 없으면 첫 제품 */
 function representative(products: Product[]): Product | undefined {
   return products.find((p) => (docsByProductId(p.id)?.docs.length ?? 0) > 0) ?? products[0];
-}
-
-function EmptyProducts({ eq }: { eq: EquipmentType }) {
-  const categories = resolveCategories(eq);
-  return (
-    <div className="dp-empty" data-testid="detail-empty-products">
-      {eq.coverage === 'missing' ? (
-        <p>자사 제품 미보유(공백)</p>
-      ) : eq.coverage === 'affiliate' ? (
-        <p>계열사{eq.affiliateName ? `(${eq.affiliateName})` : ''} 제품으로 공급합니다.</p>
-      ) : eq.coverage === 'na' ? (
-        <p>해당 없음 — 자사 공급 대상이 아닌 기기입니다.</p>
-      ) : categories.length > 0 ? (
-        <>
-          <p>개별 제품 대신 공식 제품군 페이지에서 확인하세요.</p>
-          <ul className="dp-links">
-            {categories.map((c) => (
-              <li key={c.code}>
-                <ExternalLink href={c.url}>{c.path.join(' › ')} ↗</ExternalLink>
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>자료 준비 중</p>
-      )}
-    </div>
-  );
-}
-
-function NeighborChips({ node, onSelect }: { node: NodeItem; onSelect: (id: string) => void }) {
-  const list = getDiagramModel().neighbors.get(node.id) ?? [];
-  if (list.length === 0) return null;
-  return (
-    <section className="dp-section dp-section--divided" aria-labelledby="dp-neighbors">
-      <h3 id="dp-neighbors" className="dp-label">
-        계통에서 연결된 기기
-      </h3>
-      <div className="dp-chips">
-        {list.map((n) => (
-          <button
-            key={n.node.id}
-            type="button"
-            className={`dp-chip dp-chip--${n.node.coverage}`}
-            onClick={() => onSelect(n.node.id)}
-            aria-label={`${n.node.eq.name}, ${COVERAGE_LABELS[n.node.coverage]} — 선택`}
-          >
-            <span aria-hidden="true">{n.arrow}</span> {n.node.eq.abbr ?? n.node.eq.name}
-            {n.kind === 'signal' && <span className="dp-chip__kind"> · 신호</span>}
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/** Gap 모드 전용: 인접 노드 중 보유 기기 + 같은 계층의 공백 */
-function GapSections({ node, onSelect }: { node: NodeItem; onSelect: (id: string) => void }) {
-  const model = getDiagramModel();
-  const owned = (model.neighbors.get(node.id) ?? []).filter((n) => n.node.coverage === 'owned');
-  const sameLayerGaps = model.nodes.filter((n) => n.layer === node.layer && isGapCoverage(n.coverage));
-  const c = model.coverageCounts;
-  return (
-    <>
-      <section className="dp-section" aria-labelledby="dp-gap-related">
-        <h3 id="dp-gap-related" className="dp-label">
-          이 공백과 연결된 자사 제품
-        </h3>
-        {owned.length > 0 ? (
-          <ul className="dp-related">
-            {owned.map((n) => {
-              const products = resolveProducts(n.node.eq);
-              const img = n.node.imageUrl;
-              return (
-                <li key={n.node.id}>
-                  <button type="button" className="dp-related__item" onClick={() => onSelect(n.node.id)}>
-                    {img ? (
-                      <img src={img} alt="" width={40} height={40} loading="lazy" decoding="async" />
-                    ) : (
-                      <EquipmentSymbol category={n.node.eq.category} equipmentId={n.node.eq.id} size={40} />
-                    )}
-                    <span>
-                      <strong>{n.node.eq.name}</strong>
-                      <span className="dp-muted">
-                        {n.kind === 'signal' ? '신호로 연결' : '같은 회로'}
-                        {products[0] ? ` · ${products[0].name}` : ''}
-                      </span>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p className="dp-muted">계통에서 바로 연결된 보유 기기가 없습니다.</p>
-        )}
-      </section>
-      <section className="dp-section dp-section--divided" aria-labelledby="dp-gap-layer">
-        <h3 id="dp-gap-layer" className="dp-label">
-          같은 계층({layerTitle(node.layer)})의 공백
-        </h3>
-        <div className="dp-chips">
-          {sameLayerGaps.map((n) => (
-            <button
-              key={n.id}
-              type="button"
-              className={`dp-gapchip${n.id === node.id ? ' is-current' : ''}`}
-              aria-current={n.id === node.id ? 'true' : undefined}
-              onClick={() => onSelect(n.id)}
-            >
-              {n.eq.abbr ?? n.eq.name}
-            </button>
-          ))}
-        </div>
-        <p className="dp-muted">
-          전체 {model.nodes.length}종 · 미보유 <b>{c.missing}</b> · 일부 보유 <b>{c.partial}</b> · 계열사 보유 <b>{c.affiliate}</b>
-        </p>
-        <Link to="/gap" className="dp-strong-link">
-          공백 표에서 전체 보기 →
-        </Link>
-      </section>
-    </>
-  );
 }
 
 /**
@@ -194,11 +47,13 @@ export default function DetailPanel() {
   const close = () => {
     const id = selectedId;
     selectNode(null);
-    if (id) {
-      requestAnimationFrame(() => {
-        document.querySelector<HTMLElement>(`[data-node-id="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
-      });
-    }
+    if (id) requestAnimationFrame(() => focusNode(id));
+  };
+
+  /** 패널 안 칩·버튼으로 선택을 바꿈 → 누른 칩은 새 목록에서 사라지므로 포커스를 새 노드로 옮긴다 */
+  const selectFromPanel = (id: string) => {
+    selectNode(id);
+    focusNode(id);
   };
   const closeRef = useRef(close);
   closeRef.current = close;
@@ -230,7 +85,7 @@ export default function DetailPanel() {
   }
 
   const { eq } = node;
-  const products = resolveProducts(eq);
+  const products = productsForEquipment(eq.id);
   const rep = representative(products);
   const gapView = mode === 'gap' && isGapCoverage(eq.coverage);
   const variant = isMobile ? 'sheet' : 'side';
@@ -248,7 +103,7 @@ export default function DetailPanel() {
     >
       {isMobile && <div className="dp-handle" aria-hidden="true" />}
       <div className={`dp-head${compact ? ' dp-head--compact' : ''}`}>
-        {compact && <Hero eq={eq} compact />}
+        {compact && <PanelHero eq={eq} compact />}
         <div className="dp-titlebox">
           <span className="dp-meta">
             {layerTitle(eq.layer)}
@@ -258,14 +113,19 @@ export default function DetailPanel() {
             {eq.name}
             {eq.abbr && <span className="dp-abbr"> {eq.abbr}</span>}
           </h2>
-          <CoveragePill coverage={eq.coverage} productCount={products.length} />
+          <CoverageBadge
+            coverage={eq.coverage}
+            variant="pill"
+            label={pillText(eq.coverage, products.length)}
+            testId="detail-coverage-badge"
+          />
         </div>
         <button type="button" className="dp-close" aria-label="상세 정보 닫기" data-testid="detail-panel-close" onClick={close}>
           ×
         </button>
       </div>
 
-      {!compact && <Hero eq={eq} compact={false} />}
+      {!compact && <PanelHero eq={eq} compact={false} />}
 
       <p className="dp-desc">{eq.description}</p>
 
@@ -277,12 +137,12 @@ export default function DetailPanel() {
 
       {eq.gapNote && (
         <div className={`dp-gapnote${gapView ? ' dp-gapnote--strong' : ''}`}>
-          <span className="dp-gapnote__label">{eq.coverage === 'partial' ? '일부 보유 메모' : '공백 메모'}</span>
+          <span className="dp-gapnote__label">{NOTE_LABELS[eq.coverage] ?? '메모'}</span>
           <span data-testid="detail-gap-note">{eq.gapNote}</span>
         </div>
       )}
 
-      {gapView && <GapSections node={node} onSelect={selectNode} />}
+      {gapView && <GapSections node={node} onSelect={selectFromPanel} />}
 
       {eq.learnPoints.length > 0 && (
         <section className="dp-learn" aria-labelledby="dp-learn-title">
@@ -323,7 +183,7 @@ export default function DetailPanel() {
             )}
           </>
         ) : (
-          <EmptyProducts eq={eq} />
+          <EmptyProducts eq={eq} testIdPrefix="detail" className="dp-empty" listClassName="dp-links" />
         )}
       </section>
 
@@ -336,7 +196,7 @@ export default function DetailPanel() {
         </section>
       )}
 
-      <NeighborChips node={node} onSelect={selectNode} />
+      <NeighborChips node={node} onSelect={selectFromPanel} />
 
       <Link to={`/equipment/${eq.id}`} className="dp-eq-link">
         기기 상세 페이지로 이동 →
