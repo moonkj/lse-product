@@ -329,14 +329,18 @@
   cursor: pointer;
 }
 
-/* 모바일 하단 시트 */
+/* 모바일 하단 시트 — 접힘 높이는 비교 바(Compare.css)와 공유. 46→40dvh: 390 세로 지도 확보 (UX 라운드 U, 사용자 승인) */
+:root {
+  --sheet-collapsed-h: 40dvh;
+}
+
 .detail-panel.detail-panel--sheet {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 40;
-  max-height: 46dvh;
+  max-height: var(--sheet-collapsed-h, 40dvh);
   overflow-y: auto;
   padding: 8px 16px 16px;
   background: var(--color-surface);

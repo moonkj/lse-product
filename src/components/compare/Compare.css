@@ -165,7 +165,7 @@
   .cmp-tray__item { max-width: 140px; }
   /* 하단 시트가 열리면 바를 시트 위로 접어 올리고(칩 숨김), 시트를 끝까지 펼치면 숨긴다 */
   .app-shell:has(.detail-panel--sheet) .cmp-tray {
-    bottom: calc(46dvh + 8px);
+    bottom: calc(var(--sheet-collapsed-h, 40dvh) + 8px);
     flex-wrap: nowrap;
   }
   .app-shell:has(.detail-panel--sheet) .cmp-tray__items,

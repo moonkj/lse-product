@@ -171,3 +171,4 @@
 - T1-C 레이아웃: C1 data-density compact(높이 ≤600 자동·발표 보기 lse-present-v1), 사이드바 계통도 화면 한정, C4 StartCard, LiveRegion+announce, 라우트 h1 포커스, 용어집 +4(40), L7 '분전반 및 부하'.
 - 리더 통합: .app-main position:relative, catalog/Gap/Compare 판정 표기 confidenceLabel.
 - 검증: typecheck(src·tests)·build 통과, unit 465/465, E2E(dist) 112 통과·1 skip. 첫 화면 index gzip 80.40kB.
+- 리더: 모바일 시트 접힘 높이 46→40dvh(--sheet-collapsed-h, 비교 바 위치 공유, 사용자 승인). 390 세로 지도 288→338px, 360 204→248px(시트 상단−캔버스 상단). E2E 112·1 skip.
