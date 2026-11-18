@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>모바일 · 계통도와 하단 시트</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0056a6}a:hover{color:#003f7d}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #f5f7fa; color: #1a1f29; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+
+  <header style="position: absolute; left: 0; top: 0; width: 390px; box-sizing: border-box; padding: 12px 16px 10px; background: #ffffff; border-bottom: 1px solid #d7dce3; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-weight: 700; color: #0056a6;">LS ELECTRIC</span>
+      <span style="font-weight: 700;">전력계통 제품맵</span>
+      <button type="button" aria-label="검색" style="margin-left: auto; width: 44px; height: 44px; border: 1px solid #d7dce3; border-radius: 8px; background: #ffffff; display: flex; align-items: center; justify-content: center;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" style="fill: none; stroke: #1a1f29; stroke-width: 2; stroke-linecap: round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20 L16 16"></path></svg></button>
+    </div>
+    <div role="group" aria-label="보기 모드" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 3px; background: #eef1f5; border-radius: 10px; gap: 2px;">
+      <button type="button" aria-pressed="true" style="height: 36px; border: 0; border-radius: 8px; background: #ffffff; color: #0056a6; font: inherit; font-weight: 700;">제품</button>
+      <button type="button" aria-pressed="false" style="height: 36px; border: 0; border-radius: 8px; background: transparent; color: #5b6575; font: inherit;">Gap</button>
+      <button type="button" aria-pressed="false" style="height: 36px; border: 0; border-radius: 8px; background: transparent; color: #5b6575; font: inherit;">교육</button>
+    </div>
+    <div style="display: flex; gap: 6px; overflow-x: auto; font-size: 13px;">
+      <a href="#" style="flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; border: 1px solid #d7dce3; text-decoration: none; color: #1a1f29;">L1</a>
+      <a href="#" style="flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; border: 1px solid #d7dce3; text-decoration: none; color: #1a1f29;">L2</a>
+      <a href="#" style="flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; border: 1px solid #d7dce3; text-decoration: none; color: #1a1f29;">L3</a>
+      <a href="#" aria-current="true" style="flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; background: #e2ecfb; border: 1px solid #0056a6; text-decoration: none; color: #0056a6; font-weight: 700;">L4 수전</a>
+      <a href="#" style="flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; border: 1px solid #d7dce3; text-decoration: none; color: #1a1f29;">L5</a>
+      <a href="#" style="flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; border: 1px solid #d7dce3; text-decoration: none; color: #1a1f29;">L6</a>
+      <a href="#" style="flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; border: 1px solid #d7dce3; text-decoration: none; color: #1a1f29;">L7</a>
+    </div>
+  </header>
+
+  <div style="position: absolute; left: 0; top: 160px; width: 390px; height: 420px; background: #e3f4f8;">
+    <div style="position: absolute; left: 10px; top: 6px; font-size: 11px; font-weight: 700; color: #4a5363;">L4 수전설비 · 22.9kV</div>
+    <svg aria-hidden="true" width="8" height="28" viewBox="0 0 8 28" preserveAspectRatio="none" style="position: absolute; left: 191px; top: 116px; width: 8px; height: 28px; overflow: visible; fill: none; stroke: #1a1f29; stroke-width: 2"><path d="M 4 0 L 4 28"></path></svg>
+    <svg aria-hidden="true" width="8" height="28" viewBox="0 0 8 28" preserveAspectRatio="none" style="position: absolute; left: 191px; top: 236px; width: 8px; height: 28px; overflow: visible; fill: none; stroke: #0056a6; stroke-width: 3"><path d="M 4 0 L 4 28"></path></svg>
+    <svg aria-hidden="true" width="29" height="8" viewBox="0 0 29 8" preserveAspectRatio="none" style="position: absolute; left: 118px; top: 306px; width: 29px; height: 8px; overflow: visible; fill: none; stroke: #0056a6; stroke-width: 3"><path d="M 0 4 L 29 4"></path></svg>
+    <svg aria-hidden="true" width="29" height="8" viewBox="0 0 29 8" preserveAspectRatio="none" style="position: absolute; left: 243px; top: 306px; width: 29px; height: 8px; overflow: visible; fill: none; stroke: #0056a6; stroke-width: 3"><path d="M 0 4 L 29 4"></path></svg>
+    <svg aria-hidden="true" width="8" height="40" viewBox="0 0 8 40" preserveAspectRatio="none" style="position: absolute; left: 191px; top: 0px; width: 8px; height: 24px; overflow: visible; fill: none; stroke: #1a1f29; stroke-width: 2"><path d="M 4 0 L 4 24"></path></svg>
+
+    <button type="button" aria-label="부하개폐기, 보유" style="position: absolute; left: 147px; top: 24px; width: 96px; height: 92px; box-sizing: border-box; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: #ffffff; border: 2px solid #1e9e4a; border-radius: 10px; font: inherit; font-size: 12px; line-height: 15px;"><img src="/_blob/6915ab55be33b49c8a3d7895b8f2668a" alt="" style="width: 52px; height: 52px; object-fit: contain;"><span><b>LBS/ASS</b></span></button>
+    <button type="button" aria-label="계기용변성기, 미보유" style="position: absolute; left: 147px; top: 144px; width: 96px; height: 92px; box-sizing: border-box; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: #ffffff; border: 2px dashed #d93a3a; border-radius: 10px; font: inherit; font-size: 12px; line-height: 15px;"><svg aria-hidden="true" width="52" height="52" viewBox="0 0 72 72" style="fill: none; stroke: #b42828; stroke-width: 3"><circle cx="28" cy="36" r="16"></circle><circle cx="44" cy="36" r="16"></circle></svg><span><b>MOF</b></span></button>
+    <button type="button" aria-label="계기용 변류기·변압기, 미보유" style="position: absolute; left: 22px; top: 264px; width: 96px; height: 92px; box-sizing: border-box; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: #ffffff; border: 2px dashed #d93a3a; border-radius: 10px; font: inherit; font-size: 12px; line-height: 15px;"><svg aria-hidden="true" width="52" height="52" viewBox="0 0 72 72" style="fill: none; stroke: #b42828; stroke-width: 3"><path d="M4 36 L68 36"></path><circle cx="36" cy="36" r="14"></circle></svg><span><b>CT/PT</b></span></button>
+    <button type="button" aria-label="진공차단기, 보유, 선택됨" aria-pressed="true" style="position: absolute; left: 147px; top: 264px; width: 96px; height: 92px; box-sizing: border-box; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: #e2ecfb; border: 2px solid #1e9e4a; border-radius: 10px; box-shadow: 0 0 0 3px #0056a6; font: inherit; font-size: 12px; line-height: 15px;"><img src="/_blob/2b5278976c1032d41e1de29ccb0ffb16" alt="" style="width: 52px; height: 52px; object-fit: contain;"><span><b>VCB</b></span></button>
+    <button type="button" aria-label="전력퓨즈, 보유" style="position: absolute; left: 272px; top: 264px; width: 96px; height: 92px; box-sizing: border-box; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; background: #ffffff; border: 2px solid #1e9e4a; border-radius: 10px; font: inherit; font-size: 12px; line-height: 15px;"><img src="/_blob/9868bb5b93bacba6bae416e577d55cb7" alt="" style="width: 52px; height: 52px; object-fit: contain;"><span><b>PF</b></span></button>
+
+    <span aria-hidden="true" style="position: absolute; left: 231px; top: 16px; width: 18px; height: 18px; border-radius: 50%; background: #1e9e4a; color: #fff; font-size: 11px; font-weight: 700; text-align: center; line-height: 18px;">✓</span>
+    <span aria-hidden="true" style="position: absolute; left: 231px; top: 136px; width: 18px; height: 18px; border-radius: 50%; background: #d93a3a; color: #fff; font-size: 11px; font-weight: 700; text-align: center; line-height: 18px;">✕</span>
+    <span aria-hidden="true" style="position: absolute; left: 106px; top: 256px; width: 18px; height: 18px; border-radius: 50%; background: #d93a3a; color: #fff; font-size: 11px; font-weight: 700; text-align: center; line-height: 18px;">✕</span>
+    <span aria-hidden="true" style="position: absolute; left: 231px; top: 256px; width: 18px; height: 18px; border-radius: 50%; background: #1e9e4a; color: #fff; font-size: 11px; font-weight: 700; text-align: center; line-height: 18px;">✓</span>
+    <span aria-hidden="true" style="position: absolute; left: 356px; top: 256px; width: 18px; height: 18px; border-radius: 50%; background: #1e9e4a; color: #fff; font-size: 11px; font-weight: 700; text-align: center; line-height: 18px;">✓</span>
+  </div>
+
+  <section aria-label="진공차단기 상세" style="position: absolute; left: 0; top: 500px; width: 390px; height: 344px; box-sizing: border-box; padding: 8px 16px 16px; background: #ffffff; border-radius: 16px 16px 0 0; box-shadow: 0 -6px 20px rgba(0,0,0,0.14); display: flex; flex-direction: column; gap: 10px;">
+    <div aria-hidden="true" style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #c3c9d1;"></div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <img src="/_blob/2b5278976c1032d41e1de29ccb0ffb16" alt="Susol VCB 제품 사진" style="width: 72px; height: 72px; object-fit: contain; background: #f5f7fa; border-radius: 10px;">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+        <span style="font-size: 11px; color: #5b6575;">L4 수전설비 · 개폐</span>
+        <b style="font-size: 18px;">진공차단기 VCB</b>
+        <span style="align-self: flex-start; padding: 1px 8px; border-radius: 999px; background: #e3f5e9; color: #146c33; font-size: 12px; font-weight: 700;">✓ 보유 · 제품 4종</span>
+      </div>
+      <button type="button" aria-label="닫기" style="width: 44px; height: 44px; border: 1px solid #d7dce3; border-radius: 8px; background: #ffffff; font: inherit; font-size: 18px; color: #5b6575;">×</button>
+    </div>
+    <p style="margin: 0; font-size: 13px;">진공 속에서 아크를 소호해 부하전류와 고장전류를 모두 차단한다.</p>
+    <div style="display: flex; gap: 6px; overflow-x: auto; font-size: 13px;">
+      <a href="#" style="flex: 0 0 auto; padding: 6px 10px; border: 1px solid #d7dce3; border-radius: 8px; text-decoration: none; color: #1a1f29;">Susol VCB</a>
+      <a href="#" style="flex: 0 0 auto; padding: 6px 10px; border: 1px solid #d7dce3; border-radius: 8px; text-decoration: none; color: #1a1f29;">Susol UL VCB</a>
+      <a href="#" style="flex: 0 0 auto; padding: 6px 10px; border: 1px solid #d7dce3; border-radius: 8px; text-decoration: none; color: #1a1f29;">발전소용 VCB</a>
+    </div>
+    <a href="#" style="display: flex; gap: 8px; align-items: center; min-height: 44px; text-decoration: none;"><span style="padding: 1px 6px; border-radius: 4px; background: #e2ecfb; color: #1f4f9c; font-size: 11px; font-weight: 700;">카탈로그</span><span style="flex: 1;">[Susol VCB]</span><span aria-hidden="true">↗</span></a>
+    <a href="#" style="display: flex; align-items: center; justify-content: center; height: 44px; border-radius: 8px; background: #0056a6; color: #ffffff; text-decoration: none; font-weight: 700;">위로 올려 전체 정보 보기</a>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

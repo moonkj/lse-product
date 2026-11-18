@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>교육 · 계통 따라가기 투어</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f5f7fa}
+a{color:#0056a6}a:hover{color:#003f7d}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 1010px; display: flex; flex-direction: column; background: #f5f7fa; color: #1a1f29; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 10px 20px; background: #ffffff; border-bottom: 1px solid #d7dce3;">
+    <div style="display: flex; align-items: baseline; gap: 10px; flex: 0 0 auto;">
+      <span style="font-weight: 700; font-size: 16px; color: #0056a6; letter-spacing: 0.02em;">LS ELECTRIC</span>
+      <span style="font-weight: 700; font-size: 16px;">전력계통 제품맵</span>
+    </div>
+    <label style="flex: 1 1 280px; max-width: 520px; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border: 1px solid #d7dce3; border-radius: 8px; background: #f5f7fa;">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" style="fill: none; stroke: #5b6575; stroke-width: 2; stroke-linecap: round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20 L16 16"></path></svg>
+      <span style="position: absolute; width: 1px; height: 1px; overflow: hidden;">검색</span>
+      <input type="search" placeholder="기기·제품·모델명 검색 (예: VCB, GIPAM, iS7)" style="flex: 1; border: 0; background: transparent; font: inherit; color: #1a1f29; outline: none;">
+    </label>
+    <div role="group" aria-label="보기 모드" style="display: flex; padding: 3px; background: #eef1f5; border-radius: 10px; gap: 2px; margin-left: auto;">
+      <button type="button" aria-pressed="false" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: #5b6575; font: inherit; font-weight: 500;">제품</button>
+      <button type="button" aria-pressed="false" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: #5b6575; font: inherit; font-weight: 500;">Gap</button>
+      <button type="button" aria-pressed="true" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #ffffff; color: #0f7a5a; font: inherit; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">교육</button>
+    </div>
+  </header>
+
+  <div style="background: #ffffff; border-bottom: 1px solid #d7dce3; padding: 14px 24px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+      <span style="font-weight: 700; font-size: 16px;">전기가 발전소에서 콘센트까지 오는 길</span>
+      <span style="font-size: 13px; color: #5b6575;">4단계 / 7단계 · 학습 완료 3개 계층</span>
+      <button type="button" style="margin-left: auto; height: 36px; padding: 0 14px; border: 1px solid #d7dce3; border-radius: 8px; background: #ffffff; font: inherit; font-size: 13px; color: #1a1f29;">투어 끝내기</button>
+    </div>
+    <ol aria-label="투어 단계" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; font-size: 12px;">
+      <li style="display: flex; flex-direction: column; gap: 4px;"><span style="height: 6px; border-radius: 3px; background: #0f7a5a;"></span><span style="color: #0f7a5a; font-weight: 700;">✓ L1 초고압</span></li>
+      <li style="display: flex; flex-direction: column; gap: 4px;"><span style="height: 6px; border-radius: 3px; background: #0f7a5a;"></span><span style="color: #0f7a5a; font-weight: 700;">✓ L2 송변전</span></li>
+      <li style="display: flex; flex-direction: column; gap: 4px;"><span style="height: 6px; border-radius: 3px; background: #0f7a5a;"></span><span style="color: #0f7a5a; font-weight: 700;">✓ L3 배전</span></li>
+      <li aria-current="step" style="display: flex; flex-direction: column; gap: 4px;"><span style="height: 6px; border-radius: 3px; background: #0056a6;"></span><span style="color: #0056a6; font-weight: 700;">L4 수전설비</span></li>
+      <li style="display: flex; flex-direction: column; gap: 4px;"><span style="height: 6px; border-radius: 3px; background: #d7dce3;"></span><span style="color: #5b6575;">L5 변압</span></li>
+      <li style="display: flex; flex-direction: column; gap: 4px;"><span style="height: 6px; border-radius: 3px; background: #d7dce3;"></span><span style="color: #5b6575;">L6 저압 배전</span></li>
+      <li style="display: flex; flex-direction: column; gap: 4px;"><span style="height: 6px; border-radius: 3px; background: #d7dce3;"></span><span style="color: #5b6575;">L7 분전반·부하</span></li>
+    </ol>
+  </div>
+
+  <div style="width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 20px 24px 32px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+    <section aria-labelledby="lesson-h" style="flex: 999 1 560px; min-width: 0; background: #ffffff; border: 1px solid #d7dce3; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: #e3f4f8; color: #1d5866; font-size: 12px; font-weight: 700;">L4 · 22.9kV</span>
+        <h1 id="lesson-h" style="margin: 0; font-size: 26px;">수전설비 — 전기가 공장·빌딩으로 들어오는 관문</h1>
+        <p style="margin: 0; color: #3b4452;">한전 배전선로(22.9kV)에서 전기를 받아 계량하고, 고장이 나면 끊어서 내 설비와 계통을 함께 지키는 구간입니다. 순서는 <b>인입 개폐 → 계량 → 차단·보호 → 변압기</b>입니다.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: #5b6575;">이 계층의 핵심 기기 · 자사 제품</span>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <a href="#" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border: 1px solid #d7dce3; border-radius: 10px; text-decoration: none; color: #1a1f29;"><img src="/_blob/6915ab55be33b49c8a3d7895b8f2668a" alt="" style="width: 100%; height: 110px; object-fit: contain; background: #f5f7fa; border-radius: 8px;"><b>① LBS / ASS</b><span style="font-size: 13px; color: #3b4452;">수용가 내부 고장이 배전선로로 번지지 않게 자동으로 분리</span></a>
+          <a href="#" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border: 1px solid #d7dce3; border-radius: 10px; text-decoration: none; color: #1a1f29;"><img src="/_blob/2b5278976c1032d41e1de29ccb0ffb16" alt="" style="width: 100%; height: 110px; object-fit: contain; background: #f5f7fa; border-radius: 8px;"><b>② VCB 진공차단기</b><span style="font-size: 13px; color: #3b4452;">보호계전기의 트립 신호로 고장전류를 차단 · 핵심 부품은 VI</span></a>
+          <a href="#" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border: 1px solid #d7dce3; border-radius: 10px; text-decoration: none; color: #1a1f29;"><img src="/_blob/e0a3a7860013ede6587646d9696a6fb6" alt="" style="width: 100%; height: 110px; object-fit: contain; background: #f5f7fa; border-radius: 8px;"><b>③ 디지털 보호계전기</b><span style="font-size: 13px; color: #3b4452;">CT/PT 신호로 과전류·지락을 판단 · GIPAM 시리즈</span></a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 16px; border-radius: 10px; background: #fff7f7; border: 1px solid #f0c4c4;">
+        <span style="font-weight: 700; color: #b42828;">이 계층의 공백</span>
+        <span style="color: #3b4452;">LA(피뢰기), MOF, CT/PT는 자사 제품이 없습니다. 고객사 수전설비에서는 타사 제품과 함께 구성됩니다.</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;">
+        <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 8px; border: 1px solid #d7dce3; background: #ffffff; text-decoration: none; font-weight: 500;">← L3 특고압 배전</a>
+        <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 8px; background: #0056a6; color: #ffffff; text-decoration: none; font-weight: 700;">다음: L5 변압 →</a>
+      </div>
+    </section>
+
+    <aside style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+      <section aria-labelledby="quiz-h" style="background: #ffffff; border: 1px solid #d7dce3; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 id="quiz-h" style="margin: 0; font-size: 16px;">확인 퀴즈</h2>
+          <span style="font-size: 12px; color: #5b6575;">1 / 3</span>
+        </div>
+        <p style="margin: 0; font-weight: 500;">수용가 내부 고장이 배전선로로 번지지 않도록 자동으로 분리하는 기기는?</p>
+        <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+          <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden;">보기</legend>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 2px solid #1e9e4a; border-radius: 8px; background: #e3f5e9;"><input type="radio" name="q1" checked><span style="flex: 1;">ASS 자동고장구분개폐기</span><span style="color: #146c33; font-weight: 700;">✓ 정답</span></label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 1px solid #d7dce3; border-radius: 8px;"><input type="radio" name="q1"><span>MOF 계기용변성기</span></label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 1px solid #d7dce3; border-radius: 8px;"><input type="radio" name="q1"><span>PF 전력퓨즈</span></label>
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 1px solid #d7dce3; border-radius: 8px;"><input type="radio" name="q1"><span>LA 피뢰기</span></label>
+        </fieldset>
+        <div style="padding: 10px 12px; border-radius: 8px; background: #f5f7fa; font-size: 13px; color: #3b4452;">ASS는 수용가 쪽 고장을 감지하면 스스로 열려서 한전 배전선로 전체가 정전되는 것을 막습니다.</div>
+        <button type="button" style="height: 44px; border: 0; border-radius: 8px; background: #0f7a5a; color: #ffffff; font: inherit; font-weight: 700;">다음 문제</button>
+      </section>
+
+      <section aria-labelledby="prog-h" style="background: #ffffff; border: 1px solid #d7dce3; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+        <h2 id="prog-h" style="margin: 0; font-size: 16px;">내 학습 진도</h2>
+        <div aria-hidden="true" style="height: 8px; border-radius: 4px; background: #eef1f5; overflow: hidden;"><div style="width: 43%; height: 100%; background: #0f7a5a;"></div></div>
+        <span style="font-size: 13px; color: #5b6575;">7개 계층 중 3개 완료 · 퀴즈 정답률 8/9 · 이 브라우저에 저장됨</span>
+        <a href="#" style="font-size: 13px;">용어집 열기 (CT, PT, OCR, OCGR, 모선 …) →</a>
+      </section>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1010}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

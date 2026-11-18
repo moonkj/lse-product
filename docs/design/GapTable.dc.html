@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>공백 표 · 커버리지 매트릭스</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f5f7fa}
+a{color:#0056a6}a:hover{color:#003f7d}
+th,td{border-bottom:1px solid #e3e7ec}
+</style>
+</helmet>
+<div style="width: 100%; min-height: 1010px; display: flex; flex-direction: column; background: #f5f7fa; color: #1a1f29; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 10px 20px; background: #ffffff; border-bottom: 1px solid #d7dce3;">
+    <div style="display: flex; align-items: baseline; gap: 10px; flex: 0 0 auto;">
+      <span style="font-weight: 700; font-size: 16px; color: #0056a6; letter-spacing: 0.02em;">LS ELECTRIC</span>
+      <span style="font-weight: 700; font-size: 16px;">전력계통 제품맵</span>
+    </div>
+    <label style="flex: 1 1 280px; max-width: 520px; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border: 1px solid #d7dce3; border-radius: 8px; background: #f5f7fa;">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" style="fill: none; stroke: #5b6575; stroke-width: 2; stroke-linecap: round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20 L16 16"></path></svg>
+      <span style="position: absolute; width: 1px; height: 1px; overflow: hidden;">검색</span>
+      <input type="search" placeholder="기기·제품·모델명 검색 (예: VCB, GIPAM, iS7)" style="flex: 1; border: 0; background: transparent; font: inherit; color: #1a1f29; outline: none;">
+    </label>
+    <div role="group" aria-label="보기 모드" style="display: flex; padding: 3px; background: #eef1f5; border-radius: 10px; gap: 2px; margin-left: auto;">
+      <button type="button" aria-pressed="false" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: #5b6575; font: inherit; font-weight: 500;">제품</button>
+      <button type="button" aria-pressed="false" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: #5b6575; font: inherit; font-weight: 500;">Gap</button>
+      <button type="button" aria-pressed="false" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: #5b6575; font: inherit; font-weight: 500;">교육</button>
+    </div>
+  </header>
+
+  <div style="width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 20px 24px 40px; display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px;">
+      <div style="flex: 1 1 400px; display: flex; flex-direction: column; gap: 4px;">
+        <a href="#" style="font-size: 13px;">← 계통도로 돌아가기</a>
+        <h1 style="margin: 0; font-size: 28px;">공백 표</h1>
+        <span style="color: #5b6575;">전압 계층 × 기기 기능별로 자사 제품 커버리지를 봅니다. 칸을 누르면 해당 기기 목록이 열립니다.</span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <div style="padding: 10px 16px; border-radius: 10px; background: #ffffff; border: 1px solid #d7dce3; text-align: center;"><div style="font-size: 24px; font-weight: 700; color: #146c33;">76%</div><div style="font-size: 12px; color: #5b6575;">보유율 56/74</div></div>
+        <div style="padding: 10px 16px; border-radius: 10px; background: #fbe4e4; text-align: center;"><div style="font-size: 24px; font-weight: 700; color: #b42828;">12</div><div style="font-size: 12px; color: #6e1d1d;">미보유</div></div>
+        <div style="padding: 10px 16px; border-radius: 10px; background: #fdf3d0; text-align: center;"><div style="font-size: 24px; font-weight: 700; color: #6b5000;">3</div><div style="font-size: 12px; color: #6b5000;">일부 보유</div></div>
+        <div style="padding: 10px 16px; border-radius: 10px; background: #e2ecfb; text-align: center;"><div style="font-size: 24px; font-weight: 700; color: #1f4f9c;">2</div><div style="font-size: 12px; color: #1f4f9c;">계열사 보유</div></div>
+      </div>
+    </div>
+
+    <section aria-labelledby="mx-h" style="background: #ffffff; border: 1px solid #d7dce3; border-radius: 12px; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+        <h2 id="mx-h" style="margin: 0; font-size: 18px;">커버리지 매트릭스</h2>
+        <span style="font-size: 12px; color: #5b6575;">✓ 보유 · ◐ 일부 · ◆ 계열사 · ✕ 미보유 · – 해당 없음 · 숫자 = 기기 종류 수</span>
+      </div>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; min-width: 980px; border-collapse: collapse; font-size: 13px;">
+          <thead>
+            <tr style="color: #5b6575; text-align: center;">
+              <th style="text-align: left; padding: 8px; font-weight: 700;">계층</th>
+              <th style="padding: 8px;">개폐</th><th style="padding: 8px;">보호</th><th style="padding: 8px;">변성</th><th style="padding: 8px;">계측</th><th style="padding: 8px;">제어</th><th style="padding: 8px;">감시</th><th style="padding: 8px;">발전</th><th style="padding: 8px;">선로</th><th style="padding: 8px;">부하</th><th style="padding: 8px;">시스템</th>
+              <th style="padding: 8px;">보유율</th>
+            </tr>
+          </thead>
+          <tbody style="text-align: center;">
+            <tr>
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;"><b>L1</b> 초고압 765/345kV</th>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span> <span style="padding: 3px 8px; border-radius: 6px; background: #fdf3d0; color: #6b5000; font-weight: 700;">◐1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e2ecfb; color: #1f4f9c; font-weight: 700;">◆1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓2</span></td>
+              <td style="padding: 6px; font-weight: 700; color: #b42828;">4/9</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;"><b>L2</b> 송변전 154kV</th>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; font-weight: 700; color: #146c33;">4/4</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;"><b>L3</b> 특고압 배전 22.9kV</th>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span> <span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e2ecfb; color: #1f4f9c; font-weight: 700;">◆1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; font-weight: 700; color: #b42828;">2/5</td>
+            </tr>
+            <tr style="background: #f7fafc;">
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;"><b>L4</b> 수전설비 22.9kV</th>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓4</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span> <span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓2</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; box-shadow: inset 0 0 0 2px #0056a6; border-radius: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕2</span> <span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; font-weight: 700; color: #6b5000;">9/12</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;"><b>L5</b> 변압</th>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓2</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; font-weight: 700; color: #146c33;">2/2</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;"><b>L6</b> 저압 배전 380/220V</th>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span> <span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓2</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓2</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span> <span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓2</span> <span style="padding: 3px 8px; border-radius: 6px; background: #fdf3d0; color: #6b5000; font-weight: 700;">◐1</span></td>
+              <td style="padding: 6px; font-weight: 700; color: #6b5000;">8/12</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;"><b>L7</b> 분전반·부하</th>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓3</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓3</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓2</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓5</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span> <span style="padding: 3px 8px; border-radius: 6px; background: #fdf3d0; color: #6b5000; font-weight: 700;">◐1</span> <span style="padding: 3px 8px; border-radius: 6px; background: #eef0f2; color: #4a5363; font-weight: 700;">–1</span></td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕1</span></td>
+              <td style="padding: 6px; font-weight: 700; color: #146c33;">14/17</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;">신재생·저장</th>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓1</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓4</span></td>
+              <td style="padding: 6px; font-weight: 700; color: #146c33;">7/7</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 10px 8px; white-space: nowrap;">감시·제어</th>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px;"><span style="padding: 3px 8px; border-radius: 6px; background: #e3f5e9; color: #146c33; font-weight: 700;">✓6</span></td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; color: #9aa3ae;">·</td>
+              <td style="padding: 6px; font-weight: 700; color: #146c33;">6/6</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="list-h" style="background: #ffffff; border: 1px solid #d7dce3; border-radius: 12px; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+        <h2 id="list-h" style="margin: 0 8px 0 0; font-size: 18px;">공백 목록 <span style="font-weight: 400; color: #5b6575;">· 17</span></h2>
+        <button type="button" aria-pressed="true" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #0056a6; background: #e2ecfb; color: #0056a6; font: inherit; font-size: 13px; font-weight: 700;">전체 17</button>
+        <button type="button" aria-pressed="false" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #d7dce3; background: #ffffff; color: #1a1f29; font: inherit; font-size: 13px;">미보유 12</button>
+        <button type="button" aria-pressed="false" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #d7dce3; background: #ffffff; color: #1a1f29; font: inherit; font-size: 13px;">일부 보유 3</button>
+        <button type="button" aria-pressed="false" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid #d7dce3; background: #ffffff; color: #1a1f29; font: inherit; font-size: 13px;">계열사 보유 2</button>
+        <button type="button" style="margin-left: auto; height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid #d7dce3; background: #ffffff; color: #1a1f29; font: inherit; font-size: 13px;">CSV 내보내기</button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; min-width: 860px; border-collapse: collapse; font-size: 13px;">
+          <thead><tr style="color: #5b6575; text-align: left;"><th style="padding: 8px;">상태</th><th style="padding: 8px;">계층</th><th style="padding: 8px;">기기</th><th style="padding: 8px;">메모</th><th style="padding: 8px;"></th></tr></thead>
+          <tbody>
+            <tr><td style="padding: 8px;"><span style="padding: 2px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕ 미보유</span></td><td style="padding: 8px;">L1</td><td style="padding: 8px;"><b>발전기</b> G</td><td style="padding: 8px; color: #5b6575;">홈페이지 제품 목록에서 찾지 못함 — 확인 필요</td><td style="padding: 8px;"><a href="#">계통도에서 보기</a></td></tr>
+            <tr><td style="padding: 8px;"><span style="padding: 2px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕ 미보유</span></td><td style="padding: 8px;">L1</td><td style="padding: 8px;"><b>피뢰기 (초고압)</b> LA</td><td style="padding: 8px; color: #5b6575;">홈페이지 제품 목록에서 찾지 못함 — 확인 필요</td><td style="padding: 8px;"><a href="#">계통도에서 보기</a></td></tr>
+            <tr><td style="padding: 8px;"><span style="padding: 2px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕ 미보유</span></td><td style="padding: 8px;">L1</td><td style="padding: 8px;"><b>계기용 변성기 (초고압 단독형)</b> CT/PT</td><td style="padding: 8px; color: #5b6575;">GIS 내장형은 GIS 제품에 포함 — 단독형 확인 필요</td><td style="padding: 8px;"><a href="#">계통도에서 보기</a></td></tr>
+            <tr><td style="padding: 8px;"><span style="padding: 2px 8px; border-radius: 6px; background: #fdf3d0; color: #6b5000; font-weight: 700;">◐ 일부</span></td><td style="padding: 8px;">L1</td><td style="padding: 8px;"><b>송전용 보호계전 시스템</b></td><td style="padding: 8px; color: #5b6575;">GIPAM 등은 배전·수전급 중심 — 송전급 라인업 확인 필요</td><td style="padding: 8px;"><a href="#">계통도에서 보기</a></td></tr>
+            <tr><td style="padding: 8px;"><span style="padding: 2px 8px; border-radius: 6px; background: #e2ecfb; color: #1f4f9c; font-weight: 700;">◆ 계열사</span></td><td style="padding: 8px;">L1</td><td style="padding: 8px;"><b>송전선로·전력케이블</b></td><td style="padding: 8px; color: #5b6575;">LS전선</td><td style="padding: 8px;"><a href="#">계통도에서 보기</a></td></tr>
+            <tr><td style="padding: 8px;"><span style="padding: 2px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕ 미보유</span></td><td style="padding: 8px;">L3</td><td style="padding: 8px;"><b>리클로저</b> R/C</td><td style="padding: 8px; color: #5b6575;">홈페이지 제품 목록에서 찾지 못함 — 확인 필요</td><td style="padding: 8px;"><a href="#">계통도에서 보기</a></td></tr>
+            <tr><td style="padding: 8px;"><span style="padding: 2px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕ 미보유</span></td><td style="padding: 8px;">L3</td><td style="padding: 8px;"><b>주상변압기</b> P.Tr</td><td style="padding: 8px; color: #5b6575;">홈페이지 제품 목록에서 찾지 못함 — 확인 필요</td><td style="padding: 8px;"><a href="#">계통도에서 보기</a></td></tr>
+            <tr><td style="padding: 8px;"><span style="padding: 2px 8px; border-radius: 6px; background: #fbe4e4; color: #b42828; font-weight: 700;">✕ 미보유</span></td><td style="padding: 8px;">L4</td><td style="padding: 8px;"><b>계기용 변류기·변압기</b> CT/PT</td><td style="padding: 8px; color: #5b6575;">홈페이지 제품 목록에서 찾지 못함 — 확인 필요</td><td style="padding: 8px;"><a href="#">계통도에서 보기</a></td></tr>
+            <tr><td style="padding: 8px; color: #5b6575;" colspan="5">… 나머지 9건 (MOF, LA, 콘덴서·APFC, 저압 ATS, 비상발전기, APS, 분전반 함체, 전동기, 배전선로)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1010}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

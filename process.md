@@ -44,3 +44,4 @@
 - [데이터] scripts/fetch-images.mjs → 기기 59종 대표 사진(public/images/equipment, 455px 투명 PNG) + src/data/equipment-images.json. 미보유·해당없음·선로 15종은 단선결선도 심볼로 표시
 - [T3 완료] docs.json 규칙(DI-60~68), 컴포넌트 테스트 20건, E2E 29건(12 통과 / 17 Phase 2 대기)
 - 디자인: 메인(사진 타일, L4~L5 확대 보기) 1차안 게시 → 사용자 검토 대기
+- [디자인 v1 완료] 6개 화면 게시: 메인(사진 타일) · Gap 강조 · 제품 상세 · 공백 표 · 교육 투어 · 모바일 → docs/design/ 에 사본 저장
