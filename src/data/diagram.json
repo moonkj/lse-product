@@ -615,6 +615,12 @@
       "equipmentTypeId": "gearbox",
       "x": 1015,
       "y": 4263
+    },
+    {
+      "id": "n-ups",
+      "equipmentTypeId": "ups",
+      "x": 1334,
+      "y": 3312
     }
   ],
   "edges": [
@@ -1468,6 +1474,37 @@
       "to": "n-gearbox",
       "kind": "power",
       "label": "전동기 축 연결 (기계)"
+    },
+    {
+      "id": "e089",
+      "from": "n-busway",
+      "to": "n-ups",
+      "kind": "power"
+    },
+    {
+      "id": "e090",
+      "from": "n-ups",
+      "to": "n-hmi",
+      "kind": "power",
+      "label": "무정전 제어 전원",
+      "points": [
+        {
+          "x": 1334,
+          "y": 3370
+        },
+        {
+          "x": 1334,
+          "y": 3398
+        },
+        {
+          "x": 1450,
+          "y": 3398
+        },
+        {
+          "x": 1450,
+          "y": 4019
+        }
+      ]
     }
   ]
 }

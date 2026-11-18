@@ -36,6 +36,8 @@ const BY_ID: Record<string, string> = {
   recloser: 'M36 6V24M36 48V66M36 48L22 27M30 18a6 6 0 1 1 12 0a6 6 0 1 1-12 0',
   // ATS: 두 전원 → 전환 칼날
   'lv-ats': 'M20 6V24M52 6V24M36 48V66M36 48L20 26M14 24h12M46 24h12',
+  // UPS: 함체 + 대각선(정류·인버터) + 교류(~)·직류(=) + 아래 배터리
+  ups: 'M36 2V10M14 10h44v40H14zM14 50L58 10M20 22q4-6 8 0t8 0M40 38h12M40 43h12M36 50V58M24 58h24M30 64h12',
 };
 
 interface Props {

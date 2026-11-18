@@ -204,3 +204,9 @@
 - 설명 v2: 75종 "요약 + 역할·동작 원리·선정 포인트·LS ELECTRIC 제품" 구조(overview {summary, points, basis, sources}), 화면 근거 줄 전면 제거(사용자 요청), 비교 '설명' 요약+더 보기, 라벨 열 108px. 연결 기기 칩 aria-label 수정(axe 12→0). DI-OV1~3 추가.
 - 검증: unit 508, E2E 140. ⚠ 간헐 실패 관찰: unit 1건(전체 실행 중 1회, 재실행 통과 — 이전 admin-specs 저장본 손상 케이스와 동일 추정), E2E ux-diagram 접힌 시트 390 1건·core-flows 키보드 Esc 1건(재실행 통과) → T2 플래키 조사 필요.
 - T2 플래키 3건 해결(docs/reviews/flaky-tests.md): UT-16 모듈 전역 자동저장 타이머 격리(가짜 타이머), Esc 리스너 useLayoutEffect(경쟁 조건), 접힌 시트 측정은 --sheet-h 동기화까지 expect.poll. 반복: vitest 20/20, 대상 spec repeat 10×workers 1/4/8 통과. 별건: shuffle 시 순서 의존 메타 테스트 실패(기본 순서는 정상).
+
+## 2026-11-18 · UPS 기기·SSQ 협력사 라인 제거·영문 18 재확인
+- 새 기기 ups '무정전 전원 장치'(L6, system, missing · not-offered/homepage-menu/candidate). 자료실·제품 검색·SSQ(dlCenter·통합검색·카드)에서 자사 UPS 없음(E-House 구성 설비로만 언급). 노드 n-ups(1334,3312), e089 버스웨이→UPS, e090 UPS→HMI("무정전 제어 전원"). UPS 심볼 추가.
+- SSQ AC&T System 라인 8개(ETOS·ETOS-X·ETOS-XP·EtherFOS×2·DPS·RCS-XG-4G·i-FOS-X) 제거: 카드 cardDescription "AC&T"·homepage acnt.co.kr. 제품 243→235.
+- 영문 18: views API p_status close 0(new 1), p_display 전부 true → 단종 없음. URL 3개 p_url 기준 교정(EN-P00024·P00039·P00217). 근거 audit 7장.
+- ⚠ 수집 규칙 위반 기록: UPS·영문 확인 작업 중 영문 페이지 21회를 브라우저로 열어 부수 요청 604회가 1.2초 간격을 지키지 못함(hits·이미지 차단, 로그인 미접촉). 이후 실사이트 브라우저 열람 금지·순차 fetch만 허용으로 팀 공지.

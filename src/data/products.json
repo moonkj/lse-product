@@ -2841,7 +2841,7 @@
       "Medium Voltage",
       "VCB"
     ],
-    "url": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Medium_Voltage/VCB/Susol_VCB_for_Special_Purpose",
+    "url": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Medium_Voltage/VCB/Susol_VCB_for_special_purpose",
     "source": "en",
     "business": "power",
     "discontinued": false,
@@ -2901,7 +2901,7 @@
       "Low Voltage",
       "MCB & CP"
     ],
-    "url": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Low_Voltage/MCB_%26_CP/BK!RK-Series_MCB",
+    "url": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Low_Voltage/MCB_%26_CP/MCB",
     "source": "en",
     "business": "power",
     "discontinued": false,
@@ -2961,7 +2961,7 @@
       "Servo/Motion",
       "DD Motor"
     ],
-    "url": "https://www.ls-electric.com/products/view/Smart_Automation_Solution/Servo!Motion/DD_Motor/Flange_Type_DD_Motor",
+    "url": "https://www.ls-electric.com/products/view/Smart_Automation_Solution/Servo!Motion/DD_Motor/DD_Motor_Flange_Type",
     "source": "en",
     "business": "automation",
     "discontinued": false,
@@ -3328,126 +3328,6 @@
       "NTS"
     ],
     "url": "https://sol.ls-electric.com/kr/ko/product/category/864",
-    "source": "ssq",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "SSQ-348",
-    "name": "i-FOS-X",
-    "categoryCode": "AAA018006",
-    "categoryPath": [
-      "Solution Square",
-      "네트워크 스위치",
-      "i-FOS-X"
-    ],
-    "url": "https://sol.ls-electric.com/kr/ko/product/category/348",
-    "source": "ssq",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "SSQ-347",
-    "name": "RCS-XG-4G",
-    "categoryCode": "AAA018006",
-    "categoryPath": [
-      "Solution Square",
-      "IIOT 모듈",
-      "RCS-XG-4G"
-    ],
-    "url": "https://sol.ls-electric.com/kr/ko/product/category/347",
-    "source": "ssq",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "SSQ-344",
-    "name": "EtherFOS",
-    "categoryCode": "AAA003",
-    "categoryPath": [
-      "Solution Square",
-      "RTU",
-      "EtherFOS"
-    ],
-    "url": "https://sol.ls-electric.com/kr/ko/product/category/344",
-    "source": "ssq",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "SSQ-345",
-    "name": "ETOS",
-    "categoryCode": "AAA003",
-    "categoryPath": [
-      "Solution Square",
-      "RTU",
-      "ETOS"
-    ],
-    "url": "https://sol.ls-electric.com/kr/ko/product/category/345",
-    "source": "ssq",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "SSQ-332",
-    "name": "EtherFOS",
-    "categoryCode": "AAA003",
-    "categoryPath": [
-      "Solution Square",
-      "스마트 데이터 서버",
-      "EtherFOS"
-    ],
-    "url": "https://sol.ls-electric.com/kr/ko/product/category/332",
-    "source": "ssq",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "SSQ-380",
-    "name": "ETOS-X",
-    "categoryCode": "AAA003",
-    "categoryPath": [
-      "Solution Square",
-      "스마트 데이터 서버",
-      "ETOS-X"
-    ],
-    "url": "https://sol.ls-electric.com/kr/ko/product/category/380",
-    "source": "ssq",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "SSQ-333",
-    "name": "ETOS-XP",
-    "categoryCode": "AAA003",
-    "categoryPath": [
-      "Solution Square",
-      "스마트 데이터 서버",
-      "ETOS-XP"
-    ],
-    "url": "https://sol.ls-electric.com/kr/ko/product/category/333",
-    "source": "ssq",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "SSQ-346",
-    "name": "DPS",
-    "categoryCode": "AAA018004",
-    "categoryPath": [
-      "Solution Square",
-      "열화상",
-      "DPS"
-    ],
-    "url": "https://sol.ls-electric.com/kr/ko/product/category/346",
     "source": "ssq",
     "business": "power",
     "discontinued": false,

@@ -2229,6 +2229,65 @@
     ]
   },
   {
+    "id": "ups",
+    "name": "무정전 전원 장치",
+    "layer": "L6",
+    "voltage": "380/220V",
+    "category": "system",
+    "description": "정전·순간정전 때 배터리 전력으로 중요 부하에 전원을 끊김 없이 공급한다.",
+    "overview": {
+      "summary": "상용 전원이 끊기거나 흔들릴 때 배터리에 저장한 에너지를 인버터로 교류로 바꿔, 전산·통신·제어 같은 중요 부하에 전원을 끊김 없이 공급하는 장치다.",
+      "points": [
+        {
+          "label": "역할",
+          "text": "저압 배전반에서 분기한 전원을 받아 전산실 서버, 감시·제어 설비(SCADA·HMI·PLC), 통신 장비, 비상 조명처럼 잠깐의 정전도 허용되지 않는 부하 앞단에 둔다."
+        },
+        {
+          "label": "동작 원리",
+          "text": "정류기·배터리·인버터·바이패스 스위치로 구성된다. 상시 인버터 급전(온라인, 이중 변환) 방식은 정전 때 절체 시간이 없고 전압·주파수 변동도 걸러 준다. 장시간 정전에는 비상발전기가 기동해 ATS로 넘겨받을 때까지의 공백을 UPS가 메운다. 순간전압보상장치는 짧은 전압강하(Sag)만 보상하는 반면, UPS는 정전 자체를 배터리 시간만큼 견딘다."
+        },
+        {
+          "label": "선정 포인트",
+          "text": "부하 용량(kVA·kW)과 역률, 필요한 백업 시간에 맞춘 배터리 용량, 단상·3상 구성, 병렬 이중화(N+1) 여부, 효율과 설치 공간을 본다."
+        }
+      ],
+      "basis": "general",
+      "sources": []
+    },
+    "learnPoints": [],
+    "coverage": "missing",
+    "lseCategoryCodes": [],
+    "abbr": "UPS",
+    "gapNote": "공식 사이트·자료실·Solution Square에서 자사 UPS 제품을 찾지 못함 (E-House 구성 설비로만 언급) — 실제 미보유 여부 확인 필요",
+    "gapAssessment": {
+      "supplyMode": "not-offered",
+      "basis": "homepage-menu",
+      "confidence": "candidate",
+      "evidence": [
+        {
+          "type": "url",
+          "ref": "https://www.ls-electric.com/ko/product/",
+          "note": "국문 제품 메뉴·카테고리 137개와 국·영문 제품 목록 API에 UPS 라인 없음 (2026-11-18 수집)"
+        },
+        {
+          "type": "url",
+          "ref": "https://www.ls-electric.com/ko/download/",
+          "note": "자료실 검색 \"UPS\" 0건, \"무정전\" 1건(MV CTTS 무정전 자동절체 스위치 — UPS 아님), 제품 검색 \"UPS\"·\"무정전\" 0건 (2026-11-18)"
+        },
+        {
+          "type": "url",
+          "ref": "https://ssq.ls-electric.com/kr/ko/download",
+          "note": "Solution Square 자료 검색 \"UPS\"·\"무정전\" 0건, 통합검색 \"UPS\"는 PLC·인버터 Q&A 10건뿐, 제품 카테고리 254개에 UPS 없음 (2026-11-18)"
+        },
+        {
+          "type": "url",
+          "ref": "https://www.ls-electric.com/ko/product/category/AAA011001",
+          "note": "E-House 소개에 \"UPS·배터리\"를 통합 설비로 언급 — 단품 UPS 라인업은 아님"
+        }
+      ]
+    }
+  },
+  {
     "id": "aps",
     "name": "아크 보호 시스템",
     "layer": "L4",

@@ -214,3 +214,53 @@
 | `aps` | 아크 보호 시스템(Arc Protection System, 7.2~24kV)으로 정정, L4로 이동, 보유(owned). UPS 기기는 새 타일이 필요해 만들지 않음(화면 배치 변경 금지) |
 | 단종·일람표 | iV5·iG5A·iP5A·XP 시리즈 discontinued, XGT·XGB·Smart I/O 일람표 3건 제품에서 제외 |
 | **`lv-ats` 공백 판정 취소** | missing(confirmed) → **owned**. 사유: 공개 자료실에 LV CTTS 카탈로그(d_id 421413, AAA010002, 2026-10)와 ACB 기반 ATS CAD("[Susol_Metasol ACB] ATS with ACB", d_id 417569·417570)가 있음 → 공백 확정 판정 취소. MV CTTS(d_id 420271)는 `alts` 에 연결 |
+
+## 7. 후속 반영 2 (2026-11-18, UPS·SSQ 협력사·영문 재확인)
+
+스크립트·캐시: `/private/tmp/claude-501/-Users-kjmoon-LSE-News/37bcf7f5-4ef4-4874-8316-789fc9001612/scratchpad/ups/` (`scripts/`, `cache/`, `requests.log`, `en_pw.json`)
+
+### 7-1. 무정전 전원 장치(UPS) — 새 기기 `ups`, 미보유(공백 후보)
+
+| 확인 경로 | 결과 |
+|---|---|
+| 국문 자료실 API `ko/api/download.ashx?t=list` (Referer `/ko/download/`) | "UPS" 0건, "무정전" 1건 = MV CTTS(무정전 자동절체 스위치, d_id 420271) → UPS 아님 |
+| 국문 제품 검색 API `ko/api/search.ashx?t=product` | "UPS"·"무정전" 0건 |
+| SSQ 자료 `dlCenter` (docTypes 지정, 양성 대조 "iS7" 5건 확인) | "UPS"·"무정전" 0건 |
+| SSQ 통합검색 `restSearchBff` | "UPS" 10건 = PLC·인버터 Q&A·기술 가이드뿐(외부 UPS 연동 질문), "무정전" 0건 |
+| SSQ 카테고리 자동완성 / 카드 254개 | 0건 |
+| 국·영문 제품 목록 API, 국문 카테고리 137개 본문 | UPS 라인 없음. E-House(AAA011001) 소개에 "UPS·배터리"를 통합 설비로, DC MC 적용처로 "UPS"를 언급하는 정도 |
+
+- 판정: `coverage: missing`, `gapAssessment {supplyMode: not-offered, basis: homepage-menu, confidence: candidate}` — **확정하지 않음**(사업부 확인 필요). 근거 URL 4건을 evidence에 기록.
+- 계통도: L6 저압 배전, 노드 `n-ups` (1334, 3312) — 버스웨이 왼쪽(오른쪽의 순간전압보상장치와 대칭). 연결 `e089` 버스웨이 → UPS(전력), `e090` UPS → HMI(전력, "무정전 제어 전원"). 관리자 draft 로직(addNode·addEdge, router A*)으로 경로 계산, DI 오류 0.
+  - 예전 aps 자리(1668, 3474)도 검토했지만, 그 자리에서 중요 부하(HMI·PLC)로 가는 선이 버스웨이 → 서보 선(e068)과 교차(DI-45a)해서 쓰지 않음.
+  - 순간전압보상장치와는 직렬로 잇지 않음(예전 e049 sag → aps는 실제 구성과 맞지 않음). 설명에 "Sag만 보상 vs 정전 자체를 배터리 시간만큼 견딤"으로 차이를 적음.
+- 사진 없음 → UPS 전용 심볼(EquipmentSymbol BY_ID `ups`).
+
+### 7-2. SSQ 협력사 라인 8개 — **SSQ 파트너 제품, 자사 제품맵 범위 밖** → 제거
+
+| SSQ id | 이름 | SSQ 상위 카테고리 |
+|---|---|---|
+| 333 / 380 / 332 | ETOS-XP / ETOS-X / EtherFOS | 스마트 데이터 서버 |
+| 345 / 344 | ETOS / EtherFOS | RTU |
+| 346 | DPS | 열화상 |
+| 347 | RCS-XG-4G | IIOT 모듈 |
+| 348 | i-FOS-X | 네트워크 스위치 |
+
+- 근거: SSQ 게스트 카드 API에서 이 카테고리 5개(327~331)와 하위 카드 52개 모두 `cardDescription = "AC&T"`(다른 카드는 제품 설명 문구)이고, `homepageUrl`이 `acnt.co.kr`로 연결됨. acnt.co.kr은 별도 회사 "AC&T System(에이씨앤티시스템)" 홈페이지이며 EtherFOS·RTU·RCS-XG·열화상·i-FOS를 자사 시리즈로 소개함(별도로 "LS ELECTRIC 융합 제품 시리즈" 메뉴가 있음).
+- 조치: `products.json`에서 SSQ-333·380·332·345·344·346·347·348 제거(243 → 235). 기기 `productIds`에 연결된 것은 없었음(카테고리 코드 AAA003·AAA018004·AAA018006로만 묶여 있었음).
+- 같은 "네트워크 솔루션"의 NPS·NTS(SSQ 863·864)는 제조사 표기가 없고 외부 홈페이지 링크도 없어 **남겨 둠**(판단 보류 아님 — 자사 표기와 같은 형식).
+
+### 7-3. 영문 전용 18개 — 단종 0, URL 3개 교정
+
+- 영문 상세 API는 화면과 같은 파라미터 전체(`/api/products/views?page=1&rows=10&keyword=&p_lang=en&c_depth1=…&c_depth2=…&c_depth3=…&p_code=&c_code=&p_name=…`)를 넘기면 응답함(지난번 빈 응답은 `p_code`만 넘겨서 서버가 연결을 끊은 것).
+- `p_status`: 13개 제품 모두 `close` 아님(빈 값 12, `new` 1 = Flange Type DD Motor). 영문 검색 목록 API(`/api/products/search?p_lang=en`, 240건)에서 18개 모두 `p_display = true`, 영문 A-Z 목록(`/api/products/az?p_lang=en`)에도 모두 있음. → **단종 없음, `discontinued: false` 유지.**
+- 참고(자료 갱신이 오래된 것, 단종 근거는 아님): GIPAM2000·GIMAC-i(자료 2019~2020), SIS·Solution Power MCC·LS EK60(제품 지정 자료 없음), DCS(자료 0), Mobile Substation(2019 카탈로그).
+- URL: 18개 모두 브라우저(Playwright)로 열어 제품 화면(`Beyond X™ <제품명>`)과 `p_code` 일치를 확인. 사이트가 링크를 만들 때 `p_url`을 쓰는 3개는 그 값으로 교정:
+  - EN-P00024 `…/MCB_%26_CP/BK!RK-Series_MCB` → `…/MCB_%26_CP/MCB` (기존 주소는 `!`가 `/`로 풀려 경로가 어긋남)
+  - EN-P00039 `…/Susol_VCB_for_Special_Purpose` → `…/Susol_VCB_for_special_purpose`
+  - EN-P00217 `…/Flange_Type_DD_Motor` → `…/DD_Motor_Flange_Type`
+
+### 7-4. 요청 수
+
+- ls-electric.com·ssq·acnt 직접 요청(curl, 1.3초 이상 간격) 59회(200 51·500 2·404 1·빈 응답 5), 브라우저 확인 21페이지에서 실제 전송 604회, 합계 663회(이미지·폰트·hits 요청은 차단해 보내지 않음). 자세한 목록은 `requests.log`.
+- ⚠ 브라우저 확인은 페이지 하나를 열 때 JS·API 요청이 동시에 나가 1.2초 간격 규칙을 지키지 못함(페이지 사이 간격만 약 4초).
