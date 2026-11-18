@@ -112,6 +112,8 @@ export function resolveProducts(eq: EquipmentType, data: AppData = getData()): P
   const ids = new Set<string>(eq.productIds ?? []);
   for (const code of eq.lseCategoryCodes) {
     for (const pid of data.categoryByCode.get(code)?.productIds ?? []) ids.add(pid);
+    // 리더 결정 R-01: 하위 카테고리 포함 — 카테고리 코드는 접두사 계층(AAA015 ⊃ AAA015001)이므로 접두사로도 수집
+    for (const p of data.products) if (p.categoryCode.startsWith(code)) ids.add(p.id);
   }
   return [...ids].map((id) => data.productById.get(id)).filter((p): p is Product => p !== undefined);
 }
