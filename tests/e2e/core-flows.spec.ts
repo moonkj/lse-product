@@ -10,9 +10,9 @@
  * 셀렉터 규칙: data-testid 만 사용 (문구/스타일 변경에 깨지지 않도록). 목록은 test-plan.md §7.
  * 테스트 데이터: 기기 id 를 하드코딩하지 않고 src/data/*.json 에서 커버리지별로 골라 쓴다.
  *
- * Phase 2 게이트: 계통도 UI(data-testid="diagram")가 아직 없으면 이 파일의 테스트는 전부 skip 된다.
- *   UI 가 생기면 자동으로 활성화. 게이트를 끄고 강제 실행하려면 E2E_STRICT=1 npm run test:e2e
- *   (주의: 회귀로 diagram testid 가 사라져도 skip 으로 보이므로 Phase 2 완료 후 CI 에서는 E2E_STRICT=1 권장)
+ * v0.4: Phase 2 게이트(diagram testid 없으면 전체 skip) 제거 — Phase 2~5 구현 완료. 회귀로 UI 가 사라지면
+ *   skip 이 아니라 실패로 보여야 하므로. (E2E_STRICT 환경변수는 더 이상 쓰지 않음)
+ * v0.4: E2E-1 투어 = /learn 페이지(승인 디자인 Learn), 공백 표 기본 필터 = "전체"(리더 결정).
  *
  * 리더 결정 반영: R-04(자료 없음 → 공식 페이지 링크), R-07(power 실선 / signal 점선),
  *   R-08(Gap 강조 규칙), R-09(?mode=gap|learn URL 공유)
@@ -68,6 +68,10 @@ const diagram = load<{ nodes: DNode[] }>('diagram.json');
 const products = load<Prod[]>('products.json');
 const categories = load<{ code: string; productIds: string[] }[]>('categories.json');
 const docsJson = load<{ products: Record<string, ProductDocs> }>('docs.json');
+/** 교육 콘텐츠 (src/content/learn.json) — 단계별 핵심 기기 */
+const learn = JSON.parse(readFileSync(fileURLToPath(new URL('../../src/content/learn.json', import.meta.url)), 'utf8')) as {
+  steps: { layer: string; keyEquipmentIds: string[] }[];
+};
 const eqById = new Map(equipment.map((e) => [e.id, e]));
 const catByCode = new Map(categories.map((c) => [c.code, c]));
 
@@ -95,13 +99,15 @@ const productWithDocs = products.find((p) => docsOf(p.id).length > 0);
 const productWithoutEntry = products.find((p) => !docsJson.products[p.id]);
 /** docs.json 에 항목은 있으나 docs 가 빈 제품 → 공식 자료실 deepLink 로 대체 */
 const productWithEmptyEntry = products.find((p) => docsJson.products[p.id] && docsOf(p.id).length === 0);
-/** 상세 패널에 자료 링크가 보이는 기기: 연결 제품 ≤ 5 (EquipmentInfo 규칙) 이고 그중 자료 있는 제품이 있음 */
+/**
+ * 상세 패널·기기 페이지에 자료 링크가 보이는 기기: 연결 제품 중 docs.json 자료가 있는 제품이 있음
+ * (DetailPanel = 자료 있는 첫 제품의 자료 최대 5건, EquipmentPage = 자료 있는 제품 최대 5개 × 3건)
+ */
 const nodeWithDocs = (() => {
   for (const node of diagram.nodes) {
     const eq = eqById.get(node.equipmentTypeId);
     if (!eq) continue;
-    const linked = linkedProducts(eq);
-    if (linked.length > 0 && linked.length <= 5 && linked.some((id) => docsOf(id).length > 0)) return { node, eq };
+    if (linkedProducts(eq).some((id) => docsOf(id).length > 0)) return { node, eq };
   }
   return undefined;
 })();
@@ -109,13 +115,6 @@ const edges = load<{ edges: { id: string; kind?: 'power' | 'signal' }[] }>('diag
 const powerEdge = edges.find((e) => (e.kind ?? 'power') === 'power');
 const signalEdge = edges.find((e) => e.kind === 'signal');
 
-// Phase 2 게이트 (상단 주석 참고)
-test.beforeEach(async ({ page }) => {
-  if (process.env.E2E_STRICT) return;
-  await page.goto('./#/');
-  const ready = (await page.getByTestId('diagram').count()) > 0;
-  test.skip(!ready, 'Phase 2 계통도 UI(data-testid="diagram") 미구현 — E2E_STRICT=1 로 강제 실행');
-});
 
 // ─────────────────────────────────────────────────────────────
 // 셀렉터 헬퍼 (testid 이름은 여기서만 조립)
@@ -137,39 +136,56 @@ async function clickNode(page: Page, nodeId: string, layer: string) {
 }
 
 // ═════════════════════════════════════════════════════════════
-// E2E-1 신입 학습 흐름: 교육 모드 → 투어 L1→L7 → 기기 학습 포인트
+// E2E-1 신입 학습 흐름 (v0.4 — 승인 디자인 Learn.dc.html 기준)
+//   교육 버튼 → 계통도 위 "투어 시작" 카드 → /learn?step=L1 (투어 본체는 /learn 페이지, 계통도 밴드 하이라이트 없음)
+//   → 다음×6 (L1→L7, 역행 없음, ?step= 동기화) → L7 에서 다음 비활성 → 핵심 기기 카드 → 계통도 /?node= 로 이동
 // ═════════════════════════════════════════════════════════════
 test.describe('E2E-1 신입 학습 흐름', () => {
-  test('교육 모드 투어가 L1부터 L7까지 순서대로 진행되고, 기기 클릭 시 학습 포인트가 보인다', async ({ page }) => {
+  test('교육 모드 → 투어 시작 → /learn 에서 L1→L7 순서 진행, L7 에서 다음 비활성, 핵심 기기 카드 → 계통도 노드', async ({ page }) => {
     await gotoHome(page);
     await tid(page, 'view-mode-learn').click();
     await expect(tid(page, 'view-mode-learn')).toHaveAttribute('aria-pressed', 'true');
+    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'learn');
 
+    // 계통도 위 "투어 시작" 카드 → 교육 페이지 L1
     await tid(page, 'tour-start').click();
+    await expect(page).toHaveURL(/#\/learn\?(.*&)?step=L1(&|$)/);
+    await expect(tid(page, 'learn-page')).toBeVisible();
     const step = tid(page, 'tour-step');
-    await expect(step).toBeVisible();
+    await expect(step).toHaveAttribute('data-layer', 'L1');
+    await expect(tid(page, 'view-mode-learn')).toHaveAttribute('aria-pressed', 'true');
 
     const visited: string[] = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 10; i++) {
       const layer = await step.getAttribute('data-layer');
       if (layer && visited.at(-1) !== layer) visited.push(layer);
-      // 현재 단계 계층 밴드가 화면 안에 들어와 있어야 함
-      if (layer) await expect(tid(page, `layer-band-${layer}`)).toBeInViewport({ ratio: 0.3 });
+      await expect(page).toHaveURL(new RegExp(`[?&]step=${layer}(&|$)`)); // 공유·새로고침용 URL 동기화
       const next = tid(page, 'tour-next');
       if (!(await next.isEnabled())) break;
       await next.click();
+      await expect(step).not.toHaveAttribute('data-layer', layer!);
     }
-    const main = visited.filter((l) => /^L[1-7]$/.test(l));
-    expect(main[0]).toBe('L1');
-    expect(main.at(-1)).toBe('L7');
-    expect([...main].sort()).toEqual(main); // 역행 없음
+    expect(visited).toEqual(['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']); // 순서대로, 건너뛰기·역행 없음
+    await expect(step).toHaveAttribute('data-layer', 'L7');
+    await expect(tid(page, 'tour-next')).toBeDisabled();
 
-    const target = nodeWith('owned');
-    test.skip(!target, 'owned 노드 데이터 없음');
-    await tid(page, 'tour-close').click();
-    await clickNode(page, target!.node.id, target!.eq.layer);
-    await expect(panel(page)).toBeVisible();
+    // L7 핵심 기기 카드 → 계통도에서 그 노드 선택 (/?node=)
+    const keyId = learn.steps[6].keyEquipmentIds.find((id) => diagram.nodes.some((n) => n.equipmentTypeId === id));
+    test.skip(!keyId, 'L7 핵심 기기 중 계통도 노드가 있는 기기 없음');
+    const keyNode = diagram.nodes.find((n) => n.equipmentTypeId === keyId)!;
+    await step.locator(`a[href$="node=${keyNode.id}"]`).click();
+    await expect(page).toHaveURL(new RegExp(`#/\\?(.*&)?node=${keyNode.id}(&|$)`));
+    await expect(tid(page, 'diagram')).toBeVisible();
+    await expect(diagramNode(page, keyNode.id)).toHaveAttribute('aria-pressed', 'true');
+    await expect(tid(page, 'detail-title')).toContainText(eqById.get(keyId!)!.name);
     await expect(tid(page, 'detail-learn-points').locator('li').first()).toBeVisible();
+  });
+
+  test('/learn?step=L4 딥링크 → L4 단계로 열리고 새로고침해도 유지', async ({ page }) => {
+    await page.goto('./#/learn?step=L4');
+    await expect(tid(page, 'tour-step')).toHaveAttribute('data-layer', 'L4');
+    await page.reload();
+    await expect(tid(page, 'tour-step')).toHaveAttribute('data-layer', 'L4');
   });
 });
 
@@ -280,12 +296,20 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     await expect(tid(page, 'gap-page')).toBeVisible();
   });
 
-  test('/gap 페이지의 공백 건수가 데이터의 missing 기기 수와 일치한다', async ({ page }) => {
+  test('/gap 공백 목록: 기본 필터 "전체" = 미보유+일부+계열사 건수, "미보유" 필터 = missing 건수 (FT-26)', async ({ page }) => {
+    // 리더 결정(v0.4): 승인 디자인(GapTable.dc.html) 대로 첫 화면 필터는 "전체"
+    const count = (c: Coverage) => equipment.filter((e) => e.coverage === c).length;
+    const gapTotal = count('missing') + count('partial') + count('affiliate');
     await page.goto('./#/gap');
     await expect(tid(page, 'gap-page')).toBeVisible();
     await expect(tid(page, 'gap-matrix')).toBeVisible();
-    const expected = equipment.filter((e) => e.coverage === 'missing').length;
-    await expect(tid(page, 'gap-list').getByTestId(/^gap-item-/)).toHaveCount(expected);
+    const items = tid(page, 'gap-list').getByTestId(/^gap-item-/);
+    await expect(items).toHaveCount(gapTotal);
+
+    await tid(page, 'gap-filter-missing').click();
+    await expect(tid(page, 'gap-filter-missing')).toHaveAttribute('aria-pressed', 'true');
+    await expect(items).toHaveCount(count('missing'));
+    for (const row of await items.all()) await expect(row).toHaveAttribute('data-coverage', 'missing');
   });
 
   test('R-09 보기 모드 URL 공유: ?mode=gap / ?mode=learn 으로 열면 해당 모드, 토글 시 URL 갱신', async ({ page }) => {
@@ -530,7 +554,7 @@ test.describe('자료 링크 (docs.json)', () => {
   });
 
   test('상세 패널(detail-doc-link) → 클릭 시 새 탭(popup)으로 열리고 원래 탭은 그대로', async ({ page }) => {
-    test.skip(!nodeWithDocs, '상세 패널에 자료가 보일 기기 없음 (연결 제품 ≤5 + docs.json 자료)');
+    test.skip(!nodeWithDocs, '상세 패널에 자료가 보일 기기 없음 (docs.json 자료가 있는 연결 제품)');
     await page.context().route(/^https:\/\/(?!localhost)/, (r) => r.fulfill({ status: 200, contentType: 'text/plain', body: 'stub' })); // 외부 사이트 실제 요청 차단
     await gotoHome(page);
     await clickNode(page, nodeWithDocs!.node.id, nodeWithDocs!.eq.layer);

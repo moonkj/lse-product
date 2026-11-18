@@ -1,12 +1,13 @@
-# 테스트 계획서 (v0.3)
+# 테스트 계획서 (v0.4)
 
 > 작성: Teammate 3 (테스트 작성자 + 최종 리뷰어) · 2026-11-18
 > 대상: 전력계통도 기반 제품 포트폴리오 & 신입 교육 포털 (PLAN.md v0.1)
-> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`
+> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/unit/lib/*.test.ts`, `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`
 > 설정: `vitest.config.ts`(jsdom, DI 테스트는 파일 상단 `@vitest-environment node`), `playwright.config.ts`(chromium, build+preview :4173), `tests/tsconfig.json`
 > 스크립트: `npm test`(vitest run) · `npm run test:watch` · `npm run test:data`(DI만) · `npm run test:e2e` · `npm run typecheck:tests`
 > v0.2 (11-18): 환경 구성·실행 완료, 리더 결정 R-01/04/05/07/08/09 반영 (§8)
 > v0.3 (11-18): docs.json 규칙 DI-60~68 추가, 컴포넌트 테스트 CT-01/02 추가, E2E 를 사용자 확정 UX(Gap=같은 계통도 `?mode=gap`, 공백 표 링크, `?node=` 복원)와 docs.json 기준 자료 링크로 갱신
+> v0.4 (11-18): Phase 2~5 구현(1ce6811) 기준. 리더 결정 반영 — E2E-1 투어 = `/learn` 페이지(승인 디자인 Learn, 계통도 밴드 하이라이트 없음), 공백 표 기본 필터 = "전체"(승인 디자인 GapTable). DI-70~79(learn.json)·DI-80~86(equipment-images.json) 추가, CT-03 DiagramNode·CT-04 DetailPanel·UT-01 CSV 추가, E2E Phase 2 게이트 제거. 코드 리뷰: `docs/reviews/phase2-code-review.md`
 
 ---
 
@@ -39,7 +40,7 @@
 
 ---
 
-## 3. 데이터 무결성 규칙 (DI) — 총 57개 (HARD 50 · SOFT 7)
+## 3. 데이터 무결성 규칙 (DI) — 총 74개 (HARD 63 · SOFT 11)
 
 > HARD = 위반 시 테스트 실패(빌드 차단 권장) · SOFT = `console.warn`만 출력
 > 구현: `tests/unit/data-integrity.test.ts` (테스트 이름 앞에 ID 표기). 실제 데이터(제품 199 · 카테고리 137 · 기기 74 · 노드 74 · 엣지 77)로 **사전 점검(Python 포팅) 결과 전부 통과** — 단 DI-40은 예외 규칙 확정 후 기준 (§3.4 참고).
@@ -136,6 +137,35 @@
 | DI-67 | docs 가 빈 제품 → 경고만 (화면은 "자료 준비 중" + deepLink) | SOFT |
 | DI-68 | source=www 인데 ssq CDN 파일 포함 → 출처 표기 오류 의심 경고 | SOFT |
 
+### 3.8 교육 콘텐츠 learn.json (v0.4)
+> 계약: `src/content/learnSchema.ts` (`LearnContentSchema`). 콘텐츠 소유 T1-B, 사실관계는 equipment-types.json 의 description·learnPoints 범위 안 (교육 담당자 검토 전 draft).
+
+| ID | 규칙 | 등급 |
+|---|---|---|
+| DI-70 | learn.json 존재 + `LearnContentSchema` 통과. 스키마가 단계 순서 뒤바뀜·6단계·answerIndex 범위 밖·reviewStatus 누락을 **거부**하는지 확인 (느슨해지는 회귀 방지) | HARD |
+| DI-71 | 단계 layer 가 정확히 L1→L7 순서, 중복·누락 없음 | HARD |
+| DI-72 | 핵심 기기(keyEquipmentIds) 가 equipment-types.json 에 존재 + 단계 안 중복 없음 | HARD |
+| DI-73 | 핵심 기기는 그 단계 계층의 기기 (L3 단계에 L5 기기 금지) | HARD |
+| DI-74 | 용어집 equipmentId 가 equipment-types.json 에 존재 + 용어(term) 중복 없음 | HARD |
+| DI-75 | 퀴즈 sourceEquipmentIds 가 equipment-types.json 에 존재 (검토자가 출처 추적) | HARD |
+| DI-76 | answerIndex 가 options 범위 안 + 보기 중복 없음 + quiz.id 전역 중복 없음 (진도 저장 키 = quiz.id) | HARD |
+| DI-77 | reviewStatus 필드 존재·공백 아님 | HARD |
+| DI-78 | reviewStatus 가 draft → 경고 (현재 1건: "draft — 교육 담당자 검토 필요") | SOFT |
+| DI-79 | 공개 사이트 — 대외비 키워드·이메일·전화번호 패턴 (intro·퀴즈·용어집) | SOFT |
+
+### 3.9 기기 사진 equipment-images.json (v0.4)
+> 계약: `EquipmentImagesSchema` (`src/lib/schema.ts`). 키 = equipmentType.id, `file` = `public/` 기준 상대 경로 (`images/equipment/<id>.(png|jpg|webp)`).
+
+| ID | 규칙 | 등급 |
+|---|---|---|
+| DI-80 | 파일 존재 + 스키마 통과. 절대경로(`/images/…`, base './' 깨짐)·경로 탈출(`..`)·http 출처·bytes 0 을 **거부** | HARD |
+| DI-81 | 키(기기 id)가 equipment-types.json 에 존재 | HARD |
+| DI-82 | `public/<file>` 이 실제로 존재 (배포 후 깨진 이미지 방지) | HARD |
+| DI-83 | productId 가 있으면 products.json 에 존재 | HARD |
+| DI-84 | sourceUrl 은 `https://*.ls-electric.com` (공식 사이트 출처) | HARD |
+| DI-85 | missing·na 기기에 사진 지정 → 경고 (디자인: 미보유는 심볼 + 빨간 점선) — 현재 0건 | SOFT |
+| DI-86 | 실제 파일 크기 ≠ bytes, 또는 500KB 초과 → 경고 — 현재 1건(hmi.png 501KB) | SOFT |
+
 ---
 
 ## 3b. 컴포넌트 테스트 (CT, Vitest + Testing Library + jsdom, v0.3)
@@ -143,6 +173,13 @@
 |---|---|---|---|
 | CT-01 | `common/CoverageBadge` | 5상태 아이콘·라벨이 서로 다름 / 상태별 색 클래스(`cov-badge--{c}`) + `coverage-icon-{c}` 아이콘(aria-hidden) + 라벨 텍스트 동시 렌더 / `showLabel=false` 여도 visually-hidden 라벨 유지 | 11 |
 | CT-02 | `common/ExternalLink` | https → `<a target=_blank rel="noopener noreferrer">` + "새 탭" 안내 / http·javascript:·data:·상대경로·`//`·ftp·빈 문자열 → `<a>` 미생성(텍스트만) | 9 |
+| CT-03 | `diagram/DiagramNode` (v0.4) | 사진 있음 → `img.dnode__img`(data-src 지연 로딩, alt="") + 심볼 없음 / 사진 없음 → `svg.dnode__symbol`(aria-hidden) + `dnode--symbol`, 미보유 캡션 "자사 제품 없음" / 5상태: role=button·tabindex=0·`aria-label="{기기명}, {커버리지}"`·data-coverage·아이콘 / Gap 모드 R-08 강조·흐림 표 (제품 모드는 모두 false) / aria-pressed + 클릭·Enter·Space → onActivate(id) | 9 |
+| CT-04 | `panel/DetailPanel` (v0.4) | MemoryRouter `/?node=` 진입. 제품 0개 보유 기기 → `detail-product-list` 없음, `detail-empty-products` 안에 카테고리 공식 페이지 링크(새 탭·noopener·카테고리명), "미보유" 문구 없음 / 미보유 기기 → "자사 제품 미보유(공백)" + gapNote, 링크 없음 / 제품 있는 기기 → 제품 카드 / 없는 id → 빈 안내 패널. 대상 기기는 실제 데이터에서 조건으로 선택(없으면 skip) | 4 |
+
+### 3c. 단위 테스트 (UT, v0.4)
+| ID | 대상 | 검증 | 테스트 수 |
+|---|---|---|---|
+| UT-01 | `lib/pages/catalog.ts` `buildGapCsv` | UTF-8 BOM(U+FEFF) 시작·CRLF 줄 끝 / 헤더 9열·행 값 / 쉼표·큰따옴표·LF·CRLF 값 → `"…"` 감싸기 + `""` escape, RFC 4180 파서로 되읽어 열 수·값 보존 / 특수문자 없는 값은 그대로, 빈 목록 = 헤더만 | 4 |
 
 ---
 
@@ -174,8 +211,8 @@
 | FT-22 | 키보드 — 노드 | Tab 으로 노드 포커스 → Enter/Space | 패널 열림, 포커스 링 보임, Esc 로 닫으면 **포커스가 원래 노드로 복귀** | 컴포넌트·E2E |
 | FT-23 | 키보드 — 건너뛰기 | 첫 Tab | "계통도로 건너뛰기" 링크 → Enter → 다음 Tab이 첫 노드 | E2E |
 | FT-24 | 색약 대응 | 범례·노드 | 5상태 각각 **색 + 아이콘(모양)** 병행, `aria-label`에 상태 텍스트 포함 ("진공차단기, 보유"). 흑백(grayscale) 스크린샷에서도 구분 | 컴포넌트·E2E·수동 |
-| FT-25 | 교육 투어 | 교육 모드 → 투어 시작 → 다음 반복 | L1→L7 순서, 역행 없음, 각 단계 밴드 하이라이트·화면 이동, 마지막 단계에서 다음 비활성 | E2E |
-| FT-26 | /gap 매트릭스 | `#/gap` | 공백 건수 = 데이터 missing 수, 행(전압)×열(기능) 셀 클릭 → 해당 기기 | E2E |
+| FT-25 | 교육 투어 (v0.4) | 교육 모드 → 계통도 위 "투어 시작" 카드 → 다음 반복 → 핵심 기기 카드 | `/learn?step=L1` 로 이동, `tour-step[data-layer]` L1→L7 순서·역행 없음, `?step=` 동기화, L7 에서 `tour-next` disabled, 핵심 기기 카드 → `/?node=` 노드 선택 + 패널. (승인 디자인: 투어 본체는 /learn, 계통도 밴드 하이라이트 없음) | E2E |
+| FT-26 | /gap 공백 표 (v0.4) | `#/gap` → "미보유" 필터 | **기본 필터 "전체"**(리더 결정·승인 디자인): 첫 화면 `gap-item` 수 = missing+partial+affiliate (현재 17). `gap-filter-missing` 클릭 → missing 수(현재 12), 모든 행 data-coverage=missing. 셀 클릭 → 그 칸 기기 | E2E |
 | FT-27 | 커버리지 통계 | 사이드바 % | (owned + partial×가중치?) / (전체 − na) — 공식 확정 후 단위 테스트 고정 | 단위 |
 | FT-29 | 선택 노드 URL 복원 | `#/?node=<nodeId>` 진입·새로고침 / 다른 노드 클릭 / 닫기 / 없는 id | 패널·`aria-pressed` 복원, 클릭 시 `node=` 갱신, 닫으면 파라미터 제거, 없는 id 는 패널 없이 정상 | E2E |
 | FT-30 | 공백 표 링크 | 좌측 내비 아래 "공백 표 보기" | `#/gap` 공백 표로 이동 | E2E |
@@ -187,11 +224,12 @@
 
 | ID | 페르소나 | 흐름 | 검증 포인트 |
 |---|---|---|---|
-| E2E-1 | 신입 | 홈 → 교육 모드 → 투어 시작 → 다음×N → 투어 닫기 → owned 기기 클릭 | 투어가 L1에서 시작해 L7에서 끝남, 역행 없음, 각 단계 밴드가 뷰포트 안, 패널에 학습 포인트 |
+| E2E-1 | 신입 | 홈 → 교육 모드 → "투어 시작" 카드 → `/learn?step=L1` → 다음×6 → L7 핵심 기기 카드 클릭 / `/learn?step=L4` 딥링크·새로고침 | `tour-step[data-layer]` = L1…L7 정확히 순서대로, `?step=` 동기화, L7 에서 `tour-next` disabled, 카드 → `#/?node=<nodeId>` + `aria-pressed` + 패널 제목·학습 포인트 |
 | E2E-2 | 영업 | 검색에 약어 입력 → 기기 결과 선택 → 패널 → 제품 카드 → 제품 페이지 → 데이터시트/공식 페이지 | 노드 선택 상태, 배지 owned, URL `#/product/:id`, 링크 새 탭+noopener+ls-electric.com, popup 이벤트. 자료가 없으면 "자료 준비 중" |
 | E2E-3 | 기획 | Gap 버튼(같은 계통도, `?mode=gap`) → missing 강조/owned 흐림 → 공백 기기 클릭 → "공백 표 보기" 링크 → `/gap` | URL `mode=gap`·`gap-page` 미표시, 아이콘 병행, gapNote, 제품 목록 없음, 공백 건수 = 데이터 |
 | E2E-4 | 공통 | 딥링크·새로고침·뒤로가기·없는 id·자산 404, `?node=` 복원·갱신·제거, `?mode=gap&node=` 조합 | GitHub Pages 시나리오 (preview 빌드 기준) |
 | DOCS | 공통 | docs.json 기준: 항목 없음(R-04)·빈 항목(deepLink)·제품 페이지 전체 링크·상세 패널 popup·기기 페이지 | 건수 = docs.json, `data-doc-type`, 새 탭·noopener·허용 도메인. 외부 요청은 `context.route` 로 stub (네트워크 의존 없음) |
+| (게이트) | — | v0.4: Phase 2 게이트(`diagram` testid 없으면 전체 skip, `E2E_STRICT`) **제거** — 회귀가 skip 으로 숨지 않게 | |
 | SMOKE | 공통 | 홈 진입 | 헤더·범례 5종 표시, 런타임 오류 없음 (`smoke.spec.ts`, Phase 1부터 항상 통과해야 함) |
 | E2E-5 | 접근성 | 키보드 Enter/Esc·포커스 복귀, 건너뛰기 링크, 계층 점프, 범례 5종, 모바일 하단 시트, 라이트/다크 axe 대비 | |
 
@@ -265,7 +303,9 @@
 | `gap-table-link` | 좌측 내비 아래 "공백 표 보기" 링크 (→ `#/gap`) | **v0.3 신규 요청** |
 | `gap-page` / `gap-matrix` / `gap-list` / `gap-item-{equipmentId}` | `/gap` 페이지 | |
 | `learn-page` | `/learn` 페이지 | |
-| `tour-start` / `tour-step` / `tour-next` / `tour-close` | 교육 투어 | `tour-step` 에 `data-layer`, 마지막 단계 `tour-next` disabled |
+| `tour-start` / `tour-step` / `tour-next` / `tour-close` | 교육 투어 | `tour-step` 에 `data-layer`, 마지막 단계 `tour-next` disabled. v0.4: `tour-start` 는 계통도 교육 모드 카드(→ `/learn?step=L1`)와 `/learn` 개요 화면 두 곳 |
+| `gap-filter-{coverage}` | 공백 표 상태 필터 | `aria-pressed`. v0.4 요청: "전체" 버튼에도 `gap-filter-all` |
+| `learn-key-{equipmentId}` | **v0.4 요청**: /learn 핵심 기기 카드 링크 | 현재 E2E 는 `a[href$="node=<nodeId>"]` 로 대체 |
 
 ### 7.4 testid 외 구현 요청
 1. 노드 클릭 판정: 패닝 드래그(이동량 > 4px)는 클릭으로 처리하지 않기.
@@ -312,3 +352,27 @@
 | `npm run test` | **80 통과 / 0 실패** (파일 3) | DI 60 (기존 51 + DI-60~68 9) · CT 20. docs.json(제품 5 · 자료 22) 기준 위반 0, SOFT 경고 0 |
 | `npm run typecheck:tests` | 통과 | |
 | E2E (`npm run test:e2e`, 29건) | **12 통과 · 17 실패** | `diagram` testid 가 생겨 게이트가 열림. 실패 원인: 계통도 노드(`diagram-node-*`) 미렌더, 검색·투어·`/gap` testid, `?mode=gap`/`?node=`/`gap-table-link` 미구현 (Phase 2 진행 중). 통과: 스모크, 라우팅 4, 범례, axe 라이트/다크, docs.json 자료 링크 4(R-04·빈 항목·제품 페이지·기기 페이지) |
+
+
+## 11. 실행 결과 (2026-11-18, v0.4 — 커밋 1ce6811 Phase 2~5 기준)
+
+| 대상 | 결과 | 비고 |
+|---|---|---|
+| `npm run test` | **114 통과 / 0 실패** (파일 6) | DI 77 (기존 60 + DI-70~86 17) · CT 33 (CT-01 11 · CT-02 9 · CT-03 9 · CT-04 4) · UT 4. SOFT 경고: DI-67 15건(docs 빈 제품), DI-78 1건(learn draft), DI-86 1건(hmi.png 501KB) |
+| `npm run typecheck:tests` | 통과 | |
+| `npm run test:e2e` (30건) | **28 통과 · 1 실패 · 1 skip** | 실패 1 = FT-26 공백 표 기본 필터 "전체"(기대 17, 실제 12) → **구현 변경 대기(T1, 리더 결정)** — 테스트는 승인 디자인 기준으로 먼저 고정. skip 1 = R-04(모든 제품 199개가 docs.json 에 항목이 있어 "항목 없음" 데이터 없음 — 정상). E2E-1 은 `--repeat-each=3` ×2 회 안정 |
+
+### 11.1 실패 분류
+| 테스트 | 분류 | 원인·조치 |
+|---|---|---|
+| FT-26 `/gap 공백 목록: 기본 필터 "전체"…` | **구현 변경 대기** (버그 아님) | `GapPage.tsx:51` `useState('missing')` · `:78`·`:86` 칸 해제 시 `'missing'` 복귀 → `'all'` 로 바꾸면 통과. 주석 `:50`(FT-26 근거)도 같이 수정 필요 |
+| (v0.3 → v0.4 정리) E2E-1 `layer-band` 기대 | 테스트 버그 → 수정 | 승인 디자인은 /learn 페이지 투어 — 테스트를 디자인에 맞춤 |
+| (v0.4) E2E `nodeWithDocs` 헬퍼 | 테스트 버그 → 수정 | 사용되지 않는 `EquipmentInfo` 의 "연결 제품 ≤5" 규칙을 따르고 있었음 → DetailPanel/EquipmentPage 실제 규칙(자료 있는 연결 제품 존재)으로 변경 |
+
+## 12. CI 의견 — deploy.yml 에 E2E 단계 (넣지 않음, 의견만)
+
+**권장: 넣되 배포 job 과 분리된 별도 job(또는 PR 워크플로)으로.**
+- 근거: 이 포털의 P0 장애(해시 라우팅·base './'·자산 경로)는 dev 서버에서 재현되지 않고 **preview 빌드에서만** 잡힌다 — E2E 가 이미 그 구성(`build && preview`)으로 돈다. 30건이 로컬 8초대, CI 에서도 브라우저 설치 포함 2~3분 수준.
+- 방식: `e2e` job — `npm ci` → `npx playwright install --with-deps chromium` → `npm run test:e2e` (CI=1 이면 retries 1, reporter github, `reuseExistingServer:false` 이미 설정됨). 실패 시 `playwright-report`/trace 를 artifact 업로드.
+- 배포 차단 여부: 처음 1~2주는 `deploy` 의 `needs` 에 넣지 않고 **신호만**(flaky 관찰) → 안정되면 `needs: [build, e2e]` 로 차단. DI(`npm run test`)는 지금처럼 build 전 차단 유지.
+- 주의: ① 현재 FT-26 이 구현 변경 대기라 그대로 넣으면 즉시 빨간불 → T1 반영 후 활성화. ② 외부 사이트 요청은 테스트에서 `context.route` 로 stub 되어 있어 네트워크 의존 없음. ③ `push: main` 만 트리거라 PR 단계 검증이 없음 → `pull_request` 트리거 워크플로를 따로 두는 편이 효과가 큼.

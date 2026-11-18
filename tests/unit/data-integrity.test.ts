@@ -7,7 +7,7 @@
  * - "권장(SOFT)" 규칙은 실패시키지 않고 console.warn 으로만 알린다.
  * - 데이터가 아직 placeholder 일 수 있으므로 DI-30 류(계층별 노드 ≥1)는 지금 실패해도 된다.
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, it, expect, beforeAll } from 'vitest';
 import { z } from 'zod';
@@ -21,8 +21,11 @@ import {
   CategorySchema,
   DiagramSchema,
   DocsFileSchema,
+  EquipmentImagesSchema,
   type DocsFile,
+  type EquipmentImage,
 } from '../../src/lib/schema';
+import { LearnContentSchema, type LearnContent } from '../../src/content/learnSchema';
 
 type EquipmentType = z.infer<typeof EquipmentTypeSchema>;
 type Product = z.infer<typeof ProductSchema>;
@@ -622,3 +625,170 @@ function decodeURIComponentSafe(s: string): string {
     return s;
   }
 }
+
+// ─────────────────────────────────────────────────────────────
+// 교육 콘텐츠 learn.json (DI-70 ~) — v0.4
+// 계약: src/content/learnSchema.ts (LearnContentSchema). 콘텐츠 소유 T1-B, 사실관계는 equipment-types.json 범위 안.
+// ─────────────────────────────────────────────────────────────
+
+const LEARN_PATH = fileURLToPath(new URL('../../src/content/learn.json', import.meta.url));
+
+describe('교육 콘텐츠 learn.json (DI-70 ~)', () => {
+  let raw: unknown;
+  let learn: LearnContent;
+  const quizzes = () => learn.steps.flatMap((s) => s.quizzes.map((q) => ({ step: s.layer, q })));
+
+  beforeAll(() => {
+    raw = JSON.parse(readFileSync(LEARN_PATH, 'utf8'));
+    learn = LearnContentSchema.parse(raw);
+  });
+
+  it('DI-70 learn.json 이 존재하고 LearnContentSchema 통과 (+ 잘못된 값은 거부)', () => {
+    expect(existsSync(LEARN_PATH)).toBe(true);
+    expect(LearnContentSchema.safeParse(raw).success).toBe(true);
+    const base = raw as LearnContent;
+    // 스키마가 너무 느슨해지는 회귀 방지
+    const swapped = { ...base, steps: [base.steps[1], base.steps[0], ...base.steps.slice(2)] };
+    expect(LearnContentSchema.safeParse(swapped).success, 'L1·L2 순서가 바뀌어도 통과함').toBe(false);
+    expect(LearnContentSchema.safeParse({ ...base, steps: base.steps.slice(0, 6) }).success, '6단계도 통과함').toBe(false);
+    const badQuiz = structuredClone(base);
+    badQuiz.steps[0].quizzes[0].answerIndex = badQuiz.steps[0].quizzes[0].options.length;
+    expect(LearnContentSchema.safeParse(badQuiz).success, 'answerIndex 범위 밖도 통과함').toBe(false);
+    const { reviewStatus: _omit, ...noStatus } = base;
+    expect(LearnContentSchema.safeParse(noStatus).success, 'reviewStatus 없이도 통과함').toBe(false);
+  });
+
+  it('DI-71 단계가 L1→L7 순서, 중복·누락 없음', () => {
+    expect(learn.steps.map((s) => s.layer)).toEqual([...MAIN_LAYERS]);
+    expect(duplicates(learn.steps.map((s) => s.layer))).toEqual([]);
+  });
+
+  it('DI-72 핵심 기기(keyEquipmentIds) 가 equipment-types.json 에 존재 + 단계 안 중복 없음', () => {
+    const bad = learn.steps.flatMap((s) => [
+      ...s.keyEquipmentIds.filter((id) => !equipmentById.has(id)).map((id) => `${s.layer}: 없는 기기 ${id}`),
+      ...duplicates(s.keyEquipmentIds).map((id) => `${s.layer}: 중복 ${id}`),
+    ]);
+    expect(bad).toEqual([]);
+  });
+
+  it('DI-73 핵심 기기는 그 단계 계층(layer)의 기기', () => {
+    const bad = learn.steps.flatMap((s) =>
+      s.keyEquipmentIds
+        .filter((id) => equipmentById.has(id) && equipmentById.get(id)!.layer !== s.layer)
+        .map((id) => `${s.layer}: ${id} 는 ${equipmentById.get(id)!.layer} 기기`),
+    );
+    expect(bad).toEqual([]);
+  });
+
+  it('DI-74 용어집 equipmentId 가 equipment-types.json 에 존재 + 용어 중복 없음', () => {
+    const bad = learn.glossary
+      .filter((g) => g.equipmentId !== undefined && !equipmentById.has(g.equipmentId))
+      .map((g) => `${g.term}: 없는 기기 ${g.equipmentId}`);
+    expect(bad).toEqual([]);
+    expect(duplicates(learn.glossary.map((g) => g.term.trim()))).toEqual([]);
+  });
+
+  it('DI-75 퀴즈 sourceEquipmentIds 가 equipment-types.json 에 존재', () => {
+    const bad = quizzes().flatMap(({ step, q }) =>
+      q.sourceEquipmentIds.filter((id) => !equipmentById.has(id)).map((id) => `${step}/${q.id}: 없는 기기 ${id}`),
+    );
+    expect(bad).toEqual([]);
+  });
+
+  it('DI-76 퀴즈 answerIndex 가 options 범위 안 + 보기 중복 없음 + quiz.id 전역 중복 없음 (진도 저장 키)', () => {
+    const bad = quizzes().flatMap(({ step, q }) => [
+      ...(Number.isInteger(q.answerIndex) && q.answerIndex >= 0 && q.answerIndex < q.options.length
+        ? []
+        : [`${step}/${q.id}: answerIndex ${q.answerIndex} / 보기 ${q.options.length}개`]),
+      ...duplicates(q.options.map((o) => o.trim())).map((o) => `${step}/${q.id}: 보기 중복 "${o}"`),
+    ]);
+    expect(bad).toEqual([]);
+    expect(duplicates(quizzes().map(({ q }) => q.id))).toEqual([]);
+  });
+
+  it('DI-77 reviewStatus 필드 존재 (공백 아님)', () => {
+    expect(typeof (raw as Record<string, unknown>).reviewStatus).toBe('string');
+    expect(learn.reviewStatus.trim()).not.toBe('');
+  });
+
+  it('DI-78 (SOFT) reviewStatus 가 draft 이면 경고 (교육 담당자 검토 전)', () => {
+    softWarn('DI-78', /draft/i.test(learn.reviewStatus) ? [`reviewStatus="${learn.reviewStatus}"`] : []);
+  });
+
+  it('DI-79 (SOFT) 공개 사이트 — 대외비 키워드·개인정보 패턴 없음 (intro·퀴즈·용어집)', () => {
+    const texts = [
+      ...learn.steps.flatMap((s) => [s.title, s.intro, ...s.quizzes.flatMap((q) => [q.question, q.explanation, ...q.options])]),
+      ...learn.glossary.flatMap((g) => [g.term, g.meaning]),
+    ];
+    softWarn(
+      'DI-79',
+      texts.filter((t) => /대외비|내부용|사내한정|confidential/i.test(t) || EMAIL_RE.test(t) || PHONE_RE.test(t)),
+    );
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 기기 대표 사진 equipment-images.json (DI-80 ~) — v0.4
+// 계약: EquipmentImagesSchema (src/lib/schema.ts). 키 = equipmentType.id, file = public/ 기준 상대 경로.
+// ─────────────────────────────────────────────────────────────
+const PUBLIC_DIR = fileURLToPath(new URL('../../public/', import.meta.url));
+
+describe('기기 사진 equipment-images.json (DI-80 ~)', () => {
+  const IMAGES_FILE = 'equipment-images.json';
+  let raw: unknown;
+  let images: [string, EquipmentImage][] = [];
+
+  beforeAll(() => {
+    raw = readJson(IMAGES_FILE);
+    images = Object.entries(EquipmentImagesSchema.parse(raw));
+  });
+
+  it('DI-80 파일 존재 + EquipmentImagesSchema 통과 (+ 잘못된 값은 거부)', () => {
+    expect(existsSync(DATA_DIR + IMAGES_FILE)).toBe(true);
+    expect(EquipmentImagesSchema.safeParse(raw).success).toBe(true);
+    const ok = { file: 'images/equipment/vcb.png', productId: null, productName: null, sourceUrl: 'https://www.ls-electric.com/a.png', bytes: 1 };
+    expect(EquipmentImagesSchema.safeParse({ vcb: ok }).success).toBe(true);
+    expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, file: '/images/equipment/vcb.png' } }).success, '절대경로(base ./ 깨짐)').toBe(false);
+    expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, file: 'images/equipment/../x.png' } }).success, '경로 탈출').toBe(false);
+    expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, sourceUrl: 'http://x.com/a.png' } }).success, 'http 출처').toBe(false);
+    expect(EquipmentImagesSchema.safeParse({ vcb: { ...ok, bytes: 0 } }).success, 'bytes 0').toBe(false);
+  });
+
+  it('DI-81 키(기기 id)가 equipment-types.json 에 존재', () => {
+    expect(images.map(([id]) => id).filter((id) => !equipmentById.has(id))).toEqual([]);
+  });
+
+  it('DI-82 사진 파일이 public/ 아래 실제로 존재 (배포 후 깨진 이미지 방지)', () => {
+    expect(images.filter(([, v]) => !existsSync(PUBLIC_DIR + v.file)).map(([id, v]) => `${id}: public/${v.file}`)).toEqual([]);
+  });
+
+  it('DI-83 productId 가 있으면 products.json 에 존재', () => {
+    expect(
+      images.filter(([, v]) => v.productId !== null && !productById.has(v.productId)).map(([id, v]) => `${id}: ${v.productId}`),
+    ).toEqual([]);
+  });
+
+  it('DI-84 출처(sourceUrl)는 공식 사이트 *.ls-electric.com', () => {
+    expect(images.filter(([, v]) => !LSE_URL_RE.test(v.sourceUrl)).map(([id, v]) => `${id}: ${v.sourceUrl}`)).toEqual([]);
+  });
+
+  it('DI-85 (SOFT) missing·na 기기에는 사진이 없어야 함 (화면은 단선결선도 심볼 + 점선 — 디자인 규칙)', () => {
+    softWarn(
+      'DI-85',
+      images
+        .filter(([id]) => ['missing', 'na'].includes(equipmentById.get(id)?.coverage ?? ''))
+        .map(([id]) => `${id} (${equipmentById.get(id)!.coverage}) 에 사진이 지정됨`),
+    );
+  });
+
+  it('DI-86 (SOFT) 파일 크기가 bytes 와 다르거나 500KB 초과 (사진 교체 누락·모바일 로딩 지연)', () => {
+    const warn: string[] = [];
+    for (const [id, v] of images) {
+      if (!existsSync(PUBLIC_DIR + v.file)) continue;
+      const size = statSync(PUBLIC_DIR + v.file).size;
+      if (size !== v.bytes) warn.push(`${id}: 실제 ${size}B ≠ bytes ${v.bytes}`);
+      if (size > 500 * 1024) warn.push(`${id}: ${Math.round(size / 1024)}KB`);
+    }
+    softWarn('DI-86', warn);
+  });
+});

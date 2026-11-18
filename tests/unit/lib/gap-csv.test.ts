@@ -1,0 +1,82 @@
+/**
+ * 단위 테스트 (UT-01) — 공백 표 CSV 내보내기 buildGapCsv (src/lib/pages/catalog.ts)
+ * Excel 에서 열었을 때 한글·쉼표·따옴표·줄바꿈이 깨지지 않아야 한다 (RFC 4180 + UTF-8 BOM).
+ */
+import { describe, it, expect } from 'vitest';
+import { buildGapCsv, CATEGORY_LABELS } from '../../../src/lib/pages/catalog';
+import { COVERAGE_LABELS, LAYER_LABELS, type EquipmentType } from '../../../src/lib/schema';
+
+const eq = (over: Partial<EquipmentType>): EquipmentType => ({
+  id: 'x',
+  name: '기기',
+  layer: 'L4',
+  voltage: '',
+  category: 'switching',
+  description: '',
+  learnPoints: [],
+  coverage: 'missing',
+  lseCategoryCodes: [],
+  ...over,
+});
+
+const csvOf = (list: EquipmentType[]) => buildGapCsv(list, (c) => COVERAGE_LABELS[c], (l) => LAYER_LABELS[l]);
+
+/** 최소 RFC 4180 파서 (검증용) */
+function parseCsv(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = '';
+  let q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) {
+      if (ch === '"' && text[i + 1] === '"') (cell += '"'), i++;
+      else if (ch === '"') q = false;
+      else cell += ch;
+    } else if (ch === '"') q = true;
+    else if (ch === ',') row.push(cell), (cell = '');
+    else if (ch === '\r' && text[i + 1] === '\n') {
+      row.push(cell), rows.push(row), (row = []), (cell = ''), i++;
+    } else cell += ch;
+  }
+  if (cell || row.length) row.push(cell), rows.push(row);
+  return rows;
+}
+
+describe('UT-01 buildGapCsv', () => {
+  it('UTF-8 BOM(U+FEFF) 으로 시작하고 줄 끝은 CRLF, 마지막 줄도 CRLF', () => {
+    const csv = csvOf([eq({})]);
+    expect(csv.charCodeAt(0)).toBe(0xfeff);
+    expect(csv.endsWith('\r\n')).toBe(true);
+    expect(csv.slice(1).split('\r\n')).toHaveLength(3); // 헤더 + 1행 + 빈 꼬리
+  });
+
+  it('헤더 9열 + 행 값 (상태·계층·계층명·ID·이름·약어·기능·계열사·메모)', () => {
+    const rows = parseCsv(csvOf([eq({ id: 'vcb', name: '진공차단기', abbr: 'VCB', coverage: 'partial', gapNote: '메모' })]).slice(1));
+    expect(rows[0]).toEqual(['상태', '계층', '계층명', '기기 ID', '기기명', '약어', '기능', '계열사', '메모']);
+    expect(rows[1]).toEqual([COVERAGE_LABELS.partial, 'L4', LAYER_LABELS.L4, 'vcb', '진공차단기', 'VCB', CATEGORY_LABELS.switching, '', '메모']);
+  });
+
+  it('쉼표·큰따옴표·줄바꿈(LF·CRLF) 이 든 값은 큰따옴표로 감싸고 따옴표는 "" 로 escape → 열 수 유지', () => {
+    const nasty = eq({
+      name: '차단기, "특수"형',
+      gapNote: '1줄\n2줄\r\n3줄',
+      affiliateName: 'LS "Cable"',
+      coverage: 'affiliate',
+    });
+    const csv = csvOf([nasty]);
+    expect(csv).toContain('"차단기, ""특수""형"');
+    expect(csv).toContain('"LS ""Cable"""');
+    const rows = parseCsv(csv.slice(1));
+    expect(rows).toHaveLength(2);
+    expect(rows[1]).toHaveLength(9);
+    expect(rows[1][4]).toBe('차단기, "특수"형');
+    expect(rows[1][7]).toBe('LS "Cable"');
+    expect(rows[1][8]).toBe('1줄\n2줄\r\n3줄');
+  });
+
+  it('특수문자 없는 값은 따옴표로 감싸지 않음, 빈 목록이면 헤더만', () => {
+    const csv = csvOf([]);
+    expect(csv).toBe('﻿상태,계층,계층명,기기 ID,기기명,약어,기능,계열사,메모\r\n');
+  });
+});

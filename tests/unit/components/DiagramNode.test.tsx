@@ -1,0 +1,105 @@
+/**
+ * 컴포넌트 테스트 (CT-03) — DiagramNode: 사진 타일 / 사진 없음 → 단선결선도 심볼, 접근성 이름, 상태 data-속성
+ * docs/test-plan.md §3b. 실제 데이터와 무관한 fixture 로 검증 (데이터 변경에 흔들리지 않게).
+ */
+import { describe, it, expect, afterEach, vi } from 'vitest';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
+import DiagramNode from '../../../src/components/diagram/DiagramNode';
+import type { NodeItem } from '../../../src/lib/diagram/model';
+import { COVERAGES, COVERAGE_LABELS, type Coverage, type EquipmentType } from '../../../src/lib/schema';
+import { COVERAGE_ICONS } from '../../../src/components/common/CoverageBadge';
+
+afterEach(cleanup);
+
+function makeItem(coverage: Coverage, opts: { imageUrl?: string; abbr?: string } = {}): NodeItem {
+  const eq: EquipmentType = {
+    id: 'test-eq',
+    name: '테스트 차단기',
+    abbr: opts.abbr,
+    layer: 'L4',
+    voltage: '22.9kV',
+    category: 'switching',
+    description: '설명',
+    learnPoints: ['포인트'],
+    coverage,
+    lseCategoryCodes: [],
+  };
+  return {
+    id: 'n-test',
+    x: 200,
+    y: 300,
+    eq,
+    coverage,
+    layer: 'L4',
+    title: opts.abbr ?? eq.name,
+    subtitle: opts.abbr ? eq.name : undefined,
+    imageUrl: opts.imageUrl,
+  };
+}
+
+const node = () => screen.getByTestId('diagram-node-n-test');
+
+describe('CT-03 DiagramNode', () => {
+  it('사진이 있으면 <img>(지연 로딩용 data-src, 장식 alt="") 를 그리고 심볼은 없다', () => {
+    const { container } = render(
+      <DiagramNode item={makeItem('owned', { imageUrl: './images/equipment/vcb.png', abbr: 'VCB' })} mode="product" selected={false} onActivate={() => {}} />,
+    );
+    const img = container.querySelector('img.dnode__img');
+    expect(img).not.toBeNull();
+    expect(img).toHaveAttribute('data-src', './images/equipment/vcb.png');
+    expect(img).toHaveAttribute('alt', ''); // 이름은 aria-label 로 전달 → 사진은 장식
+    expect(container.querySelector('svg.dnode__symbol')).toBeNull();
+    expect(node()).not.toHaveClass('dnode--symbol');
+  });
+
+  it('사진이 없으면 단선결선도 심볼(svg, aria-hidden) 로 대체', () => {
+    const { container } = render(<DiagramNode item={makeItem('missing')} mode="product" selected={false} onActivate={() => {}} />);
+    expect(container.querySelector('img')).toBeNull();
+    const svg = container.querySelector('svg.dnode__symbol');
+    expect(svg).not.toBeNull();
+    expect(svg).toHaveAttribute('aria-hidden', 'true');
+    expect(node()).toHaveClass('dnode--symbol');
+    expect(node()).toHaveTextContent('자사 제품 없음'); // 미보유 캡션 (디자인 규칙)
+  });
+
+  it.each(COVERAGES)('%s: role=button·tabindex=0, aria-label "{기기명}, {커버리지}", data-coverage, 아이콘 병행', (c) => {
+    render(<DiagramNode item={makeItem(c)} mode="product" selected={false} onActivate={() => {}} />);
+    const el = node();
+    expect(el).toHaveAttribute('role', 'button');
+    expect(el).toHaveAttribute('tabindex', '0');
+    expect(el).toHaveAttribute('aria-label', `테스트 차단기, ${COVERAGE_LABELS[c]}`);
+    expect(el).toHaveAttribute('data-coverage', c);
+    expect(el).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByTestId(`coverage-icon-${c}`)).toHaveTextContent(COVERAGE_ICONS[c]);
+  });
+
+  it('Gap 모드(R-08): missing·partial 강조, owned·na 흐림, affiliate 보통 / 제품 모드는 모두 보통', () => {
+    const expected: Record<Coverage, [emphasized: string, dimmed: string]> = {
+      missing: ['true', 'false'],
+      partial: ['true', 'false'],
+      affiliate: ['false', 'false'],
+      owned: ['false', 'true'],
+      na: ['false', 'true'],
+    };
+    for (const c of COVERAGES) {
+      const { unmount } = render(<DiagramNode item={makeItem(c)} mode="gap" selected={false} onActivate={() => {}} />);
+      expect([node().getAttribute('data-emphasized'), node().getAttribute('data-dimmed')], c).toEqual(expected[c]);
+      unmount();
+      render(<DiagramNode item={makeItem(c)} mode="product" selected={false} onActivate={() => {}} />);
+      expect([node().getAttribute('data-emphasized'), node().getAttribute('data-dimmed')], `${c} product`).toEqual(['false', 'false']);
+      cleanup();
+    }
+  });
+
+  it('선택 상태 aria-pressed=true, 클릭·Enter·Space 로 onActivate(id) 호출', () => {
+    const onActivate = vi.fn();
+    render(<DiagramNode item={makeItem('owned')} mode="product" selected onActivate={onActivate} />);
+    expect(node()).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(node());
+    fireEvent.keyDown(node(), { key: 'Enter' });
+    fireEvent.keyDown(node(), { key: ' ' });
+    fireEvent.keyDown(node(), { key: 'a' });
+    expect(onActivate).toHaveBeenCalledTimes(3);
+    expect(onActivate).toHaveBeenCalledWith('n-test');
+  });
+});

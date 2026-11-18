@@ -372,6 +372,121 @@ SX, SY = 1.45, 1.8
 TILE_W, TILE_H, MIN_GAP = 120, 116, 30
 
 
+HW, HH = TILE_W // 2, TILE_H // 2
+CLEAR = 10  # 선과 타일 사이 최소 여유(px)
+
+
+def default_route(pa, pb):
+    """src/lib/diagram/model.ts route() 와 같은 규칙 (모선 제외). 점 목록 반환."""
+    (ax, ay), (bx, by) = pa, pb
+    dx, dy = bx - ax, by - ay
+    if abs(dy) >= TILE_H + 20:
+        s = 1 if dy > 0 else -1
+        y1, y2 = ay + s * HH, by - s * HH
+        if abs(dx) < 4:
+            return [(ax, y1), (ax, y2)]
+        my = round((y1 + y2) / 2)
+        return [(ax, y1), (ax, my), (bx, my), (bx, y2)]
+    s = 1 if dx >= 0 else -1
+    x1, x2 = ax + s * HW, bx - s * HW
+    if abs(dy) < 4:
+        return [(x1, ay), (x2, ay)]
+    mx = round((x1 + x2) / 2)
+    return [(x1, ay), (mx, ay), (mx, by), (x2, by)]
+
+
+def path_hits_tiles(pts, pos, ends):
+    """선분이 양 끝 기기 외의 타일(여유 CLEAR 포함)을 지나가는지"""
+    for (x1, y1), (x2, y2) in zip(pts, pts[1:]):
+        lo_x, hi_x, lo_y, hi_y = min(x1, x2), max(x1, x2), min(y1, y2), max(y1, y2)
+        for nid, (cx, cy) in pos.items():
+            if nid in ends:
+                continue
+            if lo_x < cx + HW + CLEAR and hi_x > cx - HW - CLEAR and lo_y < cy + HH + CLEAR and hi_y > cy - HH - CLEAR:
+                return True
+    return False
+
+
+def astar_route(pos, a, b, width, height):
+    """직교 가시성 그래프 + A*(꺾임 벌점)로 타일을 피하는 경로. 후보 좌표 = 타일 중심선과 타일 바깥 여유선.
+    양 끝은 타일 가장자리로 자른다."""
+    import heapq
+    off = HW + CLEAR + 8, HH + CLEAR + 8
+    xs = sorted({x for (cx, _) in pos.values() for x in (cx, cx - off[0], cx + off[0])})
+    ys = sorted({y for (_, cy) in pos.values() for y in (cy, cy - off[1], cy + off[1])})
+    ends = (a, b)
+
+    def inside(x, y):
+        for nid, (cx, cy) in pos.items():
+            if nid in ends:
+                continue
+            if abs(x - cx) < HW + CLEAR and abs(y - cy) < HH + CLEAR:
+                return True
+        return False
+
+    pts = {(x, y) for x in xs for y in ys if not inside(x, y)}
+    pts |= {pos[a], pos[b]}
+    by_x, by_y = {}, {}
+    for x, y in pts:
+        by_x.setdefault(x, []).append(y)
+        by_y.setdefault(y, []).append(x)
+    for v in by_x.values():
+        v.sort()
+    for v in by_y.values():
+        v.sort()
+
+    def neighbors(p):
+        x, y = p
+        col, row = by_x[x], by_y[y]
+        i, j = col.index(y), row.index(x)
+        for q in ([(x, col[i - 1])] if i > 0 else []) + ([(x, col[i + 1])] if i + 1 < len(col) else []):
+            yield q, 0
+        for q in ([(row[j - 1], y)] if j > 0 else []) + ([(row[j + 1], y)] if j + 1 < len(row) else []):
+            yield q, 1
+
+    TURN = 400
+    start, goal = pos[a], pos[b]
+    openq = [(0, 0, start, -1)]
+    best, came = {(start, -1): 0}, {}
+    found = None
+    while openq:
+        _, g, cur, d = heapq.heappop(openq)
+        if cur == goal:
+            found = (cur, d)
+            break
+        if best.get((cur, d), 1 << 60) < g:
+            continue
+        for q, nd in neighbors(cur):
+            if path_hits_tiles([cur, q], pos, ends):
+                continue
+            ng = g + abs(q[0] - cur[0]) + abs(q[1] - cur[1]) + (TURN if d not in (-1, nd) else 0)
+            if ng < best.get((q, nd), 1 << 60):
+                best[(q, nd)] = ng
+                came[(q, nd)] = (cur, d)
+                heapq.heappush(openq, (ng + abs(q[0] - goal[0]) + abs(q[1] - goal[1]), ng, q, nd))
+    if not found:
+        raise AssertionError(f"route failed {a}->{b}")
+    key, path = found, [found[0]]
+    while key in came:
+        key = came[key]
+        path.append(key[0])
+    path.reverse()
+    corners = [path[0]]
+    for p, q, r in zip(path, path[1:], path[2:]):
+        if (q[0] - p[0]) * (r[1] - q[1]) != (q[1] - p[1]) * (r[0] - q[0]):
+            corners.append(q)
+    corners.append(path[-1])
+
+    def clip(center, nxt):
+        cx, cy = center
+        if nxt[0] == cx:
+            return (cx, cy + (HH if nxt[1] > cy else -HH))
+        return (cx + (HW if nxt[0] > cx else -HW), cy)
+    corners[0] = clip(corners[0], corners[1])
+    corners[-1] = clip(corners[-1], corners[-2])
+    return corners
+
+
 def main():
     ids = {e["id"] for e in EQUIPMENT}
     assert len(ids) == len(EQUIPMENT), "duplicate equipment id"
@@ -390,12 +505,21 @@ def main():
     used = {n["equipmentTypeId"] for n in nodes}
     assert used == ids, f"equipment without node: {ids - used}"
     edges = []
+    pos = {n["id"]: (n["x"], n["y"]) for n in nodes}
+    rerouted = 0
     for i, (a, b, kind, v) in enumerate(E, 1):
         assert a in N and b in N, f"edge {a}->{b}"
         edge = {"id": f"e{i:03d}", "from": a, "to": b, "kind": kind}
         if v:
             edge["voltage"] = v
+        # 기본 직교 경로(앱의 route()와 동일)가 다른 타일을 지나가면 우회 경로를 계산해 points로 저장
+        if path_hits_tiles(default_route(pos[a], pos[b]), pos, (a, b)):
+            pts = astar_route(pos, a, b, round(W * SX), round(H * SY))
+            assert not path_hits_tiles(pts, pos, (a, b)), f"no clear route for {edge['id']}"
+            edge["points"] = [{"x": x, "y": y} for x, y in pts]
+            rerouted += 1
         edges.append(edge)
+    print(f"rerouted edges: {rerouted}")
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "equipment-types.json").write_text(json.dumps(EQUIPMENT, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     layers = [dict(l, x=round(l["x"] * SX), width=round(l["width"] * SX), y=round(l["y"] * SY), height=round(l["height"] * SY)) for l in LAYERS]

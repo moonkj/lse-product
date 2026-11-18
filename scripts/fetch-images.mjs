@@ -3,6 +3,8 @@
 // 출력: public/images/equipment/<equipmentId>.<ext>, src/data/equipment-images.json
 // 실행: node scripts/fetch-images.mjs [--only=vcb,acb] [--force]
 // 규칙: 요청 간 1.2초, 일반 UA, 제품 페이지의 #hd_entity(p_image → p_thumb → c_thumb) 사용
+// 후처리(macOS): 원본은 320px, 썸네일 160px 로 줄이고 index 의 bytes·thumb 갱신
+//   cd public/images/equipment && for f in *.png; do sips -Z 320 "$f" --out "$f"; sips -Z 160 "$f" --out "thumb/$f"; done
 import { readFile, writeFile, mkdir, rename, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

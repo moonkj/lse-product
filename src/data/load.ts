@@ -101,6 +101,12 @@ export function equipmentImageUrl(equipmentId: string): string | undefined {
   return img ? `${import.meta.env.BASE_URL}${img.file}` : undefined;
 }
 
+/** 계통도 타일용 160px 썸네일 URL. 없으면 undefined → 심볼 표시 */
+export function equipmentThumbUrl(equipmentId: string): string | undefined {
+  const img = getData().equipmentImageById.get(equipmentId);
+  return img ? `${import.meta.env.BASE_URL}${img.thumb}` : undefined;
+}
+
 /** 기기에 연결된 자사 제품: lseCategoryCodes 의 카테고리 제품(하위 포함) + productIds, 중복 제거 */
 export function resolveProducts(eq: EquipmentType, data: AppData = getData()): Product[] {
   const ids = new Set<string>(eq.productIds ?? []);

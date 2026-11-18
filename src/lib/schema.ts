@@ -117,6 +117,8 @@ export const DiagramEdgeSchema = z.object({
   to: z.string().min(1),
   voltage: z.string().optional(),
   kind: z.enum(['power', 'signal']).optional(),
+  /** 기본 직교 경로가 다른 타일을 지나갈 때 생성기가 계산한 우회 경로(타일 가장자리→…→타일 가장자리). 있으면 그대로 그린다 */
+  points: z.array(z.object({ x: z.number(), y: z.number() })).min(2).optional(),
 });
 export type DiagramEdge = z.infer<typeof DiagramEdgeSchema>;
 
@@ -154,6 +156,8 @@ export type DocsFile = z.infer<typeof DocsFileSchema>;
 /** equipment-images.json — 기기별 대표 제품 사진 (scripts/fetch-images.mjs 생성, 리더 소유) */
 export const EquipmentImageSchema = z.object({
   file: z.string().regex(/^images\/equipment\/[a-z0-9-]+\.(png|jpg|webp)$/),
+  /** 160px 썸네일 (계통도 타일용). 원본 file 은 320px (패널·페이지용) */
+  thumb: z.string().regex(/^images\/equipment\/thumb\/[a-z0-9-]+\.(png|jpg|webp)$/),
   productId: z.string().nullable(),
   productName: z.string().nullable(),
   sourceUrl: httpsUrl,
