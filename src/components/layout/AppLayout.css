@@ -51,14 +51,24 @@
 }
 
 .app-header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   color: var(--color-text);
   text-decoration: none;
   font-size: var(--fs-lg);
   white-space: nowrap;
 }
 
-.app-header__logo strong {
-  color: var(--color-brand);
+/* 공식 로고: 높이만 지정(비율 유지·색 변형 없음) */
+.app-header__brand,
+.app-header__brand img {
+  display: block;
+}
+
+.app-header__brand img {
+  height: 22px;
+  width: auto;
 }
 
 .app-header__search {
@@ -500,6 +510,10 @@
 
   .app-header__logo {
     font-size: var(--fs-md);
+  }
+
+  .app-header__brand img {
+    height: 20px;
   }
 
   .app-header__search {

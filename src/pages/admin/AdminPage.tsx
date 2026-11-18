@@ -39,6 +39,11 @@ import {
 import { changesMarkdown, computeChanges } from '../../lib/admin/diff';
 import { koIssue, validateDraft, type Issue } from '../../lib/admin/integrity';
 import { useAdminStore } from '../../lib/admin/store';
+import { download } from '../../lib/admin/download';
+import { computeSpecChanges, specChangesSection } from '../../lib/admin/specs';
+import { useSpecsAdminStore } from '../../lib/admin/specsStore';
+import BrandLogo from '../../components/common/BrandLogo';
+import SpecReview from './SpecReview';
 import AdminCanvas, { type CanvasHandle, type PlaceTarget, type Tool } from './AdminCanvas';
 import EquipmentForm from './EquipmentForm';
 import { ChangesPanel, CheckPanel, EquipmentList, SelectionPanel, equipmentLabel } from './AdminPanels';
@@ -47,6 +52,7 @@ import './AdminPage.css';
 type Selection = { type: 'node' | 'edge'; id: string } | null;
 type LeftView = { kind: 'list' } | { kind: 'new' } | { kind: 'edit'; id: string };
 type RightTab = 'selection' | 'changes' | 'check';
+type AdminView = 'diagram' | 'specs';
 type PlaceKind = 'equipment' | 'ref' | 'bus' | 'endpoint';
 const PLACE_KIND_LABELS: Record<PlaceKind, string> = { equipment: '기기', ref: '참조 타일', bus: '모선', endpoint: '끝점' };
 
@@ -69,17 +75,6 @@ function buildModel(data: AppData, draft: Draft): DiagramModel {
     return { ...n, imageUrl: img ? `${base}${img.thumb}` : undefined };
   };
   return { ...m, nodes: m.nodes.map(withImage), refs: m.refs.map(withImage) };
-}
-
-function download(name: string, text: string, type = 'application/json') {
-  const url = URL.createObjectURL(new Blob([text], { type: `${type};charset=utf-8` }));
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 const isTyping = (el: EventTarget | null) =>
@@ -114,6 +109,9 @@ export default function AdminPage() {
   const [check, setCheck] = useState<{ issues: Issue[]; at: number } | null>(null);
   const [exported, setExported] = useState<string[]>([]);
   const [importMsg, setImportMsg] = useState<{ ok: boolean; lines: string[] } | null>(null);
+  const [view, setView] = useState<AdminView>('diagram');
+  const specsUndo = useSpecsAdminStore((s) => s.undo);
+  const specsRedo = useSpecsAdminStore((s) => s.redo);
 
   useEffect(() => {
     document.title = pageTitle('관리자 모드');
@@ -160,13 +158,14 @@ export default function AdminPage() {
     const onKey = (e: KeyboardEvent) => {
       if (isTyping(e.target)) return;
       const mod = e.metaKey || e.ctrlKey;
+      const [u, r] = view === 'specs' ? [specsUndo, specsRedo] : [undo, redo];
       if (mod && e.key.toLowerCase() === 'z') {
         e.preventDefault();
-        if (e.shiftKey) redo();
-        else undo();
+        if (e.shiftKey) r();
+        else u();
       } else if (mod && e.key.toLowerCase() === 'y') {
         e.preventDefault();
-        redo();
+        r();
       } else if (e.key === 'Escape') {
         setConnectFrom(undefined);
         setTool('select');
@@ -174,7 +173,7 @@ export default function AdminPage() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [undo, redo]);
+  }, [undo, redo, view, specsUndo, specsRedo]);
 
   // ── 캔버스 상호작용 ──
   const onNodeClick = (id: string) => {
@@ -319,7 +318,12 @@ export default function AdminPage() {
     if (f === 'equipment-types.json') return toJsonText(draft.equipmentTypes);
     if (f === 'diagram.json') return toJsonText(draft.diagram);
     if (f === 'equipment-images.json') return toJsonText(draft.images);
-    return changesMarkdown(base, draft, changes);
+    const md = changesMarkdown(base, draft, changes);
+    // 사양 검수 탭에서 고친 내용이 있으면 같은 요약에 사양 절을 붙인다
+    const sp = useSpecsAdminStore.getState();
+    if (sp.status !== 'ready' || !sp.base || !sp.draft) return md;
+    const spec = specChangesSection(computeSpecChanges(sp.base, sp.draft), (id) => data.productById.get(id)?.name ?? id, sp.draft);
+    return spec.length ? `${md}\n${spec.join('\n')}` : md;
   };
   const downloadFile = (f: string) => download(f, fileText(f), f.endsWith('.md') ? 'text/markdown' : 'application/json');
 
@@ -396,12 +400,40 @@ export default function AdminPage() {
     <div className={`admin${preview ? ' admin--preview' : ''}`} data-testid="admin-page">
       <header className="admin__top">
         <div className="admin__titlebar">
+          <Link to="/" className="admin__brand" aria-label="LS ELECTRIC 계통도 홈">
+            <BrandLogo className="admin__logo" />
+          </Link>
           <h1 className="admin__title">계통도 관리자 모드</h1>
+          <div className="admin__views" role="tablist" aria-label="관리 화면">
+            {(
+              [
+                ['diagram', '계통도 편집'],
+                ['specs', '사양 검수'],
+              ] as [AdminView, string][]
+            ).map(([k, label]) => (
+              <button
+                key={k}
+                type="button"
+                role="tab"
+                aria-selected={view === k}
+                className={`admin__view${view === k ? ' is-on' : ''}`}
+                onClick={() => {
+                  setView(k);
+                  setPreview(false);
+                }}
+                data-testid={`admin-tab-${k}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <Link to="/" className="admin__back">
             ← 사용자 화면
           </Link>
           <span className="admin__save" aria-live="polite">
-            {saveStatus === 'unavailable'
+            {view === 'specs'
+              ? ''
+              : saveStatus === 'unavailable'
               ? '⚠ 이 브라우저에 초안을 저장할 수 없습니다 (사생활 보호 모드?) — 창을 닫기 전에 내보내세요'
               : saveStatus === 'saved'
                 ? '초안 자동 저장됨'
@@ -413,11 +445,12 @@ export default function AdminPage() {
         <p className="admin__warn" role="note">
           보안 장치가 아닙니다 — 편집은 <strong>이 브라우저에만 저장</strong>되며, 내보내서 저장소에 커밋해야 모두에게 반영됩니다.
         </p>
-        {staleBase && (
+        {view === 'diagram' && staleBase && (
           <p className="admin__stale" role="alert">
             저장된 초안이 만들어진 뒤 원본 데이터(src/data)가 바뀌었습니다. 변경 내역을 확인하고, 필요하면 "초안 초기화" 후 다시 편집하세요.
           </p>
         )}
+        {view === 'diagram' && (
         <div className="admin__actions" role="toolbar" aria-label="편집 도구">
           <button type="button" className="abtn" onClick={undo} disabled={past.length === 0} data-testid="admin-undo" title="Ctrl/⌘+Z">
             ↶ 되돌리기 {past.length > 0 && <small>({past.length})</small>}
@@ -458,8 +491,12 @@ export default function AdminPage() {
             검사 후 내보내기
           </button>
         </div>
+        )}
       </header>
 
+      {view === 'specs' ? (
+        <SpecReview />
+      ) : (
       <div className="admin__body">
         {!preview && (
           <aside className="admin__left" aria-label="기기 종류">
@@ -809,6 +846,7 @@ export default function AdminPage() {
           </aside>
         )}
       </div>
+      )}
     </div>
   );
 }

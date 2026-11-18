@@ -136,3 +136,101 @@ test.describe('E2E-ADM 관리자 모드', () => {
     await expect(tid(page, 'admin-gap-assessment')).toContainText('고정됩니다');
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// E2E-ADM-SPEC (v1.2) 관리자 "사양 검수" 탭 — 값 수정 → 검수 완료 → 검사 → 내보내기(specs.json·변경요약.md)
+// 대상 제품: P02212(우선 검수 목록) 이 사양에 있으면 그것, 없으면 사양 첫 제품. 값·note 기대는 원본 specs.json 에서 계산.
+// ─────────────────────────────────────────────────────────────
+type SpecsRaw = { generatedAt: string; products: Record<string, { items: { key: string; value: string }[]; reviewed: boolean; note?: string }> };
+const specsRawText = readFileSync(fileURLToPath(new URL('../../src/data/specs.json', import.meta.url)), 'utf8');
+const specsRaw = JSON.parse(specsRawText) as SpecsRaw;
+const SPEC_PID = specsRaw.products.P02212 ? 'P02212' : Object.keys(specsRaw.products)[0];
+const todayKst = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+
+async function openSpecTab(page: Page) {
+  await gotoAdmin(page);
+  await tid(page, 'admin-tab-specs').click();
+  await expect(tid(page, 'admin-specs')).toBeVisible();
+  await tid(page, `admin-spec-product-${SPEC_PID}`).click();
+  await expect(tid(page, 'admin-spec-reviewed')).toBeVisible();
+}
+
+test.describe('E2E-ADM-SPEC 사양 검수 (v1.2)', () => {
+  test('값 수정 → 부서명 → 검수 완료 → 검사 오류 없음 → 내보내기 2개, specs.json 은 스키마 통과·변경 항목만 다름', async ({ page }) => {
+    const orig = specsRaw.products[SPEC_PID];
+    test.skip(!orig || orig.items.length === 0, '공통 사양 있는 대상 제품 없음');
+    const item = orig.items[0];
+    const newValue = `${item.value} (검수 수정)`;
+    await openSpecTab(page);
+
+    const cell = tid(page, `admin-spec-value-common-${item.key}`);
+    await cell.fill(newValue);
+    await cell.press('Enter');
+    await expect(tid(page, 'admin-spec-changes')).toContainText(item.key);
+    await tid(page, 'admin-spec-reviewer').fill('품질보증팀');
+    await tid(page, 'admin-spec-reviewed').check();
+    await expect(tid(page, 'admin-spec-reviewed')).toBeChecked();
+    await expect(tid(page, 'admin-spec-reviewer-error')).toHaveCount(0);
+
+    await tid(page, 'admin-spec-check').click();
+    await expect(tid(page, 'admin-spec-check-ok')).toContainText('오류 없음');
+
+    const files = new Map<string, string>();
+    page.on('download', async (d) => {
+      const path = await d.path();
+      files.set(d.suggestedFilename(), readFileSync(path!, 'utf8'));
+    });
+    await tid(page, 'admin-spec-export').click();
+    await expect.poll(() => [...files.keys()].sort()).toEqual(['specs.json', '변경요약.md'].sort());
+    await expect(tid(page, 'admin-spec-exported')).toBeVisible();
+
+    const { SpecsFileSchema } = await import('../../src/lib/schema');
+    const out = JSON.parse(files.get('specs.json')!) as SpecsRaw;
+    expect(SpecsFileSchema.safeParse(out).success).toBe(true);
+    // 기대 = 원본에 세 가지 변경만 (키 순서 유지)
+    const expected = JSON.parse(specsRawText) as SpecsRaw;
+    const p = expected.products[SPEC_PID];
+    p.items[0].value = newValue;
+    p.reviewed = true;
+    const stamp = `검수: 품질보증팀 ${todayKst()}`;
+    p.note = p.note ? `${p.note} · ${stamp}` : stamp;
+    expect(JSON.stringify(out)).toBe(JSON.stringify(expected));
+    expect(files.get('specs.json')).toBe(`${JSON.stringify(expected, null, 2)}\n`);
+    const md = files.get('변경요약.md')!;
+    expect(md.split('\n')[0]).toBe('data: 정격 사양 검수 (검수 완료 1개 제품, 사양 수정 1건)');
+    expect(md).toContain(`(${SPEC_PID})`);
+    expect(md).toContain(newValue);
+  });
+
+  test('부서명 없이 검수 체크 → admin-spec-reviewer-error, 체크 안 됨 / 실명 → 부서명 안내', async ({ page }) => {
+    test.skip(!specsRaw.products[SPEC_PID] || specsRaw.products[SPEC_PID].reviewed, '대상 제품이 이미 검수 완료');
+    await openSpecTab(page);
+    await tid(page, 'admin-spec-reviewed').click();
+    await expect(tid(page, 'admin-spec-reviewer-error')).toContainText('부서명');
+    await expect(tid(page, 'admin-spec-reviewed')).not.toBeChecked();
+    await tid(page, 'admin-spec-reviewer').fill('홍길동');
+    await expect(tid(page, 'admin-spec-reviewer-error')).toHaveCount(0); // 입력하면 오류 문구 지움
+    await tid(page, 'admin-spec-reviewed').click();
+    await expect(tid(page, 'admin-spec-reviewer-error')).toContainText('부서명');
+    await expect(tid(page, 'admin-spec-reviewed')).not.toBeChecked();
+    await expect(tid(page, 'admin-spec-changes')).toHaveCount(0);
+  });
+
+  test('항목 0개 옵션 추가 → 검사 오류(DI-96)로 내보내기 차단, 되돌리기로 복구', async ({ page }) => {
+    await openSpecTab(page);
+    const hasAxis = await tid(page, 'admin-spec-new-variant-axis').count();
+    await tid(page, 'admin-spec-new-variant-id').fill('e2e-opt');
+    await tid(page, 'admin-spec-new-variant-label').fill('E2E 옵션');
+    if (hasAxis) await tid(page, 'admin-spec-new-variant-axis').fill('형식');
+    await tid(page, 'admin-spec-add-variant').click();
+    await expect(tid(page, 'admin-spec-variant-e2e-opt')).toBeVisible();
+    const downloads: string[] = [];
+    page.on('download', (d) => downloads.push(d.suggestedFilename()));
+    await tid(page, 'admin-spec-export').click();
+    await expect(tid(page, 'admin-spec-check-errors')).toContainText('DI-96');
+    await expect(tid(page, 'admin-spec-msg')).toContainText('내보내기를 막았습니다');
+    expect(downloads).toEqual([]);
+    await tid(page, 'admin-spec-undo').click();
+    await expect(tid(page, 'admin-spec-variant-e2e-opt')).toHaveCount(0);
+  });
+});

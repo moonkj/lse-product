@@ -7,6 +7,7 @@
  *   errors.filter((i) => i.rule === 'DI-44a')   // 규칙별로 꺼내 쓰기
  *
  * HARD(오류)/SOFT(경고) 구분은 RULES 표 참고 — DI 테스트의 expect / softWarn 과 같다.
+ * 정격 사양 specs.json 규칙(DI-90~99b)은 checkSpecs (./specs.ts).
  * 파일 시스템이 필요한 규칙(DI-00a 파일 존재, DI-82·82b·86 사진 파일), docs.json(DI-60~)·learn.json(DI-70~) 규칙은 범위 밖.
  */
 import { z } from 'zod';
@@ -30,6 +31,7 @@ import { Collector, asArray, koIssue, pathText, type CheckResult } from './types
 
 export * from './types';
 export { checkEquipment, linkCount, linkedProductIds, productsUnderCategory, type EquipmentContext } from './equipment';
+export { checkSpecs, specKeyLabels, SPEC_RULES, SPEC_ITEMS_MAX, SPEC_VARIANTS_MAX, SPEC_VARIANT_ID_RE, type SpecsInput } from './specs';
 export { edgeCrossings, edgePath, nodeLabel, nodeLayerOf, segHitsNode, segsCross, KNOWN_ISOLATED_SYSTEM_NODES } from './diagram';
 
 export interface DatasetInput {

@@ -13,6 +13,10 @@ export interface IssueRefs {
   categoryCode?: string;
   /** 기기 폼에서 오류를 붙일 칸 (equipment-types 필드명) */
   field?: string;
+  /** specs.json 옵션 id (DI-9x) */
+  variantId?: string;
+  /** specs.json 사양 항목 key (DI-9x) */
+  specKey?: string;
 }
 
 export interface Issue {
@@ -78,6 +82,8 @@ export const CATEGORY_CODE_RE = /^[A-Z]{3}\d{3,}$/;
 /** 라우트(/equipment/:id)에 쓰이는 URL-safe kebab-case */
 export const ROUTE_ID_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 export const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+/** 국내 전화번호 의심 (DI 테스트 PHONE_RE 와 같음) — DI-99b */
+export const PHONE_RE = /(?<!\d)(?:(?:01[016789]|0[2-6]\d?)[-.\s)]\d{3,4}[-.\s]\d{4}|1[5-9]\d{2}-\d{4})(?!\d)/;
 
 /** 중복 값 */
 export function duplicates<T>(values: readonly T[]): T[] {

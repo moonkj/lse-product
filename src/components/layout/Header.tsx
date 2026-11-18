@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import type { ViewMode } from '../../lib/diagram/url';
 import { parseMode, useSetViewMode } from '../../lib/diagram/url';
 import SearchBox from './SearchBox';
+import BrandLogo from '../common/BrandLogo';
 
 const MODES: { value: ViewMode; label: string }[] = [
   { value: 'product', label: '제품' },
@@ -25,7 +26,8 @@ export default function Header() {
   return (
     <header className="app-header">
       <Link to="/" className="app-header__logo">
-        <strong>LS ELECTRIC</strong> 전력계통 제품맵
+        <BrandLogo className="app-header__brand" />
+        <span className="app-header__title">전력계통 제품맵</span>
       </Link>
 
       <SearchBox />

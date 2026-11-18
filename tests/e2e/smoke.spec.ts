@@ -19,7 +19,9 @@ test('스모크: 앱이 뜨고 헤더와 범례 6종(v0.6 R3)이 보인다 (런�
 
   const header = page.getByRole('banner');
   await expect(header).toBeVisible();
-  await expect(header).toContainText('LS ELECTRIC');
+  // v1.2: 텍스트 'LS ELECTRIC' → 공식 로고 이미지 (alt 'LS ELECTRIC')
+  await expect(header.getByRole('img', { name: 'LS ELECTRIC' })).toBeVisible();
+  await expect(header).toContainText('전력계통 제품맵');
 
   const legend = page.getByRole('list', { name: '커버리지 범례' });
   await expect(legend).toBeVisible();
@@ -30,4 +32,63 @@ test('스모크: 앱이 뜨고 헤더와 범례 6종(v0.6 R3)이 보인다 (런�
   }
 
   expect(errors).toEqual([]);
+});
+
+// ─────────────────────────────────────────────────────────────
+// v1.2 브랜드 로고·파비콘 (public/brand, BrandLogo)
+// ─────────────────────────────────────────────────────────────
+const LOGO = 'brand/ls-electric-logo.png';
+const LOGO_DARK = 'brand/ls-electric-logo-gray.png';
+
+test.describe('브랜드 로고 (v1.2)', () => {
+  test('로고 링크: 접근성 이름 "LS ELECTRIC 전력계통 제품맵", 다른 화면에서 누르면 계통도', async ({ page }) => {
+    await page.goto('./#/gap');
+    await expect(page.getByTestId('gap-page')).toBeVisible();
+    const link = page.getByRole('banner').getByRole('link', { name: 'LS ELECTRIC 전력계통 제품맵' });
+    await expect(link).toBeVisible();
+    await link.click();
+    await expect(page).toHaveURL(/#\/$/);
+    await expect(page.getByTestId('diagram')).toBeVisible();
+  });
+
+  for (const scheme of ['light', 'dark'] as const) {
+    test(`${scheme} 모드: ${scheme === 'dark' ? '회색' : '컬러'} 로고가 실제로 로드됨 (naturalWidth > 0)`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      const failed: string[] = [];
+      page.on('response', (r) => {
+        if (r.url().includes('/brand/') && r.status() >= 400) failed.push(`${r.status()} ${r.url()}`);
+      });
+      await page.goto('./#/');
+      const img = page.getByRole('banner').getByRole('img', { name: 'LS ELECTRIC' });
+      await expect(img).toBeVisible();
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth)).toBeGreaterThan(0);
+      const src = await img.evaluate((el: HTMLImageElement) => el.currentSrc);
+      expect(src.endsWith(scheme === 'dark' ? LOGO_DARK : LOGO), src).toBe(true);
+      const box = await img.boundingBox();
+      expect(box!.height).toBeGreaterThan(0);
+      expect(box!.height).toBeLessThanOrEqual(48); // 헤더 안에 맞는 크기 (원본 56px 그대로 늘어나지 않음)
+      expect(failed).toEqual([]);
+    });
+  }
+
+  test('파비콘 link 가 있고 파일이 응답함 (base 상대 경로)', async ({ page, request }) => {
+    await page.goto('./#/');
+    const href = await page.locator('link[rel="icon"]').getAttribute('href');
+    expect(href).toBeTruthy();
+    expect(href!.startsWith('/'), `절대 경로면 GitHub Pages 서브경로에서 깨짐: ${href}`).toBe(false);
+    const res = await request.get(new URL(href!, page.url()).toString());
+    expect(res.status()).toBe(200);
+    expect((await res.body()).length).toBeGreaterThan(0);
+  });
+
+  test('390px: 로고 보이고 가로 넘침 0, 로고가 헤더 밖으로 나가지 않음', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./#/');
+    const img = page.getByRole('banner').getByRole('img', { name: 'LS ELECTRIC' });
+    await expect(img).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    const [hb, ib] = [await page.getByRole('banner').boundingBox(), await img.boundingBox()];
+    expect(ib!.x).toBeGreaterThanOrEqual(hb!.x);
+    expect(ib!.x + ib!.width).toBeLessThanOrEqual(hb!.x + hb!.width);
+  });
 });

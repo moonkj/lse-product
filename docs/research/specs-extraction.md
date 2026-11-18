@@ -4,7 +4,7 @@
 
 - 출처: docs.json에 등록된 LS ELECTRIC 공개 카탈로그 PDF만 사용. 페이지 번호는 **PDF 페이지 번호**(인쇄 쪽번호와 다를 수 있음: GIPAM115, GIMAC-V).
 - 규칙: 카탈로그에 적힌 값만 표기 그대로 옮김(범위는 `~`). 계산·추정 없음. 범위 값은 같은 표의 최소~최대를 이어 쓴 것.
-- 다운로드: 요청 44건(UA `LSE-ProductMap/0.1`, 간격 1.3초, 40MB 초과 파일은 받지 않고 중단). PDF는 저장소 밖(scratchpad)에만 저장.
+- 다운로드: 전체 파일 요청 44건 + HTTP Range 요청 455건·HEAD 8건(아래 Range 메모)(UA `LSE-ProductMap/0.1`, 간격 1.3초, 40MB 초과 파일은 받지 않고 중단). PDF는 저장소 밖(scratchpad)에만 저장.
 - 텍스트 추출: PyMuPDF(별도 venv). Susol MC는 이미지형 PDF라 페이지 이미지를 사람 눈으로 판독.
 - 2026-11-18 T2 PDF 대조(docs/reviews/compare-debug-report.md M7·데이터 대조표) 결과 반영: 출처 문서 35/35·페이지 범위 229/229 정상, 표본 대조 일치 6건, 인용 페이지 불일치 9건 정정, Susol MC(P01261) 7항목은 텍스트로 확인 불가.
 - 범위 값의 최소·최대가 두 페이지 표에 걸친 경우 item.page는 표가 시작되는 페이지, 해당 제품 note에 "항목: p.N~M 표에 걸침"으로 기록.
@@ -13,21 +13,21 @@
 ## 사람 검수 우선 (판단 필요)
 
 1. **P02212 GIPAM1000 통신** — 정격표(p12) "RS-485 : Modbus" vs 통신기능(p11) "RS-485: DNP3.0 SERIAL, MODBUS-RTU / Ethernet: DNP3.0 TCP, MODBUS-TCP, IEC61850". 옵션 재구성 때 p11 값으로 교체 — 정격표와 다르므로 최종 판단 필요.
-2. **P00206 Susol ACB / P01021 Susol MCCB — 변형 카탈로그** — 표준 카탈로그가 40MB 초과라 각각 1150Vac판·1000Vac(UTV)판 값을 사용. T2 대조: 값 일치. 표준 제품 사양으로 노출해도 되는지 판단 필요.
-3. **옵션 열 구분을 텍스트 순서로 읽은 값** — P01065 발전소용 VCB 모델별 정격전류, P01027 Metasol ELCB 125AF 정격전류(줄바꿈된 셀), P01260 Metasol MS 각 프레임 Ue 매핑. 원문 표와 열 대조 필요.
+2. **P02206 Susol Compact ACB AN형 차단용량** — p5 그림은 42kA/690Vac, 본문은 "Cat.B(AH, AN형) 50kA/690Vac". 그림 값을 넣음. (Susol ACB·MCCB·VCB 변형 카탈로그 문제는 2026-11-18 표준 카탈로그로 교체해 해소)
+3. **옵션 열 구분을 텍스트 순서로 읽은 값** — P02216 Susol UL VCB 전압별 Isc(차트), P01023 Metasol MCCB 100AF·125AF(한 표 열 공유), P01065 발전소용 VCB 모델별 정격전류, P01027 Metasol ELCB 125AF 정격전류(줄바꿈된 셀), P01260 Metasol MS 각 프레임 Ue 매핑. 원문 표와 열 대조 필요.
 4. **P01084 GIMAC-V — APFC 표** — p6 자동역률 제어장치(APFC) 정격표 값. T2 대조: 값 일치. GIMAC-V 본품(집중표시장치) 정격으로 써도 되는지 확인 필요.
 
 ## 요약
 
 | 제품ID | 제품명 | 기기 | 카탈로그 | 대표 페이지 | 항목 수 | 검수 상태 |
 |---|---|---|---|---|---|---|
-| P00206 | Susol ACB | 기중차단기 | [Susol ACB] up to 1150Vac | 12 | 3 | 프레임 · 6 | T2 대조 일치 · 변형 카탈로그 판단 필요 |
-| P01021 | Susol MCCB | 배선용차단기 | [Susol MCCB] Up to 1000Vac | 2 | 3 | 프레임 · 2 | 페이지 정정 반영(옵션 분리로 UTV250 p2·UTV400 p3) · 변형 카탈로그 판단 필요 |
+| P00206 | Susol ACB | 기중차단기 | [Susol ACB] | 18 | 7 | 프레임 · 3 | 표준 카탈로그로 교체(Range) · 미검수 |
+| P01021 | Susol MCCB | 배선용차단기 | [Susol MCCB] | 6 | 3 | 시리즈·프레임 · 5 | 표준 카탈로그로 교체(Range) · 미검수 |
 | P01900 | Smart MCCB | 배선용차단기 | [Smart LV Solution] | 56 | 5 | 프레임 · 6 | 자동 대조 통과(숫자·출처) · 미검수 |
 | P01024 | 분전반용 차단기 | 배선용차단기, 분전반용 차단기 | [분전반] 산업용 배선_누전 차단기 | 14 | 4 | 프레임 · 3 | 자동 대조 통과(숫자·출처) · 미검수 |
 | P01027 | Metasol ELCB | 누전차단기 | [Metasol ELCB] A Type | 2 | 5 | 프레임 · 7 | 자동 대조 통과 · 125AF 정격전류 검수 필요 |
 | P01028 | 분전반용 ELCB | 누전차단기 | [분전반] 산업용 배선_누전 차단기 | 18 | 4 | 프레임 · 3 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01062 | Susol VCB | 진공차단기 | [Susol VCB]_VL type 기반 전동인입출형 | 3 | 3 | 정격전압 등급 · 4 | T2 대조 일치(VL type 카탈로그) |
+| P01062 | Susol VCB | 진공차단기 | [Susol VCB] | 5 | 1 | 정격전압 · 6 | 표준 카탈로그로 교체(Range) · 미검수 |
 | P01065 | 발전소용 VCB | 진공차단기 | 발전소용 VCB | 4 | 4 | 모델 · 3 | 자동 대조 통과 · 모델별 열 구분 검수 필요 |
 | P01064 | 원자력 발전소용 VCB | 진공차단기 | [Susol VCB] 원전용 | 14 | 4 | 정격전압 등급 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
 | P03080 | 고압가스 부하개폐기 (RMU) | 배전용 가스절연 부하개폐기 | [RMU] | 10 | 5 | 정격전압 · 4 | 자동 대조 통과(숫자·출처) · 미검수 |
@@ -56,82 +56,75 @@
 | P01184 | S100 | 저압 인버터 | S100 카탈로그 | 16 | 4 | 입력 전압 · 3 | 자동 대조 통과(숫자·출처) · 미검수 |
 | P01247 | G100/G100C | 저압 인버터 | G100(C) 카탈로그 | 11 | 5 | 입력 전압 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
 | P01183 | H100 | 저압 인버터 | H100 카탈로그 | 12 | 3 | 전압·용량 등급 · 4 | 페이지 정정 반영(옵션별 p12·p13) |
+| P01023 | Metasol MCCB | 배선용차단기 | [Metasol MCCB] | 22 | 4 | 프레임 · 8 | 신규(Range) · 100/125AF 열 공유 검수 필요 |
+| P01030 | Metasol ACB | 기중차단기 | [Metasol ACB] | 4 | 2 | 형식·프레임 · 6 | 신규(Range) · 미검수 |
+| P02206 | Susol Compact ACB | 기중차단기 | [Susol Compact ACB] | 5 | 1 | 형식 · 4 | 신규(Range) · AN형 차단용량 검수 필요 |
+| P03078 | UL Load Interrupter Switch | 부하개폐기 / 자동고장구분개폐기 | [Susol LIS]Load Interrupter Switch | 4 | 5 | 정격전압 · 2 | 신규(Range) · 27/38kV급 미수록 |
+| P02216 | Susol UL VCB | 진공차단기 | UL VCB | 10 | 2 | 정격전압 · 4 | 신규(Range) · 차트 판독 검수 필요 |
 
 ## 제품별 항목 (공통 + 옵션별)
 
 ### P00206 Susol ACB
 
 - 기기: 기중차단기
-- 카탈로그: [[Susol ACB] up to 1150Vac](https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_up_to_1150Vac_KO_C060C1-03-202501.pdf) · 대표 p.12
-- 비고: 고전압 카탈로그([Susol ACB] up to 1150Vac) 기준 — AV(~1150Vac)·AW(~900Vac) 프레임별. 표준 Susol ACB 카탈로그는 40MB 초과로 미확인
-- 검수 상태: T2 대조 일치 · 변형 카탈로그 판단 필요
+- 카탈로그: [[Susol ACB]](https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_KO_C06061-23-202511.pdf) · 대표 p.18
+- 비고: 표준 [Susol ACB] 카탈로그 정격표(p18~19) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 이전 값은 고전압판 [Susol ACB] up to 1150Vac 카탈로그(AV ~1150Vac·AW ~900Vac 프레임)였음 — 그 카탈로그는 별도 문서로 docs.json에 있음
+- 검수 상태: 표준 카탈로그로 교체(Range) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| poles | 극수 | 3 / 4 | P | 12 |
-| mounting | 설치·인출 방식 | 고정형 / 인출형 |  | 12 |
-| standards | 적용 규격 | IEC 60947-2 |  | 12 |
+| ratedVoltage | 정격전압 | 690 (Ue) | V | 18 |
+| insulationVoltage | 정격절연전압 | 1000 | V | 18 |
+| frequency | 정격주파수 | 50/60 | Hz | 18 |
+| poles | 극수 | 3/4 | P | 18 |
+| impulseVoltage | 정격임펄스내전압 | 12 | kV | 18 |
+| mounting | 설치·인출 방식 | 고정형 / 인출형 |  | 18 |
+| standards | 적용 규격 | IEC 60947-2, KS C 4620 |  | 18 |
 
-옵션 기준: **프레임** (6개)
+옵션 기준: **프레임** (3개)
 
 | 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|---|---|
-| av-d | AV-D (~2000AF, ~1150Vac) (p.12) | ratedVoltage | 정격전압 | ~1150 | Vac | 12 |
-|  |  | insulationVoltage | 정격절연전압 | 1250 | V | 12 |
-|  |  | frame | 프레임 | 630~2000 | AF | 12 |
-|  |  | ratedCurrent | 정격전류 | 200~2000 (In max) | A | 12 |
-|  |  | breakingCapacity | 정격차단전류 | 30 (1150V) / 42 (1000V) / 50 (900V) / 50 (800V) | kA | 12 |
-| av-e | AV-E (~4000AF, ~1150Vac) (p.13) | ratedVoltage | 정격전압 | ~1150 | Vac | 13 |
-|  |  | insulationVoltage | 정격절연전압 | 1250 | V | 13 |
-|  |  | frame | 프레임 | 630~4000 | AF | 13 |
-|  |  | ratedCurrent | 정격전류 | 400~4000 (In max) | A | 13 |
-|  |  | breakingCapacity | 정격차단전류 | 50 (1150V) / 65 (1000V) / 75 (900V) / 75 (800V) | kA | 13 |
-| av-g | AV-G (~6300AF, ~1150Vac) (p.13) | ratedVoltage | 정격전압 | ~1150 | Vac | 13 |
-|  |  | insulationVoltage | 정격절연전압 | 1250 | V | 13 |
-|  |  | frame | 프레임 | 4000~6300 | AF | 13 |
-|  |  | ratedCurrent | 정격전류 | 2000~6300 (In max) | A | 13 |
-|  |  | breakingCapacity | 정격차단전류 | 65 (1150V) / 85 (1000V) / 85 (900V) / 85 (800V) | kA | 13 |
-| aw-d | AW-D (~2000AF, ~900Vac) (p.14) | ratedVoltage | 정격전압 | ~900 | Vac | 14 |
-|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 14 |
-|  |  | frame | 프레임 | 630~2000 | AF | 14 |
-|  |  | ratedCurrent | 정격전류 | 200~2000 (In max) | A | 14 |
-|  |  | breakingCapacity | 정격차단전류 | 42 (900V) / 50 (800V) | kA | 14 |
-| aw-e | AW-E (~4000AF, ~900Vac) (p.14) | ratedVoltage | 정격전압 | ~900 | Vac | 14 |
-|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 14 |
-|  |  | frame | 프레임 | 630~4000 | AF | 14 |
-|  |  | ratedCurrent | 정격전류 | 400~4000 (In max) | A | 14 |
-|  |  | breakingCapacity | 정격차단전류 | 50 (900V) / 65 (800V) | kA | 14 |
-| aw-g | AW-G (~6300AF, ~900Vac) (p.14) | ratedVoltage | 정격전압 | ~900 | Vac | 14 |
-|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 14 |
-|  |  | frame | 프레임 | 4000~6300 | AF | 14 |
-|  |  | ratedCurrent | 정격전류 | 2000~6300 (In max) | A | 14 |
-|  |  | breakingCapacity | 정격차단전류 | 85 (900V) / 85 (800V) | kA | 14 |
+| ah-d | AH-D (AH-06D~20D) (p.18) | frame | 프레임 | 630~2000 | AF | 18 |
+|  |  | ratedCurrent | 정격전류 | 200~2000 (In max) | A | 18 |
+|  |  | breakingCapacity | 정격차단전류 | 65 (690/600/550V) / 85 (500/480/460V) / 85 (415~220V) | kA | 18 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 65 (1초) / 60 (2초) / 50 (3초) | kA | 18 |
+| ah-e | AH-E (AH-06E~40E) (p.19) | frame | 프레임 | 630~4000 | AF | 19 |
+|  |  | ratedCurrent | 정격전류 | 200~4000 (In max) | A | 19 |
+|  |  | breakingCapacity | 정격차단전류 | 85 (690/600/550V) / 100 (500/480/460V) / 100 (415~220V) | kA | 19 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 85 (1초) / 75 (2초) / 65 (3초) | kA | 19 |
+| ah-g | AH-G (AH-40G~63G) (p.19) | frame | 프레임 | 4000~6300 | AF | 19 |
+|  |  | ratedCurrent | 정격전류 | 2000~6300 (In max) | A | 19 |
+|  |  | breakingCapacity | 정격차단전류 | 100 (690/600/550V) / 150 (500/480/460V) / 150 (415~220V) | kA | 19 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 100 (1초) / 85 (2초) / 75 (3초) | kA | 19 |
 
 ### P01021 Susol MCCB
 
 - 기기: 배선용차단기
-- 카탈로그: [[Susol MCCB] Up to 1000Vac](https://www.ls-electric.com/ko/cat/%5BSusol_MCCB%5D_Up_to_1000Vac_KO_C010O1-05-202610.pdf) · 대표 p.2
-- 비고: 1000Vac급 UTV 시리즈 카탈로그 기준. 표준 Susol MCCB 카탈로그는 40MB 초과로 미확인
-- 검수 상태: 페이지 정정 반영(옵션 분리로 UTV250 p2·UTV400 p3) · 변형 카탈로그 판단 필요
+- 카탈로그: [[Susol MCCB]](https://www.ls-electric.com/ko/cat/%5BSusol_MCCB%5D_KO_C01091-24-202509.pdf) · 대표 p.6
+- 비고: 표준 [Susol MCCB] 카탈로그 개요(p5~7) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 차단용량은 Ics=100% Icu, 415Vac 기준(p6). 정격사용전압·극수는 정격표 페이지를 받지 않아 미기재. 이전 값은 [Susol MCCB] Up to 1000Vac 카탈로그(UTV250/400)였음
+- 검수 상태: 표준 카탈로그로 교체(Range) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| poles | 극수 | 3 / 4 | P | 2 |
-| protection | 보호 기능 | FTU / FMU / ATU 트립장치 |  | 2 |
-| standards | 적용 규격 | UL 489, IEC 60947-2 |  | 2 |
+| frame | 프레임 | 160/250/630/800/1600AF (5 Frame) |  | 5 |
+| protection | 보호 기능 | FTU / FMU / ATU (열동전자식), ETS / ETM (전자식), MTU (전동기보호용), DSU (개폐기) |  | 8 |
+| communication | 통신 | RS485 (MODBUS) |  | 10 |
 
-옵션 기준: **프레임** (2개)
+옵션 기준: **시리즈·프레임** (5개)
 
 | 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|---|---|
-| utv250 | UTV250 (250AF) (p.2) | frame | 프레임 | 250 | AF | 4 |
-|  |  | ratedVoltage | 정격전압 | 690/800/1000 | V AC | 2 |
-|  |  | ratedCurrent | 정격전류 | 60, 80, 100, 150, 200, 250 | A | 2 |
-|  |  | breakingCapacity | 정격차단전류 | 15 / 20 / 30 (1000 V AC, IEC Icu, E/N/H) | kA | 2 |
-| utv400 | UTV400 (400AF) (p.3) | frame | 프레임 | 400 | AF | 4 |
-|  |  | ratedVoltage | 정격전압 | 690*/800/1000 (*690 V AC는 UL 489에만 해당) | V AC | 3 |
-|  |  | ratedCurrent | 정격전류 | 320, 400 | A | 3 |
-|  |  | breakingCapacity | 정격차단전류 | 15 / 20 / 25 (1000 V AC, IEC Icu, E/N/H) | kA | 3 |
+| td100-160 | TD100/160 (p.6) | ratedCurrent | 정격전류 | 16~160 | A | 6 |
+|  |  | breakingCapacity | 정격차단전류 | 50 / 85 / 150 (415Vac, N/H/L) | kA | 6 |
+| ts100-250 | TS100/160/250 (p.6) | ratedCurrent | 정격전류 | 40~250 | A | 6 |
+|  |  | breakingCapacity | 정격차단전류 | 50 / 85 / 150 (415Vac, N/H/L) | kA | 6 |
+| ts400-630 | TS400/630 (p.7) | ratedCurrent | 정격전류 | 300~630 | A | 7 |
+|  |  | breakingCapacity | 정격차단전류 | 65 / 85 / 150 (415Vac, N/H/L) | kA | 7 |
+| ts800 | TS800 (p.7) | ratedCurrent | 정격전류 | 700, 800 | A | 7 |
+|  |  | breakingCapacity | 정격차단전류 | 65 / 100 / 150 (415Vac, N/H/L) | kA | 7 |
+| ts1600 | TS1600 (p.7) | ratedCurrent | 정격전류 | 1000, 1250, 1600 | A | 7 |
+|  |  | breakingCapacity | 정격차단전류 | 50 / 70 / 150 (415Vac, N/H/L) | kA | 7 |
 
 ### P01900 Smart MCCB
 
@@ -270,40 +263,36 @@
 ### P01062 Susol VCB
 
 - 기기: 진공차단기
-- 카탈로그: [[Susol VCB]_VL type 기반 전동인입출형](https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_%EC%A0%84%EB%8F%99%EC%9D%B8%EC%9E%85%EC%B6%9C%ED%98%95_KO_C050M1-06-202507.pdf) · 대표 p.3
-- 비고: VL type 전동인출형 카탈로그 기준(p3 표는 페이지 이미지로 열 확인). Susol VCB 종합 카탈로그는 40MB 초과로 미확인
-- 검수 상태: T2 대조 일치(VL type 카탈로그)
+- 카탈로그: [[Susol VCB]](https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_KO_C05001-26-202609.pdf) · 대표 p.5
+- 비고: 표준 [Susol VCB] 종합 카탈로그 라인업 표(p5) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 전압별 차단전류·정격전류는 그 전압에서 제공되는 값 목록(조합별 정격은 카탈로그 정격 페이지 참조). 이전 값은 [Susol VCB]_VL type 기반 전동인입출형 카탈로그(7.2~25.8kV, 12.5~32kA)였음
+- 검수 상태: 표준 카탈로그로 교체(Range) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| frequency | 정격주파수 | 50 / 60 | Hz | 3 |
-| mounting | 설치·인출 방식 | H형 (전동인출형) |  | 3 |
-| standards | 적용 규격 | IEC 62271-100:2012 |  | 3 |
+| insulation | 절연·냉각 방식 | 진공 소호 (진공 인터럽터, VI) |  | 2 |
 
-옵션 기준: **정격전압 등급** (4개)
+옵션 기준: **정격전압** (6개)
 
 | 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|---|---|
-| 7-2kv | 7.2kV (VL-06H25A·VL-06H32A·VL-06H32B25) (p.3) | ratedVoltage | 정격전압 | 7.2 | kV | 3 |
-|  |  | ratedCurrent | 정격전류 | 630 / 1250 / 2500 | A | 3 |
-|  |  | breakingCapacity | 정격차단전류 | 25 / 32 | kA | 3 |
-|  |  | powerFreqWithstand | 상용주파 내전압 | 20 | kV | 3 |
-|  |  | impulseWithstand | 뇌임펄스 내전압 | 60 | kV | 3 |
-| 12kv | 12kV (VL-12H32A·VL-12H32B25) (p.3) | ratedVoltage | 정격전압 | 12 | kV | 3 |
-|  |  | ratedCurrent | 정격전류 | 630 / 1250 / 2500 | A | 3 |
-|  |  | breakingCapacity | 정격차단전류 | 32 | kA | 3 |
-|  |  | powerFreqWithstand | 상용주파 내전압 | 28 | kV | 3 |
-|  |  | impulseWithstand | 뇌임펄스 내전압 | 75 | kV | 3 |
-| 17-5kv | 17.5kV (VL-17H32A·VL-17H32B25) (p.3) | ratedVoltage | 정격전압 | 17.5 | kV | 3 |
-|  |  | ratedCurrent | 정격전류 | 630 / 1250 / 2500 | A | 3 |
-|  |  | breakingCapacity | 정격차단전류 | 32 | kA | 3 |
-|  |  | powerFreqWithstand | 상용주파 내전압 | 38 | kV | 3 |
-|  |  | impulseWithstand | 뇌임펄스 내전압 | 95 | kV | 3 |
-| 24-25-8kv | 24/25.8kV (VL-20,25H) (p.4) | ratedVoltage | 정격전압 | 24 / 25.8 | kV | 4 |
-|  |  | ratedCurrent | 정격전류 | 630 / 1250 / 2000 | A | 4 |
-|  |  | breakingCapacity | 정격차단전류 | 12.5 / 16 / 25 | kA | 4 |
-|  |  | powerFreqWithstand | 상용주파 내전압 | 50 / 60 | kV | 4 |
-|  |  | impulseWithstand | 뇌임펄스 내전압 | 125 | kV | 4 |
+| 7-2kv | 7.2kV (p.5) | ratedVoltage | 정격전압 | 7.2 | kV | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 8/12.5/20/25/31.5/40/50 | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 400/630/1250/2000/3150/4000 | A | 5 |
+| 12kv | 12kV (p.5) | ratedVoltage | 정격전압 | 12 | kV | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 20/25/31.5/40/50 | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 630/1000/1250/2000/2500/3150/4000/5000 | A | 5 |
+| 17-5kv | 17.5kV (p.5) | ratedVoltage | 정격전압 | 17.5 | kV | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 20/25/31.5/40/50 | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 630/1000/1250/2000/2500/3150/4000 | A | 5 |
+| 24kv | 24kV (p.5) | ratedVoltage | 정격전압 | 24 | kV | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 12.5/25/31.5/40 | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 630/1250/2000/2500/3150 | A | 5 |
+| 25-8kv | 25.8kV (p.5) | ratedVoltage | 정격전압 | 25.8 | kV | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 12.5/16/25/31.5/40 | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 630/1250/2000/3150 | A | 5 |
+| 36kv | 36kV (p.5) | ratedVoltage | 정격전압 | 36 | kV | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 25/31.5/40 | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 1250/2000/3150 | A | 5 |
 
 ### P01065 발전소용 VCB
 
@@ -1103,28 +1092,211 @@
 |  |  | motorPower | 적용 전동기 용량 | 110~750 | kW | 13 |
 |  |  | ratedCurrent | 정격전류 | 223~1200 (출력) | A | 13 |
 
+### P01023 Metasol MCCB
+
+- 기기: 배선용차단기
+- 카탈로그: [[Metasol MCCB]](https://www.ls-electric.com/ko/cat/%5BMetasol_MCCB%5D_KO_C01031-35-202610.pdf) · 대표 p.22
+- 비고: 기종일람표 MCCB(p22~25) 기준 (HTTP Range로 필요한 페이지만 받아 추출), 대표 옵션만(전체 30~1200AF 11종 중 8종). 정격차단전류는 AC 415/460V 행. 100AF·125AF는 한 표 열을 공유해 형명 순서대로 적음
+- 검수 상태: 신규(Range) · 100/125AF 열 공유 검수 필요
+
+| key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|
+| poles | 극수 | 2, 3, 4 | P | 22 |
+| impulseVoltage | 정격임펄스내전압 | 8 (30AF E-type·1000AF·1200AF는 6) | kV | 22 |
+| frequency | 정격주파수 | 50/60 (공용) | Hz | 22 |
+| standards | 적용 규격 | KS C 8321, IEC 60947-2 |  | 22 |
+
+옵션 기준: **프레임** (8개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 30af | 30AF (p.22) | frame | 프레임 | 30 | AF | 22 |
+|  |  | ratedVoltage | 정격전압 | 460 (E-type) / 690 (S-type) | V AC | 22 |
+|  |  | ratedCurrent | 정격전류 | 3, 5, 10, 15, 20, 30 (E) / (3, 5, 10), 15, 16, 20, 25, 30 (S) | A | 22 |
+|  |  | breakingCapacity | 정격차단전류 | 2.5 (E) / 14 (10) (S) | kA | 22 |
+| 50af | 50AF (p.22) | frame | 프레임 | 50 | AF | 22 |
+|  |  | ratedVoltage | 정격전압 | 690 | V AC | 22 |
+|  |  | ratedCurrent | 정격전류 | 15, 16, 20, 25, 30, 32, 40, 50 | A | 22 |
+|  |  | breakingCapacity | 정격차단전류 | 14 / 18 / 50 (N/S/H) | kA | 22 |
+| 100-125af | 100AF·125AF (ABN·ABS·ABH·ABL 10□) (p.23) | frame | 프레임 | 100 / 125 | AF | 23 |
+|  |  | ratedVoltage | 정격전압 | 690 | V AC | 23 |
+|  |  | ratedCurrent | 정격전류 | 15, (16), 20, (25), 30, (32), 40, 50, 60, (63), 75, (80), 100 (100AF) / … 100, 125 (125AF) | A | 23 |
+|  |  | breakingCapacity | 정격차단전류 | 18 / 26 (18) / 31 (18) / 37 / 50 / 60 (50) (ABN102c·d·e / ABS / ABH / ABL) | kA | 23 |
+| 250af | 250AF (p.23) | frame | 프레임 | 250 | AF | 23 |
+|  |  | ratedVoltage | 정격전압 | 690 | V AC | 23 |
+|  |  | ratedCurrent | 정격전류 | 100, 125, 150, (160), 175, 200, 225, 250 | A | 23 |
+|  |  | breakingCapacity | 정격차단전류 | 26 / 37 / 50 / 60 (50) (N/S/H/L) | kA | 23 |
+| 400af | 400AF (p.24) | frame | 프레임 | 400 | AF | 24 |
+|  |  | ratedVoltage | 정격전압 | 690 | V AC | 24 |
+|  |  | ratedCurrent | 정격전류 | 250, 300, 350, 400 | A | 24 |
+|  |  | breakingCapacity | 정격차단전류 | 37 / 50 / 65 / 85 (N/S/H/L) | kA | 24 |
+| 630af | 630AF (p.24) | frame | 프레임 | 630 | AF | 24 |
+|  |  | ratedVoltage | 정격전압 | 690 | V AC | 24 |
+|  |  | ratedCurrent | 정격전류 | 500, 600, 630 | A | 24 |
+|  |  | breakingCapacity | 정격차단전류 | 37 / 65 / 85 (N/S/L) | kA | 24 |
+| 800af | 800AF (p.25) | frame | 프레임 | 800 | AF | 25 |
+|  |  | ratedVoltage | 정격전압 | 690 | V AC | 25 |
+|  |  | ratedCurrent | 정격전류 | 700, 800 | A | 25 |
+|  |  | breakingCapacity | 정격차단전류 | 37 / 65 / 85 (N/S/L) | kA | 25 |
+| 1200af | 1200AF (p.25) | frame | 프레임 | 1200 | AF | 25 |
+|  |  | ratedVoltage | 정격전압 | 600 | V AC | 25 |
+|  |  | ratedCurrent | 정격전류 | 1200 | A | 25 |
+|  |  | breakingCapacity | 정격차단전류 | 65 / 85 (S/L) | kA | 25 |
+
+### P01030 Metasol ACB
+
+- 기기: 기중차단기
+- 카탈로그: [[Metasol ACB]](https://www.ls-electric.com/ko/cat/%5BMetasol_ACB%5D_KO_C06091-28-202607.pdf) · 대표 p.4
+- 비고: Overview(p3~5) 기종별 차단용량(Icu=Ics, 500Vac)과 AN형 정격표(p18) 기준 (HTTP Range로 필요한 페이지만 받아 추출). AS형 상세 정격표는 받지 않음
+- 검수 상태: 신규(Range) · 미검수
+
+| key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|
+| impulseVoltage | 정격임펄스내전압 | 12 | kV | 3 |
+| standards | 적용 규격 | IEC60947-2 (CE 인증) |  | 3 |
+
+옵션 기준: **형식·프레임** (6개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| an-d | AN-06~16D (p.4) | frame | 프레임 | 630~1600 | AF | 4 |
+|  |  | breakingCapacity | 정격차단전류 | 65 (500Vac, Icu=Ics) | kA | 4 |
+|  |  | ratedVoltage | 정격전압 | 690 (Ue) | V | 18 |
+|  |  | ratedCurrent | 정격전류 | 200~1600 (In max) | A | 18 |
+| as-d | AS-06~20D (p.4) | frame | 프레임 | 630~2000 | AF | 4 |
+|  |  | breakingCapacity | 정격차단전류 | 70 (500Vac, Icu=Ics) | kA | 4 |
+| an-e | AN-20~32E (p.4) | frame | 프레임 | 2000~3200 | AF | 4 |
+|  |  | breakingCapacity | 정격차단전류 | 70 (500Vac, Icu=Ics) | kA | 4 |
+|  |  | ratedVoltage | 정격전압 | 690 (Ue) | V | 18 |
+|  |  | ratedCurrent | 정격전류 | 200~3200 (In max) | A | 18 |
+| as-e | AS-20~40E (p.4) | frame | 프레임 | 2000~4000 | AF | 4 |
+|  |  | breakingCapacity | 정격차단전류 | 85 (500Vac, Icu=Ics) | kA | 4 |
+| as-f | AS-50F (p.5) | frame | 프레임 | 4000~5000 | AF | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 100 (500Vac, Icu=Ics) | kA | 5 |
+| as-g | AS-40~63G (p.5) | frame | 프레임 | 4000~6300 | AF | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 120 (500Vac, Icu=Ics) | kA | 5 |
+
+### P02206 Susol Compact ACB
+
+- 기기: 기중차단기
+- 카탈로그: [[Susol Compact ACB]](https://www.ls-electric.com/ko/cat/%5BSusol_Compact_ACB%5D_KO_C06001-04-202201.pdf) · 대표 p.5
+- 비고: 주요특징(p5) 기준 (HTTP Range로 필요한 페이지만 받아 추출). AN형 차단용량: 그림 표기는 42kA/690Vac, 본문은 "Cat.B 차단기(AH, AN형) 50kA/690Vac" — 그림 값을 넣음, 검수 필요
+- 검수 상태: 신규(Range) · AN형 차단용량 검수 필요
+
+| key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|
+| standards | 적용 규격 | IEC 60947-2 (DEKRA CB인증), GB 14048.2 (CCC 인증) |  | 5 |
+
+옵션 기준: **형식** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| an | AN type (AN-08·AN-16, Cat.B) (p.5) | frame | 프레임 | 800 / 1600 | AF | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 42 (690Vac), Ics=100% | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 400~1600 | A | 5 |
+| ah | AH type (AH-08·AH-16, Cat.B) (p.5) | frame | 프레임 | 800 / 1600 | AF | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 50 (690Vac), Ics=100% | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 400~1600 | A | 5 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 50 (1초) | kA | 5 |
+| aw | AW type (AW-08·AW-16, Cat.B) (p.5) | frame | 프레임 | 800 / 1600 | AF | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 40 (800Vac), Ics=100% | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 400~1600 | A | 5 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 40 (1초) | kA | 5 |
+| ar | AR type (AR-08·AR-10, Cat.A) (p.5) | frame | 프레임 | 800 / 1000 | AF | 5 |
+|  |  | breakingCapacity | 정격차단전류 | 150 (415Vac), Ics=100% | kA | 5 |
+|  |  | ratedCurrent | 정격전류 | 400~1000 | A | 5 |
+
+### P03078 UL Load Interrupter Switch
+
+- 기기: 부하개폐기 / 자동고장구분개폐기
+- 카탈로그: [[Susol LIS]Load Interrupter Switch](https://www.ls-electric.com/ko/cat/%5BSusol_LIS%5DLoad_Interrupter_Switch_EN_C050N2-14-202609.pdf) · 대표 p.4
+- 비고: Ratings and configurations(p4) UME-05/15 표 기준 (HTTP Range로 필요한 페이지만 받아 추출). p2에는 제품군 범위 4.76~38kV로 기재 — 27/38kV급 정격 페이지는 받지 않음
+- 검수 상태: 신규(Range) · 27/38kV급 미수록
+
+| key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|
+| ratedCurrent | 정격전류 | 600 / 1200 (Rated normal current) | A | 4 |
+| frequency | 정격주파수 | 60 | Hz | 4 |
+| shortTimeCurrent | 정격 단시간 전류 | 25 / 38 (RMS Sym., 3 sec) | kA | 4 |
+| mounting | 설치·인출 방식 | Enclosure NEMA 1 / NEMA 3R, Single / Duplex / Feeder |  | 4 |
+| standards | 적용 규격 | IEEE C37.20.3, ANSI C37.57, CSA C22.2 No. 31 |  | 4 |
+
+옵션 기준: **정격전압** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| ume-05 | UME-05 (4.76kV) (p.4) | ratedVoltage | 정격전압 | 4.76 (Maximum rated voltage) | kV | 4 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 19 (Dielectric strength) | kV | 4 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 60 | kV | 4 |
+| ume-15 | UME-15 (15kV) (p.4) | ratedVoltage | 정격전압 | 15 (Maximum rated voltage) | kV | 4 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 36 (Dielectric strength) | kV | 4 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 95 | kV | 4 |
+
+### P02216 Susol UL VCB
+
+- 기기: 진공차단기
+- 카탈로그: [UL VCB](https://www.ls-electric.com/ko/cat/UL_VCB_EN_C050E2-13-202610.pdf) · 대표 p.10
+- 비고: VCB Ratings 차트(p10) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 전압별 Isc는 차트 행 순서로 읽음 — 정격전류와 전압·Isc 조합은 차트라 매핑하지 않음, 검수 필요
+- 검수 상태: 신규(Range) · 차트 판독 검수 필요
+
+| key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|
+| ratedCurrent | 정격전류 | 1200 / 2000 / 2500 / 2750 / 3000 / 4000 (차트 축 값) | A | 10 |
+| standards | 적용 규격 | UL certified |  | 10 |
+
+옵션 기준: **정격전압** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 4-76kv | 4.76 kV (p.10) | ratedVoltage | 정격전압 | 4.76 | kV | 10 |
+|  |  | breakingCapacity | 정격차단전류 | 25 / 31.5 / 40 / 50 (Isc) | kA | 10 |
+|  |  | mounting | 설치·인출 방식 | UVL-05 / UVM-05 / UVH-05 (Fixed·Draw-out) |  | 10 |
+| 15kv | 15 kV (p.10) | ratedVoltage | 정격전압 | 15 | kV | 10 |
+|  |  | breakingCapacity | 정격차단전류 | 25 / 31.5 / 40 / 50 (Isc) | kA | 10 |
+|  |  | mounting | 설치·인출 방식 | UVL-15 / UVM-15 / UVH-15 (Fixed·Draw-out) |  | 10 |
+| 27kv | 27 kV (p.10) | ratedVoltage | 정격전압 | 27 | kV | 10 |
+|  |  | breakingCapacity | 정격차단전류 | 25 / 31.5 / 40 (Isc) | kA | 10 |
+|  |  | mounting | 설치·인출 방식 | UVM-27 / UVH-27 |  | 10 |
+| 38kv | 38 kV (p.10) | ratedVoltage | 정격전압 | 38 | kV | 10 |
+|  |  | breakingCapacity | 정격차단전류 | 31.5 / 40 (Isc) | kA | 10 |
+|  |  | mounting | 설치·인출 방식 | UVH-38 |  | 10 |
+
 ## 추출 실패·건너뛴 제품
 
 | 제품ID | 제품명 | 기기 | 사유 |
 |---|---|---|---|
-| P02206 | Susol Compact ACB | 기중차단기 | 전용 카탈로그 40MB 초과. 1150Vac 카탈로그 p15에 "Compact ACB up to 800Vac" 정격이 있으나 고전압 변형이라 표준 제품 사양으로 쓰지 않음 |
-| P01030 | Metasol ACB | 기중차단기 | 카탈로그 40MB 초과 |
-| P02207 | Susol UL ACB | 기중차단기 | 시간 관계상 미시도(영문 카탈로그) |
-| P01023 | Metasol MCCB | 배선용차단기 | 카탈로그 40MB 초과 |
+| P02207 | Susol UL ACB | 기중차단기 | 미시도(영문 카탈로그, 40MB 미만이나 우선순위 밖) |
 | P01022 | Susol UL MCCB | 배선용차단기 | 미시도 |
-| P02216 | Susol UL VCB | 진공차단기 | 카탈로그(UL VCB, 영문) 40MB 초과 |
-| P03078 | UL Load Interrupter Switch | 부하개폐기 | 카탈로그(Susol LIS, 영문) 40MB 초과 |
 | P03077 | Load Break Switch / Auto Section Switch | 부하개폐기 | docs.json에 문서 없음 |
 | — | 고압 전자접촉기(VC)·전력퓨즈(PF)·ALTS 단독 제품·MMS·MCB/RCBO·고압 인버터·GIS·주변압기 | 각 기기 | products.json에 해당 카테고리 제품이 없거나 docs.json에 카탈로그/데이터시트 없음 (ALTS·LBS 카탈로그는 RMU(P03080) 문서로만 등록) |
 | P01055 IMP, P01077 DPR1000, GIMAC-PQ/II Plus/DC/B 등 | — | 각 기기 | 기기당 2~3개 비교 목표를 채워 우선순위에서 제외 |
 | P03085 USPB, P03086 USPC | 서지보호기 | 같은 카탈로그에 형명별 결선표만 있고 시리즈 정격표가 텍스트로 명확히 분리되지 않아 제외 |
 
-## 신뢰도가 낮은 값 (12건, 위 '사람 검수 우선' 항목 포함)
+## 2026-11-18 40MB 초과 카탈로그 — HTTP Range 추출
+
+- 방식: HEAD로 8개 파일 모두 `Accept-Ranges: bytes` 확인 → pdf.js(pdfjs-dist 4.10.38, scratchpad 설치) `PDFDataRangeTransport` + `disableAutoFetch`·`disableStream`, 128KB 청크. 청크 요청은 직렬화하고 간격 1.25초, UA `LSE-ProductMap/0.1`, docs.json URL만. xref/trailer→목차→정격 페이지 순으로 필요한 페이지만 텍스트 추출. 받은 청크는 scratchpad에만 캐시(저장소에 PDF 없음). 파일당 요청 상한(MAXREQ)을 두어 이미지가 무거운 페이지에서 과다 요청 방지.
+- 합계: Range 요청 455건(첫 시험 실행 9건 포함) + HEAD 8건, 받은 바이트 59,095,598 B(약 59MB, 8개 파일 전체 크기 약 562MB의 약 10.5%).
+
+| 파일 | 제품 | Range 요청 | 받은 바이트 | 읽은 PDF 페이지 |
+|---|---|---|---|---|
+| [Susol ACB] | P00206 (교체) | 84 | 10,965,149 | 2~6, 18~19 |
+| [Susol MCCB] | P01021 (교체) | 33 | 4,267,989 | 1~14 |
+| [Susol VCB] | P01062 (교체) | 9 | 1,176,913 | 2~5 |
+| [Metasol MCCB] | P01023 (신규) | 29 | 3,778,029 | 1~4, 22~26 |
+| [Metasol ACB] | P01030 (신규) | 33 | 4,256,822 | 3~5, 18 |
+| [Susol Compact ACB] | P02206 (신규) | 145 | 18,875,918 | 2~5 |
+| [Susol LIS] | P03078 (신규) | 69 | 8,941,455 | 2~4 |
+| UL VCB | P02216 (신규) | 53 | 6,833,323 | 2~4, 10~11 |
+
+- 교체 내역: P00206·P01021·P01062는 변형 카탈로그(1150Vac판·1000Vac UTV판·VL 전동인출형판) 값에서 표준 카탈로그 값으로 교체. 제품당 출처 문서가 하나라 변형 값은 옵션으로 섞지 않고 note에 "이전 값은 ○○ 카탈로그"로 기록(변형 카탈로그는 docs.json에 별도 문서로 남아 있음).
+- 한계: Susol MCCB는 정격표 페이지를 받지 않아 정격사용전압·극수 미기재. Metasol ACB는 AS형 상세 정격표 미수록. Susol LIS는 UME-05/15만(27/38kV 미수록). UL VCB는 개요 차트 기준.
+
+## 신뢰도가 낮은 값 (위 '사람 검수 우선' 항목 포함)
 
 1. **P02212 GIPAM1000 통신**: 정격표(p12)는 RS-485 Modbus만, 통신기능(p11)은 DNP3.0·MODBUS·IEC61850 — 옵션 재구성 때 p11 값으로 교체. (사람 검수 우선)
-2. **P00206 Susol ACB**: 1150Vac 고전압판 값(차단전류 85/65kA는 G-Frame 최대). (사람 검수 우선)
-3. **P01021 Susol MCCB**: 1000Vac UTV 시리즈 값. (사람 검수 우선)
-4. **P01062 Susol VCB**: VL type 전동인출형 카탈로그 값. T2 대조로 p3 숫자 모두 확인됨.
+2. **P00206 Susol ACB**: 표준 카탈로그(p18~19)로 교체 완료 — AH-E/G 차단전류·단시간전류는 한 줄에 E·G 값이 번갈아 추출되어 짝지음.
+3. **P01021 Susol MCCB**: 표준 카탈로그 개요(p5~7)로 교체 완료 — 정격사용전압·극수 미기재.
+4. **P01062 Susol VCB**: 표준 카탈로그 라인업 표(p5)로 교체 — 전압별 제공 값 목록이며 조합별 정격 아님.
 5. **P01261 Susol MC**: 이미지 판독값(텍스트 레이어 없음, T2 텍스트 대조 불가).
 6. **P01260 Metasol MS**: 적용 전동기 용량은 대형 프레임 표 열 정렬이 불확실해 넣지 않음. 옵션(프레임)별 Ue는 기종일람표 p10~13 프레임 열에서 읽음.
 7. **P01024 / P01028 분전반용**: ABE/EBE Fb 경제형 1개 시리즈만 대표값으로 사용.
@@ -1133,6 +1305,10 @@
 10. **P01188 iS7**: IP 등급 요약 — T2 대조로 원문과 일치 확인. 전동기 용량은 중부하(CT) 기준(VT 기준 400V급 450kW)으로 값에 명시.
 11. **P01065 발전소용 VCB**: 모델(40H/40J/50J)별 정격전류·차단전류 열 구분을 텍스트 순서와 형명으로 읽음. (사람 검수 우선)
 12. **P01027 Metasol ELCB 125AF**: 정격전류 셀이 두 줄로 나뉘어 추출됨(같은 셀로 판단). 100AF 이상 정격차단전류는 열 정렬이 불명확해 넣지 않음.
+13. **P02206 Susol Compact ACB AN형**: 그림 42kA vs 본문 50kA. (사람 검수 우선)
+14. **P02216 Susol UL VCB**: 전압별 Isc를 차트 행 순서로 읽음. (사람 검수 우선)
+15. **P01023 Metasol MCCB 100AF·125AF**: 두 프레임이 표 열을 공유해 한 옵션으로 묶고 형명 순서대로 적음.
+16. **P01030 Metasol ACB**: AS형은 개요 페이지의 차단용량(500Vac)만, 정격전압·정격전류는 AN형만.
 
 ## 2026-11-18 정정 내역 (T2 대조 M7 반영)
 

@@ -1,8 +1,8 @@
-# 테스트 계획서 (v1.1)
+# 테스트 계획서 (v1.2)
 
 > 작성: Teammate 3 (테스트 작성자 + 최종 리뷰어) · 2026-11-18
 > 대상: 전력계통도 기반 제품 포트폴리오 & 신입 교육 포털 (PLAN.md v0.1)
-> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/unit/lib/*.test.ts`(v0.7: `integrity`·`router`·`admin-draft` 추가), `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`, `tests/e2e/admin.spec.ts`(v0.7), (v0.9) `tests/unit/lib/compare.test.ts`·`compare-fixture.ts`, `tests/unit/components/ComparePage.test.tsx`, `tests/unit/store/useCompareStore.test.tsx`, `tests/e2e/compare.spec.ts`, (v1.0) `tests/unit/lib/load-specs.test.ts`
+> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/unit/lib/*.test.ts`(v0.7: `integrity`·`router`·`admin-draft` 추가), `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`, `tests/e2e/admin.spec.ts`(v0.7), (v0.9) `tests/unit/lib/compare.test.ts`·`compare-fixture.ts`, `tests/unit/components/ComparePage.test.tsx`, `tests/unit/store/useCompareStore.test.tsx`, `tests/e2e/compare.spec.ts`, (v1.0) `tests/unit/lib/load-specs.test.ts`, (v1.2) `tests/unit/lib/admin-specs.test.ts`
 > 설정: `vitest.config.ts`(jsdom, DI 테스트는 파일 상단 `@vitest-environment node`), `playwright.config.ts`(chromium, build+preview :4173), `tests/tsconfig.json`
 > 스크립트: `npm test`(vitest run) · `npm run test:watch` · `npm run test:data`(DI만) · `npm run test:e2e` · `npm run typecheck:tests`
 > v0.2 (11-18): 환경 구성·실행 완료, 리더 결정 R-01/04/05/07/08/09 반영 (§8)
@@ -15,6 +15,7 @@
 > v0.9 (11-18, 비교 기능 + specs.json, f4f9c69): **DI-90~99c specs.json 규칙 13건**(판정 함수 `checkSpecs` 1개 — 현재 데이터 위반 0, 합성 위반 → 규칙 ID 자기검증), **UT-13** `lib/pages/compare.ts`(합성 데이터셋, 22), **CT-07** ComparePage 행 생성·차이만 보기·안내(14, 기대 실패 1), **UT-14** 비교 담기 store·비교 바·담기 버튼(15, 기대 실패 1), **E2E-7** `compare.spec.ts`(5). 실제 버그 2건은 `it.fails` 로 재현해 둠(수정되면 빨개짐 → `it` 로 전환) — §11f
 > v1.0 (11-18, 비교 기능 수정 라운드 — T1 수정 + specs.json 인용 페이지 9건 정정, 커밋 전): v0.9 버그 **B1·B2 수정 확인 → `it.fails` 2건을 `it` 회귀 테스트로 전환**. M6 specs 지연 로딩(`loadSpecs`·`peekSpecs`) → 픽스처 `FAKE_SPECS` 별도 Map, **UT-15** 신설(4). UT-13 22→29(`type` 대소문자·`badType`·`ids` 반복, `specValueText` 단위 위치·계기 표기, `compareKey` 정규화), CT-07 14→21(loading/error 행, 공유 링크 열 빼기, 차이만 보기 유지, M3 정규화 비교, M8 공통 기기, 잘못된 type 안내, 값 없음 구분), UT-14 15→26(실제 데이터 id, B2 불러오기·가득 판정 정리, M1 storage 이벤트·변경 직전 재읽기, 끝 슬래시, 전환 버튼 n/4), E2E-7 5→16(spec-error, 공유 링크, 끝 슬래시, M8, sticky, 폭 5종 세로 쪼개짐, --cmp-tray-h). DI-90~ 는 정정된 specs.json 으로 위반 0 — §11g
 > v1.1 (11-18, 사양 옵션별 variants — 커밋 전): specs.json 31제품 옵션 122개(공통 164·옵션 375항목). **DI-90~ 를 옵션까지 확장**(DI-93 옵션 안·공통↔옵션 겹침, DI-94·95 공통+옵션, DI-96 개수 = 공통 0~10·옵션당 1~10·합 ≥ 1, DI-97 item→variant→source page) + **신규 DI-96b·96c(HARD)·96d·96e(SOFT)**, 스키마 옵션 거부 10케이스. UT-13 29→39(옵션 id·`compareHref` ":"·옵션 헬퍼 7종·equipmentSpecMap variant), UT-14 26→30, CT-07 21→24(옵션 되돌림·중복 열·되돌린 열 빼기), **E2E-8** 신설(6) + E2E-7 expectedSpecKeys = 공통 ∪ 옵션 key — §11h
+> v1.2 (11-18, 로고·관리자 "사양 검수" 탭 + specs.json 40제품, 커밋 전): **DI-90~99b 판정을 공용 모듈 `checkSpecs({specs, productIds, docUrlsByProduct, today}) → {errors, warnings}`로 전환** (테스트 쪽 사본 삭제, `SPEC_RULES` 15규칙마다 it, 합성 위반 자기검증은 공용 함수 대상 + 등급 확인, **DI-SPEC-RULES 메타**: 위반 케이스가 SPEC_RULES 전부를 검증했는지·결과 ID 가 표에 있는지). **UT-16** `lib/admin/specs.ts`·`specsStore.ts`(24, 기대 실패 1 = B3). 스모크 헤더 = 로고 이미지 + **브랜드 E2E 5**(링크 이름·계통도 이동, 라이트 컬러/다크 회색 로고 로드, 파비콘 상대 경로 200, 390px). **E2E-ADM-SPEC 3**(수정→검수→검사→내보내기 2파일 내용 대조, 부서명 오류, 빈 옵션 내보내기 차단). 데이터 의존 하드코딩 제거(E2E-8 옵션 2개 비교의 다른 행 목록은 데이터로만 계산) — §11i
 
 ---
 
@@ -209,7 +210,7 @@
 
 ### 3.11 (v0.9) 정격 사양 specs.json — DI-90 ~
 > 계약: `SpecsFileSchema`·`SPEC_KEYS` (`src/lib/schema.ts`). 키 = Product.id, 값마다 카탈로그 페이지, `reviewed=false` → 화면 "카탈로그 추출값 · 검수 전".
-> 판정: `tests/unit/data-integrity.test.ts` 의 `checkSpecs(file, productIds, docUrlsByProduct, today)` — **공용 모듈 편입 후보**(`src/lib/integrity`, 관리자 모드가 사양 편집을 지원하게 되면 같은 함수로). 이번 라운드는 src 수정 금지라 테스트 파일에 둠.
+> 판정: (v1.2) **공용 모듈 `src/lib/integrity` 의 `checkSpecs`** (관리자 "사양 검수" 내보내기 전 검사와 같은 함수, `SPEC_RULES` 표·`SPEC_ITEMS_MAX=10`·`SPEC_VARIANTS_MAX=8`). DI 테스트는 SPEC_RULES 규칙마다 it 하나 + DI-90b 자기검증 + DI-SPEC-RULES 메타. v0.9~v1.1 의 테스트 파일 사본은 v1.2 에서 삭제. DI-90 은 이제 스키마 위반도 규칙 ID 로 보고(의미 규칙이 더 구체적인 개수·옵션 id·variantAxis 이슈는 생략). DI-92b(허용 도메인)·DI-99(정보)·DI-99c(SOFT)는 테스트 전용.
 
 | ID | 규칙 | 등급 |
 |---|---|---|
@@ -256,6 +257,7 @@
 | UT-13 | (v0.9) `lib/pages/compare.ts` (`compare.test.ts`, 합성 데이터) | `parseCompareParams`: type 없음 → null / (v1.0) 잘못된 type → null+`badType`(소문자·trim) / 대소문자·공백 → 정상 type / `ids=a&ids=b` 반복·쉼표 혼합 / 순서 유지·공백 무시 / 없는 id → missing / 제품 type 은 제품 id 로만 / 중복 합침 / 4개 초과 → overflow(없는 id 는 개수 제외) / `%2C` / `orderSpecKeys`(표준 순 → 비표준 첫 등장 순, 중복 제거) / `specLabel`·`pageHref` / (v1.0 M4) `specValueText` 단위 = 괄호 밖 숫자 뒤·괄호 주석 앞(문서 예 3개 + 끝 숫자·괄호 안 숫자만·괄호 시작), "40(10)" 계기 표기 덩어리 유지 / (v1.0 M3) `compareKey` 같음(NFKC 전각·물결표 변형·대소문자·VAC/V AC/Vac→V·공백·쉼표=슬래시·숫자 목록 정렬) / 다름(VDC 구분·mA↔A 환산 안 함·범위 정렬 안 함) / 정규화 결과 문자열 / `equipmentSpecMap(eq, specs)`(한 제품 같은 key 여러 값 모두)·`specProductCount(eq, specs)`, 빈 Map → 0 / `countDocs`·`productDocs`·`equipmentDocCounts`·`representativeDoc` 우선순위 / `equipmentForProduct` 하위 카테고리 / `linkedEquipment`: 모선 건너뛰기·형제 피더 제외·신호선 뒤·택1·끝점 라벨·같은 기기 1회·참조 타일 연결 제외·자기 제외·노드 없음 [] — 기대값은 손으로 작성  / **(v1.1)** `splitCompareId`·`joinCompareId`(빈 옵션·이중 구분자) / `parseCompareParams` "P:옵션" 허용(옵션 실존 안 봄), "P:"·대문자·이중 구분자·없는 제품·기기 옵션 → missing, 같은 조합만 합침, 조합 기준 overflow, `%3A` / `compareHref` ":" 그대로·나머지 인코딩 / `findVariant`·`hasVariants`(빈 배열 false)·`variantDisplayName` / `columnSpecEntries` 옵션 선택 = 공통 + 옵션(같은 key 옵션 우선, page = item → variant), 시리즈 전체·틀린 옵션 = 공통 + 옵션별 값 / `specEntriesKey` 시리즈 "옵션label=값"·옵션 열 값만(다른 옵션 같은 값 → 같은 문자열) / `variantSpecRows` 행 순서·빈 칸 / `resolveProductColumn` 6경우 / `equipmentSpecMap` variant 표기 | 39 |
 | UT-14 | (v0.9, v1.0 갱신) `store/useCompareStore.ts` + `CompareTray`·`CompareToggle` (`tests/unit/store/useCompareStore.test.tsx`) | (v1.0) 담는 id 는 실제 데이터 id(store 가 데이터 존재 검사) / 토글 added/removed/full / 기기·제품 분리, active / remove·clear / 저장 / `compareHref` / setItem·getItem 예외 → 메모리 / JSON 깨짐·null·숫자 → 빈 목록, 형식 손상(사라진 id 포함) 정리 **+ 정리 결과 저장**, 정상 값은 다시 쓰지 않음 / **B2**: 불러올 때 사라진 id 제거, 사라진 id 4개뿐 → 담기 버튼 동작(v0.9 기대 실패 → 회귀), 메모리에 사라진 id 남은 탭 → 가득 판정 유효 id 기준·담을 때 정리 / **M1**: 같은 키 storage 이벤트 반영·다른 키 무시·key=null 비움, 이벤트 없이도 변경 직전 재읽기로 다른 탭 변경 위에 얹음(toggle·full·remove), 다른 탭 값의 사라진 id 정리 / 바 표시 경로: `/`·`/gap` 보임, `/compare`·`/compare/`·`/compare//` 숨김 / 종류 전환 버튼 "n/4" / 담기 버튼 가득 → 비활성+title, 제품 별도  / **(v1.1)** 같은 제품 옵션 2개 + 시리즈 전체 따로 담기·빼기·조합 기준 full / 옵션 없는 기존 저장값 호환(다시 쓰지 않음) / B2 정리: 없는 제품의 옵션·"P:"·대문자·공백·이중 구분자 제거, 옵션 실존은 안 봄 / `compareIdInData` | 30 |
 | UT-15 | (v1.0 M6) `data/load.ts` `loadSpecs`·`peekSpecs` (`tests/unit/lib/load-specs.test.ts`, node 환경) | AppData 에 specs 없음, 불러오기 전 peek undefined / loadSpecs → specs.json 전체 Map, 같은 Promise·같은 Map 메모, peek = 같은 Map / 검증 실패 → `DataValidationError` 거절·getData 정상·peek undefined·다음 호출은 새 Promise / import 실패 → 거절 후 다음 호출이 새로 시도해 성공 | 4 |
+| UT-16 | (v1.2) `lib/admin/specs.ts`·`specsStore.ts` (`tests/unit/lib/admin-specs.test.ts`) | `updateItem` 값 수정·원본 불변·다른 제품 같은 참조·키 순서 유지, 빈 단위·페이지 → 필드 삭제, 페이지 0·소수·음수·문자 거부, 빈 label·value 거부(파일 그대로), 옵션 범위·없는 key·제품, key 변경 충돌(같은 범위·공통↔옵션) / `addItem` 끝에 추가, key 형식(-·숫자 시작·한글·공백 거부), 충돌 3종, 없는 옵션 / `deleteItem` / `addVariant` kebab·`:`·빈 이름·id·이름 중복·page 0 거부, 항목 0개로 추가 → `checkSpecs` DI-96 오류, 기존 variantAxis 유지·없으면 필수 / `renameVariant`·`updateVariantPage`·`setVariantAxis` / `deleteVariant` 마지막 옵션 → variants·variantAxis 삭제(검사 통과), 공통 없으면 거부 / `reviewerError` 빈 값·이메일·전화·접미사 없음·40자 초과, 부서명 7종 통과, (한계 기록) "박소연"·"이실장" 통과 / `setReviewed` note 끝 " · 검수: {부서} {날짜}"(note 없으면 문구만, 재완료 1번), 해제 → 문구 제거·note 복원/삭제(원본과 변경 0), 부서명 위반 거부 / **B3 기대 실패**: 부서명 "·" / `computeSpecChanges` 변경 없음 [], 11종 한 줄씩(순서·문구 손으로), 검수 완료·해제 한 줄(note 수정으로 안 셈) / `specChangesMarkdown` 제목 줄·결과 줄 / `specsStore` load·중복 load, commit·undo·redo·같은 객체 무시·redo 비움·50단계, 자동 저장 300ms(baseSig·saved, 원본과 같아지면 삭제), 저장본 복원·원본 변경 → staleBase+restoredAt, resetToBase, 손상 저장본 무시, `specsSignature` | 24 |
 
 ---
 
@@ -312,6 +314,8 @@
 | E2E-5 | 접근성 | 키보드 Enter/Esc·포커스 복귀, 건너뛰기 링크, 계층 점프, 범례 6종(v0.6), 모바일 하단 시트, 라이트/다크 axe 대비 / (v0.5) 사진 경로 | 타일 img(data-src/src) = `images/equipment/thumb/<id>`, 패널 `.dp-hero img` = 원본 file (thumb 아님) |
 | E2E-7 | 공통 (v0.9, `compare.spec.ts`) | 비교 기능. 데이터에서 같은 계층·전압·분류 기기 2개 선택 | 상세 패널 `compare-toggle-{id}` 2회 → `compare-tray-item-*` 2 → `compare-go` → `#/compare?type=equipment&ids=a,b`, 바 숨김, `compare-col-*` 2, 기본 9행 + `compare-section-specs` → `compare-diff-only` → layer·category 행 사라지고 행 수 감소 → `compare-remove-{b}` → `compare-empty` / 제품 `P01072,P01249,P02212`: 사양 행 = specs.json key 합집합(표준 순) + spec-source, 출처 링크 href = `url#page=N`·새 탭, `compare-unreviewed` = reviewed 데이터대로, 차이만 보기에도 출처 행 / 없는 id·중복 → `compare-notice`, 1개 → 빈 상태 / 390px: /compare 가로 넘침 0, 홈 비교 바 → 시트 열면 칩·비우기 숨김(비교하기만), "전체 정보 보기" → 바 숨김 / Gap 모드 `gap-candidate-note` 개수 = 공백류 후보 존재 여부(현재 0) / **(v1.0)** specs 청크 route abort → `compare-row-spec-error`+안내, 기본 행 유지·사양·출처 행 없음 / 공유 링크 열 빼기 → localStorage 목록 그대로 / `#/compare/?…` → 표 + 바 숨김 / P01024+P01021 → "서로 다른 기기" 없음 / 열 머리글 `position: sticky`, `.cmp-scroll` 끝까지 스크롤해도 머리글 top = 박스 top(±2) / 폭 901·920·1024·1100·1280 × 패널 닫힘·열림: 이름 긴 기기·제품 4+4 담고 바 안 보이는 요소 높이 ≤ 40px, 바 폭 ≥ 280 / 390px `/gap`: `--cmp-tray-h` = 바 높이(±1), `.app-main` 끝까지 스크롤 시 마지막 링크 bottom ≤ 바 top, 가로 넘침 0 |
 | E2E-8 | 공통 (v1.1, `compare.spec.ts`) | 사양 옵션 | 제품 상세 P00206: `product-specs[data-state=ready]`, `product-spec-variant-*` = 데이터 옵션 수(6)·label, 옵션 표 셀 링크 모두 `source.url#page=`(첫 링크 = item→variant page), 검수 전 배지 / `compare-toggle-P00206:{vid}` "이 옵션 비교에 담기" → `compare-tray-item-P00206:{vid}` = "제품명 · 옵션 label", localStorage `P00206:{vid}` / 사양 청크 abort → `product-specs[data-state=error]` + 안내 / `P01900:ts250,P01900:ts800` 열 2, 차이만 보기 → 기본 정보 구역 없음, 사양 = 데이터로 계산한 다른 key(정격전류·정격차단전류·프레임) + spec-source / `compare-variant-select-{colId}`: 다른 열 조합 option disabled, 변경 → URL `ids=P01900:{새},…`, '' → 시리즈 전체 / 없는 옵션 → 안내 + `compare-col-P01900`·select '' / 시리즈 전체에서 값 > 6 칸(데이터로 찾음, 현재 P01260): li 6 + `compare-spec-more`(남은 수) → 펼침 n → 접기 6 |
+| E2E-ADM-SPEC | 관리자 (v1.2, `admin.spec.ts`) | `/#/admin` → `admin-tab-specs` → `admin-spec-product-P02212`(없으면 첫 제품) | 공통 첫 항목 값 수정(Enter) → `admin-spec-changes` 표시 → `admin-spec-reviewer` "품질보증팀" → `admin-spec-reviewed` 체크 → `admin-spec-check-ok` → `admin-spec-export` 다운로드 2개(specs.json·변경요약.md) / 내보낸 specs.json: `SpecsFileSchema` 통과, 원본에 (값·reviewed=true·note 검수 문구 KST) 세 변경만 적용한 것과 JSON·텍스트(2칸 들여쓰기+줄바꿈) 모두 동일 / 변경요약 제목 줄 "검수 완료 1개 제품, 사양 수정 1건" / 부서명 없이·실명으로 체크 → `admin-spec-reviewer-error` + 체크 안 됨 + 변경 없음 / 항목 0개 옵션 추가 → 내보내기 시 `admin-spec-check-errors` DI-96 + 다운로드 0 → 되돌리기 |
+| BRAND | 공통 (v1.2, `smoke.spec.ts`) | 로고·파비콘 | 스모크: 헤더 `img[name=LS ELECTRIC]` + "전력계통 제품맵" / 로고 링크 이름 "LS ELECTRIC 전력계통 제품맵", `/gap` 에서 누르면 `#/` 계통도 / 라이트 `currentSrc` = `brand/ls-electric-logo.png`, 다크 = `…-gray.png`, `naturalWidth > 0`, /brand/ 응답 4xx 0, 높이 ≤ 48 / `link[rel=icon]` href 가 `/` 로 시작하지 않음(Pages 서브경로) + 200 / 390px 가로 넘침 0·로고가 헤더 안 |
 
 ---
 
@@ -537,6 +541,21 @@
 - specs.json 옵션 규칙 위반 0: 옵션 있는 제품 31/35, 옵션 122(최대 8/제품), 공통 164·옵션 375항목, 공통↔옵션 key 겹침 0, 옵션 label 중복 0, 페이지 추적 누락 0.
 - 실패 1건(E2E-7 expectedSpecKeys 가 공통 key 만 셈) → 테스트 기대값 수정. 제품 버그 아님.
 - 새 버그: 없음. 참고(UX, 낮음): 비교 바의 옵션 항목 이름은 사양을 아직 안 불러온 화면(새로고침 직후 계통도 등)에서 옵션 label 대신 옵션 id(예: "Susol ACB · av-d")로 보임 — 코드 주석상 의도된 대체. 제품 상세·비교 화면을 한 번 열면 label 로 바뀜.
+
+## 11i. 실행 결과 (2026-11-18, v1.2 — 로고·사양 검수 탭, specs.json 40제품, 커밋 전 작업 트리)
+
+| 명령 | 결과 | 비고 |
+|---|---|---|
+| `npm run test` | **412 통과 · 1 기대 실패(B3) · 0 실패** (파일 15) | v1.1 382 → +31: DI 116 → 123(SPEC_RULES 루프·메타·DI-92b·통계, 로컬 사본 삭제) · UT-16 24 |
+| `npm run typecheck:tests` | 통과 | |
+| `npm run test:e2e` (77건) | **76 통과 · 0 실패 · 1 skip** | 스모크 수정 + BRAND 5 + ADM-SPEC 3. skip 1 = R-04 |
+
+- specs.json 40제품(데이터 담당 추가분 반영)으로 DI-90~99b 오류 0·경고 0, 단위·E2E 모두 데이터 기반(제품 수·옵션 수·옵션 id 하드코딩 없음 — P00206 옵션 6 → 3 변경에도 통과).
+- 테스트 수정 사유(제품 버그 아님): 헤더 텍스트 → 로고 이미지(스모크), E2E-8 의 "다른 행 = 정격전류·차단전류·프레임" 고정 기대 → 데이터 계산만.
+- **발견 버그**
+  - **B3 (낮음)** `setReviewed`: 부서명에 가운뎃점(·)이 있으면(`reviewerError` 가 허용) 검수 문구 정규식 `[^·]+` 가 못 찾아, 해제해도 "검수: 품질·보증팀 날짜"가 note 에 남고 재완료 시 문구가 2번 붙음(`computeSpecChanges` 도 note 수정으로 셈). 재현: UT-16 `[BUG]`. 수정안: `reviewerError` 에서 '·' 거부 또는 STAMP_RE 를 "마지막 ' · 검수: '" 기준으로.
+  - 참고(한계, 낮음): 부서명 판정은 "부·팀·소·실·센터·사업·그룹" 글자 포함 여부만 봐서 "박소연"·"이실장" 같은 실명도 통과(DI-27h 와 같은 규칙) — UT-16 에 현재 동작으로 기록.
+  - 참고: `setReviewed(…, true, dept)` 를 날짜 없이 부르면(기본값 '') 문구 "검수: 팀 " 이 붙고 해제 시 지워지지 않음 — 화면은 항상 날짜를 넘겨 실제 영향 없음.
 
 ## 12. CI 의견 — deploy.yml 에 E2E 단계 (넣지 않음, 의견만)
 
