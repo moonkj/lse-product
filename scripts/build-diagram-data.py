@@ -1,7 +1,7 @@
 """계통도 기본 데이터 생성기 (리더 관리).
 
 출력: src/data/equipment-types.json, src/data/diagram.json
-실행: python3 scripts/build-diagram-data.py
+실행: python3 scripts/build-diagram-data.py --force  (시드 생성기 — 동결, 원본은 src/data/*.json)
 좌표는 노드 중심점. 레이어 L1~L7은 왼쪽 본선 영역(x 0~1200)의 가로 밴드,
 MON(감시)·REN(신재생 연계)은 오른쪽 열(x 1220~1600)에 배치한다.
 """
@@ -584,6 +584,11 @@ def astar_route(boxes, a, b):
 
 
 def main():
+    import sys
+    # 동결 장치: src/data/*.json 이 원본(관리자 모드로 편집)이므로, 실수로 덮어쓰지 않도록 --force 가 있어야 실행
+    if "--force" not in sys.argv:
+        raise SystemExit("이 스크립트는 시드 생성기입니다. src/data/equipment-types.json·diagram.json 을 덮어쓰므로 "
+                         "관리자 모드 편집분이 사라집니다. 정말 다시 만들려면 --force 를 붙이세요.")
     ids = {e["id"] for e in EQUIPMENT}
     assert len(ids) == len(EQUIPMENT), "duplicate equipment id"
     layer_of = {e["id"]: e["layer"] for e in EQUIPMENT}

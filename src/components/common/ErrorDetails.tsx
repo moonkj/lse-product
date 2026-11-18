@@ -1,4 +1,4 @@
-import { DataValidationError } from '../../data/load';
+import { DataValidationError } from '../../lib/errors';
 
 /**
  * 오류 내용 표시 (최상위·페이지 오류 경계 공용).

@@ -20,20 +20,9 @@ import diagramJson from './diagram.json';
 import docsJson from './docs.json';
 import equipmentImagesJson from './equipment-images.json';
 
-/** 어느 파일의 어느 필드가 틀렸는지 담는 오류 — RootErrorBoundary 가 한국어 화면으로 보여 준다 */
-export class DataValidationError extends Error {
-  readonly file: string;
-  readonly issues: { path: string; message: string }[];
-  constructor(file: string, error: z.ZodError) {
-    super(`[data] ${file} 스키마 검증 실패:\n${z.prettifyError(error)}`);
-    this.name = 'DataValidationError';
-    this.file = file;
-    this.issues = error.issues.map((i) => ({
-      path: i.path.length > 0 ? i.path.map(String).join('.') : '(최상위)',
-      message: i.message,
-    }));
-  }
-}
+import { DataValidationError } from '../lib/errors';
+/** 호환용 재수출 — 새 코드는 '../lib/errors' 에서 import */
+export { DataValidationError };
 
 function parseOrThrow<S extends z.ZodType>(schema: S, data: unknown, file: string): z.infer<S> {
   const result = schema.safeParse(data);

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { DataValidationError } from '../data/load';
+import { DataValidationError } from '../lib/errors';
 import learnJson from './learn.json';
 
 /**
