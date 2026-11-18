@@ -75,7 +75,11 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
         <EquipmentSymbol category={eq.category} equipmentId={eq.id} size={72} className="dnode__symbol" />
       )}
       <span className="dnode__title">{item.title}</span>
-      {caption && <span className="dnode__caption">{caption}</span>}
+      {caption && (
+        <span className="dnode__caption" title={caption}>
+          {caption}
+        </span>
+      )}
       <CoverageBadge coverage={coverage} variant="icon" className="dnode__badge" />
     </div>
   );

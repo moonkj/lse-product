@@ -262,16 +262,19 @@
 }
 .dnode--na { --node-border: var(--cov-na); }
 
+/* 사진·심볼 60px — 이름 두 줄 자리를 확보 (타일 120×116 유지) */
 .dnode__img {
   flex: none;
-  width: 72px;
-  height: 72px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   pointer-events: none;
 }
 
 .dnode__symbol {
   flex: none;
+  width: 60px;
+  height: 60px;
   color: var(--color-text-muted);
 }
 
@@ -287,14 +290,19 @@
   text-overflow: ellipsis;
 }
 
+/* 제품명: 두 줄까지 줄바꿈(한국어는 단어 단위), 넘치면 말줄임 + title 툴팁으로 전체 이름 */
 .dnode__caption {
   max-width: 100%;
   overflow: hidden;
   font-size: 11px;
-  line-height: 14px;
+  line-height: 13px;
   color: var(--color-text-muted);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .dnode--missing .dnode__caption {
