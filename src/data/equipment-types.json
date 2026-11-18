@@ -641,7 +641,7 @@
     "id": "vcb",
     "name": "진공차단기",
     "layer": "L4",
-    "voltage": "7.2~25.8kV",
+    "voltage": "22.9kV (자사 제품 정격 4.76~38kV)",
     "category": "switching",
     "description": "진공 속에서 아크를 소호해 부하전류와 고장전류를 모두 차단한다.",
     "learnPoints": [
