@@ -230,3 +230,73 @@ test.describe('UX-U 계통도 모바일 가로 = 사이드 패널 (T1-A, 교차 
     await expect.poll(() => tileUnobscured(page, t!.node.id)).toBe(true);
   });
 });
+
+/**
+ * 접힌 하단 시트 = 요약만 (axe target-size 후속, 사용자 승인). 반쯤 잘리거나 가려진 채 누를 수 있는 요소가 없어야 하고,
+ * 높이는 내용에 맞추되 40dvh 를 넘지 않으며, 비교 바는 시트 실측 높이를 따라 바로 위에 붙는다. 펼치면 제품 목록이 보인다.
+ */
+type EqFull = Eq & { description: string; productIds?: string[]; lseCategoryCodes: string[] };
+const eqFull = new Map(load<EqFull[]>('equipment-types.json').map((e) => [e.id, e]));
+const eqDesc = new Map([...eqFull].map(([id, e]) => [id, e.description]));
+const productCodes = load<{ categoryCode: string }[]>('products.json').map((p) => p.categoryCode);
+/** 제품이 있는 기기 (load.ts resolveProducts 의 직접 지정·카테고리 접두사 규칙) */
+const hasProducts = (id: string) => {
+  const e = eqFull.get(id)!;
+  return (e.productIds?.length ?? 0) > 0 || e.lseCategoryCodes.some((c) => productCodes.some((pc) => pc.startsWith(c)));
+};
+const sheetCases = [
+  withEq.find((x) => x.eq.coverage === 'owned' && hasProducts(x.eq.id)),
+  withEq.find((x) => x.eq.coverage === 'missing'),
+  [...withEq].sort((a, b) => (eqDesc.get(b.eq.id) ?? '').length - (eqDesc.get(a.eq.id) ?? '').length)[0],
+].filter((x): x is (typeof withEq)[number] => !!x);
+
+for (const [w, h] of [
+  [390, 844],
+  [360, 740],
+] as const) {
+  test.describe(`접힌 시트 요약 ${w}×${h}`, () => {
+    test.use({ viewport: { width: w, height: h }, isMobile: true, hasTouch: true });
+
+    test('보이는 버튼은 모두 화면·시트 안에 온전히, 높이 ≥44px · 상한 40dvh · 비교 바는 시트 위 · 펼치면 제품 목록', async ({ page }) => {
+      test.skip(sheetCases.length === 0, '기기 없음');
+      await page.addInitScript((id) => localStorage.setItem('lse-compare-v1', JSON.stringify({ equipment: [id], product: [], active: 'equipment' })), sheetCases[0].eq.id);
+      for (const c of sheetCases) {
+        await gotoHome(page, `?node=${c.node.id}`);
+        const p = tid(page, 'detail-panel');
+        await expect(p).toHaveAttribute('data-sheet', 'bottom');
+        await expect(p).not.toHaveClass(/is-expanded/);
+        await expect(tid(page, 'detail-title')).toBeVisible();
+        // 요약 밖 섹션은 접힌 상태에서 렌더하지 않음
+        await expect(p.locator('#dp-products-title')).toHaveCount(0);
+        await expect(tid(page, 'detail-product-list')).toHaveCount(0);
+        await expect(tid(page, 'compare-go')).toBeVisible();
+        const m = await page.evaluate(() => {
+          const panel = document.querySelector('[data-testid="detail-panel"]')!;
+          const pr = panel.getBoundingClientRect();
+          const bad: string[] = [];
+          for (const el of panel.querySelectorAll<HTMLElement>('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])')) {
+            if (!el.getClientRects().length) continue;
+            const r = el.getBoundingClientRect();
+            const inside = r.top >= pr.top - 0.5 && r.bottom <= pr.bottom + 0.5 && r.top >= 0 && r.bottom <= innerHeight + 0.5 && r.left >= 0 && r.right <= innerWidth + 0.5;
+            if (!inside || r.height < 44) bad.push(`${(el.textContent || el.getAttribute('aria-label') || el.tagName).trim()} ${Math.round(r.top)}-${Math.round(r.bottom)} h${Math.round(r.height)}`);
+          }
+          const tray = document.querySelector('[data-testid="compare-tray"]')!.getBoundingClientRect();
+          return { bad, panelTop: pr.top, panelH: pr.height, scrollable: panel.scrollHeight > panel.clientHeight + 1, trayBottom: tray.bottom };
+        });
+        expect(m.bad, c.node.id).toEqual([]);
+        expect(m.scrollable, `${c.node.id} 접힌 시트는 스크롤되지 않음`).toBe(false);
+        expect(m.panelH).toBeLessThanOrEqual(h * 0.4 + 1);
+        expect(m.trayBottom).toBeLessThanOrEqual(m.panelTop);
+        expect(m.panelTop - m.trayBottom).toBeLessThan(16); // 시트 실측 높이를 따라 바로 위 (고정 40dvh 아님)
+      }
+      // 펼치면 전체 정보 — 제품 목록 섹션
+      const owned = sheetCases.find((x) => x.eq.coverage === 'owned' && hasProducts(x.eq.id));
+      test.skip(!owned, '제품 있는 보유 기기 없음');
+      await gotoHome(page, `?node=${owned!.node.id}`);
+      await tid(page, 'detail-sheet-toggle').tap();
+      await expect(tid(page, 'detail-panel')).toHaveClass(/is-expanded/);
+      await expect(tid(page, 'detail-product-list')).toBeVisible();
+      await expect(tid(page, 'detail-sheet-toggle')).toHaveText('시트 줄이기');
+    });
+  });
+}

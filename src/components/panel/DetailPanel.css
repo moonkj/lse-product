@@ -98,16 +98,16 @@
 
 .dp-hero--compact {
   flex: none;
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   min-height: 0;
   padding: 0;
   border-radius: 10px;
 }
 
 .dp-hero--compact img {
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
 }
 
 .dp-desc {
@@ -299,10 +299,24 @@
   background: var(--sheet-handle);
 }
 
-.dp-expand {
+/* 시트 아래 버튼 줄 — 접힘: 비교 담기 + 전체 정보 보기, 펼침: 시트 줄이기 (스크롤해도 아래에 고정) */
+.dp-sheet-actions {
   position: sticky;
   bottom: 0;
   flex: none;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.dp-sheet-actions .dp-compare {
+  flex: none;
+  align-self: stretch;
+  margin-top: 0;
+}
+
+.dp-expand {
+  flex: 1 1 auto;
   min-height: 44px;
   border: 0;
   border-radius: var(--radius-md);
@@ -312,7 +326,8 @@
   cursor: pointer;
 }
 
-/* 모바일 하단 시트 — 접힘 높이는 비교 바(Compare.css)와 공유. 46→40dvh: 390 세로 지도 확보 (UX 라운드 U, 사용자 승인) */
+/* 모바일 하단 시트 — 접힘 = 요약(머리글·설명 1~2줄·펼치기)만, 높이는 내용에 맞춤. --sheet-collapsed-h 는 그 상한.
+   비교 바(Compare.css)는 실측 높이 --sheet-h(DetailPanel 이 내보냄)를 따라 시트 위에 붙는다 (UX 라운드 U 후속, 사용자 승인) */
 :root {
   --sheet-collapsed-h: 40dvh;
 }
@@ -336,6 +351,32 @@
 
 .detail-panel.detail-panel--sheet.is-expanded {
   max-height: 88dvh;
+}
+
+/* 접힌 시트(요약): 넘치면 스크롤 대신 설명을 줄인다 — 잘린 채 누를 수 있는 요소가 남지 않게 */
+.detail-panel.detail-panel--sheet:not(.is-expanded) {
+  overflow: hidden;
+}
+
+.detail-panel--sheet:not(.is-expanded) > :not(.dp-desc--clamp) {
+  flex: none;
+}
+
+.dp-desc--clamp {
+  flex: 0 1 auto;
+  min-height: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+@media (max-height: 640px) {
+  .dp-desc--clamp {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
 }
 
 .detail-panel--sheet .dp-close {

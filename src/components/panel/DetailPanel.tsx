@@ -52,6 +52,27 @@ function savePanelScroll(key: string, top: number) {
   if (panelScroll.size > MAX_PANEL_SCROLL) panelScroll.delete(panelScroll.keys().next().value!);
 }
 
+/**
+ * 접힌 하단 시트의 실제 높이를 CSS 변수 --sheet-h 로 내보낸다 (문서 루트). 비교 바(Compare.css)가 시트 바로 위에 붙도록
+ * — 접힌 시트 높이는 요약 내용에 맞춰 바뀐다(상한 --sheet-collapsed-h). ResizeObserver 가 없으면 CSS 기본값(상한).
+ */
+function useSheetHeightVar(ref: React.RefObject<HTMLElement | null>, active: boolean) {
+  useEffect(() => {
+    const el = ref.current;
+    const root = document.documentElement;
+    if (!active || !el) return;
+    const apply = () => root.style.setProperty('--sheet-h', `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    apply();
+    const RO = globalThis.ResizeObserver;
+    const ro = RO ? new RO(apply) : undefined;
+    ro?.observe(el);
+    return () => {
+      ro?.disconnect();
+      root.style.removeProperty('--sheet-h');
+    };
+  }, [ref, active]);
+}
+
 /** 자료를 보여줄 대표 제품: 자료가 있는 첫 제품, 없으면 첫 제품 */
 function representative(products: Product[]): Product | undefined {
   return products.find((p) => (docsByProductId(p.id)?.docs.length ?? 0) > 0) ?? products[0];
@@ -147,6 +168,9 @@ export default function DetailPanel() {
     announce(`${openedName} 상세 열림`);
   }, [selectedId, openedName]);
 
+  // 접힌 하단 시트(요약)일 때만 실측 — 펼치면 비교 바는 숨고, 사이드 패널은 바와 겹치지 않음
+  useSheetHeightVar(panelRef, !!node && isMobile && !sideSheet && !expanded);
+
   const onScroll = (e: React.UIEvent<HTMLElement>) => {
     savePanelScroll(keyRef.current, e.currentTarget.scrollTop);
   };
@@ -203,103 +227,124 @@ export default function DetailPanel() {
             label={pillText(eq.coverage, products.length, gapConfidence(eq) === 'confirmed')}
             testId="detail-coverage-badge"
           />
-          <CompareToggle kind="equipment" id={eq.id} name={eq.name} className="cmp-toggle--sm dp-compare" />
+          {!compact && <CompareToggle kind="equipment" id={eq.id} name={eq.name} className="cmp-toggle--sm dp-compare" />}
         </div>
         <button type="button" className="dp-close" aria-label="상세 정보 닫기" data-testid="detail-panel-close" onClick={close}>
           ×
         </button>
       </div>
 
-      {!compact && <PanelHero eq={eq} compact={false} />}
-
-      {node.ref && (
-        <div className="dp-refnote" data-testid="detail-ref-note" role="note">
-          <span>
-            <b>참조 타일</b>
-            {node.refLabel ? ` · ${node.refLabel}` : ''} — 같은 기기가 계통에 다시 나오는 자리입니다.
-            <br />
-            <span data-testid="detail-ref-origin">
-              원래 위치: {layerTitle(eq.layer)}
-              {eq.voltage ? ` · ${eq.voltage}` : ''} · {CATEGORY_LABELS[eq.category]}
-            </span>
-          </span>
-          {mainNodeId && (
-            <button type="button" className="dp-refnote__go" data-testid="detail-ref-go" onClick={() => selectFromPanel(mainNodeId)}>
-              원래 위치로 이동 →
-            </button>
-          )}
-        </div>
-      )}
-
-      <p className="dp-desc">{eq.description}</p>
-
-      {eq.affiliateName && (
-        <p className="dp-affiliate">
-          계열사: <strong data-testid="detail-affiliate-name">{eq.affiliateName}</strong>
+      {compact ? (
+        // 접힌 시트 = 요약만: 머리글 + 설명 1~2줄 + 펼치기. 나머지 섹션은 렌더하지 않아 반쯤 잘린 채 누를 수 있는 요소가 없다
+        <p className="dp-desc dp-desc--clamp" data-testid="detail-desc">
+          {eq.description}
         </p>
-      )}
+      ) : (
+        <>
+          <PanelHero eq={eq} compact={false} />
 
-      {eq.gapNote && (
-        <div className={`dp-gapnote${gapView ? ' dp-gapnote--strong' : ''}`}>
-          <span className="dp-gapnote__label">{NOTE_LABELS[eq.coverage] ?? '메모'}</span>
-          <span data-testid="detail-gap-note">{eq.gapNote}</span>
-        </div>
-      )}
+          {node.ref && (
+            <div className="dp-refnote" data-testid="detail-ref-note" role="note">
+              <span>
+                <b>참조 타일</b>
+                {node.refLabel ? ` · ${node.refLabel}` : ''} — 같은 기기가 계통에 다시 나오는 자리입니다.
+                <br />
+                <span data-testid="detail-ref-origin">
+                  원래 위치: {layerTitle(eq.layer)}
+                  {eq.voltage ? ` · ${eq.voltage}` : ''} · {CATEGORY_LABELS[eq.category]}
+                </span>
+              </span>
+              {mainNodeId && (
+                <button type="button" className="dp-refnote__go" data-testid="detail-ref-go" onClick={() => selectFromPanel(mainNodeId)}>
+                  원래 위치로 이동 →
+                </button>
+              )}
+            </div>
+          )}
 
-      <GapAssessmentSection eq={eq} />
+          <p className="dp-desc" data-testid="detail-desc">
+            {eq.description}
+          </p>
 
-      {gapView && <GapSections node={node} onSelect={selectFromPanel} />}
+          {eq.affiliateName && (
+            <p className="dp-affiliate">
+              계열사: <strong data-testid="detail-affiliate-name">{eq.affiliateName}</strong>
+            </p>
+          )}
 
-      <section className="dp-section" aria-labelledby="dp-products-title">
-        <h3 id="dp-products-title" className="dp-label">
-          자사 제품{products.length > 0 ? ` · ${products.length}개` : ''}
-        </h3>
-        {products.length > 0 ? (
-          <>
-            <ul className="dp-products" data-testid="detail-product-list">
-              {products.slice(0, MAX_PRODUCTS).map((p) => {
-                const n = docsByProductId(p.id)?.docs.length ?? 0;
-                return (
-                  <li key={p.id} className="dp-product-row">
-                    <Link to={`/product/${p.id}`} className="dp-product" data-testid={`product-card-${p.id}`}>
-                      <strong>{p.name}</strong>
-                      <span className={n > 0 ? 'dp-product__docs' : 'dp-muted'}>{n > 0 ? `자료 ${n} →` : '→'}</span>
-                    </Link>
-                    <CompareToggle kind="product" id={p.id} name={p.name} variant="icon" />
-                  </li>
-                );
-              })}
-            </ul>
-            {products.length > MAX_PRODUCTS && (
-              <Link to={`/equipment/${eq.id}`} className="dp-more">
-                외 {products.length - MAX_PRODUCTS}개 — 기기 상세 페이지에서 모두 보기 →
-              </Link>
+          {eq.gapNote && (
+            <div className={`dp-gapnote${gapView ? ' dp-gapnote--strong' : ''}`}>
+              <span className="dp-gapnote__label">{NOTE_LABELS[eq.coverage] ?? '메모'}</span>
+              <span data-testid="detail-gap-note">{eq.gapNote}</span>
+            </div>
+          )}
+
+          <GapAssessmentSection eq={eq} />
+
+          {gapView && <GapSections node={node} onSelect={selectFromPanel} />}
+
+          <section className="dp-section" aria-labelledby="dp-products-title">
+            <h3 id="dp-products-title" className="dp-label">
+              자사 제품{products.length > 0 ? ` · ${products.length}개` : ''}
+            </h3>
+            {products.length > 0 ? (
+              <>
+                <ul className="dp-products" data-testid="detail-product-list">
+                  {products.slice(0, MAX_PRODUCTS).map((p) => {
+                    const n = docsByProductId(p.id)?.docs.length ?? 0;
+                    return (
+                      <li key={p.id} className="dp-product-row">
+                        <Link to={`/product/${p.id}`} className="dp-product" data-testid={`product-card-${p.id}`}>
+                          <strong>{p.name}</strong>
+                          <span className={n > 0 ? 'dp-product__docs' : 'dp-muted'}>{n > 0 ? `자료 ${n} →` : '→'}</span>
+                        </Link>
+                        <CompareToggle kind="product" id={p.id} name={p.name} variant="icon" />
+                      </li>
+                    );
+                  })}
+                </ul>
+                {products.length > MAX_PRODUCTS && (
+                  <Link to={`/equipment/${eq.id}`} className="dp-more">
+                    외 {products.length - MAX_PRODUCTS}개 — 기기 상세 페이지에서 모두 보기 →
+                  </Link>
+                )}
+              </>
+            ) : (
+              <EmptyProducts eq={eq} testIdPrefix="detail" className="dp-empty" listClassName="dp-links" />
             )}
-          </>
-        ) : (
-          <EmptyProducts eq={eq} testIdPrefix="detail" className="dp-empty" listClassName="dp-links" />
-        )}
-      </section>
+          </section>
 
-      {rep && (
-        <section className="dp-section" aria-labelledby="dp-docs-title">
-          <h3 id="dp-docs-title" className="dp-label">
-            데이터시트·매뉴얼 <span className="dp-label__sub">· {rep.name}</span>
-          </h3>
-          <DocsList product={rep} max={5} testIdPrefix="detail-doc" />
-        </section>
+          {rep && (
+            <section className="dp-section" aria-labelledby="dp-docs-title">
+              <h3 id="dp-docs-title" className="dp-label">
+                데이터시트·매뉴얼 <span className="dp-label__sub">· {rep.name}</span>
+              </h3>
+              <DocsList product={rep} max={5} testIdPrefix="detail-doc" />
+            </section>
+          )}
+
+          <NeighborChips node={node} onSelect={selectFromPanel} />
+
+          <Link to={`/equipment/${eq.id}`} className="dp-eq-link">
+            기기 상세 페이지로 이동 →
+          </Link>
+        </>
       )}
-
-      <NeighborChips node={node} onSelect={selectFromPanel} />
-
-      <Link to={`/equipment/${eq.id}`} className="dp-eq-link">
-        기기 상세 페이지로 이동 →
-      </Link>
 
       {isMobile && !sideSheet && (
-        <button type="button" className="dp-expand" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>
-          {expanded ? '시트 줄이기' : '위로 올려 전체 정보 보기'}
-        </button>
+        // 접힌 시트: 비교 담기 + 전체 정보 보기 한 줄 (요약 높이를 줄여 지도 확보). 펼친 시트: 시트 줄이기만 (아래에 고정)
+        <div className="dp-sheet-actions">
+          {compact && <CompareToggle kind="equipment" id={eq.id} name={eq.name} className="cmp-toggle--sm dp-compare" />}
+          <button
+            type="button"
+            className="dp-expand"
+            aria-expanded={expanded}
+            data-testid="detail-sheet-toggle"
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? '시트 줄이기' : '전체 정보 보기'}
+          </button>
+        </div>
       )}
     </aside>
   );
