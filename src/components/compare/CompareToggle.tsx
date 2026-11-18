@@ -1,5 +1,6 @@
 import './Compare.css';
 import { COMPARE_MAX, useCompareStore, type CompareKind } from '../../store/useCompareStore';
+import { useData } from '../../data/load';
 
 interface Props {
   kind: CompareKind;
@@ -19,7 +20,11 @@ export default function CompareToggle({ kind, id, name, variant = 'full', classN
   const list = useCompareStore((s) => s[kind]);
   const toggle = useCompareStore((s) => s.toggle);
   const pressed = list.includes(id);
-  const full = !pressed && list.length >= COMPARE_MAX;
+  const data = useData();
+  // 가득 판정은 데이터에 있는 id 기준 (사라진 id 는 자리를 차지하지 않음 — store.toggle 과 같은 규칙)
+  const validCount =
+    list.length < COMPARE_MAX ? list.length : list.filter((x) => (kind === 'equipment' ? data.equipmentTypeById.has(x) : data.productById.has(x))).length;
+  const full = !pressed && validCount >= COMPARE_MAX;
   const what = kind === 'equipment' ? '기기' : '제품';
   const title = full ? `${what} 비교 목록이 가득 찼습니다 (최대 ${COMPARE_MAX}개)` : pressed ? '비교 목록에서 빼기' : '비교 목록에 담기';
   return (

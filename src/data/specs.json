@@ -110,7 +110,7 @@
       },
       "extractedAt": "2026-11-18",
       "reviewed": false,
-      "note": "1000Vac급 UTV 시리즈(UTV250·UTV400) 카탈로그 기준. 표준 Susol MCCB 카탈로그는 40MB 초과로 미확인"
+      "note": "1000Vac급 UTV 시리즈(UTV250·UTV400) 카탈로그 기준. 표준 Susol MCCB 카탈로그는 40MB 초과로 미확인. 정격전류: p.2~3 표에 걸침"
     },
     "P01900": {
       "items": [
@@ -606,7 +606,7 @@
         {
           "key": "insulation",
           "label": "절연·냉각 방식",
-          "value": "F종 (Epoxy Resin 몰드)",
+          "value": "F종",
           "page": 14
         },
         {
@@ -1328,7 +1328,7 @@
           "label": "프레임",
           "value": "18~2650",
           "unit": "AF",
-          "page": 13
+          "page": 10
         },
         {
           "key": "ratedVoltage",
@@ -1356,13 +1356,13 @@
           "label": "과부하계전기 전류설정범위",
           "value": "0.1~800",
           "unit": "A",
-          "page": 13
+          "page": 10
         },
         {
           "key": "standards",
           "label": "적용 규격",
           "value": "IEC 60947, UL 508",
-          "page": 3
+          "page": 10
         }
       ],
       "source": {
@@ -1372,7 +1372,7 @@
       },
       "extractedAt": "2026-11-18",
       "reviewed": false,
-      "note": "기종일람표(p10~13) 기준. 3극형 MC + MT 열동형 과부하계전기"
+      "note": "기종일람표(p10~13) 기준. 3극형 MC + MT 열동형 과부하계전기. 프레임: p.10~13 표에 걸침. 과부하계전기 전류설정범위: p.10~13 표에 걸침. 적용 규격: IEC 60947은 p.10, UL 508은 p.3(목차)"
     },
     "P01261": {
       "items": [
@@ -1676,14 +1676,14 @@
           "label": "적용 전동기 용량",
           "value": "2.2~600",
           "unit": "kW",
-          "page": 9
+          "page": 8
         },
         {
           "key": "ratedCurrent",
           "label": "정격전류",
           "value": "7.5~1200",
           "unit": "A",
-          "page": 9
+          "page": 8
         },
         {
           "key": "frequency",
@@ -1712,7 +1712,7 @@
       },
       "extractedAt": "2026-11-18",
       "reviewed": false,
-      "note": "LSFS 단방향(S) 기종일람표(p8~9) 기준"
+      "note": "LSFS 단방향(S) 기종일람표(p8~9) 기준. 적용 전동기 용량: p.8~9 표에 걸침. 정격전류: p.8~9 표에 걸침"
     },
     "P01188": {
       "items": [
@@ -1726,9 +1726,9 @@
         {
           "key": "motorPower",
           "label": "적용 전동기 용량",
-          "value": "0.75~75 (200V급) / 0.75~375 (400V급)",
+          "value": "0.75~75 (200V급) / 0.75~375 (400V급), 중부하(CT)",
           "unit": "kW",
-          "page": 14
+          "page": 13
         },
         {
           "key": "frequency",
@@ -1769,7 +1769,7 @@
       },
       "extractedAt": "2026-11-18",
       "reviewed": false,
-      "note": "기본규격(p13~15) 기준. 적용 전동기는 중부하(CT) 기준"
+      "note": "기본규격(p13~15) 기준. 적용 전동기는 중부하(CT) 기준(경부하 VT 기준 400V급은 450kW까지). 적용 전동기 용량: p.13~14 표에 걸침"
     },
     "P01184": {
       "items": [
@@ -1893,7 +1893,7 @@
           "label": "적용 전동기 용량",
           "value": "0.75~18.5 (200V급) / 0.75~750 (400V급)",
           "unit": "kW",
-          "page": 13
+          "page": 12
         },
         {
           "key": "frequency",
@@ -1922,7 +1922,7 @@
       },
       "extractedAt": "2026-11-18",
       "reviewed": false,
-      "note": "입·출력 규격(p12~13) 기준. 팬·펌프(HVAC) 전용"
+      "note": "입·출력 규격(p12~13) 기준. 팬·펌프(HVAC) 전용. 적용 전동기 용량: p.12~13 표에 걸침"
     }
   }
 }

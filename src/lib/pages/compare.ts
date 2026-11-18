@@ -1,8 +1,8 @@
 /**
- * 비교 화면(/compare) 파생 값 — 데이터 파일·load.ts 는 수정하지 않고 getData() 위에서 계산만 한다.
+ * 비교 화면(/compare) 파생 값 — 데이터 파일은 수정하지 않고 getData()·loadSpecs() 결과 위에서 계산만 한다.
  * 사양 값은 계산·합치기 없이 카탈로그 표기 그대로 나열한다.
  */
-import { getData } from '../../data/load';
+import { getData, type SpecsMap } from '../../data/load';
 import { SPEC_KEYS, type DocRef, type EquipmentType, type Product, type SpecItem } from '../schema';
 import { edgeKind, isBus, isEndpoint, type EdgeKind } from '../diagram/geometry';
 import { hopsAcrossBus } from '../diagram/topology';
@@ -17,13 +17,16 @@ export interface CompareParams {
   missing: string[];
   /** 4개를 넘어 제외한 id */
   overflow: string[];
+  /** type 값이 있는데 알 수 없는 종류 (안내용) */
+  badType?: string;
 }
 
 export function parseCompareParams(params: URLSearchParams): CompareParams {
-  const t = params.get('type');
+  const t = params.get('type')?.trim().toLowerCase() ?? '';
   const type: CompareKind | null = t === 'equipment' || t === 'product' ? t : null;
-  const raw = [...new Set((params.get('ids') ?? '').split(',').map((s) => s.trim()).filter(Boolean))];
-  if (!type) return { type, ids: [], missing: [], overflow: [] };
+  // ids=a,b 와 ids=a&ids=b 를 모두 받는다
+  const raw = [...new Set(params.getAll('ids').flatMap((v) => v.split(',')).map((s) => s.trim()).filter(Boolean))];
+  if (!type) return { type, ids: [], missing: [], overflow: [], badType: t || undefined };
   const data = getData();
   const exists = (id: string) => (type === 'equipment' ? data.equipmentTypeById.has(id) : data.productById.has(id));
   const valid = raw.filter(exists);
@@ -54,7 +57,75 @@ export function specLabel(key: string, fallback?: string): string {
   return (SPEC_KEYS as Record<string, string>)[key] ?? fallback ?? key;
 }
 
-export const specValueText = (it: Pick<SpecItem, 'value' | 'unit'>) => (it.unit ? `${it.value} ${it.unit}` : it.value);
+/**
+ * 화면 표기: 값 + 단위 (데이터는 바꾸지 않고 렌더링에서만 위치를 조정 — 2026-11-18 디버그 M4).
+ * 데이터는 단위를 값 맨 끝에 붙이는 구조라 "110 (55~125) (PT 입력)" + "V" 가 "… (PT 입력) V" 로 읽힌다.
+ * 규칙: 괄호 밖(깊이 0)에서 숫자 바로 뒤에 오는 괄호 주석 앞마다 단위를 넣고, 괄호 주석은 그 뒤로 둔다.
+ *   "110 (55~125) (PT 입력)" V          → "110 V (55~125) (PT 입력)"
+ *   "0.05~6 (5A), 0.01~1.2 (1A)" A      → "0.05~6 A (5A), 0.01~1.2 A (1A)"
+ *   "690 (18·22AF) / 1000 (40AF 이상) (Ue)" V → "690 V (18·22AF) / 1000 V (40AF 이상) (Ue)"
+ * 값이 괄호 밖 숫자로 끝나면 끝에도 단위. 괄호가 없거나 숫자 뒤 괄호가 하나도 없으면 원래대로 "값 단위".
+ */
+export function specValueText(it: Pick<SpecItem, 'value' | 'unit'>): string {
+  const { value, unit } = it;
+  if (!unit) return value;
+  if (!value.includes('(')) return `${value} ${unit}`;
+  let out = '';
+  let depth = 0;
+  let inserted = 0;
+  /** 마지막 깊이 0 글자가 숫자이고 아직 그 숫자 뒤에 단위를 넣지 않았는가 */
+  let afterNumber = false;
+  for (let i = 0; i < value.length; i++) {
+    const ch = value[i];
+    if (ch === '(') {
+      // "40(10)" 처럼 숫자에 붙은 숫자 괄호는 계기 정격 표기라 한 덩어리로 둔다
+      const meterStyle = /[0-9]$/.test(out) && /^\(\d+(?:\.\d+)?\)/.test(value.slice(i));
+      if (depth === 0 && afterNumber && !meterStyle) {
+        const trimmed = out.replace(/\s+$/, '');
+        out = `${trimmed} ${unit}${out.slice(trimmed.length) || ' '}`;
+        inserted += 1;
+        afterNumber = false;
+      }
+      depth += 1;
+    } else if (ch === ')') {
+      depth = Math.max(0, depth - 1);
+    } else if (depth === 0 && !/\s/.test(ch)) {
+      afterNumber = /[0-9]/.test(ch);
+    }
+    out += ch;
+  }
+  if (afterNumber) {
+    out = `${out.replace(/\s+$/, '')} ${unit}`;
+    inserted += 1;
+  }
+  return inserted > 0 ? out : `${value} ${unit}`;
+}
+
+/**
+ * "차이만 보기" 비교용 정규화 (화면 표기는 원문 그대로 — 2026-11-18 디버그 M3·L11).
+ * 같은 의미를 다르게 적은 카탈로그 표기를 같은 값으로 본다:
+ *  1. NFKC — 전각 숫자·기호·괄호를 반각으로 (～ → ~), 물결표 변형(〜·∼)도 ~ 로
+ *  2. 대소문자 무시 — 단위 KA/kA, V/v 등
+ *  3. 교류 전압 단위 통일 — "V AC"·"VAC"·"Vac" → "V" (정격전압의 V 는 교류가 기본. "V DC"·"VDC" 는 그대로 구분)
+ *  4. 공백 전부 제거 — "50 / 60 Hz" = "50/60 Hz"
+ *  5. 쉼표 목록 = 슬래시 목록 — "3, 4 P" = "3 / 4 P"
+ *  6. 숫자만으로 된 목록은 크기 순 정렬 — "60, 50 Hz" = "50/60 Hz"
+ * 숫자 크기·단위 환산(mA↔A 등)은 하지 않는다 (값이 다른 것으로 둔다).
+ */
+export function compareKey(text: string): string {
+  let s = text.normalize('NFKC').replace(/[〜∼]/g, '~').toLowerCase();
+  s = s.replace(/v\s*ac\b/g, 'v');
+  s = s.replace(/\s+/g, '');
+  s = s.replace(/,/g, '/');
+  // 단위 앞 숫자 목록 정렬: "60/50hz" → "50/60hz"
+  s = s.replace(/^(\d+(?:\.\d+)?(?:\/\d+(?:\.\d+)?)+)(?=[^\d./~]|$)/, (list: string) =>
+    list
+      .split('/')
+      .sort((a, b) => Number(a) - Number(b))
+      .join('/'),
+  );
+  return s;
+}
 
 /** 카탈로그 페이지 링크 (PDF #page=N) */
 export function pageHref(url: string, page?: number): string {
@@ -67,8 +138,7 @@ export interface EquipmentSpecEntry {
 }
 
 /** 기기의 제품들 specs 를 표준 키별로 모은다 (값은 표기 그대로) */
-export function equipmentSpecMap(eqId: string): Map<string, EquipmentSpecEntry[]> {
-  const specs = getData().specsByProductId;
+export function equipmentSpecMap(eqId: string, specs: SpecsMap): Map<string, EquipmentSpecEntry[]> {
   const map = new Map<string, EquipmentSpecEntry[]>();
   for (const product of productsForEquipment(eqId)) {
     const s = specs.get(product.id);
@@ -83,8 +153,7 @@ export function equipmentSpecMap(eqId: string): Map<string, EquipmentSpecEntry[]
 }
 
 /** 사양이 수집된 제품 수 */
-export function specProductCount(eqId: string): number {
-  const specs = getData().specsByProductId;
+export function specProductCount(eqId: string, specs: SpecsMap): number {
   return productsForEquipment(eqId).filter((p) => specs.has(p.id)).length;
 }
 

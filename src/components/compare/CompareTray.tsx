@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useData } from '../../data/load';
 import { COMPARE_MAX, compareHref, useCompareStore, type CompareKind } from '../../store/useCompareStore';
@@ -24,7 +25,29 @@ export function useCompareTrayVisible(): boolean {
   const { pathname } = useLocation();
   const eq = useCompareItems('equipment').length;
   const pr = useCompareItems('product').length;
-  return pathname !== '/compare' && eq + pr > 0;
+  // '/compare/' (끝 슬래시)도 비교 화면
+  return pathname.replace(/\/+$/, '') !== '/compare' && eq + pr > 0;
+}
+
+/**
+ * 바의 실제 높이를 CSS 변수 --cmp-tray-h 로 내보낸다 (문서 루트). 본문 아래 여백·계통도 미니맵 위치가 이 값을 쓴다
+ * — 고정 여백(140px)이 칩 줄 수에 따라 모자라 마지막 링크를 가리던 문제(디버그 M2). ResizeObserver 가 없으면 CSS 기본값.
+ */
+function useTrayHeightVar(ref: React.RefObject<HTMLElement | null>, active: boolean) {
+  useEffect(() => {
+    const el = ref.current;
+    const root = document.documentElement;
+    if (!active || !el) return;
+    const apply = () => root.style.setProperty('--cmp-tray-h', `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    apply();
+    const RO = globalThis.ResizeObserver;
+    const ro = RO ? new RO(apply) : undefined;
+    ro?.observe(el);
+    return () => {
+      ro?.disconnect();
+      root.style.removeProperty('--cmp-tray-h');
+    };
+  }, [ref, active]);
 }
 
 /**
@@ -39,6 +62,8 @@ export default function CompareTray() {
   const setActive = useCompareStore((s) => s.setActive);
   const remove = useCompareStore((s) => s.remove);
   const clear = useCompareStore((s) => s.clear);
+  const ref = useRef<HTMLElement>(null);
+  useTrayHeightVar(ref, visible);
   if (!visible) return null;
 
   const counts: Record<CompareKind, number> = { equipment: eqItems.length, product: prItems.length };
@@ -48,7 +73,7 @@ export default function CompareTray() {
   const ready = items.length >= 2;
 
   return (
-    <section className="cmp-tray" data-testid="compare-tray" data-type={active} aria-label="비교 목록">
+    <section ref={ref} className="cmp-tray" data-testid="compare-tray" data-type={active} aria-label="비교 목록">
       <div className="cmp-tray__head">
         {both ? (
           <div className="cmp-tray__kinds" role="group" aria-label="비교 목록 종류">
@@ -62,6 +87,7 @@ export default function CompareTray() {
                 onClick={() => setActive(k)}
               >
                 {KIND_LABEL[k]} {counts[k]}
+                <span className="cmp-tray__count">/{COMPARE_MAX}</span>
               </button>
             ))}
           </div>

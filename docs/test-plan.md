@@ -1,8 +1,8 @@
-# 테스트 계획서 (v0.8)
+# 테스트 계획서 (v1.0)
 
 > 작성: Teammate 3 (테스트 작성자 + 최종 리뷰어) · 2026-11-18
 > 대상: 전력계통도 기반 제품 포트폴리오 & 신입 교육 포털 (PLAN.md v0.1)
-> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/unit/lib/*.test.ts`(v0.7: `integrity`·`router`·`admin-draft` 추가), `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`, `tests/e2e/admin.spec.ts`(v0.7)
+> 코드: `tests/unit/data-integrity.test.ts`, `tests/unit/components/*.test.tsx`, `tests/unit/lib/*.test.ts`(v0.7: `integrity`·`router`·`admin-draft` 추가), `tests/e2e/smoke.spec.ts`, `tests/e2e/core-flows.spec.ts`, `tests/e2e/admin.spec.ts`(v0.7), (v0.9) `tests/unit/lib/compare.test.ts`·`compare-fixture.ts`, `tests/unit/components/ComparePage.test.tsx`, `tests/unit/store/useCompareStore.test.tsx`, `tests/e2e/compare.spec.ts`, (v1.0) `tests/unit/lib/load-specs.test.ts`
 > 설정: `vitest.config.ts`(jsdom, DI 테스트는 파일 상단 `@vitest-environment node`), `playwright.config.ts`(chromium, build+preview :4173), `tests/tsconfig.json`
 > 스크립트: `npm test`(vitest run) · `npm run test:watch` · `npm run test:data`(DI만) · `npm run test:e2e` · `npm run typecheck:tests`
 > v0.2 (11-18): 환경 구성·실행 완료, 리더 결정 R-01/04/05/07/08/09 반영 (§8)
@@ -12,6 +12,8 @@
 > v0.6 (11-18, 개선 R3): 노드 종류(equipment·ref·bus·endpoint) 반영 — DI-30/33~36/39~43 갱신, DI-43b review·DI-43c 택1(alt) 추가, DI-44 종류별 크기·모선 얇은 장애물, **DI-45 전력선끼리 교차 0**, **DI-46 모선 연결 수직**. 공백 판정 근거 **DI-27a~h**(gapAssessment). 6번째 상태 sourced (DI-28·CT-01·범례). 퀴즈·진도·수료 제거 → DI-75·76(퀴즈) 삭제, DI-75 = 퀴즈 제거 확인, E2E `tour-finish`·완료 요약 테스트 삭제. CT-03 ref·candidate, E2E-6 (모선·끝점·참조 타일·alt·검수 배지·sourced 범례·공백 후보·공백 판정 섹션·범례 합 74)
 > v0.7 (11-18, 개선 R4): **DI 판정 단일화** — 규칙 판정은 공용 모듈 `src/lib/integrity`(`checkDataset`·`RULES`, 관리자 "검사 후 내보내기"와 같은 함수). DI 테스트는 beforeAll 에서 checkDataset 1회 → RULES 규칙마다 it 하나(HARD = 오류 0, SOFT = softWarn). 스키마·판정 함수 자기검증, 파일 시스템(DI-00a·82·82b·86), docs.json·learn.json·사진 스키마(DI-80)는 DI 테스트에 직접 유지 (§3.10 매핑표). 새 단위 테스트 UT-10 공용 검사(규칙별 위반 → ID, T2 R3 관리자 실패 시나리오), UT-11 라우터 골든(diagram.json 86/86)·모선 거부, UT-12 관리자 초안 편집·검수 상태. UT-01 CSV 판정 열(10열). E2E-ADM 1~4(관리자), E2E-6 참조 타일 패널(`detail-meta`·`detail-ref-origin`)·모선 형제 피더 칩 화살표 없음
 > v0.8 (11-18, 개선 R5): **데이터 확정 반영** — diagram.review = approved, 공백 17건 gapAssessment = confirmed(bu-confirmed, 재확인 2027-05-18), GIS·승압 TR 은 candidate(보유 → 테두리 규칙 대상 아님). 데이터 상태를 고정 가정하던 테스트를 **데이터 기반 기대값**으로: E2E-6 검수 배지(pending → 보임 / approved → 없음), 공백 확신도 타일(노드마다 데이터 판정 = confirmed/candidate, 재확인 기한 KST 지나면 candidate, 보유 → 속성 없음), CT/PT 공백 판정(확정 → '확정', 후보 → '후보'). **UT-10 권장 R2**: 분기별 위반 6건(DI-35 기기 타일 밴드 밖·DI-39 중심 거리 < 24·DI-40 끝점·참조 타일 연결 0·DI-43 기기 노드 2개·DI-44a 모선 관통·DI-44b 끝 점 가장자리 밖) + 메타 테스트를 손 목록 대신 **실제 위반 케이스가 보고한 규칙 ID(verify) 집합 ↔ RULES** 대조로 변경(시나리오 삭제 시 실패 확인). **UT-12 review 규칙(R5)**: 구조 편집 → pending + 기존 note 보존 + "(이전 검수: 검수자 검수일)", 같은 날 재편집 문구 중복 없음, 기기 설명만 변경 → approved 유지(같은 객체), 되돌리기 → approved 복원, 변경 요약 '계통 검수 상태' 줄
+> v0.9 (11-18, 비교 기능 + specs.json, f4f9c69): **DI-90~99c specs.json 규칙 13건**(판정 함수 `checkSpecs` 1개 — 현재 데이터 위반 0, 합성 위반 → 규칙 ID 자기검증), **UT-13** `lib/pages/compare.ts`(합성 데이터셋, 22), **CT-07** ComparePage 행 생성·차이만 보기·안내(14, 기대 실패 1), **UT-14** 비교 담기 store·비교 바·담기 버튼(15, 기대 실패 1), **E2E-7** `compare.spec.ts`(5). 실제 버그 2건은 `it.fails` 로 재현해 둠(수정되면 빨개짐 → `it` 로 전환) — §11f
+> v1.0 (11-18, 비교 기능 수정 라운드 — T1 수정 + specs.json 인용 페이지 9건 정정, 커밋 전): v0.9 버그 **B1·B2 수정 확인 → `it.fails` 2건을 `it` 회귀 테스트로 전환**. M6 specs 지연 로딩(`loadSpecs`·`peekSpecs`) → 픽스처 `FAKE_SPECS` 별도 Map, **UT-15** 신설(4). UT-13 22→29(`type` 대소문자·`badType`·`ids` 반복, `specValueText` 단위 위치·계기 표기, `compareKey` 정규화), CT-07 14→21(loading/error 행, 공유 링크 열 빼기, 차이만 보기 유지, M3 정규화 비교, M8 공통 기기, 잘못된 type 안내, 값 없음 구분), UT-14 15→26(실제 데이터 id, B2 불러오기·가득 판정 정리, M1 storage 이벤트·변경 직전 재읽기, 끝 슬래시, 전환 버튼 n/4), E2E-7 5→16(spec-error, 공유 링크, 끝 슬래시, M8, sticky, 폭 5종 세로 쪼개짐, --cmp-tray-h). DI-90~ 는 정정된 specs.json 으로 위반 0 — §11g
 
 ---
 
@@ -44,7 +46,7 @@
 
 ---
 
-## 3. 데이터 무결성 규칙 (DI) — 총 87개 (HARD 74 · SOFT 13, v0.6)
+## 3. 데이터 무결성 규칙 (DI) — 총 87개 (HARD 74 · SOFT 13, v0.6) + v0.9 specs.json 13개(§3.11)
 
 > **v0.7 (개선 R4)**: 규칙 ID·내용은 그대로, 판정 코드만 `src/lib/integrity`(공용 모듈) 로 옮김. 공용 모듈 대상 64개 ID(`RULES` 표, DI-00 포함)는 DI 테스트·관리자 검사가 같은 함수로 판정하고, 규칙별 "위반 데이터 → 그 ID" 는 UT-10 이 검증한다. 전환 매핑은 §3.10.
 
@@ -204,6 +206,28 @@
 
 결과: DI 테스트 94 → **101** (RULES 64 + 표 검사 2 + 정보 2 + 자기검증 5 + 파일·스키마 6 + docs 9 + learn 9 + 사진 스키마·파일 4). v0.6 의 DI-81·83·84·85 로컬 판정 it 은 RULES 루프와 중복이라 삭제(규칙은 RULES 로 유지).
 
+### 3.11 (v0.9) 정격 사양 specs.json — DI-90 ~
+> 계약: `SpecsFileSchema`·`SPEC_KEYS` (`src/lib/schema.ts`). 키 = Product.id, 값마다 카탈로그 페이지, `reviewed=false` → 화면 "카탈로그 추출값 · 검수 전".
+> 판정: `tests/unit/data-integrity.test.ts` 의 `checkSpecs(file, productIds, docUrlsByProduct, today)` — **공용 모듈 편입 후보**(`src/lib/integrity`, 관리자 모드가 사양 편집을 지원하게 되면 같은 함수로). 이번 라운드는 src 수정 금지라 테스트 파일에 둠.
+
+| ID | 규칙 | 등급 |
+|---|---|---|
+| DI-90 | 파일 존재 + 스키마 통과. 빈 items·http URL·page 0·소수 page·빈 value·날짜 형식·reviewed 문자열 **거부** | HARD |
+| DI-90b | `checkSpecs` 자기검증: 정상 합성 = 위반 0, 규칙마다 위반 1건 → 정확히 그 ID (13 케이스) + 일관된 비표준 key·source.page 대체는 통과 | HARD |
+| DI-91 | productId 가 products.json 에 존재 | HARD |
+| DI-92 | `source.url` ∈ **그 제품의** docs.json doc.url (+ https·허용 도메인). 근거: 실제 데이터 35/35 일치(추출 담당이 docs.json 카탈로그만 사용, specs-extraction.md). "같은 도메인 https" 보다 엄격하게 둬서 오타·다른 제품 카탈로그 연결을 잡음. docs.json 재수집으로 URL 이 바뀌면 이 규칙이 알려 줌 | HARD |
+| DI-93 | 제품 안 key 중복 없음 (화면은 여러 값을 지원하지만 기기 비교 화면 React key 버그 — §11f B1 — 와 비교 의미 혼란 방지) | HARD |
+| DI-94 | 표준 key(SPEC_KEYS) 의 label = SPEC_KEYS 라벨 (화면은 SPEC_KEYS 라벨을 쓰므로 데이터 label 오타가 숨지 않게) | HARD |
+| DI-95 | 비표준 key: 파일 전체에서 같은 key = 같은 label (화면 행 이름은 첫 제품 label — 행 정렬 일관성, T1 지적 위험) | HARD |
+| DI-95b | 같은 label = 같은 key (표준 라벨 포함) — 이름이 같은 행 2개 방지 | HARD |
+| DI-96 | items 1~10개, label·value 공백 문자열 아님 | HARD |
+| DI-97 | 값마다 페이지 추적 가능: `item.page ?? source.page` (양의 정수는 스키마) | HARD |
+| DI-98 | extractedAt 실제 날짜(2026-02-30 거부) + 미래 아님(KST), generatedAt 날짜로 파싱 | HARD |
+| DI-99 | (정보) reviewed=false 제품 수 console.info — 현재 35/35, 항목 229 | 정보 |
+| DI-99b | 개인정보 의심 패턴(이메일·전화) 0건 — title·url(디코드)·label·value·unit·note | HARD |
+| DI-99c | 사양이 있는데 어느 기기에도 연결 안 된 제품 → 경고 (기기 비교 "대표 사양"에 안 나옴) — 현재 0건 | SOFT |
+
+
 ---
 
 ## 3b. 컴포넌트 테스트 (CT, Vitest + Testing Library + jsdom, v0.3)
@@ -213,6 +237,7 @@
 | CT-02 | `common/ExternalLink` | https → `<a target=_blank rel="noopener noreferrer">` + "새 탭" 안내 / http·javascript:·data:·상대경로·`//`·ftp·빈 문자열 → `<a>` 미생성(텍스트만) | 9 |
 | CT-03 | `diagram/DiagramNode` (v0.4) | 사진 있음 → `img.dnode__img`(data-src 지연 로딩, alt="") + 심볼 없음 / 사진 없음 → `svg.dnode__symbol`(aria-hidden) + `dnode--symbol`, 미보유 캡션 "자사 제품 없음" / 5상태: role=button·tabindex=0·`aria-label="{기기명}, {커버리지}"`·data-coverage·아이콘 / Gap 모드 R-08 강조·흐림 표 (제품 모드는 모두 false) / aria-pressed + 클릭·Enter·Space → onActivate(id) / (v0.6) Gap 모드 sourced = 보통, ref → `data-ref="true"`, `confidence` → `data-confidence="candidate|confirmed"` (NodeItem.ref·confidence 가정) | 12 |
 | CT-04 | `panel/DetailPanel` (v0.4) | MemoryRouter `/?node=` 진입. 제품 0개 보유 기기 → `detail-product-list` 없음, `detail-empty-products` 안에 카테고리 공식 페이지 링크(새 탭·noopener·카테고리명), "미보유" 문구 없음 / 미보유 기기 → "자사 제품 미보유(공백)" + gapNote, 링크 없음 / 제품 있는 기기 → 제품 카드 / 없는 id → 빈 안내 패널. 대상 기기는 실제 데이터에서 조건으로 선택(없으면 skip) | 4 |
+| CT-07 | (v0.9) `pages/ComparePage` (`ComparePage.test.tsx`, 합성 데이터 `compare-fixture.ts` 로 `getData` mock) | 기기: 열 2 + 기본 9행 고정 순서(layer·category·coverage·products·docs·description·learn·upstream·downstream) + 사양 구역(`spec-coverage` "2 / 2개"·"0 / 1개" + key 합집합 SPEC_KEYS 순 → 비표준), 비표준 행 이름 = 데이터 label, 값 없음 "—", 같은 key 두 제품 → 제품별 나열 + 페이지 링크 `#page=`(item.page, 없으면 source.page), 검수 전 배지 / 상류·하류 = 모선 너머·신호·택1·끝점 / 차이만 보기(같은 3행 숨김·건수 문구·복원), 사양 없는 기기끼리 → `spec-none` 1행·차이만 보기에서 구역 사라짐 / 열 빼기 → URL ids·store 갱신, 1개 → `compare-empty` / 제품: 기본 5행 + 사양 + `spec-source`, 한 제품 같은 key 2값, 출처 링크 `#page=source.page`·검수 전/완료·추출일, 차이만 보기(출처 행 유지, 둘 다 미수집이어도 유지), 서로 다른 기기 → 섞기 안내, 없는 id·4개 초과 안내, 빈 상태 "담아 둔 … 비교하기" 링크 / B1 회귀(React key 중복 경고 0) / **(v1.0)** 사양 loading → `spec-loading` 행, 실패 → `compare-row-spec-error`(차이만 보기에도 유지)+안내·검수 배지 없음 / 공유 링크 열 빼기 → URL 만(쉼표 그대로), 같은 비교면(순서 무관) 목록에서도 제거 / 열 빼기 후 차이만 보기 유지 / M3 "690 V" = "６９０ Vac" 숨김(표기는 원문) / M8 공통 기기 → 안내 없음·소속 기기 칸·열 부제 = 공통 기기 / 잘못된 type 안내 / "사양 미수집" vs "카탈로그에 없음" | 21 |
 
 ### 3c. 단위 테스트 (UT, v0.4)
 | ID | 대상 | 검증 | 테스트 수 |
@@ -223,6 +248,9 @@
 | UT-10 | (v0.7) `lib/integrity` 공용 검사 (`tests/unit/lib/integrity.test.ts`) | 합성 데이터셋(밴드 L1~L7 · 기기 9 · 사슬 n1~n7 · L6 모선 1 + 피더 2) = 오류 0·경고 DI-29 만 / 최상위 형태 오류 → 예외 없이 DI-00 / `Collector.run` 예외 → 그 규칙 오류 / **T2 R3 관리자 실패 시나리오 → 규칙 ID**: 모선 끝 가로 출발·범위 밖·points 없음 DI-46, 모선이 타일과 겹침 DI-39, 모선 연결 1개 DI-40, 참조 타일 라벨 없음 DI-43, 택1 단독·라벨 없음 DI-43c, sourced+unknown DI-27b·없는 날짜 DI-27e·http 근거 DI-27f, 전력선 같은 가로선 겹침 DI-45a(신호선이면 통과), 타일 관통 DI-44a / HARD 규칙 표 49건(규칙마다 위반 → 그 ID) / SOFT 10건(경고만·오류 0) + DI-40 SOFT / **(v0.8) 분기별 위반**: DI-35 기기 타일 밴드 밖, DI-39 중심 거리 < 24(겹침 아님), DI-40 끝점·참조 타일 연결 0, DI-43 같은 기기 노드 2개, DI-44a 모선 관통, DI-44b 끝 점 가장자리 밖(사선 아님) / **(v0.8) 메타**: 위반 케이스가 기대 ID 를 실제로 보고했을 때만 `verify` 로 기록 → RULES 의 HARD(error)·SOFT(warning) 규칙 전부가 기록됐는지 대조 (손 목록 없음) / `checkEquipment` field·하위 카테고리 연결·재확인 기한 / 모든 시나리오에서 error·warning 등급 = RULES 표 | 85 |
 | UT-11 | (v0.7) `lib/diagram/router.ts` (`tests/unit/lib/router.test.ts`) | **골든**: diagram.json 모든 연결선 `routeEdge` = 저장된 points(없으면 points 없음) — 현재 86/86 / 모선 연결선 모두 points, points 없는 선의 기본 경로는 관통 0 / `pyRound`·`boxOf`(모선 정수 반폭) / 막힌 경로 → A* 직교 우회, 완전 포위 → no-path, 없는 노드 → missing-node / 모선: 수직 points(양방향), 범위 밖 bus-range, 수직 막힘 bus-blocked(막는 노드), 모선끼리 bus-to-bus / 관리자 draft 거부: addEdge 범위 밖·수직 막힘, moveNode 피더·모선 이동, updateNode 모선 61px | 12 |
 | UT-12 | (v0.7) `lib/admin/draft.ts`·`integrity.ts` (`tests/unit/lib/admin-draft.test.ts`) | `validateDraft(현재 데이터)` = 오류 0·경고 0, Issue 에 nodeId / 기기 추가(DI-43) → 자동 배치(DI-40) → 380V 모선 연결(수직 points) → 오류 0 / 배치 거부(밴드 밖·30px·모선 20px·모선 60px 미만·라벨 없음) / 이동(같은 자리 무변경, 모선 y 이동 시 피더 points 갱신) / 모선 길이(늘리기 허용, 61 거부, 60 미만) / 노드 삭제(연결선 함께, DI-40), 기기 삭제는 노드 먼저 / 연결 추가·삭제(중복·자기·없는 노드 거부, 고립 DI-40, 다시 연결) / alt 단독 DI-43c / 참조 타일(원래 노드 필요, 라벨 없음 DI-43) / **review (v0.8 R5)**: 계통 구조 편집 → pending+오늘+`{오늘} 관리자 편집 — 설계팀 재검수 필요`, approved 원본 → 기존 note 보존 `{note} → {문구} (이전 검수: {검수자} {검수일})`(기대 문구는 구현 호출 없이 직접 작성), 현재 데이터 note·검수자 보존, 같은 날 두 번·저장 후 재편집해도 문구 1회(다른 날은 추가), 기기 설명만 변경 → topologyChanged=false·approved 유지(같은 객체), 이동 되돌리기 → approved 복원, 사진만 변경은 그대로, 변경 요약 줄(재검수 전환+note / 유지) / sourced+다른 공급 방식 DI-27b·`coverageIssues` field / `upsertEquipment` 키 순서·사진 삭제·원본 텍스트 동일 / `suggestId` | 20 |
+| UT-13 | (v0.9) `lib/pages/compare.ts` (`compare.test.ts`, 합성 데이터) | `parseCompareParams`: type 없음 → null / (v1.0) 잘못된 type → null+`badType`(소문자·trim) / 대소문자·공백 → 정상 type / `ids=a&ids=b` 반복·쉼표 혼합 / 순서 유지·공백 무시 / 없는 id → missing / 제품 type 은 제품 id 로만 / 중복 합침 / 4개 초과 → overflow(없는 id 는 개수 제외) / `%2C` / `orderSpecKeys`(표준 순 → 비표준 첫 등장 순, 중복 제거) / `specLabel`·`pageHref` / (v1.0 M4) `specValueText` 단위 = 괄호 밖 숫자 뒤·괄호 주석 앞(문서 예 3개 + 끝 숫자·괄호 안 숫자만·괄호 시작), "40(10)" 계기 표기 덩어리 유지 / (v1.0 M3) `compareKey` 같음(NFKC 전각·물결표 변형·대소문자·VAC/V AC/Vac→V·공백·쉼표=슬래시·숫자 목록 정렬) / 다름(VDC 구분·mA↔A 환산 안 함·범위 정렬 안 함) / 정규화 결과 문자열 / `equipmentSpecMap(eq, specs)`(한 제품 같은 key 여러 값 모두)·`specProductCount(eq, specs)`, 빈 Map → 0 / `countDocs`·`productDocs`·`equipmentDocCounts`·`representativeDoc` 우선순위 / `equipmentForProduct` 하위 카테고리 / `linkedEquipment`: 모선 건너뛰기·형제 피더 제외·신호선 뒤·택1·끝점 라벨·같은 기기 1회·참조 타일 연결 제외·자기 제외·노드 없음 [] — 기대값은 손으로 작성 | 29 |
+| UT-14 | (v0.9, v1.0 갱신) `store/useCompareStore.ts` + `CompareTray`·`CompareToggle` (`tests/unit/store/useCompareStore.test.tsx`) | (v1.0) 담는 id 는 실제 데이터 id(store 가 데이터 존재 검사) / 토글 added/removed/full / 기기·제품 분리, active / remove·clear / 저장 / `compareHref` / setItem·getItem 예외 → 메모리 / JSON 깨짐·null·숫자 → 빈 목록, 형식 손상(사라진 id 포함) 정리 **+ 정리 결과 저장**, 정상 값은 다시 쓰지 않음 / **B2**: 불러올 때 사라진 id 제거, 사라진 id 4개뿐 → 담기 버튼 동작(v0.9 기대 실패 → 회귀), 메모리에 사라진 id 남은 탭 → 가득 판정 유효 id 기준·담을 때 정리 / **M1**: 같은 키 storage 이벤트 반영·다른 키 무시·key=null 비움, 이벤트 없이도 변경 직전 재읽기로 다른 탭 변경 위에 얹음(toggle·full·remove), 다른 탭 값의 사라진 id 정리 / 바 표시 경로: `/`·`/gap` 보임, `/compare`·`/compare/`·`/compare//` 숨김 / 종류 전환 버튼 "n/4" / 담기 버튼 가득 → 비활성+title, 제품 별도 | 26 |
+| UT-15 | (v1.0 M6) `data/load.ts` `loadSpecs`·`peekSpecs` (`tests/unit/lib/load-specs.test.ts`, node 환경) | AppData 에 specs 없음, 불러오기 전 peek undefined / loadSpecs → specs.json 전체 Map, 같은 Promise·같은 Map 메모, peek = 같은 Map / 검증 실패 → `DataValidationError` 거절·getData 정상·peek undefined·다음 호출은 새 Promise / import 실패 → 거절 후 다음 호출이 새로 시도해 성공 | 4 |
 
 ---
 
@@ -277,6 +305,7 @@
 | (게이트) | — | v0.4: Phase 2 게이트(`diagram` testid 없으면 전체 skip, `E2E_STRICT`) **제거** — 회귀가 skip 으로 숨지 않게 | |
 | SMOKE | 공통 | 홈 진입 | 헤더·범례 6종(v0.6) 표시, 런타임 오류 없음 (`smoke.spec.ts`, Phase 1부터 항상 통과해야 함) |
 | E2E-5 | 접근성 | 키보드 Enter/Esc·포커스 복귀, 건너뛰기 링크, 계층 점프, 범례 6종(v0.6), 모바일 하단 시트, 라이트/다크 axe 대비 / (v0.5) 사진 경로 | 타일 img(data-src/src) = `images/equipment/thumb/<id>`, 패널 `.dp-hero img` = 원본 file (thumb 아님) |
+| E2E-7 | 공통 (v0.9, `compare.spec.ts`) | 비교 기능. 데이터에서 같은 계층·전압·분류 기기 2개 선택 | 상세 패널 `compare-toggle-{id}` 2회 → `compare-tray-item-*` 2 → `compare-go` → `#/compare?type=equipment&ids=a,b`, 바 숨김, `compare-col-*` 2, 기본 9행 + `compare-section-specs` → `compare-diff-only` → layer·category 행 사라지고 행 수 감소 → `compare-remove-{b}` → `compare-empty` / 제품 `P01072,P01249,P02212`: 사양 행 = specs.json key 합집합(표준 순) + spec-source, 출처 링크 href = `url#page=N`·새 탭, `compare-unreviewed` = reviewed 데이터대로, 차이만 보기에도 출처 행 / 없는 id·중복 → `compare-notice`, 1개 → 빈 상태 / 390px: /compare 가로 넘침 0, 홈 비교 바 → 시트 열면 칩·비우기 숨김(비교하기만), "전체 정보 보기" → 바 숨김 / Gap 모드 `gap-candidate-note` 개수 = 공백류 후보 존재 여부(현재 0) / **(v1.0)** specs 청크 route abort → `compare-row-spec-error`+안내, 기본 행 유지·사양·출처 행 없음 / 공유 링크 열 빼기 → localStorage 목록 그대로 / `#/compare/?…` → 표 + 바 숨김 / P01024+P01021 → "서로 다른 기기" 없음 / 열 머리글 `position: sticky`, `.cmp-scroll` 끝까지 스크롤해도 머리글 top = 박스 top(±2) / 폭 901·920·1024·1100·1280 × 패널 닫힘·열림: 이름 긴 기기·제품 4+4 담고 바 안 보이는 요소 높이 ≤ 40px, 바 폭 ≥ 280 / 390px `/gap`: `--cmp-tray-h` = 바 높이(±1), `.app-main` 끝까지 스크롤 시 마지막 링크 bottom ≤ 바 top, 가로 넘침 0 |
 
 ---
 
@@ -462,6 +491,34 @@
 
 - 실패 분류: 데이터 확정으로 깨진 테스트 1건(E2E CT/PT)·T1 R5 review 문구 변경으로 깨진 UT-12 2건 → 모두 **테스트 기대값 갱신**(제품 버그 아님). 구현 대기 0.
 - 메타 테스트 검증: 표에서 DI-50(HARD)·DI-52(SOFT) 케이스를 지운 사본으로 실행 → 두 메타 테스트가 해당 ID 를 보고하며 실패함을 확인.
+
+## 11f. 실행 결과 (2026-11-18, v0.9 — 비교 기능 f4f9c69)
+
+| 명령 | 결과 | 비고 |
+|---|---|---|
+| `npm run test` | **332 통과 · 2 기대 실패(it.fails) · 0 실패** (파일 13) | +64: DI 13 · UT-13 22 · CT-07 14 · UT-14 15 |
+| `npm run typecheck:tests` | 통과 | |
+| `npm run test:e2e` (52건) | **51 통과 · 0 실패 · 1 skip** | +5 E2E-7. skip 1 = R-04(정상) |
+
+- specs.json 데이터 위반 0 (35제품·229항목, source.url 35/35 이 그 제품 docs.json 자료, 비표준 key 20종 label 일관, 페이지 누락 0, 검수 전 35/35).
+- **발견 버그 (구현, `it.fails` 로 재현)**
+  - **B1 (낮음, 잠복)** `ComparePage` 기기 비교 대표 사양 칸 `<li key={product.id}>` — 한 제품이 같은 key 를 2개 이상 가지면 React "same key" 경고(재렌더 시 항목 누락·중복 위험). 제품 비교는 index key 라 정상. 현재 데이터는 DI-93 으로 막힘. 재현: CT-07 `[BUG]`. 수정: `key={`${product.id}-${i}`}`.
+  - **B2 (중간)** 비교 담기 저장 목록이 데이터에서 사라진 id 로 차 있으면 자리를 계속 차지: 4개 모두 사라진 id → 비교 바 0개라 숨고(모두 비우기 없음) 모든 "비교에 담기" 버튼이 "가득 찼습니다"로 비활성 → 사용자가 복구 불가(localStorage 직접 삭제 외). 1~3개면 보이는 칩 수보다 일찍 full. 재현: localStorage `lse-compare-v1 = {"equipment":["gone-1","gone-2","gone-3","gone-4"],"product":[],"active":"equipment"}` → 아무 기기 상세 패널. UT-14 `[BUG]`. 수정안: store 초기화(또는 toggle·CompareToggle 의 full 판정)에서 데이터에 있는 id 만 세기 / 비교 바 마운트 시 사라진 id 정리.
+- 참고(버그 아님·확인 필요): ① 제품 비교 사양 칸은 `item.page` 없으면 페이지 링크를 생략(기기 비교는 source.page 로 대체) — 현재 데이터는 모든 item 에 page 가 있어 차이 없음. ② 소속 기기가 없는 제품을 섞으면 "서로 다른 기기" 안내가 뜸(빈 기기도 하나의 기기로 셈). ③ 비표준 key 행 이름은 첫 제품 label — DI-95 로 일관성 보장.
+
+
+## 11g. 실행 결과 (2026-11-18, v1.0 — 비교 기능 수정 라운드, 커밋 전 작업 트리)
+
+| 명령 | 결과 | 비고 |
+|---|---|---|
+| `npm run test` | **364 통과 · 0 실패** (파일 14, 기대 실패 0) | v0.9 334 → +30: UT-13 +7 · CT-07 +7 · UT-14 +11 · UT-15 +4 (it.fails 2 → it) |
+| `npm run typecheck:tests` | 통과 | |
+| `npm run test:e2e` (63건) | **62 통과 · 0 실패 · 1 skip** | E2E-7 5 → 16. skip 1 = R-04(정상) |
+
+- v0.9 버그 **B1(li key)·B2(사라진 id 자리 차지) 수정 확인** — 재현 테스트가 통과로 바뀌어 `it` 회귀 테스트로 전환.
+- specs.json 인용 페이지 9건 정정 후 DI-90~99c 위반 0 (35제품·229항목).
+- 테스트 갱신 사유(제품 버그 아님): M6 로 AppData.specsByProductId 제거 → 픽스처·mock, `equipmentSpecMap`·`specProductCount` 인자 2개, `type=Equipment` 허용(의도), store 가 데이터에 없는 id 를 정리 → store 테스트를 실제 id 로, `specValueText` 가 주석 앞에 공백 포함 단위 삽입("60 A (Hz 기준)").
+- 새 버그: 없음. 참고(확인 필요, 낮음): `loadSpecs` "실패 시 재시도"는 메모를 해제해 새 `import()` 를 부르지만, 브라우저는 실패한 모듈 URL 을 모듈 맵에 캐시할 수 있어(브라우저별) 같은 페이지에서 재시도가 다시 실패할 수 있음 — 화면 안내 문구("새로고침하면 다시 시도")는 이와 맞음. 단위 테스트(UT-15)는 vitest 모듈 레지스트리 기준이라 이 차이를 검증하지 못함. 검증 실패(평가된 모듈 캐시)는 재시도해도 같은 결과 — 정상.
 
 ## 12. CI 의견 — deploy.yml 에 E2E 단계 (넣지 않음, 의견만)
 

@@ -20,7 +20,6 @@ import categoriesJson from './categories.json';
 import equipmentTypesJson from './equipment-types.json';
 import diagramJson from './diagram.json';
 import docsJson from './docs.json';
-import specsJson from './specs.json';
 import equipmentImagesJson from './equipment-images.json';
 
 import { DataValidationError } from '../lib/errors';
@@ -44,8 +43,6 @@ export interface AppData {
   equipmentTypeById: Map<string, EquipmentType>;
   /** docs.json — 제품별 자료 (없는 제품은 키가 없음) */
   docsByProductId: Map<string, ProductDocs>;
-  /** specs.json — 카탈로그 추출 정격 사양 (없는 제품은 키 없음) */
-  specsByProductId: Map<string, ProductSpecs>;
   /** equipment-images.json — 기기별 대표 사진 (없는 기기는 키가 없음 → 단선결선도 심볼로 표시) */
   equipmentImageById: Map<string, EquipmentImage>;
 }
@@ -63,7 +60,6 @@ export function getData(): AppData {
   const equipmentTypes = parseOrThrow(EquipmentTypesSchema, equipmentTypesJson, 'equipment-types.json');
   const diagram = parseOrThrow(DiagramSchema, diagramJson, 'diagram.json');
   const docs = parseOrThrow(DocsFileSchema, docsJson, 'docs.json');
-  const specs = parseOrThrow(SpecsFileSchema, specsJson, 'specs.json');
   const images = parseOrThrow(EquipmentImagesSchema, equipmentImagesJson, 'equipment-images.json');
   cache = {
     products,
@@ -75,7 +71,6 @@ export function getData(): AppData {
     categoryByCode: new Map(categories.map((c) => [c.code, c])),
     equipmentTypeById: new Map(equipmentTypes.map((e) => [e.id, e])),
     docsByProductId: new Map(Object.entries(docs.products)),
-    specsByProductId: new Map(Object.entries(specs.products)),
     equipmentImageById: new Map(Object.entries(images)),
   };
   return cache;
@@ -83,6 +78,35 @@ export function getData(): AppData {
 
 /** 컴포넌트용 별칭 (렌더 중 호출) */
 export const useData = getData;
+
+// ───────────── 정격 사양 (specs.json) — 지연 로딩 ─────────────
+// 비교 화면에서만 쓰므로 첫 화면 번들에서 빼고 dynamic import 로 따로 받는다 (2026-11-18 디버그 M6).
+// 검증 실패는 getData() 와 달리 앱 전체 오류로 올리지 않고, 비교 화면이 거절된 Promise 를 받아 그 화면에서만 안내한다.
+
+export type SpecsMap = Map<string, ProductSpecs>;
+
+let specsCache: SpecsMap | undefined;
+let specsPromise: Promise<SpecsMap> | undefined;
+
+/** specs.json 을 불러와 SpecsFileSchema 로 검증한 뒤 제품 id → 사양 Map. 결과는 메모 (실패하면 다음 호출에서 재시도) */
+export function loadSpecs(): Promise<SpecsMap> {
+  specsPromise ??= import('./specs.json')
+    .then((m) => {
+      const file = parseOrThrow(SpecsFileSchema, m.default, 'specs.json');
+      specsCache = new Map(Object.entries(file.products));
+      return specsCache;
+    })
+    .catch((e: unknown) => {
+      specsPromise = undefined;
+      throw e;
+    });
+  return specsPromise;
+}
+
+/** 이미 불러온 사양 (아직이면 undefined) — 재방문 시 '불러오는 중' 깜빡임 없이 바로 그리기용 */
+export function peekSpecs(): SpecsMap | undefined {
+  return specsCache;
+}
 
 /** 제품별 자료 조회 */
 export function docsByProductId(productId: string): ProductDocs | undefined {

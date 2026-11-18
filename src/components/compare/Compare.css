@@ -56,10 +56,14 @@
   box-shadow: var(--shadow-md);
   font-size: var(--fs-sm);
 }
+/* 계통도: 상세 패널·미니맵 사이 남는 폭에 둔다 (1300px 이상이면 480px 이상 확보) */
 .app-shell--home .cmp-tray {
   max-width: min(760px, calc(100vw - var(--nav-w) - var(--panel-w) - 260px));
 }
-.cmp-tray__title { white-space: nowrap; }
+/* 글자가 한 글자씩 세로로 쪼개지지 않게 — 줄이 모자라면 요소 단위로 다음 줄로 */
+.cmp-tray__title,
+.cmp-tray__kind,
+.cmp-tray__clear { white-space: nowrap; }
 .cmp-tray__count { font-weight: var(--fw-regular); color: var(--color-text-muted); }
 .cmp-tray__kinds { display: inline-flex; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
 .cmp-tray__kind {
@@ -129,8 +133,24 @@
 .cmp-tray__go:hover { background: var(--color-brand-strong); }
 .cmp-tray__go.is-disabled { background: var(--color-surface-2); color: var(--color-text-muted); font-weight: var(--fw-medium); }
 
-/* 비교 바가 있을 때 본문 아래 여백 (페이지 끝이 바에 가리지 않게) */
-.app-shell--tray .app-main > * { padding-bottom: 96px; }
+/*
+ * 계통도 901~1299px: 패널·미니맵 사이 폭이 480px 미만이라(920px 에서 100px) 바가 세로로 찌그러졌다(디버그 H1).
+ * 이 폭에서는 본문 열 전체 폭 바로 바꾸고, 미니맵을 바 높이(--cmp-tray-h, CompareTray 가 실측)만큼 위로 올린다.
+ * 1099px 이하는 칩 목록을 접어 "기기 비교 n/4 · 모두 비우기 · 비교하기" 한 줄로 (담긴 항목은 비교 화면에서 확인).
+ */
+@media (min-width: 901px) and (max-width: 1299px) {
+  .app-shell--home .cmp-tray {
+    right: calc(var(--panel-w) + 16px);
+    max-width: none;
+  }
+  .app-shell--home.app-shell--tray .minimap { bottom: calc(var(--cmp-tray-h, 64px) + 24px); }
+}
+@media (min-width: 901px) and (max-width: 1099px) {
+  .app-shell--home .cmp-tray__items { display: none; }
+}
+
+/* 비교 바가 있을 때 본문 아래 여백 = 바 실측 높이 + 바 아래 간격 + 여유 (페이지 끝이 바에 가리지 않게, 디버그 M2) */
+.app-shell--tray .app-main > * { padding-bottom: calc(var(--cmp-tray-h, 80px) + 32px); }
 .app-shell--tray.app-shell--home .app-main > * { padding-bottom: 0; }
 
 @media (max-width: 900px) {
@@ -151,5 +171,9 @@
   .app-shell:has(.detail-panel--sheet) .cmp-tray__items,
   .app-shell:has(.detail-panel--sheet) .cmp-tray__clear { display: none; }
   .app-shell:has(.detail-panel--sheet.is-expanded) .cmp-tray { display: none; }
-  .app-shell--tray .app-main > * { padding-bottom: 140px; }
+  .app-shell--tray .app-main > * { padding-bottom: calc(var(--cmp-tray-h, 140px) + 24px + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* 전환 버튼의 "/4": 눌린(브랜드 배경) 상태에서는 흐린 글자 대신 버튼 글자색 그대로 (대비) */
+.cmp-tray__kind .cmp-tray__count { font-weight: var(--fw-regular); }
+.cmp-tray__kind[aria-pressed='true'] .cmp-tray__count { color: inherit; }

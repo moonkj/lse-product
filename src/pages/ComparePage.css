@@ -44,7 +44,13 @@
 .cmp-scroll {
   /* position: 표 안 visually-hidden(absolute) 요소가 스크롤 박스 밖 문서 폭을 늘리지 않게 */
   position: relative;
-  overflow-x: auto;
+  /*
+   * 가로·세로 모두 이 박스 안에서 스크롤 — 열 머리글(sticky top)과 첫 열(sticky left)이 같은 스크롤 박스를 기준으로
+   * 동시에 고정된다 (디버그 M5: overflow-x 박스 안에서는 세로 sticky 가 걸리지 않았음). 높이는 화면 높이에 맞춤.
+   */
+  overflow: auto;
+  max-height: calc(100dvh - var(--header-h) - 48px);
+  overscroll-behavior: contain;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
@@ -78,7 +84,14 @@
   color: var(--color-text-muted);
   font-weight: var(--fw-bold);
 }
-.cmp-table thead .cmp-corner { z-index: 2; vertical-align: bottom; }
+/* 열 머리글 고정 (세로 스크롤해도 어느 열이 어느 항목인지 보이게) */
+.cmp-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--color-surface);
+}
+.cmp-table thead .cmp-corner { z-index: 3; left: 0; vertical-align: bottom; }
 .cmp-table tr.is-diff > th:first-child { color: var(--color-text); box-shadow: inset 3px 0 0 var(--color-brand); }
 
 .cmp-section th {
@@ -154,6 +167,11 @@
   .cmp-title { font-size: var(--fs-xl); }
   .cmp-table { min-width: calc(108px + var(--cmp-cols, 2) * 168px); }
   .cmp-table th:first-child { width: 108px; }
+  /* 모바일: 헤더+계층 칩 줄이 더 높고, 고정 머리글이 화면을 덜 차지하게 사진 칸을 줄임 */
+  .cmp-scroll { max-height: calc(100dvh - 150px); }
+  .cmp-colhead__media { height: 48px; }
+  .cmp-colhead__media img,
+  .cmp-colhead__media .eq-symbol { width: 40px; height: 40px; }
   .cmp-table th,
   .cmp-table td { padding: 8px; }
 }

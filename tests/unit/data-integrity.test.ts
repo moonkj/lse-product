@@ -22,6 +22,8 @@ import {
   DocsFileSchema,
   EquipmentImagesSchema,
   GapAssessmentSchema,
+  SpecsFileSchema,
+  SPEC_KEYS,
   type DocsFile,
   type EquipmentImage,
 } from '../../src/lib/schema';
@@ -498,5 +500,220 @@ describe('기기 사진 equipment-images.json (DI-80 ~)', () => {
       if (existsSync(PUBLIC_DIR + v.thumb) && statSync(PUBLIC_DIR + v.thumb).size > 500 * 1024) warn.push(`${id}: thumb ${Math.round(statSync(PUBLIC_DIR + v.thumb).size / 1024)}KB`);
     }
     softWarn('DI-86', warn);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// 정격 사양 specs.json (DI-90 ~) — v0.9 비교 기능. 공개 카탈로그 추출값, 값마다 페이지.
+//   판정은 아래 checkSpecs() 한 함수 — 현재 데이터 = 위반 0, 합성 위반 데이터 = 해당 규칙 ID (자기검증).
+//   src 수정 금지 라운드라 테스트 파일에 둔다 → test-plan §3.11 "공용 모듈(src/lib/integrity) 편입 후보".
+// ─────────────────────────────────────────────────────────────
+type SpecsFileT = z.infer<typeof SpecsFileSchema>;
+interface SpecIssue {
+  rule: string;
+  msg: string;
+}
+const SPEC_ITEMS_MAX = 10;
+const STANDARD_SPEC_LABELS = SPEC_KEYS as Record<string, string>;
+/** KST 오늘 (YYYY-MM-DD) */
+const todayKstIso = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+
+/**
+ * specs.json 규칙 (스키마 통과 후의 의미 규칙).
+ * - DI-91 productId ∈ products.json
+ * - DI-92 source.url ∈ 그 제품 docs.json 의 doc.url (근거: 현재 35/35 일치 — 추출 담당이 docs.json 카탈로그만 사용. 같은 도메인 허용보다 엄격하게 둬서 오타·다른 제품 카탈로그 연결을 잡는다)
+ * - DI-93 제품 안 key 중복 없음
+ * - DI-94 표준 key 의 label = SPEC_KEYS 라벨
+ * - DI-95 비표준 key: 파일 전체에서 같은 key = 같은 label / DI-95b 같은 label = 같은 key (표준 라벨 포함 — 행 이름 중복 방지)
+ * - DI-96 items 1~10개, label·value 공백 문자열 아님
+ * - DI-97 값마다 페이지 추적 가능 (item.page ?? source.page)
+ * - DI-98 extractedAt 실제 날짜 + 미래 아님(KST), generatedAt 날짜로 파싱됨
+ * - DI-99b 개인정보 의심 패턴 0건 (title·url·label·value·unit·note)
+ */
+function checkSpecs(
+  file: SpecsFileT,
+  productIds: ReadonlySet<string>,
+  docUrlsByProduct: ReadonlyMap<string, readonly string[]>,
+  today = todayKstIso(),
+): SpecIssue[] {
+  const out: SpecIssue[] = [];
+  const add = (rule: string, msg: string) => out.push({ rule, msg });
+  if (Number.isNaN(Date.parse(file.generatedAt))) add('DI-98', `generatedAt 날짜 아님: ${file.generatedAt}`);
+  const labelOfKey = new Map<string, { label: string; where: string }>();
+  const keyOfLabel = new Map<string, { key: string; where: string }>();
+  for (const [k, l] of Object.entries(STANDARD_SPEC_LABELS)) keyOfLabel.set(l, { key: k, where: 'SPEC_KEYS' });
+  for (const [id, s] of Object.entries(file.products)) {
+    if (!productIds.has(id)) add('DI-91', `${id}: products.json 에 없는 제품`);
+    if (!(docUrlsByProduct.get(id) ?? []).includes(s.source.url)) add('DI-92', `${id}: source.url 이 그 제품 docs.json 자료가 아님 (${s.source.url})`);
+    if (s.items.length < 1 || s.items.length > SPEC_ITEMS_MAX) add('DI-96', `${id}: items ${s.items.length}개 (1~${SPEC_ITEMS_MAX})`);
+    if (!isRealDate(s.extractedAt)) add('DI-98', `${id}: extractedAt 없는 날짜 ${s.extractedAt}`);
+    else if (s.extractedAt > today) add('DI-98', `${id}: extractedAt 미래 ${s.extractedAt}`);
+    for (const k of duplicates(s.items.map((i) => i.key))) add('DI-93', `${id}: key 중복 ${k}`);
+    const texts = [s.source.title, decodeURIComponentSafe(s.source.url), s.note ?? ''];
+    for (const it of s.items) {
+      texts.push(it.label, it.value, it.unit ?? '');
+      if (!it.label.trim() || !it.value.trim()) add('DI-96', `${id}/${it.key}: label·value 공백`);
+      if (!(it.page ?? s.source.page)) add('DI-97', `${id}/${it.key}: 페이지 없음 (item.page·source.page 모두 없음)`);
+      const std = STANDARD_SPEC_LABELS[it.key];
+      if (std !== undefined) {
+        if (it.label !== std) add('DI-94', `${id}/${it.key}: label "${it.label}" ≠ SPEC_KEYS "${std}"`);
+      } else {
+        const prev = labelOfKey.get(it.key);
+        if (prev && prev.label !== it.label) add('DI-95', `key ${it.key}: label "${prev.label}"(${prev.where}) ≠ "${it.label}"(${id})`);
+        if (!prev) labelOfKey.set(it.key, { label: it.label, where: id });
+      }
+      const pk = keyOfLabel.get(it.label);
+      if (pk && pk.key !== it.key) add('DI-95b', `label "${it.label}": key ${pk.key}(${pk.where}) ≠ ${it.key}(${id})`);
+      if (!pk) keyOfLabel.set(it.label, { key: it.key, where: id });
+    }
+    for (const f of texts) {
+      if (EMAIL_RE.test(f)) add('DI-99b', `${id}: 이메일 의심 "${f}"`);
+      if (PHONE_RE.test(f)) add('DI-99b', `${id}: 전화번호 의심 "${f}"`);
+    }
+  }
+  return out;
+}
+
+describe('정격 사양 specs.json (DI-90 ~)', () => {
+  const SPECS_FILE = 'specs.json';
+  let specs: SpecsFileT;
+  let docUrls = new Map<string, string[]>();
+  let issues: SpecIssue[] = [];
+  const issuesOf = (rule: string) => issues.filter((i) => i.rule === rule).map((i) => i.msg);
+
+  // 합성 데이터 — 규칙 자기검증용
+  const URL_A = 'https://www.ls-electric.com/ko/cat/A.pdf';
+  const goodItem = { key: 'ratedVoltage', label: '정격전압', value: '690', unit: 'V', page: 3 };
+  const goodEntry = () => ({
+    items: [{ ...goodItem }],
+    source: { title: '[A] 카탈로그', url: URL_A, page: 3 },
+    extractedAt: '2026-11-18',
+    reviewed: false,
+  });
+  const fileOf = (products: Record<string, ReturnType<typeof goodEntry> | Record<string, unknown>>): SpecsFileT =>
+    ({ generatedAt: '2026-11-18T00:00:00+09:00', products }) as SpecsFileT;
+  const synthIds = new Set(['P90001', 'P90002']);
+  const synthDocs = new Map([
+    ['P90001', [URL_A]],
+    ['P90002', [URL_A]],
+    ['P99999', [URL_A]], // DI-91 단독 검증용 (docs 는 있으나 products 에 없음)
+  ]);
+  const rulesFor = (f: SpecsFileT) => [...new Set(checkSpecs(f, synthIds, synthDocs, '2026-11-18').map((i) => i.rule))].sort();
+
+  beforeAll(() => {
+    specs = SpecsFileSchema.parse(readJson(SPECS_FILE));
+    const docs = DocsFileSchema.parse(readJson('docs.json'));
+    docUrls = new Map(Object.entries(docs.products).map(([id, e]) => [id, e.docs.map((d) => d.url)]));
+    issues = checkSpecs(specs, new Set(productById.keys()), docUrls);
+  });
+
+  it('DI-90 specs.json 이 존재하고 SpecsFileSchema 통과 (+ 잘못된 값은 거부)', () => {
+    expect(existsSync(DATA_DIR + SPECS_FILE)).toBe(true);
+    expect(Object.keys(specs.products).length).toBeGreaterThan(0);
+    const bad = (patch: Record<string, unknown>) => SpecsFileSchema.safeParse(fileOf({ P90001: { ...goodEntry(), ...patch } })).success;
+    expect(SpecsFileSchema.safeParse(fileOf({ P90001: goodEntry() })).success).toBe(true);
+    expect(bad({ items: [] }), '빈 items 통과').toBe(false);
+    expect(bad({ source: { title: 'x', url: 'http://www.ls-electric.com/a.pdf' } }), 'http URL 통과').toBe(false);
+    expect(bad({ source: { title: 'x', url: URL_A, page: 0 } }), 'source.page 0 통과').toBe(false);
+    expect(bad({ items: [{ ...goodItem, page: 1.5 }] }), '소수 페이지 통과').toBe(false);
+    expect(bad({ items: [{ ...goodItem, value: '' }] }), '빈 value 통과').toBe(false);
+    expect(bad({ extractedAt: '2026/11/18' }), '날짜 형식 통과').toBe(false);
+    expect(bad({ reviewed: 'no' }), 'reviewed 문자열 통과').toBe(false);
+  });
+
+  it('DI-90b checkSpecs 자기검증: 정상 합성 = 위반 0, 규칙마다 위반 1건 → 그 ID', () => {
+    expect(rulesFor(fileOf({ P90001: goodEntry() }))).toEqual([]);
+    const e = goodEntry;
+    const cases: [string, SpecsFileT][] = [
+      ['DI-91', fileOf({ P99999: e() })],
+      ['DI-92', fileOf({ P90001: { ...e(), source: { title: 'x', url: 'https://www.ls-electric.com/ko/cat/B.pdf', page: 1 } } })],
+      ['DI-93', fileOf({ P90001: { ...e(), items: [goodItem, { ...goodItem, value: '1000' }] } })],
+      ['DI-94', fileOf({ P90001: { ...e(), items: [{ ...goodItem, label: '정격 전압' }] } })],
+      [
+        'DI-95',
+        fileOf({
+          P90001: { ...e(), items: [{ key: 'ipRating', label: '보호등급(IP)', value: 'IP20', page: 1 }] },
+          P90002: { ...e(), items: [{ key: 'ipRating', label: 'IP 등급', value: 'IP54', page: 1 }] },
+        }),
+      ],
+      ['DI-95b', fileOf({ P90001: { ...e(), items: [{ key: 'voltage', label: '정격전압', value: '690', page: 1 }] } })],
+      ['DI-96', fileOf({ P90001: { ...e(), items: Array.from({ length: 11 }, (_, i) => ({ key: `k${i}`, label: `항목${i}`, value: 'v', page: 1 })) } })],
+      ['DI-96', fileOf({ P90001: { ...e(), items: [{ ...goodItem, value: '  ' }] } })],
+      ['DI-97', fileOf({ P90001: { ...e(), items: [{ key: 'poles', label: '극수', value: '3' }], source: { title: 'x', url: URL_A } } })],
+      ['DI-98', fileOf({ P90001: { ...e(), extractedAt: '2026-02-30' } })],
+      ['DI-98', fileOf({ P90001: { ...e(), extractedAt: '2026-11-19' } })],
+      ['DI-99b', fileOf({ P90001: { ...e(), note: '문의 sales@example.com' } })],
+      ['DI-99b', fileOf({ P90001: { ...e(), note: '담당 010-1234-5678' } })],
+    ];
+    for (const [rule, f] of cases) expect(rulesFor(f), rule).toEqual([rule]);
+    // 비표준 key 가 같은 label 로 일관되면 통과, item.page 없어도 source.page 가 있으면 통과
+    expect(
+      rulesFor(
+        fileOf({
+          P90001: { ...e(), items: [{ key: 'ipRating', label: '보호등급(IP)', value: 'IP20' }] },
+          P90002: { ...e(), items: [{ key: 'ipRating', label: '보호등급(IP)', value: 'IP54', page: 2 }] },
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('DI-91 productId 키가 모두 products.json 에 존재', () => {
+    expect(issuesOf('DI-91')).toEqual([]);
+  });
+
+  it('DI-92 source.url 이 그 제품의 docs.json 자료 URL 중 하나 (+ https·공식 도메인)', () => {
+    expect(issuesOf('DI-92')).toEqual([]);
+    const notAllowed = Object.entries(specs.products).filter(([, s]) => !isAllowedDocUrl(s.source.url)).map(([id, s]) => `${id}: ${s.source.url}`);
+    expect(notAllowed).toEqual([]);
+  });
+
+  it('DI-93 같은 제품 안에서 key 중복 없음', () => {
+    expect(issuesOf('DI-93')).toEqual([]);
+  });
+
+  it('DI-94 표준 key(SPEC_KEYS) 의 label 이 SPEC_KEYS 라벨과 같음', () => {
+    expect(issuesOf('DI-94')).toEqual([]);
+  });
+
+  it('DI-95 비표준 key 는 전체에서 같은 key = 같은 label, DI-95b 같은 label = 같은 key (비교표 행 정렬·이름 일관성)', () => {
+    expect(issuesOf('DI-95')).toEqual([]);
+    expect(issuesOf('DI-95b')).toEqual([]);
+  });
+
+  it('DI-96 items 1~10개, label·value 공백 아님', () => {
+    expect(issuesOf('DI-96')).toEqual([]);
+  });
+
+  it('DI-97 값마다 카탈로그 페이지 추적 가능 (item.page 또는 source.page, 양의 정수)', () => {
+    expect(issuesOf('DI-97')).toEqual([]);
+  });
+
+  it('DI-98 extractedAt 실제 날짜 + 미래 아님(KST), generatedAt 날짜 형식', () => {
+    expect(issuesOf('DI-98')).toEqual([]);
+  });
+
+  it('DI-99 (정보) reviewed=false 제품 수 → 화면 "카탈로그 추출값 · 검수 전" 배지 대상', () => {
+    const entries = Object.entries(specs.products);
+    const draft = entries.filter(([, s]) => !s.reviewed).map(([id]) => id);
+    // eslint-disable-next-line no-console
+    console.info(`[DI-99] 검수 전 ${draft.length}/${entries.length}개 제품, 항목 ${entries.reduce((n, [, s]) => n + s.items.length, 0)}개`);
+    expect(draft.length).toBeLessThanOrEqual(entries.length);
+  });
+
+  it('DI-99b 개인정보 의심 패턴(이메일, 전화번호) 0건 — 제목·URL·라벨·값·단위·비고', () => {
+    expect(issuesOf('DI-99b')).toEqual([]);
+  });
+
+  it('DI-99c (SOFT) 사양이 있는데 어느 기기에도 연결되지 않은 제품 (기기 비교 화면에 나오지 않음)', () => {
+    const categories = z.array(CategorySchema).parse(asArray(readJson(FILES.categories), 'categories'));
+    const linked = new Set<string>();
+    for (const eq of equipment) {
+      (eq.productIds ?? []).forEach((id) => linked.add(id));
+      for (const code of eq.lseCategoryCodes) {
+        categories.find((c) => c.code === code)?.productIds.forEach((id) => linked.add(id));
+        products.filter((p) => p.categoryCode.startsWith(code)).forEach((p) => linked.add(p.id));
+      }
+    }
+    softWarn('DI-99c', Object.keys(specs.products).filter((id) => !linked.has(id)));
   });
 });

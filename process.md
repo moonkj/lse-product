@@ -130,3 +130,8 @@
 - [사양 추출 완료] specs.json: 35개 제품·229항목(공개 카탈로그 PDF 값만, 값마다 페이지, reviewed=false), 다운로드 44건(1.3초 간격). 대조표 docs/research/specs-extraction.md(신뢰도 낮은 값 11건 표시)
   - 미수집: 40MB 초과 카탈로그(Metasol ACB/MCCB, Compact ACB, Susol UL VCB, LIS), 카탈로그 없음(VC, PF, MMS, MCB/RCBO, 고압 인버터, GIS, 주변압기)
   - 리더 확인: unit 270 통과, 보호계전기·VCB 제품 비교 화면에 사양·출처·검수 전 배지 표시
+- [비교 점검] T3: specs DI-90~99c(13), compare 단위 22·ComparePage 14·store 15·E2E-7 5 → unit 332+2 기대실패, E2E 51 / 실제 버그 B2(사라진 id가 담기 목록 자리 차지 — 복구 불가)·B1(li key 중복, 잠복)
+  - T2: 높음 1(비교 바 901~1100px 찌그러짐)·중간 8(탭 간 유실, 모바일 가림, 차이만 보기 표기 오탐, 단위 위치, 머리글 고정, specs 즉시 로딩, 다른 기기 안내 오탐, 인용 페이지 불일치 9건)·낮음 14. PDF 대조: url 35/35·page 범위 229/229 정상, 신뢰도 낮음은 10건(정정)
+- [수정 라운드] T1 = 화면·로딩 수정(M6에 한해 load.ts 수정 승인) / 데이터 담당 = specs.json 인용 페이지 9건 정정·대조표 갱신
+- [비교 수정 라운드 완료] T1: 비교 바 폭 대응(901~1299 본문 폭, ≤1099 칩 접기, 미니맵 위로), 탭 간 동기화, 모바일 여백(--cmp-tray-h), 차이만 보기 정규화(compareKey), 단위 위치(specValueText), 머리글 sticky, specs 지연 로딩(loadSpecs, 첫 화면 −5.5kB), 공통 기기 안내, B1·B2, axe 0 / 데이터: specs 인용 페이지 9건 정정·대조표 검수 상태 / T3: B1·B2 회귀 전환, 테스트 +30
+  - 리더 재검증: typecheck(src·tests)·build 통과, unit 364/364, E2E 62 통과·1 skip·0 실패
