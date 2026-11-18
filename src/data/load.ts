@@ -3,6 +3,7 @@ import {
   CategoriesSchema,
   DiagramSchema,
   DocsFileSchema,
+  SpecsFileSchema,
   EquipmentTypesSchema,
   EquipmentImagesSchema,
   ProductsSchema,
@@ -12,12 +13,14 @@ import {
   type EquipmentType,
   type Product,
   type ProductDocs,
+  type ProductSpecs,
 } from '../lib/schema';
 import productsJson from './products.json';
 import categoriesJson from './categories.json';
 import equipmentTypesJson from './equipment-types.json';
 import diagramJson from './diagram.json';
 import docsJson from './docs.json';
+import specsJson from './specs.json';
 import equipmentImagesJson from './equipment-images.json';
 
 import { DataValidationError } from '../lib/errors';
@@ -41,6 +44,8 @@ export interface AppData {
   equipmentTypeById: Map<string, EquipmentType>;
   /** docs.json — 제품별 자료 (없는 제품은 키가 없음) */
   docsByProductId: Map<string, ProductDocs>;
+  /** specs.json — 카탈로그 추출 정격 사양 (없는 제품은 키 없음) */
+  specsByProductId: Map<string, ProductSpecs>;
   /** equipment-images.json — 기기별 대표 사진 (없는 기기는 키가 없음 → 단선결선도 심볼로 표시) */
   equipmentImageById: Map<string, EquipmentImage>;
 }
@@ -58,6 +63,7 @@ export function getData(): AppData {
   const equipmentTypes = parseOrThrow(EquipmentTypesSchema, equipmentTypesJson, 'equipment-types.json');
   const diagram = parseOrThrow(DiagramSchema, diagramJson, 'diagram.json');
   const docs = parseOrThrow(DocsFileSchema, docsJson, 'docs.json');
+  const specs = parseOrThrow(SpecsFileSchema, specsJson, 'specs.json');
   const images = parseOrThrow(EquipmentImagesSchema, equipmentImagesJson, 'equipment-images.json');
   cache = {
     products,
@@ -69,6 +75,7 @@ export function getData(): AppData {
     categoryByCode: new Map(categories.map((c) => [c.code, c])),
     equipmentTypeById: new Map(equipmentTypes.map((e) => [e.id, e])),
     docsByProductId: new Map(Object.entries(docs.products)),
+    specsByProductId: new Map(Object.entries(specs.products)),
     equipmentImageById: new Map(Object.entries(images)),
   };
   return cache;

@@ -226,6 +226,56 @@ export const DocsFileSchema = z.object({
 });
 export type DocsFile = z.infer<typeof DocsFileSchema>;
 
+/**
+ * src/data/specs.json — 공개 카탈로그에서 추출한 제품 대표 정격 사양 (비교 기능용, 2026-11-18 사용자 요청).
+ * 값마다 출처(카탈로그 제목·URL·페이지)를 남기고, reviewed=false 면 화면에 "카탈로그 추출값 · 검수 전" 표시.
+ * key 는 SPEC_KEYS 의 표준 키를 우선 사용 (비교표 행 정렬 기준). 표에 없는 키는 label 로 표시.
+ */
+export const SPEC_KEYS = {
+  ratedVoltage: '정격전압',
+  ratedCurrent: '정격전류',
+  breakingCapacity: '정격차단전류',
+  frame: '프레임',
+  poles: '극수',
+  capacity: '정격용량',
+  frequency: '정격주파수',
+  insulation: '절연·냉각 방식',
+  motorPower: '적용 전동기 용량',
+  protection: '보호 기능',
+  communication: '통신',
+  mounting: '설치·인출 방식',
+  standards: '적용 규격',
+} as const;
+export type StandardSpecKey = keyof typeof SPEC_KEYS;
+
+export const SpecItemSchema = z.object({
+  key: z.string().min(1),
+  label: z.string().min(1),
+  /** 카탈로그 표기 그대로 (범위는 "630~6300" 처럼) */
+  value: z.string().min(1),
+  unit: z.string().optional(),
+  /** 이 값이 실린 카탈로그 페이지 (source.page 와 다를 때) */
+  page: z.number().int().positive().optional(),
+});
+export type SpecItem = z.infer<typeof SpecItemSchema>;
+
+export const ProductSpecsSchema = z.object({
+  items: z.array(SpecItemSchema).min(1),
+  source: z.object({ title: z.string().min(1), url: httpsUrl, page: z.number().int().positive().optional() }),
+  extractedAt: isoDate,
+  /** 사람이 카탈로그와 대조해 검수했는지 */
+  reviewed: z.boolean(),
+  note: z.string().optional(),
+});
+export type ProductSpecs = z.infer<typeof ProductSpecsSchema>;
+
+export const SpecsFileSchema = z.object({
+  generatedAt: z.string(),
+  /** key = Product.id */
+  products: z.record(z.string(), ProductSpecsSchema),
+});
+export type SpecsFile = z.infer<typeof SpecsFileSchema>;
+
 /** equipment-images.json — 기기별 대표 제품 사진 (scripts/fetch-images.mjs 생성, 리더 소유) */
 export const EquipmentImageSchema = z.object({
   file: z.string().regex(/^images\/equipment\/[a-z0-9-]+\.(png|jpg|webp)$/),
