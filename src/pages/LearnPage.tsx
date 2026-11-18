@@ -8,6 +8,9 @@ import Overview from './learn/Overview';
 import './pages.css';
 import './LearnPage.css';
 
+/** 퀴즈·진도 시절 localStorage 키 (개선 R3 에서 기능 제거) */
+const LEGACY_PROGRESS_KEY = 'lse-learn-progress-v1';
+
 /** tour = 단계 진행 중 / overview = 투어 끝내기 후 개요 */
 type View = 'tour' | 'overview';
 
@@ -44,6 +47,12 @@ export default function LearnPage() {
 
   useEffect(() => {
     document.title = pageTitle('교육');
+    // 퀴즈 제거(개선 R3) 전 사용자 브라우저에 남은 학습 진도 저장값 정리 (1회, 실패해도 무시)
+    try {
+      localStorage.removeItem(LEGACY_PROGRESS_KEY);
+    } catch {
+      /* 저장소 접근 불가 — 무시 */
+    }
   }, []);
 
   const goTo = (idx: number, focus = true) => {

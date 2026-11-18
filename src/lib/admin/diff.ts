@@ -1,4 +1,5 @@
 /** 원본 대비 초안 변경 내역 + 커밋 메시지용 요약 markdown */
+import { edgeKind } from '../diagram/geometry';
 import { nodeName, type Draft } from './draft';
 
 export type ChangeKind = 'added' | 'modified' | 'deleted';
@@ -93,7 +94,7 @@ export function computeChanges(base: Draft, draft: Draft): Change[] {
   const dE = new Map(draft.diagram.edges.map((e) => [e.id, e]));
   const edgeText = (d: Draft, id: string) => {
     const e = (d === base ? bE : dE).get(id)!;
-    const kind = { power: '전력', signal: '신호', alt: '택1' }[e.kind ?? 'power'];
+    const kind = { power: '전력', signal: '신호', alt: '택1' }[edgeKind(e)];
     return `${id} ${nodeName(d, e.from)} → ${nodeName(d, e.to)} (${kind}${e.voltage ? ` · ${e.voltage}` : ''})`;
   };
   for (const [id, e] of dE) {
@@ -128,6 +129,7 @@ export function changesMarkdown(base: Draft, draft: Draft, changes: Change[] = c
     '',
     `관리자 화면(/#/admin)에서 편집 — ${parts.join(', ') || '변경 없음'}`,
     `결과: 기기 ${draft.equipmentTypes.length}종 · 노드 ${draft.diagram.nodes.length} · 연결선 ${draft.diagram.edges.length}`,
+    ...reviewLines(base, draft),
     '',
   ];
   for (const entity of ['equipment', 'node', 'edge', 'image'] as ChangeEntity[]) {
@@ -138,4 +140,16 @@ export function changesMarkdown(base: Draft, draft: Draft, changes: Change[] = c
     lines.push('');
   }
   return lines.join('\n');
+}
+
+type Review = Draft['diagram']['review'];
+const reviewText = (r: Review) =>
+  r ? `${r.status === 'approved' ? '승인' : '검수 대기(pending)'}${r.changedAt ? ` · 변경일 ${r.changedAt}` : ''}${r.reviewedBy ? ` · 검수 ${r.reviewedBy}` : ''}` : '없음';
+
+/** 계통 검수 상태 변화 (관리자 편집 → pending 자동 갱신, 개선 R4 M4) */
+function reviewLines(base: Draft, draft: Draft): string[] {
+  const b = base.diagram.review;
+  const d = draft.diagram.review;
+  if (same(b, d)) return [];
+  return [`계통 검수 상태: ${reviewText(b)} → ${reviewText(d)}${d?.note ? ` — ${d.note}` : ''}`];
 }

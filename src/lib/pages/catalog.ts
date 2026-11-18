@@ -6,14 +6,15 @@ import { getData, resolveProducts, type AppData } from '../../data/load';
 import {
   LAYERS,
   type Coverage,
-  type DiagramEdge,
   type DiagramNode,
   type EquipmentCategory,
   type EquipmentType,
   type Layer,
   type Product,
 } from '../schema';
-import { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER } from '../labels';
+import { CATEGORY_LABELS, CATEGORY_ORDER, CONFIDENCE_LABELS, COVERAGE_ORDER, gapConfidence } from '../labels';
+import { edgeKind, isBus, type EdgeKind } from '../diagram/geometry';
+import { hopsAcrossBus } from '../diagram/topology';
 
 // 라벨·순서 상수는 lib/labels.ts 가 단일 출처 (기존 import 경로 호환용 재수출)
 export { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER } from '../labels';
@@ -95,12 +96,13 @@ export interface ChainLink {
   node: DiagramNode;
   eq: EquipmentType;
   /** 이 노드와 다음 노드를 잇는 선의 종류 (마지막 노드는 undefined) */
-  edgeToNext?: 'power' | 'signal' | 'alt';
+  edgeToNext?: EdgeKind;
 }
 
 /**
  * 노드의 앞(들어오는 선)·뒤(나가는 선) 인접 노드로 3칸 미니 체인을 만든다.
- * 같은 계층의 이웃을 우선, 없으면 다른 계층(감시·신재생 등).
+ * 모선은 건너뛰고 모선 너머 기기로(상세 패널 이웃과 같은 규칙 — topology.hopsAcrossBus), 끝점(기기 아님)은 제외.
+ * 고르는 순서: 전력선(전력·택1) 우선 → 같은 계층 우선 → 데이터 순서.
  */
 export function neighborChain(nodeId: string): ChainLink[] {
   const data = getData();
@@ -109,23 +111,22 @@ export function neighborChain(nodeId: string): ChainLink[] {
   if (!self?.equipmentTypeId) return [];
   const eqOf = (n: DiagramNode) => (n.equipmentTypeId ? data.equipmentTypeById.get(n.equipmentTypeId) : undefined);
   const selfEq = eqOf(self);
-  const isBus = (id: string) => nodeById.get(id)?.kind === 'bus';
-  const incoming = (id: string) => data.diagram.edges.filter((e) => e.to === id);
-  const outgoing = (id: string) => data.diagram.edges.filter((e) => e.from === id);
-  /** 모선은 건너뛰고 모선 너머 기기로, 끝점(기기 아님)은 제외 */
-  const expand = (edges: DiagramEdge[], otherEnd: (e: DiagramEdge) => string, across: (id: string) => DiagramEdge[]) =>
-    edges.flatMap((e) => (isBus(otherEnd(e)) ? across(otherEnd(e)).map((e2) => ({ e, id: otherEnd(e2) })) : [{ e, id: otherEnd(e) }]));
-  const pick = (cands0: { e: DiagramEdge; id: string }[]) => {
-    const cands = cands0
-      .map((c) => ({ e: c.e, n: nodeById.get(c.id) }))
-      .filter((c): c is { e: DiagramEdge; n: DiagramNode } => c.n !== undefined && c.n.id !== nodeId && eqOf(c.n) !== undefined);
-    return cands.find((c) => eqOf(c.n)?.layer === selfEq?.layer) ?? cands[0];
+  const isBusId = (id: string) => {
+    const n = nodeById.get(id);
+    return !!n && isBus(n);
   };
-  const prev = pick(expand(incoming(nodeId), (e) => e.from, incoming));
-  const next = pick(expand(outgoing(nodeId), (e) => e.to, outgoing));
-  const toLink = (n: DiagramNode, edgeToNext?: DiagramEdge): ChainLink | undefined => {
+  const pick = (dir: 'in' | 'out') => {
+    const cands = hopsAcrossBus(nodeId, data.diagram.edges, isBusId, dir)
+      .map((h) => ({ e: h.edge, n: nodeById.get(h.id) }))
+      .filter((c): c is { e: (typeof data.diagram.edges)[number]; n: DiagramNode } => c.n !== undefined && c.n.id !== nodeId && eqOf(c.n) !== undefined);
+    const rank = (c: (typeof cands)[number]) => (edgeKind(c.e) === 'signal' ? 2 : 0) + (eqOf(c.n)?.layer === selfEq?.layer ? 0 : 1);
+    return cands.map((c, i) => ({ c, i, r: rank(c) })).sort((a, b) => a.r - b.r || a.i - b.i)[0]?.c;
+  };
+  const prev = pick('in');
+  const next = pick('out');
+  const toLink = (n: DiagramNode, edgeToNext?: { kind?: EdgeKind }): ChainLink | undefined => {
     const eq = eqOf(n);
-    return eq ? { node: n, eq, edgeToNext: edgeToNext ? (edgeToNext.kind ?? 'power') : undefined } : undefined;
+    return eq ? { node: n, eq, edgeToNext: edgeToNext ? edgeKind(edgeToNext) : undefined } : undefined;
   };
   return [
     prev && toLink(prev.n, prev.e),
@@ -180,9 +181,12 @@ function csvCell(raw: string): string {
   return /[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
 }
 
-/** CSV 문자열 (UTF-8 BOM 포함 — Excel 한글 깨짐 방지) */
+/**
+ * CSV 문자열 (UTF-8 BOM 포함 — Excel 한글 깨짐 방지).
+ * 마지막 열 "판정" = 공백 후보/확정 (화면 목록 배지와 같은 gapConfidence — 재확인 기한이 지나면 후보). 보유·해당 없음은 빈칸.
+ */
 export function buildGapCsv(list: EquipmentType[], coverageLabel: (c: Coverage) => string, layerLabel: (l: Layer) => string): string {
-  const header = ['상태', '계층', '계층명', '기기 ID', '기기명', '약어', '기능', '계열사', '메모'];
+  const header = ['상태', '계층', '계층명', '기기 ID', '기기명', '약어', '기능', '계열사', '메모', '판정'];
   const rows = list.map((eq) => [
     coverageLabel(eq.coverage),
     eq.layer,
@@ -193,6 +197,7 @@ export function buildGapCsv(list: EquipmentType[], coverageLabel: (c: Coverage) 
     CATEGORY_LABELS[eq.category],
     eq.affiliateName ?? '',
     eq.gapNote ?? '',
+    ((c) => (c ? CONFIDENCE_LABELS[c] : ''))(gapConfidence(eq)),
   ]);
   return '﻿' + [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
 }

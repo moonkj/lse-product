@@ -15,6 +15,7 @@ import {
   gapConfidence,
   isMainLayer,
   pageTitle,
+  todayIso,
 } from '../lib/labels';
 import {
   buildGapCsv,
@@ -35,7 +36,7 @@ interface CellSel {
   category: EquipmentCategory;
 }
 
-/** 목록 정렬: 계층 순 → 미보유·일부·계열사·보유·해당없음 */
+/** 목록 정렬: 계층 순 → 미보유·일부·계열사·패널 구성품·보유·해당없음 */
 const LIST_COVERAGE_RANK: Record<Coverage, number> = { missing: 0, partial: 1, affiliate: 2, sourced: 3, owned: 4, na: 5 };
 /** 필터 버튼 라벨: 정식 라벨에서 "미보유(공백)" 만 짧게 */
 const FILTER_LABELS: Record<Coverage, string> = { ...COVERAGE_LABELS, missing: COVERAGE_SHORT_LABELS.missing };
@@ -49,7 +50,7 @@ export default function GapPage() {
   const totals = useMemo(() => countCoverage(equipment), [equipment]);
   const rate = ownedRate(totals);
 
-  // 기본 필터 = 전체 (디자인 승인안·리더 결정, FT-26): 첫 화면 목록 = 미보유·일부·계열사 전체
+  // 기본 필터 = 전체 (디자인 승인안·리더 결정, FT-26): 첫 화면 목록 = 미보유·일부·계열사·패널 구성품 전체
   const [status, setStatus] = useState<StatusFilter>('all');
   const [cell, setCell] = useState<CellSel | null>(null);
   const listRef = useRef<HTMLElement>(null);
@@ -58,7 +59,7 @@ export default function GapPage() {
     document.title = pageTitle('공백 표');
   }, []);
 
-  /** 칸 선택 시: 그 칸의 모든 기기 / 아니면: 미보유·일부·계열사 */
+  /** 칸 선택 시: 그 칸의 모든 기기 / 아니면: 미보유·일부·계열사·패널 구성품 (GAP_LIST_COVERAGES) */
   const scope = useMemo(() => {
     const base = cell
       ? equipment.filter((e) => e.layer === cell.layer && e.category === cell.category)
@@ -90,8 +91,7 @@ export default function GapPage() {
 
   const exportCsv = () => {
     const csv = buildGapCsv(visible, (c) => COVERAGE_LABELS[c], (l) => LAYER_LABELS[l]);
-    const d = new Date();
-    const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    const stamp = todayIso().replace(/-/g, '');
     downloadText(`lse-gap-list-${stamp}.csv`, csv);
   };
 

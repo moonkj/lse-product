@@ -17,7 +17,7 @@ import {
   type Product,
 } from '../../lib/schema';
 import { CATEGORY_LABELS, CONFIDENCE_LABELS, GAP_BASIS_LABELS, SUPPLY_MODE_LABELS, todayIso } from '../../lib/labels';
-import { suggestId, type Draft } from '../../lib/admin/draft';
+import { canonicalGap, suggestId, type Draft } from '../../lib/admin/draft';
 import { coverageIssues, koIssue } from '../../lib/admin/integrity';
 
 interface Props {
@@ -98,19 +98,18 @@ function gapToForm(g: GapAssessment | undefined): GapForm | null {
   };
 }
 
+/** 폼 → 공백 판정 근거 (정리 규칙은 draft.canonicalGap 하나 — 리뷰 R7) */
 function formToGap(g: GapForm): GapAssessment {
-  const out: GapAssessment = { supplyMode: g.supplyMode, basis: g.basis, confidence: g.confidence };
-  const ev = g.evidence.filter((e) => e.ref.trim());
-  if (ev.length) out.evidence = ev.map((e) => (e.note.trim() ? { type: e.type, ref: e.ref.trim(), note: e.note.trim() } : { type: e.type, ref: e.ref.trim() }));
-  if (g.verifiedBy.trim()) out.verifiedBy = g.verifiedBy.trim();
-  if (g.verifiedAt) out.verifiedAt = g.verifiedAt;
-  if (g.reviewDue) out.reviewDue = g.reviewDue;
-  if (g.ratingRequired.trim() || g.ratingOffered.trim()) {
-    out.ratingScope = {};
-    if (g.ratingRequired.trim()) out.ratingScope.required = g.ratingRequired.trim();
-    if (g.ratingOffered.trim()) out.ratingScope.offered = g.ratingOffered.trim();
-  }
-  return out;
+  return canonicalGap({
+    supplyMode: g.supplyMode,
+    basis: g.basis,
+    confidence: g.confidence,
+    evidence: g.evidence,
+    verifiedBy: g.verifiedBy,
+    verifiedAt: g.verifiedAt || undefined,
+    reviewDue: g.reviewDue || undefined,
+    ratingScope: { required: g.ratingRequired, offered: g.ratingOffered },
+  });
 }
 
 function initial(editing: EquipmentType | undefined, draft: Draft): FormState {
@@ -178,7 +177,12 @@ function toEquipment(f: FormState): EquipmentType {
 
 type Errors = Partial<Record<keyof FormState, string>>;
 
-function validate(f: FormState, isNew: boolean, takenIds: ReadonlySet<string>): { errors: Errors; warnings: Errors } {
+function validate(
+  f: FormState,
+  isNew: boolean,
+  takenIds: ReadonlySet<string>,
+  ref: { categories: Category[]; products: Product[] },
+): { errors: Errors; warnings: Errors } {
   const errors: Errors = {};
   const warnings: Errors = {};
   const eq = toEquipment(f);
@@ -195,7 +199,8 @@ function validate(f: FormState, isNew: boolean, takenIds: ReadonlySet<string>): 
   if (!eq.voltage) errors.voltage ??= '전압: 비워 둘 수 없습니다';
   if (!eq.description) errors.description ??= '설명: 비워 둘 수 없습니다';
   if (eq.learnPoints.length === 0) errors.learnPoints ??= '학습 포인트: 1줄 이상 적어 주세요';
-  for (const c of coverageIssues(eq)) {
+  // 기기 규칙(DI-08·20~27h·50) — 무결성 검사·DI 테스트와 같은 함수 (sourced→panel-sourced, 날짜 실존, 근거 URL https 포함)
+  for (const c of coverageIssues(eq, ref)) {
     const k = (c.field === 'gapAssessment' ? 'gap' : c.field) as keyof FormState;
     if (c.level === 'error') errors[k] ??= c.message;
     else warnings[k] ??= c.message;
@@ -319,7 +324,7 @@ export default function EquipmentForm({ draft, editing, categories, products, on
   const uid = useId();
 
   const takenIds = useMemo(() => new Set(draft.equipmentTypes.map((e) => e.id)), [draft]);
-  const { errors, warnings } = useMemo(() => validate(f, isNew, takenIds), [f, isNew, takenIds]);
+  const { errors, warnings } = useMemo(() => validate(f, isNew, takenIds, { categories, products }), [f, isNew, takenIds, categories, products]);
   const show = (k: keyof FormState) => (submitted || touched[k] ? errors[k] : undefined);
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => {
@@ -332,6 +337,8 @@ export default function EquipmentForm({ draft, editing, categories, products, on
         const c = v as Coverage;
         if (ASSESSED_COVERAGES.includes(c) && !next.gap) next.gap = newGap(c);
         else if (next.gap && DEFAULT_SUPPLY[prev.coverage] === next.gap.supplyMode) next.gap = { ...next.gap, supplyMode: DEFAULT_SUPPLY[c] ?? next.gap.supplyMode };
+        // 패널 구성품(sourced)은 공급 방식이 panel-sourced 로 고정 (DI-27b)
+        if (c === 'sourced' && next.gap) next.gap = { ...next.gap, supplyMode: 'panel-sourced' };
       }
       return next;
     });
@@ -566,6 +573,8 @@ export default function EquipmentForm({ draft, editing, categories, products, on
                 id={`${uid}-gap-supply`}
                 value={f.gap.supplyMode}
                 onChange={(e) => setGap({ supplyMode: e.target.value as GapForm['supplyMode'] })}
+                disabled={f.coverage === 'sourced'}
+                aria-describedby={f.coverage === 'sourced' ? `${uid}-gap-supply-hint` : undefined}
                 data-testid="admin-gap-supply"
               >
                 {(Object.keys(SUPPLY_MODE_LABELS) as GapForm['supplyMode'][]).map((m) => (
@@ -574,6 +583,11 @@ export default function EquipmentForm({ draft, editing, categories, products, on
                   </option>
                 ))}
               </select>
+              {f.coverage === 'sourced' && (
+                <p id={`${uid}-gap-supply-hint`} className="aform__hint">
+                  패널 구성품은 공급 방식이 "{SUPPLY_MODE_LABELS['panel-sourced']}"으로 고정됩니다
+                </p>
+              )}
             </div>
             <div className="aform__row">
               <div className="aform__field">

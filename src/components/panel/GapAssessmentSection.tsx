@@ -44,7 +44,9 @@ export default function GapAssessmentSection({ eq }: { eq: EquipmentType }) {
       </div>
       {conf === 'candidate' && (
         <p className="dp-muted dp-gapassess__hint">
-          후보 — {GAP_BASIS_LABELS[g.basis]} 기준 판정이며 사업부·연구소 확인 전입니다.
+          {g.confidence === 'confirmed' && overdue
+            ? `확정 판정이지만 재확인 기한(${g.reviewDue})이 지나 후보로 표시합니다 — 사업부·연구소 재확인이 필요합니다.`
+            : `후보 — ${GAP_BASIS_LABELS[g.basis]} 기준 판정이며 사업부·연구소 확인 전입니다.`}
         </p>
       )}
       <dl className="dp-gapassess__list">

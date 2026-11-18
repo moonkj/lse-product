@@ -185,8 +185,6 @@
   --cov-missing-text: #b42828;
   --cov-na-text: #4a5363;
   --color-text-soft: #3b4452;
-  --color-progress: #0f7a5a;
-  --color-on-progress: #ffffff;
   --color-alert-bg: #fff7f7;
   --color-alert-border: #f0c4c4;
   --color-muted-dot: #8a939f;
@@ -201,8 +199,6 @@
     --cov-missing-text: #ff9b9b;
     --cov-na-text: #c2cad6;
     --color-text-soft: #c4ccd8;
-    --color-progress: #3cc19a;
-    --color-on-progress: #0b1220;
     --color-alert-bg: #2a1717;
     --color-alert-border: #5a2b2b;
     --color-muted-dot: #7d8794;

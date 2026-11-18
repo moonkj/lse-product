@@ -101,3 +101,6 @@
 - [R3 점검] T2: 높음 2(모선 연결이 모선 끝에서 가로 출발, 모선 겹침 검사 없음)·중간 5·낮음 12, 관리자 검사 통과→DI 실패 9종 재현 / T3 리뷰: 반드시 1(관리자 검사 ≠ DI 규칙)·권장 9·선택 5 → 최종 완료 보류
 - [리더] DataValidationError → src/lib/errors.ts(R6), 시드 생성기 동결(--force 필요) → 1114bc5
 - (개선 R4) 착수: 검사 규칙 단일화(src/lib/integrity/ 공용 모듈 = 관리자 검사 + DI 테스트), 경로 계산 router.ts 단일화, 자동 모선 잔재 삭제, 모선 수직 연결·겹침, 검수 상태 자동 갱신. 순서: T1 → T3(테스트를 공용 모듈로 전환·골든 라우터 테스트·관리자 테스트) → T2/T3 재점검
+- [(개선 R4) T1 완료] src/lib/integrity/ 공용 검사(checkDataset/checkEquipment/RULES, HARD·SOFT = DI 테스트와 동일), 관리자 검사 전환, router 단일화(model 사본 삭제), 자동 모선 잔재 삭제, geometry.ts·topology.ts, 모선 수직 연결·겹침·자동 배치 선 회피, review 자동 갱신, 참조 타일 패널 정정, CSV 판정 열, 낮음 5건
+  - 현재 데이터 errors 0·warnings 0, T2 시나리오 17종 결과가 DI와 규칙 ID까지 일치, 라우터 86/86
+  - 리더 재검증: typecheck·build 통과, unit 141/145(UT-01 CSV 열 변경 4건 — T3 갱신 대기), E2E 40·1 skip

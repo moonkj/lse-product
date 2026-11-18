@@ -30,10 +30,11 @@ export default function NeighborChips({ node, onSelect }: { node: NodeItem; onSe
                 data-confidence={gapConfidence(n.node.eq)}
                 data-testid={`neighbor-chip-${n.node.id}`}
                 onClick={() => onSelect(n.node.id)}
-                title={n.via ? `${n.via} 경유` : undefined}
+                title={n.via ? `${n.via} 경유${n.sibling ? ' · 같은 모선에서 갈라진 회로' : ''}` : undefined}
                 aria-label={`${n.node.eq.name}${refText}, ${COVERAGE_LABELS[n.node.coverage]}${n.via ? `, ${n.via} 경유` : ''} — 선택`}
               >
-                <span aria-hidden="true">{n.arrow}</span> {name}
+                {n.arrow && <span aria-hidden="true">{n.arrow} </span>}
+                {name}
                 {refText && <span className="dp-chip__kind">{refText}</span>}
                 {KIND_SUFFIX[n.kind] && <span className="dp-chip__kind">{KIND_SUFFIX[n.kind]}</span>}
               </button>

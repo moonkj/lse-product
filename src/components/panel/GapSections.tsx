@@ -49,8 +49,8 @@ export default function GapSections({ node, onSelect }: { node: NodeItem; onSele
             <button
               key={n.id}
               type="button"
-              className={`dp-gapchip${n.id === node.id ? ' is-current' : ''}`}
-              aria-current={n.id === node.id ? 'true' : undefined}
+              className={`dp-gapchip${n.eq.id === node.eq.id ? ' is-current' : ''}`}
+              aria-current={n.eq.id === node.eq.id ? 'true' : undefined}
               onClick={() => onSelect(n.id)}
             >
               {n.eq.abbr ?? n.eq.name}

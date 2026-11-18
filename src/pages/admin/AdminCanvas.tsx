@@ -6,7 +6,8 @@ import type { ViewMode } from '../../lib/diagram/url';
 import { Bands, Edges } from '../../components/diagram/DiagramCanvas';
 import DiagramNode from '../../components/diagram/DiagramNode';
 import { AltBadges, BusNodes, EndpointNodes } from '../../components/diagram/DiagramExtras';
-import { GRID, checkPlacement, layerOfNode, shapeOfNode, snap, type Draft, type NodeShape } from '../../lib/admin/draft';
+import { GRID, TILE_SHAPE, checkPlacement, layerOfNode, shapeOfNode, snap, type Draft, type NodeShape } from '../../lib/admin/draft';
+import { BUS_HH, ENDPOINT_H, ENDPOINT_W } from '../../lib/diagram/geometry';
 import '../../components/diagram/DiagramCanvas.css';
 
 export type Tool = 'select' | 'place' | 'connect';
@@ -278,9 +279,10 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
   const selectedSpecial = useMemo(() => {
     const id = selectedNodeId ?? connectFromId;
     const b = busNodes.find((x) => x.id === id);
-    if (b) return { x: b.x - b.width / 2, y: b.y - 6, w: b.width, h: 12 };
+    // 모선 선택 상자: 모선 두께(BUS_HH×2) + 위아래 2px
+    if (b) return { x: b.x - b.width / 2, y: b.y - BUS_HH - 2, w: b.width, h: BUS_HH * 2 + 4 };
     const p = endpoints.find((x) => x.id === id);
-    return p ? { x: p.x - 60, y: p.y - 22, w: 120, h: 44 } : null;
+    return p ? { x: p.x - ENDPOINT_W / 2, y: p.y - ENDPOINT_H / 2, w: ENDPOINT_W, h: ENDPOINT_H } : null;
   }, [busNodes, endpoints, selectedNodeId, connectFromId]);
   const dragShape = useMemo(() => {
     if (!drag) return null;
@@ -296,7 +298,7 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
   }, [model, selectedNodeId, selectedEdgeId]);
 
   const frame = drag ?? (placing ? ghost : null);
-  const frameShape: NodeShape = (drag ? dragShape : place?.shape) ?? { kind: 'equipment', hw: 60, hh: 58 };
+  const frameShape: NodeShape = (drag ? dragShape : place?.shape) ?? TILE_SHAPE;
 
   return (
     <div className={`admin-canvas diagram diagram--${viewMode} admin-canvas--${readOnly ? 'preview' : tool}`}>

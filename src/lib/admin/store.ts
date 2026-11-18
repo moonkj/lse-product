@@ -6,7 +6,8 @@ import { create } from 'zustand';
 import equipmentTypesJson from '../../data/equipment-types.json';
 import diagramJson from '../../data/diagram.json';
 import equipmentImagesJson from '../../data/equipment-images.json';
-import { cloneDraft, signature, type Draft } from './draft';
+import { cloneDraft, signature, syncReview, type Draft } from './draft';
+import { todayIso } from '../labels';
 
 export const HISTORY_LIMIT = 50;
 export const STORAGE_KEY = 'lse-admin-draft:v1';
@@ -50,7 +51,7 @@ export interface AdminState {
   staleBase: boolean;
   restoredAt: string | null;
   saveStatus: SaveStatus;
-  /** 변경 적용 (히스토리 1단계) */
+  /** 변경 적용 (히스토리 1단계). 노드·연결선·기기가 원본과 다르면 diagram.review 를 검수 대기로 자동 갱신 */
   commit: (next: Draft) => void;
   undo: () => void;
   redo: () => void;
@@ -66,15 +67,16 @@ const saved = readSaved();
 export const useAdminStore = create<AdminState>()((set, get) => ({
   base,
   baseSig,
-  draft: saved ? saved.draft : cloneDraft(base),
+  draft: saved ? syncReview(base, saved.draft, todayIso()) : cloneDraft(base),
   past: [],
   future: [],
   staleBase: saved ? saved.baseSig !== baseSig : false,
   restoredAt: saved ? saved.savedAt : null,
   saveStatus: 'idle',
-  commit: (next) => {
-    const { draft, past } = get();
-    if (next === draft) return;
+  commit: (raw) => {
+    const { draft, past, base: b } = get();
+    if (raw === draft) return;
+    const next = syncReview(b, raw, todayIso());
     set({ draft: next, past: [...past, draft].slice(-HISTORY_LIMIT), future: [] });
   },
   undo: () => {

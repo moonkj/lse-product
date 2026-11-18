@@ -86,7 +86,10 @@ export default function DetailPanel() {
   }
 
   const { eq } = node;
-  const mainNodeId = node.ref ? getDiagramModel().nodes.find((n) => n.eq.id === eq.id)?.id : undefined;
+  const model = getDiagramModel();
+  const mainNodeId = node.ref ? model.nodes.find((n) => n.eq.id === eq.id)?.id : undefined;
+  // 참조 타일: 머리글 계층·전압 = 타일이 놓인 자리(밴드)·참조 라벨, 원래 기기 계층은 참조 안내에 "원래 위치"로 (T2 M5)
+  const placeVoltage = node.ref ? (node.refLabel ?? model.layers.find((l) => l.id === node.layer)?.voltage) : eq.voltage;
   const products = productsForEquipment(eq.id);
   const rep = representative(products);
   const gapView = mode === 'gap' && isGapCoverage(eq.coverage);
@@ -107,9 +110,9 @@ export default function DetailPanel() {
       <div className={`dp-head${compact ? ' dp-head--compact' : ''}`}>
         {compact && <PanelHero eq={eq} compact />}
         <div className="dp-titlebox">
-          <span className="dp-meta">
-            {layerTitle(eq.layer)}
-            {eq.voltage ? ` · ${eq.voltage}` : ''} · {CATEGORY_LABELS[eq.category]}
+          <span className="dp-meta" data-testid="detail-meta">
+            {layerTitle(node.layer)}
+            {placeVoltage ? ` · ${placeVoltage}` : ''} · {node.ref ? '참조 타일' : CATEGORY_LABELS[eq.category]}
           </span>
           <h2 id="detail-panel-title" className="dp-title" data-testid="detail-title">
             {eq.name}
@@ -134,6 +137,11 @@ export default function DetailPanel() {
           <span>
             <b>참조 타일</b>
             {node.refLabel ? ` · ${node.refLabel}` : ''} — 같은 기기가 계통에 다시 나오는 자리입니다.
+            <br />
+            <span data-testid="detail-ref-origin">
+              원래 위치: {layerTitle(eq.layer)}
+              {eq.voltage ? ` · ${eq.voltage}` : ''} · {CATEGORY_LABELS[eq.category]}
+            </span>
           </span>
           {mainNodeId && (
             <button type="button" className="dp-refnote__go" data-testid="detail-ref-go" onClick={() => selectFromPanel(mainNodeId)}>

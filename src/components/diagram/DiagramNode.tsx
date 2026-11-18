@@ -1,6 +1,7 @@
 import { memo, useState } from 'react';
 import { COVERAGE_LABELS, gapConfidence, isDimmedCoverage, isGapCoverage } from '../../lib/labels';
-import { TILE_H, TILE_W, type NodeItem } from '../../lib/diagram/model';
+import type { NodeItem } from '../../lib/diagram/model';
+import { TILE_H, TILE_W } from '../../lib/diagram/geometry';
 import type { ViewMode } from '../../lib/diagram/url';
 import CoverageBadge from '../common/CoverageBadge';
 import EquipmentSymbol from '../common/EquipmentSymbol';

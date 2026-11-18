@@ -71,8 +71,9 @@ export const isDimmedCoverage = (c: Coverage) => DIMMED_COVERAGES.includes(c);
 
 /**
  * 공백 표 "공백 목록" 범위 = 강조 대상 + 계열사 보유 + 패널 구성품 (자사 제품이 없는 기기 전체 — 검토 대상).
+ * 판정 근거(gapAssessment)가 필요한 커버리지(schema ASSESSED_COVERAGES)와 같은 집합 — 의미가 같으므로 재사용 (리뷰 R7)
  */
-export const GAP_LIST_COVERAGES: Coverage[] = ['missing', 'partial', 'affiliate', 'sourced'];
+export const GAP_LIST_COVERAGES: readonly Coverage[] = ASSESSED_COVERAGES;
 
 // ───────────── 공백 판정 근거 (개선 R3) ─────────────
 
@@ -96,10 +97,9 @@ export const CONFIDENCE_LABELS: Record<GapAssessment['confidence'], string> = {
   confirmed: '공백 확정',
 };
 
-/** 오늘 날짜 YYYY-MM-DD (로컬) */
+/** 오늘 날짜 YYYY-MM-DD — 한국 표준시(KST, UTC+9) 기준. 화면·관리자·무결성 검사가 같은 날짜를 쓴다 (T2 L8) */
 export function todayIso(now = new Date()): string {
-  const p = (n: number) => String(n).padStart(2, '0');
-  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+  return new Date(now.getTime() + 9 * 3600_000).toISOString().slice(0, 10);
 }
 
 /** 재확인 기한이 지났는지 */

@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { COVERAGE_LABELS, LAYER_LABELS, type EquipmentType } from '../../lib/schema';
 import { COVERAGE_ICONS } from '../../lib/labels';
-import { nodeKind, nodeName, type Draft, type EdgeKind } from '../../lib/admin/draft';
+import { nodeKind, nodeName, type Draft } from '../../lib/admin/draft';
+import { edgeKind, type EdgeKind } from '../../lib/diagram/geometry';
 import { ENTITY_LABELS, KIND_LABELS, type Change, type ChangeEntity } from '../../lib/admin/diff';
 import type { Issue } from '../../lib/admin/integrity';
 
@@ -200,7 +201,7 @@ export function SelectionPanel({
               <button type="button" className="asel__link" onClick={() => onSelectEdge(e.id)}>
                 {e.id} {nodeName(draft, e.from)} → {nodeName(draft, e.to)}
               </button>
-              <span className="asel__kind">{EDGE_KIND_SHORT[e.kind ?? 'power']}</span>
+              <span className="asel__kind">{EDGE_KIND_SHORT[edgeKind(e)]}</span>
               <button type="button" className="abtn abtn--sm abtn--danger" onClick={() => onDeleteEdge(e.id)} aria-label={`연결선 ${e.id} 삭제`}>
                 삭제
               </button>
@@ -225,7 +226,7 @@ export function SelectionPanel({
         <label htmlFor="asel-kind">종류</label>
         <select
           id="asel-kind"
-          value={e.kind ?? 'power'}
+          value={edgeKind(e)}
           onChange={(ev) => onUpdateEdge(e.id, { kind: ev.target.value as EdgeKind })}
           data-testid="admin-edge-kind-edit"
         >
@@ -449,7 +450,7 @@ export function CheckPanel({
   return (
     <div className="achk" data-testid="admin-check">
       <p className="achk__intro">
-        내보내기 전에 스키마·참조(노드→기기, 연결선→노드, 카테고리·제품)·타일 겹침·밴드 이탈·연결선 타일 관통을 모두 검사합니다. 오류가 있으면 내보낼 수 없습니다.
+        내보내기 전에 데이터 무결성 테스트(DI 규칙)와 같은 기준으로 스키마·참조·노드 겹침·밴드 이탈·연결선 관통·전력선 교차·모선 연결·공백 판정 근거를 모두 검사합니다. 오류가 있으면 내보낼 수 없습니다.
       </p>
       <button type="button" className="abtn" onClick={onCheck} data-testid="admin-check-run">
         무결성 검사 실행

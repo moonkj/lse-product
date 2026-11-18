@@ -90,8 +90,7 @@
   pointer-events: none;
 }
 
-.dedge,
-.dbus {
+.dedge {
   fill: none;
   stroke-linejoin: round;
   transition: opacity var(--transition-fast);
@@ -116,12 +115,6 @@
   stroke-linecap: butt;
 }
 
-.dbus {
-  stroke: var(--color-line-bus);
-  stroke-width: 4px;
-  stroke-linecap: square;
-}
-
 .dedge--far {
   opacity: 0.4;
 }
@@ -137,7 +130,6 @@
 }
 
 .diagram--gap .dedge:not(.is-selected):not(.dedge--far),
-.diagram--gap .dbus,
 .diagram--gap .dbusnode,
 .diagram--gap .dendpoint,
 .diagram--gap .dalt:not(.is-open) {

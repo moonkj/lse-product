@@ -2,7 +2,8 @@ import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from '
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useData } from '../../data/load';
 import type { Layer } from '../../lib/schema';
-import { TILE_H, TILE_W, getDiagramModel, layerAt, type DiagramModel } from '../../lib/diagram/model';
+import { getDiagramModel, layerAt, type DiagramModel } from '../../lib/diagram/model';
+import { TILE_H, TILE_W } from '../../lib/diagram/geometry';
 import { PanZoom, type Rect } from '../../lib/diagram/panzoom';
 import { registerDiagramController, viewStore } from '../../lib/diagram/view';
 import {
@@ -49,11 +50,6 @@ export const Edges = memo(function Edges({
       aria-hidden="true"
       focusable="false"
     >
-      <g className="dedges__buses">
-        {model.buses.map((b) => (
-          <path key={b.id} className="dbus" d={b.d} />
-        ))}
-      </g>
       {[...normal, ...hot].map((e) => (
         <path
           key={e.id}

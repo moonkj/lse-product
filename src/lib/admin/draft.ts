@@ -3,20 +3,12 @@
  * 원본 = src/data/*.json (원본 파일의 키 순서를 그대로 유지하려고 Zod parse 결과가 아니라 raw JSON 을 복제해 쓴다).
  */
 import type { Diagram, DiagramEdge, DiagramNode, DiagramNodeKind, EquipmentImage, EquipmentType, GapAssessment, Layer } from '../schema';
-import {
-  ROUTE_BUS_HH,
-  ROUTE_EP_H,
-  ROUTE_EP_W,
-  ROUTE_TILE_H,
-  ROUTE_TILE_W,
-  boxMapOf,
-  boxOf,
-  defaultRoute,
-  pathHits,
-  routeEdge,
-  type Pt,
-  type RouteBox,
-} from '../diagram/router';
+import { BUS_GAP, MIN_GAP, ROUTE_CLEAR, TILE_H, TILE_W, dataKindOf, halfSize, type EdgeKind, type NodeKind } from '../diagram/geometry';
+import { boxMapOf, boxOf, defaultRoute, pathHits, routeEdge, type Pt, type RouteBox, type RouteFailure } from '../diagram/router';
+import { nodeLabel } from '../integrity';
+
+export type { EdgeKind };
+export { MIN_GAP };
 
 export interface Draft {
   equipmentTypes: EquipmentType[];
@@ -25,12 +17,8 @@ export interface Draft {
   images: Record<string, EquipmentImage>;
 }
 
-export const TILE_W = ROUTE_TILE_W;
-export const TILE_H = ROUTE_TILE_H;
 const HW = TILE_W / 2;
 const HH = TILE_H / 2;
-/** 타일 사이 최소 여유 — 생성기 MIN_GAP */
-export const MIN_GAP = 30;
 /** 배치·이동 그리드 */
 export const GRID = 10;
 
@@ -59,8 +47,8 @@ export function canonicalEquipment(e: EquipmentType): EquipmentType {
   return out as EquipmentType;
 }
 
-/** 공백 판정 근거 — 생성기 출력 순서, 빈 선택 필드 생략 */
-function canonicalGap(g: GapAssessment): GapAssessment {
+/** 공백 판정 근거 — 생성기 출력 순서, 빈 선택 필드 생략·앞뒤 공백 제거 (기기 폼도 이 함수로 정리) */
+export function canonicalGap(g: GapAssessment): GapAssessment {
   const out: Record<string, unknown> = { supplyMode: g.supplyMode, basis: g.basis, confidence: g.confidence };
   const ev = (g.evidence ?? []).filter((x) => x.ref.trim());
   if (ev.length) out.evidence = ev.map((x) => (x.note?.trim() ? { type: x.type, ref: x.ref.trim(), note: x.note.trim() } : { type: x.type, ref: x.ref.trim() }));
@@ -83,27 +71,31 @@ function canonicalEdge(e: DiagramEdge): DiagramEdge {
   return out as DiagramEdge;
 }
 
-/** 노드 종류 (kind 생략 = 기기) */
-export const nodeKind = (n: Pick<DiagramNode, 'kind'>): DiagramNodeKind => n.kind ?? 'equipment';
+/** 노드 종류 (kind 생략 = 기기) — geometry.dataKindOf */
+export const nodeKind = (n: Pick<DiagramNode, 'kind'>): DiagramNodeKind => dataKindOf(n);
 
 /** 노드 경계 맵 (노드 종류별 크기) */
 export const boxesOf = (diagram: Diagram) => boxMapOf(diagram.nodes);
 
-/** 두 노드 경계가 최소 간격(MIN_GAP) 안으로 가까운지 — 생성기 겹침 검사 */
-export const boxesOverlap = (a: RouteBox, b: RouteBox) =>
-  Math.abs(a.x - b.x) < a.hw + b.hw + MIN_GAP && Math.abs(a.y - b.y) < a.hh + b.hh + MIN_GAP;
+/**
+ * 두 노드 경계가 최소 간격 안으로 가까운지 — 타일·끝점끼리는 MIN_GAP(30), 모선이 끼면 BUS_GAP(20).
+ * (개선 R4 H2: 모선도 겹침 검사 대상 — 모선 width×8 사각형 + 여유)
+ */
+export const boxesOverlap = (a: RouteBox, b: RouteBox) => {
+  const gap = a.kind === 'bus' || b.kind === 'bus' ? BUS_GAP : MIN_GAP;
+  return Math.abs(a.x - b.x) < a.hw + b.hw + gap && Math.abs(a.y - b.y) < a.hh + b.hh + gap;
+};
 
 /** 새 노드의 반폭·반높이 */
 export interface NodeShape {
-  kind: 'equipment' | 'ref' | 'bus' | 'endpoint';
+  kind: NodeKind;
   hw: number;
   hh: number;
 }
 export const TILE_SHAPE: NodeShape = { kind: 'equipment', hw: HW, hh: HH };
-export function shapeOf(kind: NodeShape['kind'], width = 0): NodeShape {
-  if (kind === 'bus') return { kind, hw: Math.floor(width / 2), hh: ROUTE_BUS_HH };
-  if (kind === 'endpoint') return { kind, hw: ROUTE_EP_W / 2, hh: ROUTE_EP_H / 2 };
-  return { kind, hw: HW, hh: HH };
+export function shapeOf(kind: NodeKind, width = 0): NodeShape {
+  const { hw, hh } = halfSize({ kind: kind === 'ref' ? 'equipment' : kind, ref: kind === 'ref', width });
+  return { kind, hw: kind === 'bus' ? Math.floor(hw) : hw, hh };
 }
 export const shapeOfNode = (n: DiagramNode): NodeShape => {
   const b = boxOf(n);
@@ -123,20 +115,15 @@ export function layerOfNode(draft: Draft, node: DiagramNode): Layer | null | und
   return draft.equipmentTypes.find((e) => e.id === node.equipmentTypeId)?.layer;
 }
 
+/** 사람이 읽는 노드 이름 (무결성 검사 메시지와 같은 표기) */
 export function nodeName(draft: Draft, nodeId: string): string {
   const n = draft.diagram.nodes.find((x) => x.id === nodeId);
-  if (!n) return nodeId;
-  const kind = nodeKind(n);
-  if (kind === 'bus') return `모선 ${n.label ?? n.id}`;
-  if (kind === 'endpoint') return `끝점 ${n.label ?? n.id}`;
-  const eq = draft.equipmentTypes.find((e) => e.id === n.equipmentTypeId);
-  const base = eq ? (eq.abbr ? `${eq.abbr}(${eq.name})` : eq.name) : nodeId;
-  return n.ref ? `${base} 참조${n.label ? `·${n.label}` : ''}` : base;
+  return nodeLabel(n, new Map(draft.equipmentTypes.map((e) => [e.id, e])), nodeId);
 }
 
 /**
- * 배치 검사: 노드 전체가 계층 밴드 안(layer=null 이면 계통도 안 — 참조 타일), 다른 노드와 최소 여유(+30) 확보.
- * 모선은 겹침 검사 제외 (생성기와 같음). 위반 사유(한국어) 또는 null.
+ * 배치 검사: 노드 전체가 계층 밴드 안(layer=null 이면 계통도 안 — 참조 타일), 다른 노드와 최소 여유 확보
+ * (타일·끝점 30px, 모선이 끼면 20px — 모선도 포함, 개선 R4 H2). 위반 사유(한국어) 또는 null.
  */
 export function checkPlacement(
   draft: Draft,
@@ -156,29 +143,41 @@ export function checkPlacement(
   } else if (x - hw < 0 || y - hh < 0 || x + hw > draft.diagram.width || y + hh > draft.diagram.height) {
     return '계통도 영역 안에만 둘 수 있습니다';
   }
-  if (shape.kind === 'bus') return null;
   const me: RouteBox = { id: '', kind: shape.kind, x, y, hw, hh };
   for (const n of draft.diagram.nodes) {
-    if (n.id === ignoreNodeId || nodeKind(n) === 'bus') continue;
-    if (boxesOverlap(me, boxOf(n))) {
-      return `${nodeName(draft, n.id)}와(과) 너무 가깝습니다 (최소 간격 ${MIN_GAP}px)`;
+    if (n.id === ignoreNodeId) continue;
+    const other = boxOf(n);
+    if (boxesOverlap(me, other)) {
+      const gap = me.kind === 'bus' || other.kind === 'bus' ? BUS_GAP : MIN_GAP;
+      return `${nodeName(draft, n.id)}와(과) 너무 가깝습니다 (최소 간격 ${gap}px)`;
     }
   }
   return null;
 }
 
+/** 경로를 찾지 못한 연결선 */
+export interface RouteFail {
+  id: string;
+  reason: RouteFailure;
+  blockedBy?: string[];
+  /** 모선 연결선 */
+  bus: boolean;
+  /** 편집 전에는 경로가 있었음 (이번 편집이 깨뜨림) */
+  wasRouted: boolean;
+}
+
 /**
- * 연결선 경로 갱신. 생성기 규칙(기본 직교 경로가 노드를 지나가면 A* 우회 points, 모선 연결은 항상 points)을
+ * 연결선 경로 갱신. 라우터 규칙(기본 직교 경로가 노드를 지나가면 A* 우회 points, 모선 연결은 모선 위 점에서 수직 points)을
  * 바뀐 부분에만 적용한다:
  *  - affected 노드에 붙은 엣지 → 새로 계산
  *  - points 가 있는데 기본 경로가 이제 깨끗하거나 points 가 타일을 지나감 → 새로 계산
  *  - points 가 없는데 기본 경로가 타일을 지나감 → 새로 계산
  *  - 나머지는 그대로 (안정적: 바뀌지 않은 선은 움직이지 않는다)
- * 반환: 경로를 찾지 못한 엣지 id
+ * 반환: 경로를 찾지 못한 엣지 (그 엣지는 points 를 지운다 → 무결성 검사가 내보내기를 막음)
  */
-export function rerouteEdges(diagram: Diagram, affected: ReadonlySet<string>): { edges: DiagramEdge[]; failed: string[] } {
+export function rerouteEdges(diagram: Diagram, affected: ReadonlySet<string>): { edges: DiagramEdge[]; failed: RouteFail[] } {
   const boxes = boxesOf(diagram);
-  const failed: string[] = [];
+  const failed: RouteFail[] = [];
   const edges = diagram.edges.map((e) => {
     const pa = boxes.get(e.from);
     const pb = boxes.get(e.to);
@@ -195,7 +194,7 @@ export function rerouteEdges(diagram: Diagram, affected: ReadonlySet<string>): {
     if (!need) return e;
     const r = routeEdge(boxes, e.from, e.to);
     if (!r.ok) {
-      failed.push(e.id);
+      failed.push({ id: e.id, reason: r.reason, blockedBy: r.blockedBy, bus, wasRouted: bus ? !!e.points : true });
       const { points: _drop, ...rest } = e;
       return canonicalEdge(rest);
     }
@@ -218,8 +217,36 @@ function withDiagram(draft: Draft, diagram: Diagram): Draft {
   return { ...draft, diagram };
 }
 
-function failNotice(failed: string[]) {
-  return failed.length > 0 ? `우회 경로를 찾지 못한 연결선: ${failed.join(', ')} — 노드를 옮겨 길을 만들어 주세요` : undefined;
+function failNotice(failed: readonly RouteFail[]) {
+  return failed.length > 0 ? `우회 경로를 찾지 못한 연결선: ${failed.map((f) => f.id).join(', ')} — 노드를 옮겨 길을 만들어 주세요` : undefined;
+}
+
+/** 모선 연결 실패 사유 (한국어) — 연결 만들기·이동·모선 길이 변경 공통 */
+export function busRouteText(draft: Draft, from: string, to: string, reason: RouteFailure, blockedBy: readonly string[] = []): string {
+  const label = `${nodeName(draft, from)} → ${nodeName(draft, to)}`;
+  if (reason === 'bus-range') return `${label}: 모선 범위 밖 — 모선을 늘리거나 기기를 옮기세요 (모선 연결은 모선 위에서 수직으로만 잇습니다)`;
+  if (reason === 'bus-blocked')
+    return `${label}: 수직 연결 경로가 막힘${blockedBy.length ? ` (${blockedBy.map((id) => nodeName(draft, id)).join(', ')})` : ''} — 막는 노드나 기기를 옮기세요`;
+  if (reason === 'bus-to-bus') return `${label}: 모선끼리는 직접 연결할 수 없습니다 — 사이에 차단기 등 기기를 두세요`;
+  return `${label}: 경로를 찾지 못했습니다`;
+}
+
+/**
+ * 노드 변경 뒤 연결선 재계산 + 모선 연결 재검사 (개선 R4 H1).
+ * 이번 편집으로 모선 연결선이 범위 밖·수직 경로 막힘이 되면 편집을 거부하고 사유를 돌려준다.
+ */
+function finishNodeEdit(draft: Draft, diagram: Diagram, affected: ReadonlySet<string>, verb: string, createdId?: string): OpResult {
+  const { edges, failed } = rerouteEdges(diagram, affected);
+  const next = withDiagram(draft, { ...diagram, edges });
+  const broken = failed.filter((f) => f.bus && f.wasRouted);
+  if (broken.length > 0) {
+    const lines = broken.map((f) => {
+      const e = diagram.edges.find((x) => x.id === f.id)!;
+      return `${f.id} ${busRouteText(next, e.from, e.to, f.reason, f.blockedBy)}`;
+    });
+    return { draft, error: `${verb} 수 없습니다 — ${lines.join(' / ')}` };
+  }
+  return { draft: next, createdId, notice: failNotice(failed) };
 }
 
 export function upsertEquipment(draft: Draft, eq: EquipmentType, image: EquipmentImage | null | undefined): Draft {
@@ -274,8 +301,7 @@ export function addNode(draft: Draft, equipmentId: string, x: number, y: number)
 
 function insertNode(draft: Draft, node: DiagramNode): OpResult {
   const diagram = { ...draft.diagram, nodes: [...draft.diagram.nodes, node] };
-  const { edges, failed } = rerouteEdges(diagram, new Set([node.id]));
-  return { draft: withDiagram(draft, { ...diagram, edges }), createdId: node.id, notice: failNotice(failed) };
+  return finishNodeEdit(draft, diagram, new Set([node.id]), '그 자리에 둘', node.id);
 }
 
 /** 기기가 아닌 노드 / 참조 타일 추가 명세 */
@@ -341,8 +367,7 @@ export function updateNode(draft: Draft, nodeId: string, patch: { label?: string
     if (reason) return { draft, error: reason };
   }
   const diagram = { ...draft.diagram, nodes: draft.diagram.nodes.map((n) => (n.id === nodeId ? next : n)) };
-  const { edges, failed } = rerouteEdges(diagram, new Set([nodeId]));
-  return { draft: withDiagram(draft, { ...diagram, edges }), notice: failNotice(failed) };
+  return finishNodeEdit(draft, diagram, new Set([nodeId]), '모선 길이를 바꿀');
 }
 
 export function moveNode(draft: Draft, nodeId: string, x: number, y: number): OpResult {
@@ -357,8 +382,7 @@ export function moveNode(draft: Draft, nodeId: string, x: number, y: number): Op
     ...draft.diagram,
     nodes: draft.diagram.nodes.map((n) => (n.id === nodeId ? { ...n, x, y } : n)),
   };
-  const { edges, failed } = rerouteEdges(diagram, new Set([nodeId]));
-  return { draft: withDiagram(draft, { ...diagram, edges }), notice: failNotice(failed) };
+  return finishNodeEdit(draft, diagram, new Set([nodeId]), '옮길');
 }
 
 export function deleteNode(draft: Draft, nodeId: string): OpResult {
@@ -367,8 +391,7 @@ export function deleteNode(draft: Draft, nodeId: string): OpResult {
     nodes: draft.diagram.nodes.filter((n) => n.id !== nodeId),
     edges: draft.diagram.edges.filter((e) => e.from !== nodeId && e.to !== nodeId),
   };
-  const { edges, failed } = rerouteEdges(diagram, new Set());
-  return { draft: withDiagram(draft, { ...diagram, edges }), notice: failNotice(failed) };
+  return finishNodeEdit(draft, diagram, new Set(), '삭제할');
 }
 
 export function addEdge(
@@ -389,20 +412,20 @@ export function addEdge(
   const id = nextEdgeId(draft);
   const edge = canonicalEdge({ id, from, to, kind, voltage: voltage?.trim() || undefined, label: label?.trim() || undefined });
   const r = routeEdge(boxesOf(draft.diagram), from, to);
+  // 모선 연결 (개선 R4 H1): 모선 위 점에서 수직으로만 — 범위 밖·막힘이면 연결을 만들지 않는다
+  if (!r.ok && r.reason !== 'no-path') return { draft, error: busRouteText(draft, from, to, r.reason, r.blockedBy) };
   const placed = r.ok && r.points ? canonicalEdge({ ...edge, points: r.points }) : edge;
   const diagram = { ...draft.diagram, edges: [...draft.diagram.edges, placed] };
   return {
     draft: withDiagram(draft, diagram),
     createdId: id,
-    notice: r.ok ? undefined : failNotice([id]),
+    notice: r.ok ? undefined : `우회 경로를 찾지 못한 연결선: ${id} — 노드를 옮겨 길을 만들어 주세요`,
   };
 }
 
 export function deleteEdge(draft: Draft, edgeId: string): Draft {
   return withDiagram(draft, { ...draft.diagram, edges: draft.diagram.edges.filter((e) => e.id !== edgeId) });
 }
-
-export type EdgeKind = 'power' | 'signal' | 'alt';
 
 export function updateEdge(draft: Draft, edgeId: string, patch: { kind?: EdgeKind; voltage?: string; label?: string }): Draft {
   return withDiagram(draft, {
@@ -446,7 +469,11 @@ export function signature(d: Draft): string {
   return `${s.length}-${(h >>> 0).toString(16)}`;
 }
 
-/** 계층 밴드 안에서 놓을 수 있는 첫 자리 (밴드 가운데에서 가까운 순). 키보드 배치·자동 배치용 */
+/**
+ * 계층 밴드 안에서 놓을 수 있는 첫 자리 (밴드 가운데에서 가까운 순). 키보드 배치·자동 배치용.
+ * 개선 R4: 모선과도 겹치지 않고(H2), 후보 자리의 노드 사각형(+라우터 여유)이 기존 연결선 어느 선분과도 닿지 않는 자리만 (M3 —
+ * 배치 때문에 주변 선이 다시 계산되어 새 교차가 생기지 않게).
+ */
 export function findFreeSpot(draft: Draft, layer: Layer, shape: NodeShape = TILE_SHAPE): Pt | null {
   const band = bandOf(draft.diagram, layer);
   if (!band) return null;
@@ -458,5 +485,44 @@ export function findFreeSpot(draft: Draft, layer: Layer, shape: NodeShape = TILE
     for (let x = snap(band.x + hw + GRID); x + hw <= band.x + band.w; x += GRID) spots.push({ x, y });
   }
   spots.sort((a, b) => Math.hypot(a.x - cx, a.y - cy) - Math.hypot(b.x - cx, b.y - cy));
-  return spots.find((p) => checkPlacement(draft, layer, p.x, p.y, undefined, shape) === null) ?? null;
+  const boxes = boxesOf(draft.diagram);
+  const paths = draft.diagram.edges
+    .map((e) => {
+      const a = boxes.get(e.from);
+      const b = boxes.get(e.to);
+      return e.points ?? (a && b ? defaultRoute(a, b) : null);
+    })
+    .filter((p): p is Pt[] => !!p);
+  // 노드 사각형 + 라우터 여유(ROUTE_CLEAR, 모선도 같은 여유 — 선과 바짝 붙은 모선 방지)와 닿는 선분이 있으면 제외
+  const c = ROUTE_CLEAR;
+  const touchesLine = (p: Pt) =>
+    paths.some((pts) =>
+      pts.slice(1).some((q, i) => {
+        const a = pts[i];
+        return Math.min(a.x, q.x) < p.x + hw + c && Math.max(a.x, q.x) > p.x - hw - c && Math.min(a.y, q.y) < p.y + hh + c && Math.max(a.y, q.y) > p.y - hh - c;
+      }),
+    );
+  return spots.find((p) => checkPlacement(draft, layer, p.x, p.y, undefined, shape) === null && !touchesLine(p)) ?? null;
+}
+
+// ───────────── 계통 검수 상태 (개선 R4 M4) ─────────────
+
+export const ADMIN_REVIEW_NOTE = '관리자 편집 — 설계팀 재검수 필요';
+
+const sameJson = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+
+/** 노드·연결선·기기 정보가 원본과 다른지 (사진만 바뀐 경우는 제외) */
+export const topologyChanged = (base: Draft, draft: Draft) =>
+  !sameJson(base.equipmentTypes, draft.equipmentTypes) || !sameJson(base.diagram.nodes, draft.diagram.nodes) || !sameJson(base.diagram.edges, draft.diagram.edges);
+
+/**
+ * 관리자 편집이 있으면 diagram.review = { status: 'pending', changedAt: 오늘(KST), note } (approved 였어도 — 재검수 필요),
+ * 편집이 없으면(되돌리기로 원본과 같아짐) 원본 review 그대로. 키 순서는 원본 diagram.json 과 같게(width, height, review, …).
+ */
+export function syncReview(base: Draft, draft: Draft, today: string): Draft {
+  const want: Diagram['review'] = topologyChanged(base, draft) ? { status: 'pending', changedAt: today, note: ADMIN_REVIEW_NOTE } : base.diagram.review;
+  if (sameJson(draft.diagram.review, want)) return draft;
+  const { width, height, review: _old, ...rest } = draft.diagram;
+  const diagram = (want ? { width, height, review: want, ...rest } : { width, height, ...rest }) as Diagram;
+  return withDiagram(draft, diagram);
 }

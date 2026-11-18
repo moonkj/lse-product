@@ -12,7 +12,8 @@ import {
   type EquipmentType,
   type Layer,
 } from '../../lib/schema';
-import { getDiagramModel, type DiagramModel } from '../../lib/diagram/model';
+import { computeDiagramModel, type DiagramModel } from '../../lib/diagram/model';
+import type { EdgeKind } from '../../lib/diagram/geometry';
 import type { ViewMode } from '../../lib/diagram/url';
 import { pageTitle } from '../../lib/labels';
 import {
@@ -22,7 +23,6 @@ import {
   shapeOf,
   specPlacement,
   updateNode,
-  type EdgeKind,
   type SpecialNodeSpec,
   deleteEdge,
   deleteEquipment,
@@ -50,7 +50,10 @@ type RightTab = 'selection' | 'changes' | 'check';
 type PlaceKind = 'equipment' | 'ref' | 'bus' | 'endpoint';
 const PLACE_KIND_LABELS: Record<PlaceKind, string> = { equipment: '기기', ref: '참조 타일', bus: '모선', endpoint: '끝점' };
 
-/** 초안으로 계통도 모델 만들기 — 일반 화면과 같은 getDiagramModel 사용, 사진은 초안의 equipment-images 기준 */
+/**
+ * 초안으로 계통도 모델 만들기 — 일반 화면과 같은 규칙(computeDiagramModel)으로 별도 인스턴스를 만든다
+ * (일반 화면의 getDiagramModel 캐시를 덮어쓰지 않음, 리뷰 R5). 사진은 초안의 equipment-images 기준.
+ */
 function buildModel(data: AppData, draft: Draft): DiagramModel {
   const appData: AppData = {
     ...data,
@@ -59,7 +62,7 @@ function buildModel(data: AppData, draft: Draft): DiagramModel {
     equipmentTypeById: new Map(draft.equipmentTypes.map((e) => [e.id, e])),
     equipmentImageById: new Map(Object.entries(draft.images)),
   };
-  const m = getDiagramModel(appData);
+  const m = computeDiagramModel(appData);
   const base = import.meta.env.BASE_URL;
   const withImage = (n: DiagramModel['nodes'][number]) => {
     const img = draft.images[n.eq.id];
@@ -88,10 +91,7 @@ export default function AdminPage() {
   const { draft, base, past, future, staleBase, restoredAt, saveStatus, commit, undo, redo, resetToBase } = useAdminStore();
   const model = useMemo(() => buildModel(data, draft), [data, draft]);
   const changes = useMemo(() => computeChanges(base, draft), [base, draft]);
-  const ref = useMemo(
-    () => ({ categoryCodes: new Set(data.categories.map((c) => c.code)), productIds: new Set(data.products.map((p) => p.id)) }),
-    [data],
-  );
+  const ref = useMemo(() => ({ categories: data.categories, products: data.products }), [data]);
 
   const canvasRef = useRef<CanvasHandle>(null);
   const [tool, setTool] = useState<Tool>('select');

@@ -1,33 +1,25 @@
 /**
- * 연결선 우회 경로 계산 — scripts/build-diagram-data.py 의 default_route / path_hits / astar_route
- * TypeScript 포팅 (순수 함수, 같은 상수). 관리자 화면에서 노드를 옮기거나 연결선을 추가할 때 edge.points 를 다시 계산한다.
+ * 연결선 경로 계산 — 계통도 연결선 기하의 단일 출처 (개선 R4: 화면 model.ts·관리자·무결성 검사가 모두 사용).
+ * scripts/build-diagram-data.py 의 default_route / path_hits / astar_route TypeScript 포팅 (순수 함수, 같은 상수·같은 힙 순서).
  *
- * 개선 R3: 노드 종류별 크기(타일·참조 타일 120×116, 끝점 120×44, 모선 width×8), 모선 끝점(모선 위 수직 하강,
- * 모선 범위 밖이면 A* 목표 = 가까운 모선 끝), 모선도 장애물(여유 2px).
- *
- * 이 파일은 의존성 없이 자체 완결 (node 의 TS 실행으로 Python 결과와 대조 검증하기 위해 import 없음).
+ * - 노드 크기·여유 상수는 geometry.ts (타일·참조 타일 120×116, 끝점 120×44, 모선 width×8)
+ * - 모선 연결 (개선 R4, DI-46): 모선 위 점(기기 x)에서 **수직**으로만 잇는다.
+ *   기기가 모선 범위 밖이면 'bus-range', 수직 경로가 다른 노드에 막히면 'bus-blocked' 로 실패 (A* 우회 안 함)
+ * - 그 밖의 연결: 기본 직교 경로가 노드를 지나가면 A* 우회 경로
  */
+import { ROUTE_BUS_CLEAR, ROUTE_CLEAR, halfSize, nodeKindOf, type NodeKind } from './geometry';
 
 export interface Pt {
   x: number;
   y: number;
 }
 
-/** 타일 크기 (model.ts 와 동일) */
-export const ROUTE_TILE_W = 120;
-export const ROUTE_TILE_H = 116;
-/** 끝점 라벨 상자 (Python EP_W/EP_H) */
-export const ROUTE_EP_W = 120;
-export const ROUTE_EP_H = 44;
-/** 모선 반높이 (Python BUS_HH) */
-export const ROUTE_BUS_HH = 4;
-/** 선과 타일 사이 최소 여유(px) — Python CLEAR (모선은 2) */
-export const CLEAR = 10;
-const BUS_CLEAR = 2;
+/** 선과 타일 사이 최소 여유(px) — Python CLEAR (모선은 ROUTE_BUS_CLEAR) */
+export const CLEAR = ROUTE_CLEAR;
 /** 꺾임 벌점 — Python TURN */
 const TURN = 400;
 
-export type RouteBoxKind = 'equipment' | 'ref' | 'bus' | 'endpoint';
+export type RouteBoxKind = NodeKind;
 
 /** 노드 경계: 중심(x, y)과 반폭·반높이 (Python Box) */
 export interface RouteBox {
@@ -44,10 +36,10 @@ export type BoxMap = ReadonlyMap<string, RouteBox>;
 
 /** diagram.json 노드 → 경계 (Python main() 의 boxes 생성과 같은 규칙) */
 export function boxOf(n: { id: string; kind?: string; ref?: boolean; x: number; y: number; width?: number }): RouteBox {
-  const kind: RouteBoxKind = n.kind === 'bus' ? 'bus' : n.kind === 'endpoint' ? 'endpoint' : n.ref ? 'ref' : 'equipment';
-  if (kind === 'bus') return { id: n.id, kind, x: n.x, y: n.y, hw: Math.floor((n.width ?? 0) / 2), hh: ROUTE_BUS_HH };
-  if (kind === 'endpoint') return { id: n.id, kind, x: n.x, y: n.y, hw: ROUTE_EP_W / 2, hh: ROUTE_EP_H / 2 };
-  return { id: n.id, kind, x: n.x, y: n.y, hw: ROUTE_TILE_W / 2, hh: ROUTE_TILE_H / 2 };
+  const kind = nodeKindOf(n);
+  const { hw, hh } = halfSize(n);
+  // 모선 반폭은 Python 정수 나눗셈(width // 2)과 같게
+  return { id: n.id, kind, x: n.x, y: n.y, hw: kind === 'bus' ? Math.floor(hw) : hw, hh };
 }
 
 export function boxMapOf(
@@ -66,7 +58,7 @@ export function pyRound(v: number): number {
 }
 
 /**
- * model.ts route() 와 같은 규칙 + 모선 끝점. 점 목록, 모선 범위 밖이면 null.
+ * 기본 직교 경로 (노드 가장자리 → 꺾어서 → 가장자리). 모선 연결은 모선 위 (기기 x) 점에서 수직 — 모선 범위 밖이면 null.
  */
 export function defaultRoute(a: RouteBox, b: RouteBox): Pt[] | null {
   if (a.kind === 'bus' || b.kind === 'bus') {
@@ -107,7 +99,7 @@ export function defaultRoute(a: RouteBox, b: RouteBox): Pt[] | null {
   ];
 }
 
-const clearOf = (bx: RouteBox) => (bx.kind === 'bus' ? BUS_CLEAR : CLEAR);
+const clearOf = (bx: RouteBox) => (bx.kind === 'bus' ? ROUTE_BUS_CLEAR : CLEAR);
 
 function segHits(p: Pt, q: Pt, bx: RouteBox): boolean {
   const c = clearOf(bx);
@@ -197,23 +189,21 @@ const skey = (x: number, y: number, d: number) => `${x},${y},${d}`;
 
 /**
  * 직교 가시성 그래프 + A*(꺾임 벌점)로 노드를 피하는 경로. 후보 좌표 = 노드 중심선과 노드 바깥 여유선.
- * 모선 끝은 모선 위의 가장 가까운 끝(자르지 않음), 그 밖의 끝은 노드 가장자리로 자른다.
+ * 양 끝은 노드 가장자리로 자른다. 모선 연결은 수직만 허용하므로 대상 아님(null).
  * 경로가 없으면 null (Python 은 AssertionError).
  */
 export function astarRoute(boxes: BoxMap, a: string, b: string): Pt[] | null {
   const A = boxes.get(a);
   const B = boxes.get(b);
-  if (!A || !B) return null;
+  if (!A || !B || A.kind === 'bus' || B.kind === 'bus') return null;
   const xsSet = new Set<number>();
   const ysSet = new Set<number>();
   for (const bx of boxes.values()) {
     xsSet.add(bx.x).add(bx.x - bx.hw - CLEAR - 8).add(bx.x + bx.hw + CLEAR + 8);
     ysSet.add(bx.y).add(bx.y - bx.hh - CLEAR - 8).add(bx.y + bx.hh + CLEAR + 8);
   }
-  const anchor = (bx: RouteBox, other: RouteBox): Pt =>
-    bx.kind === 'bus' ? { x: other.x > bx.x ? bx.x + bx.hw : bx.x - bx.hw, y: bx.y } : { x: bx.x, y: bx.y };
-  const start = anchor(A, B);
-  const goal = anchor(B, A);
+  const start: Pt = { x: A.x, y: A.y };
+  const goal: Pt = { x: B.x, y: B.y };
   xsSet.add(start.x).add(goal.x);
   ysSet.add(start.y).add(goal.y);
   const ends = [a, b];
@@ -307,35 +297,53 @@ export function astarRoute(boxes: BoxMap, a: string, b: string): Pt[] | null {
     if (nxt.x === bx.x) return { x: bx.x, y: bx.y + (nxt.y > bx.y ? bx.hh : -bx.hh) };
     return { x: bx.x + (nxt.x > bx.x ? bx.hw : -bx.hw), y: bx.y };
   };
-  // 모선 끝은 이미 모선 위의 점이므로 자르지 않음
-  if (A.kind !== 'bus') corners[0] = clip(A, corners[1]);
-  if (B.kind !== 'bus') corners[corners.length - 1] = clip(B, corners[corners.length - 2]);
+  corners[0] = clip(A, corners[1]);
+  corners[corners.length - 1] = clip(B, corners[corners.length - 2]);
   return corners;
 }
 
 const samePts = (p: readonly Pt[] | null, q: readonly Pt[] | null) =>
   !!p && !!q && p.length === q.length && p.every((v, i) => v.x === q[i].x && v.y === q[i].y);
 
-export type RouteResult =
-  | { ok: true; points?: Pt[] }
+/** 경로 실패 사유 */
+export type RouteFailure =
+  /** 기기가 모선 범위(x1~x2) 밖 */
+  | 'bus-range'
+  /** 모선에서 기기까지 수직 경로가 다른 노드에 막힘 */
+  | 'bus-blocked'
+  /** 모선끼리 직접 연결 */
+  | 'bus-to-bus'
   /** 우회 경로도 없음 (노드에 완전히 막힘) */
-  | { ok: false };
+  | 'no-path'
+  /** 노드 없음 */
+  | 'missing-node';
+
+export type RouteResult = { ok: true; points?: Pt[] } | { ok: false; reason: RouteFailure; blockedBy?: string[] };
 
 /**
- * 생성기 main() 과 같은 규칙: 기본 경로가 없거나(모선 범위 밖) 다른 노드를 지나가면 A* 우회 경로.
- * 모선 연결이거나 결과가 기본 경로와 다르면 points 를 돌려준다.
+ * 연결선 경로 (생성기 main() 과 같은 규칙 + 개선 R4 모선 규칙).
+ * - 모선 연결: 기본 수직 경로만. 범위 밖·막힘이면 실패 (DI-46: 모선 쪽 첫 선분 수직, 끝점이 모선 위)
+ * - 그 밖: 기본 경로가 다른 노드를 지나가면 A* 우회. 결과가 기본 경로와 다르면 points
+ * 모선 연결은 항상 points 를 돌려준다.
  */
 export function routeEdge(boxes: BoxMap, from: string, to: string): RouteResult {
   const A = boxes.get(from);
   const B = boxes.get(to);
-  if (!A || !B) return { ok: false };
+  if (!A || !B) return { ok: false, reason: 'missing-node' };
   const ends = [from, to];
   const def = defaultRoute(A, B);
+  if (A.kind === 'bus' || B.kind === 'bus') {
+    if (A.kind === 'bus' && B.kind === 'bus') return { ok: false, reason: 'bus-to-bus' };
+    if (!def) return { ok: false, reason: 'bus-range' };
+    const hit = nodesHitBy(def, boxes, ends);
+    if (hit.length > 0) return { ok: false, reason: 'bus-blocked', blockedBy: hit };
+    return { ok: true, points: def };
+  }
   let pts = def;
   if (!pts || pathHits(pts, boxes, ends)) {
     pts = astarRoute(boxes, from, to);
-    if (!pts || pathHits(pts, boxes, ends)) return { ok: false };
+    if (!pts || pathHits(pts, boxes, ends)) return { ok: false, reason: 'no-path' };
   }
-  if (A.kind === 'bus' || B.kind === 'bus' || !samePts(pts, def)) return { ok: true, points: pts };
+  if (!samePts(pts, def)) return { ok: true, points: pts };
   return { ok: true };
 }

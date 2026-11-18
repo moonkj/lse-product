@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { ENDPOINT_H, ENDPOINT_W, type AltBadge, type BusNodeItem, type EndpointItem } from '../../lib/diagram/model';
+import type { AltBadge, BusNodeItem, EndpointItem } from '../../lib/diagram/model';
+import { ENDPOINT_H, ENDPOINT_W } from '../../lib/diagram/geometry';
 
 /**
  * 계통도의 기기가 아닌 요소 (개선 R3 계통 정정) — 일반 화면·관리자 화면 공용.
