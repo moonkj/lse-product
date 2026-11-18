@@ -30,7 +30,7 @@ export interface JumpState extends FocusState {
 const INITIAL_DESKTOP: Rect = { x: 560, y: 1620, w: 900, h: 540 };
 const INITIAL_MOBILE: Rect = { x: 660, y: 1640, w: 480, h: 420 };
 
-const Edges = memo(function Edges({
+export const Edges = memo(function Edges({
   model,
   selectedEdges,
 }: {
@@ -66,7 +66,7 @@ const Edges = memo(function Edges({
   );
 });
 
-const Bands = memo(function Bands({ model, mode }: { model: DiagramModel; mode: ViewMode }) {
+export const Bands = memo(function Bands({ model, mode }: { model: DiagramModel; mode: ViewMode }) {
   return (
     <>
       {model.layers.map((l) => {

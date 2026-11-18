@@ -52,6 +52,14 @@
 - [~] (T1) 계통 따라가기 투어, 용어집, (퀴즈/진도) — **T1-B: /learn 완료** (7단계 투어·퀴즈 20문항·진도 localStorage·용어집 36개, src/content/learn.json draft — 교육 담당자 검토 필요). 계통도 위 교육 모드 투어(E2E-1)는 T1-A
 - [~] (T2/T3) 점검 + 최종 리뷰 — T2: learn.json 참조 무결, localStorage 차단 OK, L7 완료 불가(M8)·step 정규화(L3) → phase2-debug-report.md / T3: DI-70~79(learn.json) + E2E-1 /learn 투어 L1→L7 통과, 품질 리뷰 phase2-code-review.md
 
+## 관리자 모드 (/#/admin) — 사용자 요청 "관리자 모드 만들어서 계통도에 기기 추가 가능하게"
+- [x] (리더) 아키텍처 결정: 정적 사이트 → 브라우저 편집 + 초안 자동 저장(localStorage) + JSON 내보내기/가져오기. 앞으로 src/data/*.json 이 원본, Python 생성기는 시드용
+- [x] (T1) 편집 화면 /#/admin (React.lazy 별도 청크, 앱 레이아웃 밖 전체 화면, 상단 "보안 장치 아님" 안내) — 기기 추가·수정·삭제 폼(EquipmentTypeSchema + DI-20~26 즉시 검증, 한국어 오류, id 자동 제안·중복 검사, 카테고리·제품 검색 선택, 대표 사진 선택), 배치(밴드 클릭·자동 빈 자리, 10px 스냅, 밴드 이탈·타일 겹침 빨간 미리보기), 노드 드래그/화살표 이동, 연결선 추가(전력/신호·전압 라벨)·수정·삭제, 변경 내역·되돌리기 50단계·초안 초기화, 무결성 검사 후 내보내기(equipment-types/diagram/(equipment-images)/변경요약.md), JSON 가져오기(스키마 검증), 사용자 화면 미리보기(제품/Gap)
+- [x] (T1) 우회 경로 라우터 TS 포팅 src/lib/diagram/router.ts (default_route/path_hits_tiles/astar_route, 같은 상수·같은 힙 순서) — 현재 diagram.json 14개 points 100% 동일, 77/77 판정 일치
+- [ ] (T3) 관리자 모드 테스트 (router 단위 테스트·admin E2E) — testid: admin-page, admin-add-equipment, admin-equipment-form, admin-save, admin-place-mode, admin-connect-mode, admin-export, admin-import, admin-changes, admin-undo, admin-redo, admin-validation-errors (+ admin-select-mode, admin-auto-place, admin-check-run, admin-check-ok, admin-tab-*, admin-ghost[data-valid], admin-edge-hit-{edgeId}, admin-toast)
+- [ ] (리더) 일반 화면에 관리자 링크 노출 여부 결정 (현재 미노출 — /#/admin 직접 입력), README 데이터 수정 가이드 갱신
+- [ ] (2단계) GitHub API 직접 반영 — 원격 저장소 연결 후 (현재 버튼 자리만)
+
 ## (요청 시) T4 — 성능·문서
 - [ ] 성능 점검 (SVG 렌더 수, 번들 크기, PDF 지연 로딩)
 - [ ] README / 데이터 수정 가이드
@@ -61,4 +69,5 @@
 |---|---|---|---|
 | 11-18 | 리더 | DiagramLayer에 optional x, width 추가 (MON·REN 오른쪽 열 배치) | T1 schema.ts, T3 DI 규칙 — 공지 완료 |
 | 11-18 | T1 | schema.ts: `httpsUrl`(https만) → Product/Category/DocRef.url 적용, `DocsFileSchema`·`ProductDocsSchema`·`DOC_TYPE_LABELS` 추가. 새 데이터 파일 src/data/docs.json. load.ts: 모듈 상수 → `getData()`/`useData()` 지연 로딩, `docsByProductId()`·`resolveProducts()`·`resolveCategories()` | T3 DI(docs.json 규칙·ssq CDN 도메인), E2E(자료는 docs.json 기준) |
+| 11-18 | T1 | 관리자 모드: DiagramCanvas.tsx 의 `Bands`·`Edges` 를 export (동작 변화 없음). 새 파일 src/lib/admin/*, src/lib/diagram/router.ts, src/pages/admin/* | 일반 화면 영향 없음 |
 | 11-18 | T1 | 라이트 모드 `--cov-partial` #a67c00, `--cov-na` #737c88 (아이콘 대비 3:1↑). layerFilter 초기값 = 전체 계층 | 화면 색 변화 |
