@@ -1,27 +1,26 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAppStore, type ViewMode } from '../../store/useAppStore';
-import CoverageLegend from './CoverageLegend';
+import { Link, useLocation } from 'react-router-dom';
+import type { ViewMode } from '../../store/useAppStore';
+import { parseMode, useSetViewMode } from '../../lib/diagram/url';
+import SearchBox from './SearchBox';
 
-const MODES: { value: ViewMode; label: string; path: string }[] = [
-  { value: 'product', label: '제품', path: '/' },
-  { value: 'gap', label: 'Gap', path: '/gap' },
-  { value: 'learn', label: '교육', path: '/learn' },
+const MODES: { value: ViewMode; label: string }[] = [
+  { value: 'product', label: '제품' },
+  { value: 'gap', label: 'Gap' },
+  { value: 'learn', label: '교육' },
 ];
 
-/** 현재 라우트 → 눌린 버튼. 기기·제품·404 페이지에서는 아무 버튼도 눌리지 않음 */
-function modeFromPath(pathname: string): ViewMode | null {
-  if (pathname === '/') return 'product';
+/** 눌린 버튼: 계통도(/)는 ?mode= 쿼리, /gap(공백 표)·/learn(투어)은 해당 모드. 기기·제품·404 는 없음 */
+function activeMode(pathname: string, search: string): ViewMode | null {
+  if (pathname === '/') return parseMode(new URLSearchParams(search).get('mode'));
   if (pathname.startsWith('/gap')) return 'gap';
   if (pathname.startsWith('/learn')) return 'learn';
   return null;
 }
 
 export default function Header() {
-  const setViewMode = useAppStore((s) => s.setViewMode);
-  const searchQuery = useAppStore((s) => s.searchQuery);
-  const setSearchQuery = useAppStore((s) => s.setSearchQuery);
-  const navigate = useNavigate();
-  const activeMode = modeFromPath(useLocation().pathname);
+  const { pathname, search } = useLocation();
+  const setMode = useSetViewMode();
+  const active = activeMode(pathname, search);
 
   return (
     <header className="app-header">
@@ -29,38 +28,22 @@ export default function Header() {
         <strong>LS ELECTRIC</strong> 전력계통 제품맵
       </Link>
 
-      <form className="app-header__search" role="search" onSubmit={(e) => e.preventDefault()}>
-        <label htmlFor="global-search" className="visually-hidden">
-          제품·기기 검색
-        </label>
-        <input
-          id="global-search"
-          type="search"
-          placeholder="제품명·모델명·기기 검색"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </form>
+      <SearchBox />
 
       <div className="mode-toggle" role="group" aria-label="보기 모드">
         {MODES.map((m) => (
           <button
             key={m.value}
             type="button"
-            aria-pressed={activeMode === m.value}
+            aria-pressed={active === m.value}
             className="mode-toggle__btn"
             data-testid={`view-mode-${m.value}`}
-            onClick={() => {
-              setViewMode(m.value);
-              navigate(m.path);
-            }}
+            onClick={() => setMode(m.value)}
           >
             {m.label}
           </button>
         ))}
       </div>
-
-      <CoverageLegend />
     </header>
   );
 }

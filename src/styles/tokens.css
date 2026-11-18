@@ -84,6 +84,23 @@
   --band-ren: #e9f7e4;
   --band-mon: #eceff3;
   --band-label: #4a5363;
+
+  /* (Phase 2 추가) 계통도 노드·선택·Gap */
+  --node-bg: #ffffff;
+  --node-selected-bg: #e2ecfb;
+  --color-selected: #0056a6;
+  --color-line-bus: #1a1f29;
+  --band-divider: rgb(0 0 0 / 0.07);
+  --cov-owned-text: #146c33;
+  --cov-partial-text: #6b5000;
+  --cov-affiliate-text: #1f4f9c;
+  --cov-missing-text: #a12525;
+  --cov-na-text: #4a5363;
+  --gap-banner-bg: #fff7f7;
+  --gap-note-border: #f0c4c4;
+  --gap-glow-missing: rgb(217 58 58 / 0.22);
+  --gap-glow-partial: rgb(166 124 0 / 0.25);
+  --sheet-handle: #c3c9d1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -127,7 +144,54 @@
     --band-mon: #1e242c;
     --band-label: #b5bfcc;
 
+    --node-bg: #171d26;
+    --node-selected-bg: #1c2c47;
+    --color-selected: #4c9bff;
+    --color-line-bus: #dfe4ea;
+    --band-divider: rgb(255 255 255 / 0.07);
+    --cov-owned-text: #7fe0a0;
+    --cov-partial-text: #f5d77a;
+    --cov-affiliate-text: #9cc1ff;
+    --cov-missing-text: #ff9b9b;
+    --cov-na-text: #b5bfcc;
+    --gap-banner-bg: #2a1818;
+    --gap-note-border: #5a2a2a;
+    --gap-glow-missing: rgb(240 90 90 / 0.35);
+    --gap-glow-partial: rgb(242 194 48 / 0.3);
+    --sheet-handle: #4a5563;
+
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
     --shadow-md: 0 4px 12px rgb(0 0 0 / 0.5);
+  }
+}
+
+/* 상세 페이지(제품·기기·공백 표·교육) 추가 토큰 — T1-B */
+:root {
+  --cov-owned-text: #146c33;
+  --cov-partial-text: #6b5000;
+  --cov-affiliate-text: #1f4f9c;
+  --cov-missing-text: #b42828;
+  --cov-na-text: #4a5363;
+  --color-text-soft: #3b4452;
+  --color-progress: #0f7a5a;
+  --color-on-progress: #ffffff;
+  --color-alert-bg: #fff7f7;
+  --color-alert-border: #f0c4c4;
+  --color-muted-dot: #8a939f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cov-owned-text: #7ee2a0;
+    --cov-partial-text: #f5d36a;
+    --cov-affiliate-text: #a7c6ff;
+    --cov-missing-text: #ff9b9b;
+    --cov-na-text: #c2cad6;
+    --color-text-soft: #c4ccd8;
+    --color-progress: #3cc19a;
+    --color-on-progress: #0b1220;
+    --color-alert-bg: #2a1717;
+    --color-alert-border: #5a2b2b;
+    --color-muted-dot: #7d8794;
   }
 }

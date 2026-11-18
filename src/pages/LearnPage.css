@@ -1,0 +1,185 @@
+.lp { display: flex; flex-direction: column; min-width: 0; }
+
+.lp-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px var(--space-6);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.lp-bar__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.lp-bar__title { font-weight: var(--fw-bold); font-size: var(--fs-md); }
+.lp-bar__action { margin-left: auto; }
+
+.lp-steps {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+.lp-steps__btn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+.lp-steps__track { display: block; height: 6px; border-radius: 3px; background: var(--color-border); }
+.lp-steps__label { overflow-wrap: anywhere; }
+.lp-steps__item.is-done .lp-steps__track { background: var(--color-progress); }
+.lp-steps__item.is-done .lp-steps__btn { color: var(--color-progress); font-weight: var(--fw-bold); }
+.lp-steps__item.is-current .lp-steps__track { background: var(--color-brand); }
+.lp-steps__item.is-current .lp-steps__btn { color: var(--color-link); font-weight: var(--fw-bold); }
+
+.lp-body { padding-top: var(--space-5); }
+
+.lp-lesson { padding: var(--space-6); gap: 18px; }
+.lp-lesson__head { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.lp-lesson__title { font-size: 26px; }
+.lp-lesson__title:focus { outline: none; }
+.lp-lesson__intro { margin: 0; color: var(--color-text-soft); }
+
+.lp-label { font-size: 12px !important; font-weight: var(--fw-bold); color: var(--color-text-muted); margin-bottom: var(--space-2) !important; }
+.lp-keys__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-key {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  text-decoration: none;
+}
+.lp-key:hover { border-color: var(--color-brand); }
+.lp-key__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 110px;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+}
+.lp-key__media img,
+.lp-key__media .eq-symbol { width: 100%; height: 100px; object-fit: contain; color: var(--color-text-muted); }
+.lp-key__media--missing { border: 2px dashed var(--cov-missing); }
+.lp-key__media--missing .eq-symbol { color: var(--cov-missing-text); height: 72px; }
+.lp-key__desc { font-size: 13px; color: var(--color-text-soft); }
+
+.lp-gap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--color-alert-bg);
+  border: 1px solid var(--color-alert-border);
+}
+.lp-gap__title { font-size: var(--fs-md) !important; color: var(--cov-missing-text); }
+.lp-gap__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; color: var(--color-text-soft); }
+.lp-gap__link { font-size: 13px; }
+.lp-nogap {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--cov-owned-bg);
+  color: var(--cov-owned-text);
+}
+
+.lp-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2); }
+
+.lp-quiz__head { display: flex; justify-content: space-between; align-items: center; }
+.lp-quiz__set { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; padding: 0; border: 0; min-width: 0; }
+.lp-quiz__q { padding: 0; margin-bottom: var(--space-2); font-weight: var(--fw-medium); }
+.lp-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.lp-opt:has(input:disabled) { cursor: default; }
+.lp-opt__text { flex: 1; }
+.lp-opt.is-correct { border: 2px solid var(--cov-owned); background: var(--cov-owned-bg); }
+.lp-opt.is-wrong { border: 2px solid var(--cov-missing); background: var(--cov-missing-bg); }
+.lp-opt__mark { font-weight: var(--fw-bold); white-space: nowrap; }
+.lp-opt__mark--ok { color: var(--cov-owned-text); }
+.lp-opt__mark--ng { color: var(--cov-missing-text); }
+.lp-quiz__explain {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+.lp-quiz__nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.lp-quiz__next { margin-left: auto; }
+
+.lp-meter { height: 8px; border-radius: 4px; background: var(--color-surface-2); overflow: hidden; }
+.lp-meter__fill { height: 100%; background: var(--color-progress); }
+.lp-linkbtn {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-link);
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: left;
+}
+
+.lp-overview__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+.lp-overview__list li { display: flex; align-items: center; gap: var(--space-3); }
+.lp-overview__mark {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-surface-2);
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+}
+.lp-overview__list li.is-done .lp-overview__mark { background: var(--color-progress); color: var(--color-on-progress); }
+
+.lp-glossary:focus { outline: none; }
+.lp-glossary__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+}
+.lp-glossary__item { display: flex; gap: var(--space-3); padding: 6px 0; border-bottom: 1px solid var(--color-border); }
+.lp-glossary__item dt { flex: 0 0 88px; font-weight: var(--fw-bold); }
+.lp-glossary__item dd { margin: 0; font-size: 13px; color: var(--color-text-soft); }
+.lp-review { font-size: 12px; }
+
+@media (max-width: 900px) {
+  .lp-bar { padding: 12px var(--space-4); }
+  .lp-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lp-lesson { padding: var(--space-4); }
+  .lp-lesson__title { font-size: 22px; }
+}

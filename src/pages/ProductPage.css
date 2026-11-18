@@ -1,0 +1,70 @@
+.pg-badge__dot {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--cov-owned);
+  color: var(--cov-on-color);
+  font-size: 11px;
+}
+
+.pd-group { display: flex; flex-direction: column; gap: 4px; }
+.pd-group__label { font-size: 12px; font-weight: var(--fw-bold); color: var(--color-text-muted); }
+.pd-group__list { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+
+.pd-doc {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  text-decoration: none;
+}
+.pd-doc:hover { border-color: var(--color-brand); }
+.pd-doc__file {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  background: var(--cov-na-bg);
+  color: var(--cov-na-text);
+}
+.pd-doc__file--catalog { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
+.pd-doc__file--manual { background: var(--cov-owned-bg); color: var(--cov-owned-text); }
+.pd-doc__file--datasheet { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
+.pd-doc__body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pd-doc__title { overflow-wrap: anywhere; }
+.pd-doc__meta { font-size: 12px; color: var(--color-text-muted); }
+.pd-doc__arrow { color: var(--color-link); }
+
+.pd-empty { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.pd-empty__badge {
+  padding: 2px 10px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+
+.pd-remain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  font-size: 13px;
+}
+.pd-remain__text { flex: 1 1 240px; color: var(--color-text-muted); }
+.pd-remain__link { font-weight: var(--fw-bold); white-space: nowrap; }
