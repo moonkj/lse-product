@@ -1,533 +1,533 @@
 {
-  "width": 1600,
-  "height": 2160,
+  "width": 2320,
+  "height": 3888,
   "layers": [
     {
       "id": "L1",
       "label": "초고압 발전·송전",
       "voltage": "765/345kV",
       "y": 0,
-      "height": 300,
+      "height": 540,
       "x": 0,
-      "width": 1200
+      "width": 1740
     },
     {
       "id": "L2",
       "label": "송변전",
       "voltage": "154kV",
-      "y": 300,
-      "height": 300,
+      "y": 540,
+      "height": 540,
       "x": 0,
-      "width": 1200
+      "width": 1740
     },
     {
       "id": "L3",
       "label": "특고압 배전",
       "voltage": "22.9kV",
-      "y": 600,
-      "height": 300,
+      "y": 1080,
+      "height": 540,
       "x": 0,
-      "width": 1200
+      "width": 1740
     },
     {
       "id": "L4",
       "label": "수전설비",
       "voltage": "22.9kV",
-      "y": 900,
-      "height": 300,
+      "y": 1620,
+      "height": 540,
       "x": 0,
-      "width": 1200
+      "width": 1740
     },
     {
       "id": "L5",
       "label": "변압",
       "voltage": "22.9kV→380/220V",
-      "y": 1200,
-      "height": 300,
+      "y": 2160,
+      "height": 540,
       "x": 0,
-      "width": 1200
+      "width": 1740
     },
     {
       "id": "L6",
       "label": "저압 배전",
       "voltage": "380/220V",
-      "y": 1500,
-      "height": 300,
+      "y": 2700,
+      "height": 540,
       "x": 0,
-      "width": 1200
+      "width": 1740
     },
     {
       "id": "L7",
       "label": "분전반 및 부하",
       "voltage": "380/220V 분기",
-      "y": 1800,
-      "height": 360,
+      "y": 3240,
+      "height": 648,
       "x": 0,
-      "width": 1200
+      "width": 1740
     },
     {
       "id": "MON",
       "label": "감시·제어",
       "voltage": "통신",
-      "x": 1220,
-      "width": 380,
+      "x": 1769,
+      "width": 551,
       "y": 0,
-      "height": 900
+      "height": 1620
     },
     {
       "id": "REN",
       "label": "신재생·저장 연계",
       "voltage": "계층별 연계",
-      "x": 1220,
-      "width": 380,
-      "y": 900,
-      "height": 1260
+      "x": 1769,
+      "width": 551,
+      "y": 1620,
+      "height": 2268
     }
   ],
   "nodes": [
     {
       "id": "n-gen",
       "equipmentTypeId": "generator",
-      "x": 100,
-      "y": 150
+      "x": 145,
+      "y": 270
     },
     {
       "id": "n-step-up",
       "equipmentTypeId": "step-up-tr",
-      "x": 260,
-      "y": 150
+      "x": 377,
+      "y": 270
     },
     {
       "id": "n-ehv-gis",
       "equipmentTypeId": "ehv-gis",
-      "x": 430,
-      "y": 150
+      "x": 624,
+      "y": 270
     },
     {
       "id": "n-la-ehv",
       "equipmentTypeId": "la-ehv",
-      "x": 430,
-      "y": 50
+      "x": 624,
+      "y": 90
     },
     {
       "id": "n-ct-ehv",
       "equipmentTypeId": "ct-pt-ehv",
-      "x": 430,
-      "y": 250
+      "x": 624,
+      "y": 450
     },
     {
       "id": "n-relay-tx",
       "equipmentTypeId": "relay-tx",
-      "x": 260,
-      "y": 250
+      "x": 377,
+      "y": 450
     },
     {
       "id": "n-tline",
       "equipmentTypeId": "transmission-line",
-      "x": 620,
-      "y": 150
+      "x": 899,
+      "y": 270
     },
     {
       "id": "n-hvdc",
       "equipmentTypeId": "hvdc",
-      "x": 820,
-      "y": 100
+      "x": 1189,
+      "y": 180
     },
     {
       "id": "n-facts",
       "equipmentTypeId": "facts",
-      "x": 820,
-      "y": 210
+      "x": 1189,
+      "y": 378
     },
     {
       "id": "n-substation",
       "equipmentTypeId": "substation",
-      "x": 180,
-      "y": 450
+      "x": 261,
+      "y": 810
     },
     {
       "id": "n-gis154",
       "equipmentTypeId": "gis-154",
-      "x": 620,
-      "y": 380
+      "x": 899,
+      "y": 684
     },
     {
       "id": "n-main-tr",
       "equipmentTypeId": "main-tr",
-      "x": 620,
-      "y": 510
+      "x": 899,
+      "y": 918
     },
     {
       "id": "n-sas",
       "equipmentTypeId": "sas",
-      "x": 860,
-      "y": 450
+      "x": 1247,
+      "y": 810
     },
     {
       "id": "n-fcl",
       "equipmentTypeId": "fcl",
-      "x": 620,
-      "y": 670
+      "x": 899,
+      "y": 1206
     },
     {
       "id": "n-dline",
       "equipmentTypeId": "dist-line",
-      "x": 620,
-      "y": 790
+      "x": 899,
+      "y": 1422
     },
     {
       "id": "n-recloser",
       "equipmentTypeId": "recloser",
-      "x": 800,
-      "y": 790
+      "x": 1160,
+      "y": 1422
     },
     {
       "id": "n-auto-sw",
       "equipmentTypeId": "auto-switch",
-      "x": 980,
-      "y": 790
+      "x": 1421,
+      "y": 1422
     },
     {
       "id": "n-pole-tr",
       "equipmentTypeId": "pole-tr",
-      "x": 1120,
-      "y": 790
+      "x": 1624,
+      "y": 1422
     },
     {
       "id": "n-mv-swgr",
       "equipmentTypeId": "mv-swgr",
-      "x": 180,
-      "y": 1050
+      "x": 261,
+      "y": 1890
     },
     {
       "id": "n-lbs",
       "equipmentTypeId": "lbs",
-      "x": 620,
-      "y": 945
+      "x": 899,
+      "y": 1683
     },
     {
       "id": "n-la",
       "equipmentTypeId": "la",
-      "x": 470,
-      "y": 945
+      "x": 682,
+      "y": 1683
     },
     {
       "id": "n-alts",
       "equipmentTypeId": "alts",
-      "x": 800,
-      "y": 945
+      "x": 1160,
+      "y": 1683
     },
     {
       "id": "n-mof",
       "equipmentTypeId": "mof",
-      "x": 620,
-      "y": 1015
+      "x": 899,
+      "y": 1836
     },
     {
       "id": "n-meter",
       "equipmentTypeId": "meter",
-      "x": 470,
-      "y": 1015
+      "x": 682,
+      "y": 1836
     },
     {
       "id": "n-vcb",
       "equipmentTypeId": "vcb",
-      "x": 620,
-      "y": 1095
+      "x": 899,
+      "y": 1989
     },
     {
       "id": "n-ct-pt",
       "equipmentTypeId": "ct-pt",
-      "x": 470,
-      "y": 1095
+      "x": 682,
+      "y": 1989
     },
     {
       "id": "n-relay",
       "equipmentTypeId": "protection-relay",
-      "x": 330,
-      "y": 1095
+      "x": 478,
+      "y": 1989
     },
     {
       "id": "n-pf",
       "equipmentTypeId": "pf",
-      "x": 800,
-      "y": 1095
+      "x": 1160,
+      "y": 1989
     },
     {
       "id": "n-vc",
       "equipmentTypeId": "vc-vi",
-      "x": 960,
-      "y": 1095
+      "x": 1392,
+      "y": 1989
     },
     {
       "id": "n-mv-drive",
       "equipmentTypeId": "mv-drive",
-      "x": 1110,
-      "y": 1095
+      "x": 1610,
+      "y": 1989
     },
     {
       "id": "n-cast-tr",
       "equipmentTypeId": "cast-tr",
-      "x": 620,
-      "y": 1350
+      "x": 899,
+      "y": 2430
     },
     {
       "id": "n-oil-tr",
       "equipmentTypeId": "oil-tr",
-      "x": 800,
-      "y": 1350
+      "x": 1160,
+      "y": 2430
     },
     {
       "id": "n-lv-swgr",
       "equipmentTypeId": "lv-swgr",
-      "x": 180,
-      "y": 1650
+      "x": 261,
+      "y": 2970
     },
     {
       "id": "n-acb",
       "equipmentTypeId": "acb",
-      "x": 620,
-      "y": 1550
+      "x": 899,
+      "y": 2790
     },
     {
       "id": "n-pmeter",
       "equipmentTypeId": "power-meter",
-      "x": 460,
-      "y": 1550
+      "x": 667,
+      "y": 2790
     },
     {
       "id": "n-mccb",
       "equipmentTypeId": "mccb",
-      "x": 460,
-      "y": 1650
+      "x": 667,
+      "y": 2970
     },
     {
       "id": "n-busway",
       "equipmentTypeId": "busway",
-      "x": 800,
-      "y": 1650
+      "x": 1160,
+      "y": 2970
     },
     {
       "id": "n-spd",
       "equipmentTypeId": "spd",
-      "x": 800,
-      "y": 1550
+      "x": 1160,
+      "y": 2790
     },
     {
       "id": "n-cap",
       "equipmentTypeId": "capacitor",
-      "x": 960,
-      "y": 1550
+      "x": 1392,
+      "y": 2790
     },
     {
       "id": "n-sag",
       "equipmentTypeId": "sag-protector",
-      "x": 960,
-      "y": 1650
+      "x": 1392,
+      "y": 2970
     },
     {
       "id": "n-aps",
       "equipmentTypeId": "aps",
-      "x": 1110,
-      "y": 1650
+      "x": 1610,
+      "y": 2970
     },
     {
       "id": "n-mcc",
       "equipmentTypeId": "mcc",
-      "x": 620,
-      "y": 1745
+      "x": 899,
+      "y": 3141
     },
     {
       "id": "n-ats",
       "equipmentTypeId": "lv-ats",
-      "x": 960,
-      "y": 1745
+      "x": 1392,
+      "y": 3141
     },
     {
       "id": "n-egen",
       "equipmentTypeId": "emergency-gen",
-      "x": 1110,
-      "y": 1745
+      "x": 1610,
+      "y": 3141
     },
     {
       "id": "n-panel",
       "equipmentTypeId": "panelboard",
-      "x": 300,
-      "y": 1850
+      "x": 435,
+      "y": 3330
     },
     {
       "id": "n-elcb",
       "equipmentTypeId": "elcb",
-      "x": 180,
-      "y": 1960
+      "x": 261,
+      "y": 3528
     },
     {
       "id": "n-mcb",
       "equipmentTypeId": "mcb-rcbo",
-      "x": 300,
-      "y": 1960
+      "x": 435,
+      "y": 3528
     },
     {
       "id": "n-bmccb",
       "equipmentTypeId": "branch-mccb",
-      "x": 420,
-      "y": 1960
+      "x": 609,
+      "y": 3528
     },
     {
       "id": "n-light",
       "equipmentTypeId": "lighting-outlet",
-      "x": 240,
-      "y": 2080
+      "x": 348,
+      "y": 3744
     },
     {
       "id": "n-evc",
       "equipmentTypeId": "ev-charger",
-      "x": 420,
-      "y": 2080
+      "x": 609,
+      "y": 3744
     },
     {
       "id": "n-mms",
       "equipmentTypeId": "mms",
-      "x": 580,
-      "y": 1850
+      "x": 841,
+      "y": 3330
     },
     {
       "id": "n-ms",
       "equipmentTypeId": "ms",
-      "x": 580,
-      "y": 1960
+      "x": 841,
+      "y": 3528
     },
     {
       "id": "n-empr",
       "equipmentTypeId": "empr",
-      "x": 700,
-      "y": 1960
+      "x": 1015,
+      "y": 3528
     },
     {
       "id": "n-drive",
       "equipmentTypeId": "lv-drive",
-      "x": 820,
-      "y": 1960
+      "x": 1189,
+      "y": 3528
     },
     {
       "id": "n-soft",
       "equipmentTypeId": "soft-starter",
-      "x": 940,
-      "y": 1960
+      "x": 1363,
+      "y": 3528
     },
     {
       "id": "n-servo",
       "equipmentTypeId": "servo",
-      "x": 1080,
-      "y": 1960
+      "x": 1566,
+      "y": 3528
     },
     {
       "id": "n-motor",
       "equipmentTypeId": "motor",
-      "x": 700,
-      "y": 2085
+      "x": 1015,
+      "y": 3753
     },
     {
       "id": "n-plc",
       "equipmentTypeId": "plc",
-      "x": 880,
-      "y": 2085
+      "x": 1276,
+      "y": 3753
     },
     {
       "id": "n-hmi",
       "equipmentTypeId": "hmi",
-      "x": 1000,
-      "y": 2085
+      "x": 1450,
+      "y": 3753
     },
     {
       "id": "n-dmc",
       "equipmentTypeId": "dmc",
-      "x": 1110,
-      "y": 1850
+      "x": 1610,
+      "y": 3330
     },
     {
       "id": "n-smart",
       "equipmentTypeId": "smart-device",
-      "x": 100,
-      "y": 2080
+      "x": 145,
+      "y": 3744
     },
     {
       "id": "n-scada",
       "equipmentTypeId": "scada",
-      "x": 1320,
-      "y": 150
+      "x": 1914,
+      "y": 270
     },
     {
       "id": "n-ems",
       "equipmentTypeId": "ems",
-      "x": 1500,
-      "y": 150
+      "x": 2175,
+      "y": 270
     },
     {
       "id": "n-dms",
       "equipmentTypeId": "dms",
-      "x": 1320,
-      "y": 400
+      "x": 1914,
+      "y": 720
     },
     {
       "id": "n-xems",
       "equipmentTypeId": "xems",
-      "x": 1500,
-      "y": 400
+      "x": 2175,
+      "y": 720
     },
     {
       "id": "n-care",
       "equipmentTypeId": "care",
-      "x": 1320,
-      "y": 650
+      "x": 1914,
+      "y": 1170
     },
     {
       "id": "n-amrs",
       "equipmentTypeId": "amrs",
-      "x": 1500,
-      "y": 650
+      "x": 2175,
+      "y": 1170
     },
     {
       "id": "n-pv",
       "equipmentTypeId": "pv",
-      "x": 1320,
-      "y": 1000
+      "x": 1914,
+      "y": 1800
     },
     {
       "id": "n-dc",
       "equipmentTypeId": "dc-devices",
-      "x": 1500,
-      "y": 1000
+      "x": 2175,
+      "y": 1800
     },
     {
       "id": "n-pcs",
       "equipmentTypeId": "pcs",
-      "x": 1320,
-      "y": 1160
+      "x": 1914,
+      "y": 2088
     },
     {
       "id": "n-ess",
       "equipmentTypeId": "ess",
-      "x": 1500,
-      "y": 1160
+      "x": 2175,
+      "y": 2088
     },
     {
       "id": "n-microgrid",
       "equipmentTypeId": "microgrid",
-      "x": 1410,
-      "y": 1340
+      "x": 2044,
+      "y": 2412
     },
     {
       "id": "n-modular",
       "equipmentTypeId": "modular-substation",
-      "x": 1320,
-      "y": 1550
+      "x": 1914,
+      "y": 2790
     },
     {
       "id": "n-railway",
       "equipmentTypeId": "railway",
-      "x": 1500,
-      "y": 1550
+      "x": 2175,
+      "y": 2790
     }
   ],
   "edges": [

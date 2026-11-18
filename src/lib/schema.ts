@@ -151,6 +151,17 @@ export const DocsFileSchema = z.object({
 });
 export type DocsFile = z.infer<typeof DocsFileSchema>;
 
+/** equipment-images.json — 기기별 대표 제품 사진 (scripts/fetch-images.mjs 생성, 리더 소유) */
+export const EquipmentImageSchema = z.object({
+  file: z.string().regex(/^images\/equipment\/[a-z0-9-]+\.(png|jpg|webp)$/),
+  productId: z.string().nullable(),
+  productName: z.string().nullable(),
+  sourceUrl: httpsUrl,
+  bytes: z.number().int().positive(),
+});
+export const EquipmentImagesSchema = z.record(z.string(), EquipmentImageSchema);
+export type EquipmentImage = z.infer<typeof EquipmentImageSchema>;
+
 export const EquipmentTypesSchema = z.array(EquipmentTypeSchema);
 export const ProductsSchema = z.array(ProductSchema);
 export const CategoriesSchema = z.array(CategorySchema);

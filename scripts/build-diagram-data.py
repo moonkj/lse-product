@@ -305,10 +305,10 @@ N = {
     "n-fcl": ("fcl", 620, 670), "n-dline": ("dist-line", 620, 790), "n-recloser": ("recloser", 800, 790),
     "n-auto-sw": ("auto-switch", 980, 790), "n-pole-tr": ("pole-tr", 1120, 790),
     # L4
-    "n-mv-swgr": ("mv-swgr", 180, 1050), "n-lbs": ("lbs", 620, 945), "n-la": ("la", 470, 945),
-    "n-alts": ("alts", 800, 945), "n-mof": ("mof", 620, 1015), "n-meter": ("meter", 470, 1015),
-    "n-vcb": ("vcb", 620, 1095), "n-ct-pt": ("ct-pt", 470, 1095), "n-relay": ("protection-relay", 330, 1095),
-    "n-pf": ("pf", 800, 1095), "n-vc": ("vc-vi", 960, 1095), "n-mv-drive": ("mv-drive", 1110, 1095),
+    "n-mv-swgr": ("mv-swgr", 180, 1050), "n-lbs": ("lbs", 620, 935), "n-la": ("la", 470, 935),
+    "n-alts": ("alts", 800, 935), "n-mof": ("mof", 620, 1020), "n-meter": ("meter", 470, 1020),
+    "n-vcb": ("vcb", 620, 1105), "n-ct-pt": ("ct-pt", 470, 1105), "n-relay": ("protection-relay", 330, 1105),
+    "n-pf": ("pf", 800, 1105), "n-vc": ("vc-vi", 960, 1105), "n-mv-drive": ("mv-drive", 1110, 1105),
     # L5
     "n-cast-tr": ("cast-tr", 620, 1350), "n-oil-tr": ("oil-tr", 800, 1350),
     # L6
@@ -367,6 +367,11 @@ E = [
 ]
 
 
+# 사진 타일(120×116) 배치를 위한 배율. 위 좌표는 기준 좌표이고 출력 시 배율을 곱한다.
+SX, SY = 1.45, 1.8
+TILE_W, TILE_H, MIN_GAP = 120, 116, 30
+
+
 def main():
     ids = {e["id"] for e in EQUIPMENT}
     assert len(ids) == len(EQUIPMENT), "duplicate equipment id"
@@ -377,7 +382,11 @@ def main():
         assert eid in ids, f"{nid}: unknown equipment {eid}"
         b = band[layer_of[eid]]
         assert b["x"] <= x <= b["x"] + b["width"] and b["y"] <= y <= b["y"] + b["height"], f"{nid} outside {b['id']}"
-        nodes.append({"id": nid, "equipmentTypeId": eid, "x": x, "y": y})
+        nodes.append({"id": nid, "equipmentTypeId": eid, "x": round(x * SX), "y": round(y * SY)})
+    for a in nodes:
+        for b in nodes:
+            if a["id"] < b["id"] and abs(a["x"] - b["x"]) < TILE_W + MIN_GAP and abs(a["y"] - b["y"]) < TILE_H + MIN_GAP:
+                raise AssertionError(f"tiles overlap: {a['id']} {b['id']}")
     used = {n["equipmentTypeId"] for n in nodes}
     assert used == ids, f"equipment without node: {ids - used}"
     edges = []
@@ -389,7 +398,8 @@ def main():
         edges.append(edge)
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "equipment-types.json").write_text(json.dumps(EQUIPMENT, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    diagram = {"width": W, "height": H, "layers": LAYERS, "nodes": nodes, "edges": edges}
+    layers = [dict(l, x=round(l["x"] * SX), width=round(l["width"] * SX), y=round(l["y"] * SY), height=round(l["height"] * SY)) for l in LAYERS]
+    diagram = {"width": round(W * SX), "height": round(H * SY), "layers": layers, "nodes": nodes, "edges": edges}
     (OUT / "diagram.json").write_text(json.dumps(diagram, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     from collections import Counter
     print(f"equipment {len(EQUIPMENT)}, nodes {len(nodes)}, edges {len(edges)}")

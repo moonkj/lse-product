@@ -4,7 +4,9 @@ import {
   DiagramSchema,
   DocsFileSchema,
   EquipmentTypesSchema,
+  EquipmentImagesSchema,
   ProductsSchema,
+  type EquipmentImage,
   type Category,
   type Diagram,
   type EquipmentType,
@@ -16,6 +18,7 @@ import categoriesJson from './categories.json';
 import equipmentTypesJson from './equipment-types.json';
 import diagramJson from './diagram.json';
 import docsJson from './docs.json';
+import equipmentImagesJson from './equipment-images.json';
 
 /** 어느 파일의 어느 필드가 틀렸는지 담는 오류 — RootErrorBoundary 가 한국어 화면으로 보여 준다 */
 export class DataValidationError extends Error {
@@ -49,6 +52,8 @@ export interface AppData {
   equipmentTypeById: Map<string, EquipmentType>;
   /** docs.json — 제품별 자료 (없는 제품은 키가 없음) */
   docsByProductId: Map<string, ProductDocs>;
+  /** equipment-images.json — 기기별 대표 사진 (없는 기기는 키가 없음 → 단선결선도 심볼로 표시) */
+  equipmentImageById: Map<string, EquipmentImage>;
 }
 
 let cache: AppData | undefined;
@@ -64,6 +69,7 @@ export function getData(): AppData {
   const equipmentTypes = parseOrThrow(EquipmentTypesSchema, equipmentTypesJson, 'equipment-types.json');
   const diagram = parseOrThrow(DiagramSchema, diagramJson, 'diagram.json');
   const docs = parseOrThrow(DocsFileSchema, docsJson, 'docs.json');
+  const images = parseOrThrow(EquipmentImagesSchema, equipmentImagesJson, 'equipment-images.json');
   cache = {
     products,
     categories,
@@ -74,6 +80,7 @@ export function getData(): AppData {
     categoryByCode: new Map(categories.map((c) => [c.code, c])),
     equipmentTypeById: new Map(equipmentTypes.map((e) => [e.id, e])),
     docsByProductId: new Map(Object.entries(docs.products)),
+    equipmentImageById: new Map(Object.entries(images)),
   };
   return cache;
 }
@@ -84,6 +91,14 @@ export const useData = getData;
 /** 제품별 자료 조회 */
 export function docsByProductId(productId: string): ProductDocs | undefined {
   return getData().docsByProductId.get(productId);
+}
+
+/**
+ * 기기 대표 사진 URL (GitHub Pages base './' 대응: BASE_URL 기준 상대 경로). 없으면 undefined → 심볼 표시
+ */
+export function equipmentImageUrl(equipmentId: string): string | undefined {
+  const img = getData().equipmentImageById.get(equipmentId);
+  return img ? `${import.meta.env.BASE_URL}${img.file}` : undefined;
 }
 
 /** 기기에 연결된 자사 제품: lseCategoryCodes 의 카테고리 제품(하위 포함) + productIds, 중복 제거 */
