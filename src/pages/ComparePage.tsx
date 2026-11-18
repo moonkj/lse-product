@@ -244,23 +244,6 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
       cells: list.map((eq) => ({ text: eq.description, node: <p className="cmp-text">{eq.description}</p> })),
     },
     {
-      key: 'learn',
-      label: '학습 포인트',
-      cells: list.map((eq) => ({
-        text: eq.learnPoints.join('|'),
-        node:
-          eq.learnPoints.length > 0 ? (
-            <ul className="cmp-list">
-              {eq.learnPoints.map((lp) => (
-                <li key={lp}>{lp}</li>
-              ))}
-            </ul>
-          ) : (
-            <None why="학습 포인트 없음" />
-          ),
-      })),
-    },
-    {
       key: 'upstream',
       label: '상류 연결 기기',
       cells: list.map((eq) => {

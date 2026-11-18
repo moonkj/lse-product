@@ -40,7 +40,7 @@ export default function AppLayout() {
   // 상세 패널은 계통도(/)에서만 — 선택은 ?node= 로 표현
   const onHome = pathname === '/';
   const showPanel = onHome;
-  // 사이드바(계층 바로가기·범례)는 계통도(제품·Gap·교육 모드)에서만 (C1). 제품·기기·비교·공백 표·교육 화면은 본문을 넓게
+  // 사이드바(계층 바로가기·범례)는 계통도(제품·Gap 모드)에서만 (C1). 제품·기기·비교·공백 표 화면은 본문을 넓게
   const showNav = onHome;
   const navRow = showNav && (isMobile || compact);
   // 압축 화면: 빈 상세 패널은 접고, 기기를 고르면 그때 열을 연다. 모바일은 패널이 고정 위치(시트/사이드)라 열 없음

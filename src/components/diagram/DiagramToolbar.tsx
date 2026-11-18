@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getDiagramController, useView } from '../../lib/diagram/view';
 import { layerTitle } from '../../lib/diagram/model';
 import type { ViewMode } from '../../lib/diagram/url';
@@ -106,9 +105,8 @@ function CopyLink() {
   );
 }
 
-/** 계통도 위 툴바 — 줌 컨트롤 + 보기 모드별 안내 (Gap 배너 / 교육 투어 시작 카드) */
+/** 계통도 위 툴바 — 줌 컨트롤 + Gap 모드 배너 */
 export default function DiagramToolbar({ mode, total, review }: Props) {
-  const navigate = useNavigate();
   return (
     <div className={`dtool dtool--${mode}`}>
       {mode === 'gap' && (
@@ -120,22 +118,6 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
             </span>
           )}
           <CopyLink />
-        </div>
-      )}
-      {mode === 'learn' && (
-        <div className="dtool__row dtool__learn">
-          <div className="dtool__learn-text">
-            <strong>교육 모드</strong>
-            <span>전기가 발전소에서 콘센트까지 오는 길 — L1 → L7 계통 따라가기 투어</span>
-          </div>
-          <button
-            type="button"
-            className="dtool__primary"
-            data-testid="tour-start"
-            onClick={() => navigate({ pathname: '/learn', search: '?step=L1' })}
-          >
-            투어 시작 →
-          </button>
         </div>
       )}
       <div className="dtool__row">

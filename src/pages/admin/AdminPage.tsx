@@ -736,11 +736,6 @@ export default function AdminPage() {
                 {previewEq.layer} {LAYER_LABELS[previewEq.layer]} · {previewEq.voltage} · {COVERAGE_LABELS[previewEq.coverage]}
               </p>
               <p>{previewEq.description}</p>
-              <ul>
-                {previewEq.learnPoints.map((l) => (
-                  <li key={l}>{l}</li>
-                ))}
-              </ul>
               {previewEq.gapNote && <p className="admin__pgap">{previewEq.gapNote}</p>}
             </div>
           )}

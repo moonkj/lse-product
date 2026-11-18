@@ -22,6 +22,7 @@ export function useStartCardVisible(): boolean {
 
 /**
  * 첫 방문 시작 카드 (C4). 계통도 위 줄에 놓이는 비모달 안내 — 계통도를 덮지 않고, 포커스를 빼앗거나 가두지 않는다.
+ * 안내 링크 2개(기기·공백 표) + 검색 안내 문구. 교육 투어 링크는 교육 탭 제거(2026-11-18 사용자 결정)로 삭제.
  * 닫기·Esc·안내 링크 사용 → localStorage 에 기록해 다시 뜨지 않음. 모바일은 1줄 배너(CSS).
  */
 export default function StartCard() {
@@ -59,16 +60,13 @@ export default function StartCard() {
           </li>
         )}
         <li>
-          <Link to="/learn?step=L1" className="start-card__link" data-testid="start-card-tour" onClick={dismiss}>
-            <b>교육 투어</b>
-            <span className="start-card__sub">· L1→L7 7단계</span>
-          </Link>
-        </li>
-        <li>
           <Link to="/gap" className="start-card__link" data-testid="start-card-gap" onClick={dismiss}>
             <b>공백 표</b>
             <span className="start-card__sub">· 계층×기능 커버리지</span>
           </Link>
+        </li>
+        <li className="start-card__hint" data-testid="start-card-hint">
+          검색창에 모델명(예: TS250)을 입력해 보세요
         </li>
       </ul>
       <button type="button" className="start-card__close" aria-label="시작 안내 닫기" data-testid="start-card-close" onClick={close}>

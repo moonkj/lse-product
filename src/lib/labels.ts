@@ -1,6 +1,6 @@
 /**
  * 화면 공통 라벨·커버리지 규칙 — 단일 출처 (리뷰 M2·R2·R3).
- * 계통도·상세 패널·기기/제품/공백 표/교육 화면은 모두 여기서 import 한다.
+ * 계통도·상세 패널·기기/제품/공백 표 화면은 모두 여기서 import 한다.
  */
 import { ASSESSED_COVERAGES, COVERAGE_LABELS, type Coverage, type EquipmentCategory, type EquipmentType, type GapAssessment, type Layer } from './schema';
 

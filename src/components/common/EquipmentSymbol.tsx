@@ -3,7 +3,7 @@ import type { EquipmentCategory } from '../../lib/schema';
 
 /**
  * 단선결선도 심볼 (72×72 viewBox) — 사진이 없는 기기(미보유·선로·해당 없음)에 사용.
- * 계통도 타일·상세 패널·기기/제품/교육 페이지가 모두 이 한 벌을 쓴다 (리뷰 M1).
+ * 계통도 타일·상세 패널·기기/제품 페이지가 모두 이 한 벌을 쓴다 (리뷰 M1).
  */
 const BY_CATEGORY: Record<EquipmentCategory, string> = {
   // 차단기: 위·아래 선 + 열린 칼날 + 접점 사각

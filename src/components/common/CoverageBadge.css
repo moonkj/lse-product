@@ -47,7 +47,7 @@
 .cov-pill.cov-badge--missing { background: var(--cov-missing-bg); color: var(--cov-missing-text); }
 .cov-pill.cov-badge--na { background: var(--cov-na-bg); color: var(--cov-na-text); }
 
-/* chip: 공백 표·교육 (배경색 사각 칩 + 문자 아이콘) */
+/* chip: 공백 표 (배경색 사각 칩 + 문자 아이콘) */
 .cov-chip {
   display: inline-flex;
   align-items: baseline;

@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -8,7 +8,6 @@ import NotFoundPage from './pages/NotFoundPage';
 const EquipmentPage = lazy(() => import('./pages/EquipmentPage'));
 const ProductPage = lazy(() => import('./pages/ProductPage'));
 const GapPage = lazy(() => import('./pages/GapPage'));
-const LearnPage = lazy(() => import('./pages/LearnPage'));
 // 비교 화면 (?type=equipment|product&ids=a,b) — URL 이 원본
 const ComparePage = lazy(() => import('./pages/ComparePage'));
 // 관리자 편집 화면 — 별도 청크 (일반 사용자 번들에 포함되지 않음), 앱 레이아웃 밖 전체 화면
@@ -30,7 +29,8 @@ export default function App() {
         <Route path="equipment/:id" element={<EquipmentPage />} />
         <Route path="product/:id" element={<ProductPage />} />
         <Route path="gap" element={<GapPage />} />
-        <Route path="learn" element={<LearnPage />} />
+        {/* 교육 탭 제거(2026-11-18 사용자 결정) — 옛 링크·북마크(/learn?step=… 포함)는 계통도로 */}
+        <Route path="learn/*" element={<Navigate to="/" replace />} />
         <Route path="compare" element={<ComparePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

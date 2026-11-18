@@ -346,7 +346,6 @@ describe('UT-10 규칙별 위반 → 해당 ID (HARD)', () => {
     ['DI-43', (f) => f.equipmentTypes.push(eq('e13', 'L7'))],
     ['DI-43b', (f) => (f.diagram.review = { status: 'approved' })],
     ['DI-44b', (f) => (edge(f, 'e01').points = [{ x: 300, y: 208 }, { x: 310, y: 392 }])],
-    ['DI-50', (f) => (equip(f, 'e1').learnPoints = [' '])],
     ['DI-81', (f) => (f.images.ghost = { ...f.images.e1 })],
     ['DI-83', (f) => (f.images.e1.productId = 'P99999')],
     ['DI-84', (f) => (f.images.e1.sourceUrl = 'https://example.com/e1.png')],

@@ -3,14 +3,15 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { getDiagramModel } from './model';
 
 /** 계통도 보기 모드 (URL `?mode=` 가 원본) */
-export type ViewMode = 'product' | 'gap' | 'learn';
+export type ViewMode = 'product' | 'gap';
 
 /**
- * 계통도 화면 상태는 URL 이 원본: `#/?mode=gap|learn&node=<nodeId>` (제품 모드는 mode 생략)
+ * 계통도 화면 상태는 URL 이 원본: `#/?mode=gap&node=<nodeId>` (제품 모드는 mode 생략)
+ * 옛 링크의 `?mode=learn`(교육 모드, 2026-11-18 제거)은 알 수 없는 값처럼 제품 모드로 연다.
  * → 새로고침·링크 공유로 그대로 복원된다.
  */
 export function parseMode(v: string | null): ViewMode {
-  return v === 'gap' || v === 'learn' ? v : 'product';
+  return v === 'gap' ? 'gap' : 'product';
 }
 
 /** 계통도(/) 의 보기 모드 */

@@ -238,19 +238,6 @@ export default function DetailPanel() {
 
       {gapView && <GapSections node={node} onSelect={selectFromPanel} />}
 
-      {eq.learnPoints.length > 0 && (
-        <section className="dp-learn" aria-labelledby="dp-learn-title">
-          <h3 id="dp-learn-title" className="dp-label">
-            신입 학습 포인트
-          </h3>
-          <ul data-testid="detail-learn-points">
-            {eq.learnPoints.map((lp) => (
-              <li key={lp}>{lp}</li>
-            ))}
-          </ul>
-        </section>
-      )}
-
       <section className="dp-section" aria-labelledby="dp-products-title">
         <h3 id="dp-products-title" className="dp-label">
           자사 제품{products.length > 0 ? ` · ${products.length}개` : ''}

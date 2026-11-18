@@ -5,6 +5,7 @@
  *  - StartCard 표시 조건(1회·공유 링크 미표시·계통도에서만), Esc 닫기
  *  - LiveRegion: announce() 를 polite 영역에 표시
  *  - diagramHandlesFocus: 계통도 노드 선택·점프 이동은 라우트 포커스를 건드리지 않음
+ *  - 교육 탭 제거(2026-11-18 사용자 결정): 헤더 모드 탭은 제품·Gap 뿐, 옛 ?mode=learn 은 제품 모드
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -15,6 +16,8 @@ import StartCard, { useStartCardVisible } from '../../../src/components/layout/S
 import LiveRegion from '../../../src/components/layout/LiveRegion';
 import { diagramHandlesFocus } from '../../../src/components/layout/useRouteFocus';
 import { announce } from '../../../src/lib/announce';
+import Header from '../../../src/components/layout/Header';
+import { parseMode } from '../../../src/lib/diagram/url';
 
 afterEach(() => {
   cleanup();
@@ -123,16 +126,40 @@ describe('StartCard — 첫 방문 1회', () => {
     expect(screen.getByTestId('probe').textContent).toBe('false');
   });
 
-  it('안내 링크 3개(실제 경로) + 닫기 버튼, Esc 로 닫으면 저장', () => {
+  it('안내 링크 2개(기기·공백 표, 교육 투어 없음) + 검색 안내 문구 + 닫기 버튼, Esc 로 닫으면 저장', () => {
     useUiStore.setState({ entryClean: true, startCardDismissed: false });
     renderAt('/');
     const links = screen.getAllByRole('link');
-    expect(links.map((a) => a.getAttribute('href'))).toEqual(['/?node=n-vcb', '/learn?step=L1', '/gap']);
+    expect(links.map((a) => a.getAttribute('href'))).toEqual(['/?node=n-vcb', '/gap']);
+    expect(screen.queryByTestId('start-card-tour')).toBeNull();
+    expect(screen.queryByText(/교육/)).toBeNull();
+    expect(screen.getByTestId('start-card-hint').textContent).toMatch(/검색창에 모델명\(예: TS250\)/);
     expect(screen.getByRole('button', { name: '시작 안내 닫기' })).toBeInTheDocument();
     expect(screen.queryByRole('dialog')).toBeNull(); // 모달 아님
     fireEvent.keyDown(links[1], { key: 'Escape' });
     expect(useUiStore.getState().startCardDismissed).toBe(true);
     expect(localStorage.getItem(START_CARD_KEY)).toBe('1');
+  });
+});
+
+describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
+  it('헤더 보기 모드 탭은 제품·Gap 2개뿐 — 교육 탭 없음', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Header />
+      </MemoryRouter>,
+    );
+    const group = screen.getByRole('group', { name: '보기 모드' });
+    const tabs = Array.from(group.querySelectorAll('button'));
+    expect(tabs.map((b) => b.textContent)).toEqual(['제품', 'Gap']);
+    expect(screen.queryByTestId('view-mode-learn')).toBeNull();
+    expect(screen.queryByRole('button', { name: '교육' })).toBeNull();
+  });
+
+  it('옛 링크 ?mode=learn 은 제품 모드로 해석 (gap 만 Gap 모드)', () => {
+    expect(parseMode('learn')).toBe('product');
+    expect(parseMode('gap')).toBe('gap');
+    expect(parseMode(null)).toBe('product');
   });
 });
 

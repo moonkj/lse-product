@@ -1,7 +1,9 @@
 # LS ELECTRIC 전력계통 제품맵
 
 전력계통도(L1 초고압 765/345kV → L7 분전반 하단 + 신재생·감시) 위에 LS ELECTRIC 제품을 사진 타일로 매핑하고,
-공백(Gap)과 데이터시트·매뉴얼을 한눈에 보며 신입 교육에 쓰는 웹 포털입니다. (Vite + React + TypeScript, GitHub Pages)
+공백(Gap)과 데이터시트·매뉴얼·사양을 한눈에 보는 제품맵입니다. 신입도 바로 쓸 수 있습니다. (Vite + React + TypeScript, GitHub Pages)
+
+> 교육 탭 제거(2026-11-18 사용자 결정): 교육 탭(`/#/learn` 투어·용어집)과 '교육' 보기 모드를 없앴습니다. 옛 `/#/learn` 링크는 계통도로, `?mode=learn` 은 제품 모드로 열립니다.
 
 ## 실행
 ```bash
@@ -18,7 +20,6 @@ npm run test:e2e     # 화면 시나리오 테스트 (Playwright)
 | `/#/` | 메인 계통도 (`?node=<노드id>` 선택 공유, `?mode=gap` 공백 강조) |
 | `/#/equipment/:id`, `/#/product/:id` | 기기·제품 상세 (자료 링크) |
 | `/#/gap` | 공백 표 (계층 × 기능 매트릭스, CSV) |
-| `/#/learn` | 계통 따라가기 투어, 용어집 |
 | `/#/admin` | 관리자 모드 (기기 추가·배치·연결 → JSON 내보내기). 일반 화면에 링크 없음, 보안 장치 아님 |
 
 ## 데이터 — 무엇이 원본인가
@@ -28,7 +29,6 @@ npm run test:e2e     # 화면 시나리오 테스트 (Playwright)
 | `src/data/products.json`, `categories.json` | `npm run fetch:products` (공식 사이트 메뉴) |
 | `src/data/docs.json` | `npm run fetch:docs` (공식 자료실 공개 API, 요청 간 1.1초) |
 | `src/data/equipment-images.json` + `public/images/equipment/` | `node scripts/fetch-images.mjs` 후 320px·160px 축소 (스크립트 상단 주석) |
-| `src/content/learn.json` | 교육 투어 콘텐츠 (초안, 교육 담당 검토 필요) |
 
 > ⚠️ `scripts/build-diagram-data.py` 는 최초 데이터를 만든 **시드 생성기(동결)**입니다. `--force` 없이는 실행되지 않으며, 실행하면 관리자 모드로 편집해 커밋한 내용이 덮어써집니다.
 

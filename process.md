@@ -172,3 +172,9 @@
 - 리더 통합: .app-main position:relative, catalog/Gap/Compare 판정 표기 confidenceLabel.
 - 검증: typecheck(src·tests)·build 통과, unit 465/465, E2E(dist) 112 통과·1 skip. 첫 화면 index gzip 80.40kB.
 - 리더: 모바일 시트 접힘 높이 46→40dvh(--sheet-collapsed-h, 비교 바 위치 공유, 사용자 승인). 390 세로 지도 288→338px, 360 204→248px(시트 상단−캔버스 상단). E2E 112·1 skip.
+
+## 2026-11-18 · 교육 기능 제거 (사용자 결정: 교육용 포털 아님 — 신입도 활용할 뿐)
+- 학습 포인트 화면 표시 제거(패널·기기·비교·제품·관리자 미리보기), DI-50 폐지 — 데이터·관리자 입력(선택)은 보존.
+- 교육 탭·/learn(→ / 리디렉트)·계통도 learn 모드·용어집·learn.json/learnSchema 삭제, DI-70~79 폐지, 시작 카드 링크 2개 + 모델명 검색 안내. index.html 설명 수정.
+- 검증: typecheck·build, unit 456, E2E 112·1 skip. LearnPage 청크 소멸, 첫 화면 gzip 80.07kB.
+- T3 리뷰(docs/reviews/ux-round-u-review.md): 반드시 2(M1 기기 약어 검색 회귀, M2 폰 세로 발표 보기 깨짐) · 권장 5 → 수정 라운드 R-U2.

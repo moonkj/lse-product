@@ -12,10 +12,11 @@
  *
  * v0.4: Phase 2 게이트(diagram testid 없으면 전체 skip) 제거 — Phase 2~5 구현 완료. 회귀로 UI 가 사라지면
  *   skip 이 아니라 실패로 보여야 하므로. (E2E_STRICT 환경변수는 더 이상 쓰지 않음)
- * v0.4: E2E-1 투어 = /learn 페이지(승인 디자인 Learn), 공백 표 기본 필터 = "전체"(리더 결정).
+ * v0.4: 공백 표 기본 필터 = "전체"(리더 결정).
+ * 2026-11-18 사용자 결정: 교육 탭(/learn 투어·교육 보기 모드) 제거 → E2E-1 은 "교육 탭 제거" 회귀 검증으로 대체.
  *
  * 리더 결정 반영: R-04(자료 없음 → 공식 페이지 링크), R-07(power 실선 / signal 점선),
- *   R-08(Gap 강조 규칙), R-09(?mode=gap|learn URL 공유)
+ *   R-08(Gap 강조 규칙), R-09(?mode=gap URL 공유)
  * 사용자 확정(v0.3): Gap 버튼 = 같은 계통도 위 강조(/?mode=gap), 공백 표(/gap)는 좌측 내비 아래
  *   "공백 표 보기" 링크(data-testid="gap-table-link"), 노드 선택은 ?node=<nodeId> 로 복원.
  * 자료(docs)는 products.json 의 docs 가 아니라 src/data/docs.json 기준.
@@ -93,10 +94,6 @@ const expectedConfidence = (e: Eq): 'candidate' | 'confirmed' | undefined => {
 };
 const categories = load<{ code: string; productIds: string[] }[]>('categories.json');
 const docsJson = load<{ products: Record<string, ProductDocs> }>('docs.json');
-/** 교육 콘텐츠 (src/content/learn.json) — 단계별 핵심 기기 */
-const learn = JSON.parse(readFileSync(fileURLToPath(new URL('../../src/content/learn.json', import.meta.url)), 'utf8')) as {
-  steps: { layer: string; keyEquipmentIds: string[] }[];
-};
 const eqById = new Map(equipment.map((e) => [e.id, e]));
 const catByCode = new Map(categories.map((c) => [c.code, c]));
 
@@ -174,66 +171,40 @@ async function clickNode(page: Page, nodeId: string, layer: string) {
 }
 
 // ═════════════════════════════════════════════════════════════
-// E2E-1 신입 학습 흐름 (v0.4 — 승인 디자인 Learn.dc.html 기준)
-//   교육 버튼 → 계통도 위 "투어 시작" 카드 → /learn?step=L1 (투어 본체는 /learn 페이지, 계통도 밴드 하이라이트 없음)
-//   → 다음×6 (L1→L7, 역행 없음, ?step= 동기화) → L7 에서 다음 비활성 → 핵심 기기 카드 → 계통도 /?node= 로 이동
+// E2E-1 교육 탭 제거 (2026-11-18 사용자 결정 — 교육용 포털이 아니라 제품맵)
+//   헤더 모드 탭 = 제품·Gap, 옛 /learn 링크 → 계통도(/)로 replace 리디렉트, 옛 ?mode=learn → 제품 모드
 // ═════════════════════════════════════════════════════════════
-test.describe('E2E-1 신입 학습 흐름', () => {
-  test('교육 모드 → 투어 시작 → /learn 에서 L1→L7 순서 진행, L7 에서 다음 비활성, 핵심 기기 카드 → 계통도 노드', async ({ page }) => {
+test.describe('E2E-1 교육 탭 제거', () => {
+  test('헤더에 교육 탭 없음 — 보기 모드 탭은 제품·Gap 2개', async ({ page }) => {
     await gotoHome(page);
-    await tid(page, 'view-mode-learn').click();
-    await expect(tid(page, 'view-mode-learn')).toHaveAttribute('aria-pressed', 'true');
-    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'learn');
-
-    // 계통도 위 "투어 시작" 카드 → 교육 페이지 L1
-    await tid(page, 'tour-start').click();
-    await expect(page).toHaveURL(/#\/learn\?(.*&)?step=L1(&|$)/);
-    await expect(tid(page, 'learn-page')).toBeVisible();
-    const step = tid(page, 'tour-step');
-    await expect(step).toHaveAttribute('data-layer', 'L1');
-    await expect(tid(page, 'view-mode-learn')).toHaveAttribute('aria-pressed', 'true');
-
-    const visited: string[] = [];
-    for (let i = 0; i < 10; i++) {
-      const layer = await step.getAttribute('data-layer');
-      if (layer && visited.at(-1) !== layer) visited.push(layer);
-      await expect(page).toHaveURL(new RegExp(`[?&]step=${layer}(&|$)`)); // 공유·새로고침용 URL 동기화
-      const next = tid(page, 'tour-next');
-      if (!(await next.isEnabled())) break;
-      await next.click();
-      await expect(step).not.toHaveAttribute('data-layer', layer!);
-    }
-    expect(visited).toEqual(['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']); // 순서대로, 건너뛰기·역행 없음
-    await expect(step).toHaveAttribute('data-layer', 'L7');
-    await expect(tid(page, 'tour-next')).toBeDisabled();
-
-    // L7 핵심 기기 카드 → 계통도에서 그 노드 선택 (/?node=)
-    const keyId = learn.steps[6].keyEquipmentIds.find((id) => diagram.nodes.some((n) => n.equipmentTypeId === id));
-    test.skip(!keyId, 'L7 핵심 기기 중 계통도 노드가 있는 기기 없음');
-    const keyNode = diagram.nodes.find((n) => n.equipmentTypeId === keyId)!;
-    await step.locator(`a[href$="node=${keyNode.id}"]`).click();
-    await expect(page).toHaveURL(new RegExp(`#/\\?(.*&)?node=${keyNode.id}(&|$)`));
-    await expect(tid(page, 'diagram')).toBeVisible();
-    await expect(diagramNode(page, keyNode.id)).toHaveAttribute('aria-pressed', 'true');
-    await expect(tid(page, 'detail-title')).toContainText(eqById.get(keyId!)!.name);
-    await expect(tid(page, 'detail-learn-points').locator('li').first()).toBeVisible();
+    await expect(tid(page, 'view-mode-product')).toBeVisible();
+    await expect(tid(page, 'view-mode-gap')).toBeVisible();
+    await expect(tid(page, 'view-mode-learn')).toHaveCount(0);
+    await expect(page.getByRole('group', { name: '보기 모드' }).getByRole('button')).toHaveCount(2);
   });
 
-  test('v0.6 R3: 퀴즈·진도·수료(투어 완료 요약) 제거 — L1~L7 어디에도 퀴즈·완료 버튼·진도 표시가 없다', async ({ page }) => {
-    // 사용자 결정(PLAN 9항): 계층 투어 학습 내용 + 용어집만 유지
-    const removed = page.getByTestId(/^(tour-finish|tour-summary|tour-complete|tour-progress|learn-progress|quiz(-.*)?)$/);
-    for (const l of ['L1', 'L4', 'L7']) {
-      await page.goto(`./#/learn?step=${l}`);
-      await expect(tid(page, 'tour-step')).toHaveAttribute('data-layer', l);
-      await expect(removed).toHaveCount(0);
-    }
-  });
-
-  test('/learn?step=L4 딥링크 → L4 단계로 열리고 새로고침해도 유지', async ({ page }) => {
+  test('/learn?step=L4 (옛 링크) → 계통도(/)로 리디렉트 (쿼리 버림)', async ({ page }) => {
     await page.goto('./#/learn?step=L4');
-    await expect(tid(page, 'tour-step')).toHaveAttribute('data-layer', 'L4');
-    await page.reload();
-    await expect(tid(page, 'tour-step')).toHaveAttribute('data-layer', 'L4');
+    await expect(tid(page, 'diagram')).toBeVisible();
+    await expect(page).toHaveURL(/#\/$/);
+    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'product');
+    await expect(page.getByTestId(/^(learn-page|tour-step|tour-start)$/)).toHaveCount(0);
+  });
+
+  test('?mode=learn (옛 링크) → 제품 모드로 열림, 교육 보기 안내 없음', async ({ page }) => {
+    await page.goto('./#/?mode=learn');
+    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'product');
+    await expect(tid(page, 'view-mode-product')).toHaveAttribute('aria-pressed', 'true');
+    await expect(tid(page, 'tour-start')).toHaveCount(0);
+  });
+
+  test('기기 상세 패널에 학습 포인트가 표시되지 않음', async ({ page }) => {
+    const target = nodeWith('owned');
+    test.skip(!target, 'owned 노드 데이터 없음');
+    await gotoHome(page);
+    await clickNode(page, target!.node.id, target!.eq.layer);
+    await expect(tid(page, 'detail-title')).toContainText(target!.eq.name);
+    await expect(tid(page, 'detail-learn-points')).toHaveCount(0);
   });
 });
 
@@ -406,17 +377,16 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     for (const row of await items.all()) await expect(row).toHaveAttribute('data-coverage', 'missing');
   });
 
-  test('R-09 보기 모드 URL 공유: ?mode=gap / ?mode=learn 으로 열면 해당 모드, 토글 시 URL 갱신', async ({ page }) => {
+  test('R-09 보기 모드 URL 공유: ?mode=gap 으로 열면 Gap 모드, 토글 시 URL 갱신', async ({ page }) => {
     await page.goto('./#/?mode=gap');
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
     await expect(tid(page, 'view-mode-gap')).toHaveAttribute('aria-pressed', 'true');
     await page.reload();
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
 
-    await tid(page, 'view-mode-learn').click();
-    await expect(page).toHaveURL(/[?&]mode=learn/);
-    await page.goto('./#/?mode=learn');
-    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'learn');
+    await tid(page, 'view-mode-product').click();
+    await expect(page).not.toHaveURL(/[?&]mode=/);
+    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'product');
   });
 
   test('affiliate 기기 패널에 계열사명이 표시된다', async ({ page }) => {

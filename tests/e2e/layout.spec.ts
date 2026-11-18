@@ -110,7 +110,7 @@ test.describe('C1 모바일 가로', () => {
 });
 
 test.describe('C1 사이드바는 계통도 화면에서만', () => {
-  for (const path of ['gap', 'learn', 'product/P00206', 'compare?type=equipment&ids=vcb,acb']) {
+  for (const path of ['gap', 'product/P00206', 'compare?type=equipment&ids=vcb,acb']) {
     test(`/${path}: 사이드바(계층 내비) 없음`, async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.goto(`./#/${path}`);
@@ -128,7 +128,8 @@ test.describe('C4 첫 방문 시작 카드', () => {
     await page.goto('./');
     const card = tid(page, 'start-card');
     await expect(card).toBeVisible();
-    await expect(card.getByRole('link')).toHaveCount(3);
+    await expect(card.getByRole('link')).toHaveCount(2); // 기기·공백 표 (교육 투어 제거 2026-11-18)
+    await expect(tid(page, 'start-card-hint')).toContainText('TS250');
     // 계통도 위 줄에 놓임 — 겹치지 않음
     const c = (await card.boundingBox())!;
     const vp = (await page.locator('#diagram-viewport').boundingBox())!;
@@ -145,7 +146,7 @@ test.describe('C4 첫 방문 시작 카드', () => {
   test('Esc 로 닫힘 (비모달 — 포커스를 가두지 않음)', async ({ page }) => {
     await page.goto('./#/');
     await expect(tid(page, 'start-card')).toBeVisible();
-    await tid(page, 'start-card-tour').focus();
+    await tid(page, 'start-card-device').focus();
     await page.keyboard.press('Tab');
     await expect(tid(page, 'start-card-gap')).toBeFocused();
     await page.keyboard.press('Tab');
@@ -167,10 +168,12 @@ test.describe('C4 첫 방문 시작 카드', () => {
     await expect(tid(page, 'start-card')).toHaveCount(0);
   });
 
-  test('안내 링크: 교육 투어 → /learn?step=L1 (누르면 카드는 닫힌 것으로 기록)', async ({ page }) => {
+  test('안내 링크 2개(기기·공백 표, 교육 투어 없음) — 공백 표 → /gap (누르면 카드는 닫힌 것으로 기록)', async ({ page }) => {
     await page.goto('./');
-    await tid(page, 'start-card-tour').click();
-    await expect(page).toHaveURL(/#\/learn\?step=L1/);
+    await expect(tid(page, 'start-card').getByRole('link')).toHaveCount(2);
+    await expect(tid(page, 'start-card-tour')).toHaveCount(0);
+    await tid(page, 'start-card-gap').click();
+    await expect(page).toHaveURL(/#\/gap/);
     expect(await page.evaluate(() => localStorage.getItem('lse-start-card-dismissed'))).toBe('1');
   });
 

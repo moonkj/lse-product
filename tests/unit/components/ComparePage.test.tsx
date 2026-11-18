@@ -77,7 +77,7 @@ const rowKeys = (section: 'basic' | 'specs') =>
 const cells = (rowKey: string) => within(screen.getByTestId(`compare-row-${rowKey}`)).getAllByRole('cell');
 const reactKeyWarnings = (): unknown[][] => consoleError.mock.calls.filter((c) => String(c[0]).includes('same key'));
 
-const EQ_BASE_ROWS = ['layer', 'category', 'coverage', 'products', 'docs', 'description', 'learn', 'upstream', 'downstream'];
+const EQ_BASE_ROWS = ['layer', 'category', 'coverage', 'products', 'docs', 'description', 'upstream', 'downstream'];
 
 describe('CT-07 기기 비교 (/compare?type=equipment)', () => {
   it('열 2개 + 기본 정보 9행(고정 순서) + 대표 사양: 수집 제품 행 + 키 합집합(SPEC_KEYS 순서 → 비표준)', () => {
@@ -131,14 +131,14 @@ describe('CT-07 기기 비교 (/compare?type=equipment)', () => {
     expect(reactKeyWarnings().map((c: unknown[]) => String(c[1] ?? c[0]).slice(0, 80))).toEqual([]);
   });
 
-  it('차이만 보기: 모든 열 값이 같은 행(계층·분류·학습)을 숨기고 건수 안내, 다시 누르면 복원 (상류는 eq-a 에만 신호선 → 다름)', () => {
+  it('차이만 보기: 모든 열 값이 같은 행(계층·분류)을 숨기고 건수 안내, 다시 누르면 복원 (상류는 eq-a 에만 신호선 → 다름)', () => {
     renderAt('type=equipment&ids=eq-a,eq-b');
     const btn = screen.getByTestId('compare-diff-only');
     expect(btn).toHaveAttribute('aria-pressed', 'false');
     fireEvent.click(btn);
     expect(btn).toHaveAttribute('aria-pressed', 'true');
     expect(rowKeys('basic')).toEqual(['coverage', 'products', 'docs', 'description', 'upstream', 'downstream']);
-    expect(screen.getByText('값이 모두 같은 3개 행을 숨겼습니다.')).toBeInTheDocument();
+    expect(screen.getByText('값이 모두 같은 2개 행을 숨겼습니다.')).toBeInTheDocument();
     fireEvent.click(btn);
     expect(rowKeys('basic')).toEqual(EQ_BASE_ROWS);
   });

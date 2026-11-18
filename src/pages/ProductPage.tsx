@@ -196,7 +196,6 @@ function RoleBox({ eq }: { eq: EquipmentType }) {
     <div className="pg-role">
       <span className="pg-role__label">계통에서 하는 일 · {eq.name}</span>
       <span>{eq.description}</span>
-      {eq.learnPoints.length > 0 && <span className="pg-role__sub">{eq.learnPoints.join(' · ')}</span>}
     </div>
   );
 }

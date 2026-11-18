@@ -381,7 +381,7 @@ export default function DiagramCanvas() {
       data-view-mode={mode}
     >
       <h1 id="diagram-title" className="visually-hidden">
-        전력계통 단선결선도 {mode === 'gap' ? '(Gap 보기)' : mode === 'learn' ? '(교육 보기)' : ''}
+        전력계통 단선결선도 {mode === 'gap' ? '(Gap 보기)' : ''}
       </h1>
       <DiagramToolbar mode={mode} total={model.nodes.length} review={data.diagram.review} />
       <div className="diagram__stage">

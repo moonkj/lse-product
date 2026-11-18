@@ -96,8 +96,7 @@ export function checkEquipment(e: EquipmentType, ctx: EquipmentContext = {}): Ch
   }
   if (e.coverage === 'sourced' && !e.gapNote?.trim()) c.warn('DI-27g', `${name}: 패널 구성품 기기는 메모(gapNote)를 적는 것을 권장합니다`, ref('gapNote'));
 
-  // DI-50 학습 포인트
-  if ((e.learnPoints ?? []).filter((s) => s.trim()).length === 0) c.error('DI-50', `${name}: 학습 포인트가 1개 이상 필요합니다`, ref('learnPoints'));
+  // DI-50 학습 포인트 필수 — 폐지(2026-11-18 사용자 결정: 교육 전용 포털이 아니므로 학습 포인트를 화면에 표시하지 않음)
   return c.result();
 }
 

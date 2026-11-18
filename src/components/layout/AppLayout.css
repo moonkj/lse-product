@@ -786,6 +786,17 @@
   font-weight: var(--fw-regular);
 }
 
+/* 검색 안내 문구 (링크 아님) — 좁은 화면에서는 링크만 남기고 숨김 */
+.start-card__hint {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
 .start-card__close {
   flex: none;
   width: 36px;
@@ -805,7 +816,8 @@
 
 /* 가운데 열이 좁으면(사이드바+패널 사이 1024 등) 설명 글자는 숨기고 한 줄 유지 */
 @container (max-width: 700px) {
-  .start-card__sub {
+  .start-card__sub,
+  .start-card__hint {
     display: none;
   }
 }
@@ -822,7 +834,8 @@
     scrollbar-width: none;
   }
 
-  .start-card__sub {
+  .start-card__sub,
+  .start-card__hint {
     display: none;
   }
 
@@ -841,7 +854,7 @@
   }
 }
 
-/* 좁은 폰: 링크 3개가 한 줄에 다 보이도록 제목 글자는 숨김(스크린리더는 읽음) */
+/* 좁은 폰: 링크 2개가 한 줄에 다 보이도록 제목 글자는 숨김(스크린리더는 읽음) */
 @media (max-width: 480px) {
   .start-card__title {
     position: absolute;
@@ -863,6 +876,7 @@
   overflow-x: auto;
 }
 
-.app-shell--compact .start-card__sub {
+.app-shell--compact .start-card__sub,
+.app-shell--compact .start-card__hint {
   display: none;
 }

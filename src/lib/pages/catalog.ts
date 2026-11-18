@@ -1,5 +1,5 @@
 /**
- * 상세 페이지(제품·기기·공백 표·교육) 공용 헬퍼 — T1-B 소유.
+ * 상세 페이지(제품·기기·공백 표) 공용 헬퍼 — T1-B 소유.
  * 데이터 파일·load.ts 는 수정하지 않고, getData() 결과 위에서 파생 값만 계산한다.
  */
 import { getData, resolveProducts, type AppData } from '../../data/load';
@@ -20,7 +20,7 @@ import { hopsAcrossBus } from '../diagram/topology';
 export { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER } from '../labels';
 
 /** 계통도 화면으로 가는 링크 (메인 화면은 ?node=, ?mode= 쿼리로 상태 복원) */
-export function diagramHref(nodeId?: string, mode?: 'gap' | 'learn'): string {
+export function diagramHref(nodeId?: string, mode?: 'gap'): string {
   const q = new URLSearchParams();
   if (mode) q.set('mode', mode);
   if (nodeId) q.set('node', nodeId);

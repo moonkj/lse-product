@@ -501,35 +501,6 @@
   margin-left: auto;
 }
 
-.dtool__learn {
-  background: var(--cov-affiliate-bg);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.dtool__learn-text {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-3);
-  align-items: baseline;
-  font-size: 13px;
-}
-
-.dtool__learn-text strong {
-  color: var(--cov-affiliate-text);
-}
-
-.dtool__primary {
-  margin-left: auto;
-  height: 36px;
-  padding: 0 var(--space-4);
-  border: 0;
-  border-radius: var(--radius-md);
-  background: var(--color-brand);
-  color: var(--color-on-brand);
-  font-weight: var(--fw-bold);
-  cursor: pointer;
-}
-
 /* ── 미니맵 ─────────────────────────────── */
 .minimap {
   position: absolute;

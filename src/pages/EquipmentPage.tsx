@@ -7,7 +7,7 @@ import DocsList from '../components/common/DocsList';
 import EmptyProducts from '../components/common/EmptyProducts';
 import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
-import { CATEGORY_LABELS, isGapCoverage, isMainLayer, pageTitle } from '../lib/labels';
+import { CATEGORY_LABELS, isGapCoverage, pageTitle } from '../lib/labels';
 import { diagramHref, layerStyle, nodeForEquipment, productsForEquipment } from '../lib/pages/catalog';
 import NotFoundPage from './NotFoundPage';
 import './pages.css';
@@ -151,23 +151,6 @@ export default function EquipmentPage() {
           )}
         </div>
 
-        <aside className="pg-split__side">
-          <section className="pg-card pg-card--tight" aria-labelledby="eq-learn-h">
-            <h2 id="eq-learn-h">학습 포인트</h2>
-            {eq.learnPoints.length > 0 ? (
-              <ul className="eqp-points" data-testid="equipment-learn-points">
-                {eq.learnPoints.map((lp) => (
-                  <li key={lp}>{lp}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="pg-muted">등록된 학습 포인트가 없습니다.</p>
-            )}
-            <Link to={`/learn?step=${isMainLayer(eq.layer) ? eq.layer : 'L1'}`} className="pg-muted">
-              교육 투어에서 이 계층 배우기 →
-            </Link>
-          </section>
-        </aside>
       </div>
     </div>
   );

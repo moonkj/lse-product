@@ -8,14 +8,12 @@ import { useUiStore } from '../../store/useUiStore';
 const MODES: { value: ViewMode; label: string }[] = [
   { value: 'product', label: '제품' },
   { value: 'gap', label: 'Gap' },
-  { value: 'learn', label: '교육' },
 ];
 
-/** 눌린 버튼: 계통도(/)는 ?mode= 쿼리, /gap(공백 표)·/learn(투어)은 해당 모드. 기기·제품·404 는 없음 */
+/** 눌린 버튼: 계통도(/)는 ?mode= 쿼리, /gap(공백 표)은 Gap. 기기·제품·404 는 없음 (교육 탭 제거 — 2026-11-18 사용자 결정) */
 function activeMode(pathname: string, search: string): ViewMode | null {
   if (pathname === '/') return parseMode(new URLSearchParams(search).get('mode'));
   if (pathname.startsWith('/gap')) return 'gap';
-  if (pathname.startsWith('/learn')) return 'learn';
   return null;
 }
 

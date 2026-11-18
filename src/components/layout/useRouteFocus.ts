@@ -23,7 +23,7 @@ function focusAlreadyInMain(main: HTMLElement): boolean {
 /**
  * 라우트(경로)가 바뀌면 새 화면의 h1(없으면 main)으로 포커스를 옮긴다 (B10 · WCAG 2.4.3).
  * - 첫 진입은 건드리지 않는다.
- * - 같은 경로에서 쿼리만 바뀌는 경우(?node=, ?mode=, ?step=)는 옮기지 않는다 — 계통도 패널 포커스는 T1-A 담당.
+ * - 같은 경로에서 쿼리만 바뀌는 경우(?node=, ?mode=)는 옮기지 않는다 — 계통도 패널 포커스는 T1-A 담당.
  * - 지연 로딩 화면은 h1 이 나타날 때까지 잠깐(최대 약 2초) 기다린다.
  */
 export function useRouteFocus() {

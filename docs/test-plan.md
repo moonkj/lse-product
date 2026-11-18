@@ -162,7 +162,9 @@
 | DI-67 | docs 가 빈 제품 → 경고만 (화면은 "자료 준비 중" + deepLink) | SOFT |
 | DI-68 | source=www 인데 ssq CDN 파일 포함 → 출처 표기 오류 의심 경고 | SOFT |
 
-### 3.8 교육 콘텐츠 learn.json (v0.4)
+### 3.8 ~~교육 콘텐츠 learn.json (v0.4)~~ — 폐지
+> **교육 탭 제거(2026-11-18 사용자 결정)**: learn.json·learnSchema.ts 삭제와 함께 DI-70~79 테스트를 지웠습니다. 아래 표는 기록용입니다.
+
 > 계약: `src/content/learnSchema.ts` (`LearnContentSchema`). 콘텐츠 소유 T1-B, 사실관계는 equipment-types.json 의 description·learnPoints 범위 안 (교육 담당자 검토 전 draft).
 
 | ID | 규칙 | 등급 |
@@ -282,14 +284,14 @@
 | FT-15 | 외부 링크 새 탭 | 자료 링크(`doc-link`/`detail-doc-link`/`equipment-doc-link`)·공식 페이지 링크 | `target=_blank` + `rel` 에 `noopener`, popup 의 `window.opener === null`, href 가 허용 도메인, 스크린리더 "새 탭" 안내. https 아닌 URL 은 링크 미생성(CT-02) | 컴포넌트·E2E |
 | FT-16 | 모바일 폭 패널 | 390×844 에서 노드 탭 | 상세 패널이 **하단 시트**(`data-variant=sheet`), 화면 폭 가득, 가로 스크롤 없음, 시트 닫기 가능 | E2E |
 | FT-17 | 모바일 터치 | 핀치 줌 / 한 손가락 패닝 | 페이지 전체 스크롤과 충돌 없음 (`touch-action`) | 수동 |
-| FT-18 | 해시 라우트 새로고침 | `#/equipment/:id`, `#/product/:id`, `#/gap`, `#/learn` 에서 F5 | 같은 화면 복원 | E2E |
+| FT-18 | 해시 라우트 새로고침 | `#/equipment/:id`, `#/product/:id`, `#/gap` 에서 F5 | 같은 화면 복원 | E2E |
 | FT-19 | 없는 id | `#/equipment/__no__`, `#/product/P99999` | not-found 안내 + 홈 링크, 흰 화면/크래시 없음 | E2E |
 | FT-20 | 뒤로가기 | 홈 → 제품 → Back | 이전 화면(가능하면 선택 노드·줌 상태까지) 복귀 | E2E |
 | FT-21 | 다크모드 대비 | `prefers-color-scheme: dark` | 텍스트·노드 라벨·범례 WCAG AA (axe color-contrast 0건), 커버리지 5색이 다크 배경에서도 서로 구분 | E2E(axe)+수동 |
 | FT-22 | 키보드 — 노드 | Tab 으로 노드 포커스 → Enter/Space | 패널 열림, 포커스 링 보임, Esc 로 닫으면 **포커스가 원래 노드로 복귀** | 컴포넌트·E2E |
 | FT-23 | 키보드 — 건너뛰기 | 첫 Tab | "계통도로 건너뛰기" 링크 → Enter → 다음 Tab이 첫 노드 | E2E |
 | FT-24 | 색약 대응 | 범례·노드 | 5상태 각각 **색 + 아이콘(모양)** 병행, `aria-label`에 상태 텍스트 포함 ("진공차단기, 보유"). 흑백(grayscale) 스크린샷에서도 구분 | 컴포넌트·E2E·수동 |
-| FT-25 | 교육 투어 (v0.4) | 교육 모드 → 계통도 위 "투어 시작" 카드 → 다음 반복 → 핵심 기기 카드 | `/learn?step=L1` 로 이동, `tour-step[data-layer]` L1→L7 순서·역행 없음, `?step=` 동기화, L7 에서 `tour-next` disabled, 핵심 기기 카드 → `/?node=` 노드 선택 + 패널. (승인 디자인: 투어 본체는 /learn, 계통도 밴드 하이라이트 없음) | E2E |
+| FT-25 | 교육 탭 제거 (2026-11-18) | 홈 / `#/learn?step=L4` / `#/?mode=learn` | 헤더 보기 모드 탭 = 제품·Gap 2개(`view-mode-learn` 없음), `/learn`(쿼리 포함) → `#/` replace 리디렉트, `?mode=learn` → `data-view-mode="product"`, 상세 패널에 학습 포인트 없음 | E2E·컴 |
 | FT-26 | /gap 공백 표 (v0.4) | `#/gap` → "미보유" 필터 | **기본 필터 "전체"**(리더 결정·승인 디자인): 첫 화면 `gap-filter-all` aria-pressed=true(v0.5), `gap-item` 수 = missing+partial+affiliate (현재 17). `gap-filter-missing` 클릭 → missing 수(현재 12), 모든 행 data-coverage=missing. 셀 클릭 → 그 칸 기기 | E2E |
 | FT-27 | 커버리지 통계 | 사이드바 % | (owned + partial×가중치?) / (전체 − na) — 공식 확정 후 단위 테스트 고정 | 단위 |
 | FT-29 | 선택 노드 URL 복원 | `#/?node=<nodeId>` 진입·새로고침 / 다른 노드 클릭 / 닫기 / 없는 id | 패널·`aria-pressed` 복원, 클릭 시 `node=` 갱신, 닫으면 파라미터 제거, 없는 id 는 패널 없이 정상 | E2E |
@@ -302,7 +304,7 @@
 
 | ID | 페르소나 | 흐름 | 검증 포인트 |
 |---|---|---|---|
-| E2E-1 | 신입 | 홈 → 교육 모드 → "투어 시작" 카드 → `/learn?step=L1` → 다음×6 → L7 핵심 기기 카드 클릭 / `/learn?step=L4` 딥링크·새로고침 / (v0.6) L1·L4·L7 에 퀴즈·완료·진도 없음 | `tour-step[data-layer]` = L1…L7 정확히 순서대로, `?step=` 동기화, L7 에서 `tour-next` disabled, 카드 → `#/?node=<nodeId>` + `aria-pressed` + 패널 제목·학습 포인트. v0.6: `tour-finish`·`tour-summary`·`tour-complete`·`tour-progress`·`learn-progress`·`quiz*` testid 0개 (v0.5 완료 요약 테스트 **삭제**) |
+| E2E-1 | 공통 | (교육 탭 제거(2026-11-18 사용자 결정)) 헤더 탭 확인 → `/learn?step=L4` 열기 → `?mode=learn` 열기 → 기기 선택 | 교육 탭 없음, `/` 로 리디렉트, 제품 모드, `detail-learn-points` 0개 |
 | E2E-2 | 영업 | 검색에 약어 입력 → 기기 결과 선택 → 패널 → 제품 카드 → 제품 페이지 → 데이터시트/공식 페이지 / (v0.5) "iS7"+Enter / 한글 조합 중 Enter | 노드 선택 상태, 배지 owned, URL `#/product/:id`, 링크 새 탭+noopener+ls-electric.com, popup 이벤트. 자료가 없으면 "자료 준비 중". iS7 → 제품 P01188(이름 iS7) 또는 iS7 연결/인버터 기기가 1순위, GIS 아님. 조합 중(keydown isComposing=true, keyCode 229) Enter → URL·입력값 그대로, compositionend 후 Enter 는 정상 이동 |
 | E2E-3 | 기획 | Gap 버튼(같은 계통도, `?mode=gap`) → missing 강조/owned 흐림 → 공백 기기 클릭 → "공백 표 보기" 링크 → `/gap` | URL `mode=gap`·`gap-page` 미표시, 아이콘 병행, gapNote, 제품 목록 없음, 공백 건수 = 데이터. v0.6: affiliate·**sourced = 보통**, 공백 표 "전체" = missing+partial+affiliate+**sourced** (현재 17) |
 | E2E-6 | 공통 (v0.6) | 계통도 개선 R3 | `diagram-bus-{id}` 2개·`diagram-endpoint-{id}` 4개 보임 / ref 노드 `data-ref="true"` 3개, 클릭 → 같은 기기 상세 / alt 엣지 `data-kind="alt"` 7개 + 점선 / **(v0.8 데이터 기반)** `diagram-review-badge`: review pending → 보임, approved → 없음 / `legend-item-sourced` "패널 구성품" / 범례 개수 합 = 74(ref 제외), 미보유 = 9, 패널 구성품 = 3 (데이터 기준) / **(v0.8)** Gap 모드 공백류 노드 `data-confidence` = 데이터 판정(confirmed·기한 안 → confirmed, 후보·근거 없음·기한 지남 → candidate), 보유(판정 있음·없음 모두) → 속성 없음 / CT/PT 선택 → `detail-gap-assessment` "공백 판정" + `detail-gap-confidence` = 데이터 판정, 문구 '확정'/'후보' / **(v0.7)** 참조 타일 `?node=` → `detail-meta` "참조 타일", `detail-ref-note`(라벨), `detail-ref-origin` "원래 위치"+기기 계층, `detail-ref-go` → 원래 노드(`node=` 갱신, 메타에 참조 타일 없음) / 모선 형제 피더 칩: 같은 모선 피더 칩은 화살표 없음 + title "같은 모선에서 갈라진 회로", 모선 전원 쪽 칩은 ↑ |
@@ -324,7 +326,7 @@
 1. **데이터가 진실의 원천**: 컴포넌트에 기기 id·좌표·커버리지 하드코딩 금지. 기기 추가는 JSON 수정만으로 화면·검색·Gap·투어에 반영되어야 한다. (DI 전체 + E2E가 데이터에서 id를 골라 쓰는 구조로 보장)
 2. **DI 테스트 통과 = 배포 가능**: `.github/workflows/deploy.yml` 에서 `npm run test` 가 `npm run build` 앞에 실행 → 실패 시 배포 중단.
 3. **커버리지 판정 단일 출처**: (R-01) 판정 값은 `equipment-types.json` 의 `coverage` 필드가 원본, 화면 표현·통계 계산은 한 곳(`lib/coverage.ts` 등)에서만. 노드 색·범례·Gap 매트릭스·통계가 모두 같은 함수를 사용 (컴포넌트 테스트에서 동일 fixture로 4곳 결과 일치 확인).
-4. **URL 계약 고정**: `#/`, `#/equipment/:id`, `#/product/:id`, `#/gap`, `#/learn` — 신입 교육 자료·메신저에 링크가 공유되므로 경로·id 변경 금지(변경 시 리다이렉트). equipmentType.id 이름 변경은 "파괴적 변경"으로 교차 영향 로그에 기록.
+4. **URL 계약 고정**: `#/`, `#/equipment/:id`, `#/product/:id`, `#/gap` (`#/learn` 은 교육 탭 제거 후 `#/` 로 리디렉트) — 메신저 등에 링크가 공유되므로 경로·id 변경 금지(변경 시 리다이렉트). equipmentType.id 이름 변경은 "파괴적 변경"으로 교차 영향 로그에 기록.
 5. **5상태 = 색 + 아이콘 + 텍스트**: 어느 하나만 남기는 리팩터링 금지. `coverage-icon-{state}` testid 유지.
 6. **외부 링크 정책**: 모든 외부 링크는 `ExternalLink` 공용 컴포넌트 경유 (target/rel 일괄 보장). 테스트는 그 컴포넌트 1곳 + E2E 샘플.
 7. **data-testid 는 공개 API**: §7 목록의 testid 이름 변경 시 테스트와 같이 수정 (리네임 금지가 기본).
@@ -347,7 +349,7 @@
 | `search-result-product-{productId}` | 제품 결과 항목 | `role=option` |
 | `search-empty` | 결과 없음 상태 | |
 | `search-suggestions` | 결과 없음 시 추천 목록 | |
-| `view-mode-product` / `view-mode-gap` / `view-mode-learn` | 보기 모드 버튼 | `aria-pressed` |
+| `view-mode-product` / `view-mode-gap` | 보기 모드 버튼 | `aria-pressed` |
 | `legend` | 범례 | |
 | `legend-item-{coverage}` | 범례 항목 5종 | 내부에 `coverage-icon-{coverage}` |
 | `theme-toggle` | (있다면) 테마 전환 | |
@@ -356,7 +358,7 @@
 ### 7.2 계통도
 | testid | 요소 | 추가 요구 속성 |
 |---|---|---|
-| `diagram` | SVG 루트(또는 래퍼) | `data-view-mode="product|gap|learn"` — R-09: `#/?mode=gap|learn` 쿼리와 동기화. 선택 노드는 `?node=<nodeId>` |
+| `diagram` | SVG 루트(또는 래퍼) | `data-view-mode="product|gap"` — R-09: `#/?mode=gap` 쿼리와 동기화 (옛 `learn` → product). 선택 노드는 `?node=<nodeId>` |
 | `diagram-edge-{edgeId}` | 연결선 | `data-kind="power|signal|alt"` — R-07: power 굵은 실선, signal 가는 점선(stroke-dasharray). v0.6: alt(택1) = 점선 + label |
 | `diagram-bus-{nodeId}` | (v0.6) 모선 (예: `diagram-bus-bus-229`) | |
 | `diagram-endpoint-{nodeId}` | (v0.6) 끝점 라벨 (예: `diagram-endpoint-ep-mv-motor`) | 라벨 텍스트 표시 |
@@ -390,7 +392,7 @@
 | `detail-doc-link` / `equipment-doc-link` | 상세 패널·기기 페이지 자료 링크 | `doc-link` 와 동일 속성 (v0.3) |
 | `gap-table-link` | 좌측 내비 아래 "공백 표 보기" 링크 (→ `#/gap`) | **v0.3 신규 요청** |
 | `gap-page` / `gap-matrix` / `gap-list` / `gap-item-{equipmentId}` | `/gap` 페이지 | |
-| `learn-page` | `/learn` 페이지 | |
+| ~~`learn-page`~~ | ~~`/learn` 페이지~~ — 교육 탭 제거(2026-11-18) | |
 | `tour-start` / `tour-step` / `tour-next` / `tour-close` | 교육 투어 | `tour-step` 에 `data-layer`, 마지막 단계 `tour-next` disabled. v0.6: `tour-finish`·`tour-summary`·퀴즈·진도 **제거**(사용자 결정). v0.4: `tour-start` 는 계통도 교육 모드 카드(→ `/learn?step=L1`)와 `/learn` 개요 화면 두 곳 |
 | `gap-filter-{coverage}` | 공백 표 상태 필터 | `aria-pressed`. v0.4 요청: "전체" 버튼에도 `gap-filter-all` |
 | `learn-key-{equipmentId}` | **v0.4 요청**: /learn 핵심 기기 카드 링크 | 현재 E2E 는 `a[href$="node=<nodeId>"]` 로 대체 |

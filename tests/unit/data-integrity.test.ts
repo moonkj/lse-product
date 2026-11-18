@@ -7,7 +7,8 @@
  *  - 규칙 ID·HARD/SOFT 는 RULES 표를 따른다: error = expect([]) / warning = softWarn / both = 둘 다.
  *  - 규칙별 "위반 데이터 → 해당 ID 로 잡힘" 검증은 tests/unit/lib/integrity.test.ts.
  * 이 파일에 직접 남기는 것: 파일 존재(DI-00a), 스키마 자기검증(잘못된 값 거부), 판정 함수 자기검증(segHitsNode·segsCross·
- * 기본 경로·isRealDate), 파일 시스템 규칙(DI-82·82b·86), docs.json(DI-60~)·learn.json(DI-70~)·사진 스키마(DI-80).
+ * 기본 경로·isRealDate), 파일 시스템 규칙(DI-82·82b·86), docs.json(DI-60~)·사진 스키마(DI-80).
+ * (learn.json·DI-70~79 는 교육 탭 제거로 삭제 — 2026-11-18 사용자 결정)
  */
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -26,7 +27,6 @@ import {
   type DocsFile,
   type EquipmentImage,
 } from '../../src/lib/schema';
-import { LearnContentSchema, type LearnContent } from '../../src/content/learnSchema';
 import {
   RULES,
   LSE_URL_RE,
@@ -59,8 +59,6 @@ const FILES = {
   diagram: 'diagram.json',
 } as const;
 
-const MAIN_LAYERS = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7'] as const;
-
 function readJson(file: string): unknown {
   return JSON.parse(readFileSync(DATA_DIR + file, 'utf8'));
 }
@@ -81,7 +79,6 @@ let products: Product[] = [];
 let equipment: EquipmentType[] = [];
 let diagram: Diagram;
 let productById = new Map<string, Product>();
-let equipmentById = new Map<string, EquipmentType>();
 /** 공용 검사 결과 (현재 데이터 전체, 사진 포함) */
 let result: CheckResult;
 
@@ -103,7 +100,6 @@ beforeAll(() => {
   equipment = z.array(EquipmentTypeSchema).parse(asArray(raw.equipmentTypes, 'equipmentTypes'));
   diagram = DiagramSchema.parse(raw.diagram);
   productById = new Map(products.map((p) => [p.id, p]));
-  equipmentById = new Map(equipment.map((e) => [e.id, e]));
   result = checkDataset(raw);
 });
 
@@ -136,7 +132,7 @@ describe('DI-00 데이터 파일 존재 및 Zod 스키마 통과', () => {
 describe('공용 무결성 검사 checkDataset (RULES 표, src/lib/integrity)', () => {
   /**
    * 규칙 표 회귀 방지: v0.6 까지 DI 테스트에 있던 규칙 ID 가 RULES 에서 빠지면 실패 (test-plan §3.9 매핑표).
-   * 파일 시스템·docs·learn·정보성 규칙(DI-00a·45b·60~·70~·80·82·82b·86)은 이 파일에 직접 남아 있다.
+   * 파일 시스템·docs·정보성 규칙(DI-00a·45b·60~·80·82·82b·86)은 이 파일에 직접 남아 있다.
    */
   it('DI-RULES 규칙 표가 v0.6 DI 규칙 ID 를 모두 포함 (전환 중 누락 없음)', () => {
     const expected = [
@@ -146,7 +142,7 @@ describe('공용 무결성 검사 checkDataset (RULES 표, src/lib/integrity)', 
       'DI-27a', 'DI-27b', 'DI-27c', 'DI-27d', 'DI-27e', 'DI-27f', 'DI-27g', 'DI-27h', 'DI-28', 'DI-29',
       'DI-30', 'DI-31', 'DI-32', 'DI-33', 'DI-34', 'DI-35', 'DI-36', 'DI-37', 'DI-38', 'DI-39', 'DI-40',
       'DI-41', 'DI-42', 'DI-43', 'DI-43b', 'DI-43c', 'DI-44a', 'DI-44b', 'DI-45a', 'DI-46',
-      'DI-50', 'DI-51', 'DI-52', 'DI-81', 'DI-83', 'DI-84', 'DI-85',
+      'DI-51', 'DI-52', 'DI-81', 'DI-83', 'DI-84', 'DI-85',
     ];
     const ids = RULES.map((r) => r.id);
     expect(expected.filter((id) => !ids.includes(id)), 'RULES 에서 빠진 규칙').toEqual([]);
@@ -367,87 +363,6 @@ function decodeURIComponentSafe(s: string): string {
     return s;
   }
 }
-
-// ─────────────────────────────────────────────────────────────
-// 교육 콘텐츠 learn.json (DI-70 ~) — v0.4, v0.6 R3: 퀴즈·진도·수료 제거 (사용자 요청) → 퀴즈 규칙 DI-75·76 삭제
-// 계약: src/content/learnSchema.ts (LearnContentSchema). 콘텐츠 소유 T1-B, 사실관계는 equipment-types.json 범위 안.
-// ─────────────────────────────────────────────────────────────
-
-const LEARN_PATH = fileURLToPath(new URL('../../src/content/learn.json', import.meta.url));
-
-describe('교육 콘텐츠 learn.json (DI-70 ~)', () => {
-  let raw: unknown;
-  let learn: LearnContent;
-
-  beforeAll(() => {
-    raw = JSON.parse(readFileSync(LEARN_PATH, 'utf8'));
-    learn = LearnContentSchema.parse(raw);
-  });
-
-  it('DI-70 learn.json 이 존재하고 LearnContentSchema 통과 (+ 잘못된 값은 거부)', () => {
-    expect(existsSync(LEARN_PATH)).toBe(true);
-    expect(LearnContentSchema.safeParse(raw).success).toBe(true);
-    const base = raw as LearnContent;
-    // 스키마가 너무 느슨해지는 회귀 방지
-    const swapped = { ...base, steps: [base.steps[1], base.steps[0], ...base.steps.slice(2)] };
-    expect(LearnContentSchema.safeParse(swapped).success, 'L1·L2 순서가 바뀌어도 통과함').toBe(false);
-    expect(LearnContentSchema.safeParse({ ...base, steps: base.steps.slice(0, 6) }).success, '6단계도 통과함').toBe(false);
-    const { reviewStatus: _omit, ...noStatus } = base;
-    expect(LearnContentSchema.safeParse(noStatus).success, 'reviewStatus 없이도 통과함').toBe(false);
-  });
-
-  it('DI-71 단계가 L1→L7 순서, 중복·누락 없음', () => {
-    expect(learn.steps.map((s) => s.layer)).toEqual([...MAIN_LAYERS]);
-    expect(duplicates(learn.steps.map((s) => s.layer))).toEqual([]);
-  });
-
-  it('DI-72 핵심 기기(keyEquipmentIds) 가 equipment-types.json 에 존재 + 단계 안 중복 없음', () => {
-    const bad = learn.steps.flatMap((s) => [
-      ...s.keyEquipmentIds.filter((id) => !equipmentById.has(id)).map((id) => `${s.layer}: 없는 기기 ${id}`),
-      ...duplicates(s.keyEquipmentIds).map((id) => `${s.layer}: 중복 ${id}`),
-    ]);
-    expect(bad).toEqual([]);
-  });
-
-  it('DI-73 핵심 기기는 그 단계 계층(layer)의 기기', () => {
-    const bad = learn.steps.flatMap((s) =>
-      s.keyEquipmentIds
-        .filter((id) => equipmentById.has(id) && equipmentById.get(id)!.layer !== s.layer)
-        .map((id) => `${s.layer}: ${id} 는 ${equipmentById.get(id)!.layer} 기기`),
-    );
-    expect(bad).toEqual([]);
-  });
-
-  it('DI-74 용어집 equipmentId 가 equipment-types.json 에 존재 + 용어 중복 없음', () => {
-    const bad = learn.glossary
-      .filter((g) => g.equipmentId !== undefined && !equipmentById.has(g.equipmentId))
-      .map((g) => `${g.term}: 없는 기기 ${g.equipmentId}`);
-    expect(bad).toEqual([]);
-    expect(duplicates(learn.glossary.map((g) => g.term.trim()))).toEqual([]);
-  });
-
-  it('DI-75 (v0.6 R3) 퀴즈 제거: learn.json 단계에 quizzes 키가 남아 있지 않음', () => {
-    const steps = (raw as { steps: Record<string, unknown>[] }).steps;
-    expect(steps.filter((s) => 'quizzes' in s).map((s) => String(s.layer))).toEqual([]);
-  });
-
-  it('DI-77 reviewStatus 필드 존재 (공백 아님)', () => {
-    expect(typeof (raw as Record<string, unknown>).reviewStatus).toBe('string');
-    expect(learn.reviewStatus.trim()).not.toBe('');
-  });
-
-  it('DI-78 (SOFT) reviewStatus 가 draft 이면 경고 (교육 담당자 검토 전)', () => {
-    softWarn('DI-78', /draft/i.test(learn.reviewStatus) ? [`reviewStatus="${learn.reviewStatus}"`] : []);
-  });
-
-  it('DI-79 (SOFT) 공개 사이트 — 대외비 키워드·개인정보 패턴 없음 (단계 제목·intro·용어집)', () => {
-    const texts = [...learn.steps.flatMap((s) => [s.title, s.intro]), ...learn.glossary.flatMap((g) => [g.term, g.meaning])];
-    softWarn(
-      'DI-79',
-      texts.filter((t) => /대외비|내부용|사내한정|confidential/i.test(t) || EMAIL_RE.test(t) || PHONE_RE.test(t)),
-    );
-  });
-});
 
 // ─────────────────────────────────────────────────────────────
 // 기기 대표 사진 equipment-images.json (DI-80 ~) — v0.4. v0.7: DI-81·83·84·85 는 공용 검사(RULES) 로 전환, 여기는 스키마 거부·파일 시스템만

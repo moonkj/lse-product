@@ -16,7 +16,7 @@ interface State {
 }
 
 /**
- * 페이지 단위 오류 경계 (리뷰 R7) — 한 화면(예: learn.json 오류)이 실패해도 헤더·좌측 내비는 남기고
+ * 페이지 단위 오류 경계 (리뷰 R7) — 한 화면(예: 데이터 파일 오류)이 실패해도 헤더·좌측 내비는 남기고
  * 본문 자리에만 안내 + "계통도로" 버튼을 보여 준다.
  */
 export default class PageErrorBoundary extends Component<Props, State> {

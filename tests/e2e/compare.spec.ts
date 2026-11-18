@@ -150,7 +150,7 @@ test.describe('E2E-7 비교 기능', () => {
     await expect(tid(page, 'compare-page')).toBeVisible();
     await expect(tid(page, 'compare-tray')).toHaveCount(0); // 비교 화면에서는 바 숨김
     await expect(tid(page, 'compare-table').getByTestId(/^compare-col-/)).toHaveCount(2);
-    for (const k of ['layer', 'category', 'coverage', 'products', 'docs', 'description', 'learn', 'upstream', 'downstream']) {
+    for (const k of ['layer', 'category', 'coverage', 'products', 'docs', 'description', 'upstream', 'downstream']) {
       await expect(tid(page, `compare-row-${k}`)).toBeVisible();
     }
     await expect(tid(page, 'compare-section-specs')).toBeVisible();

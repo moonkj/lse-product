@@ -198,7 +198,6 @@ function validate(
   else if (isNew && takenIds.has(eq.id)) errors.id = `id: 이미 있는 기기 id 입니다 (${eq.id})`;
   if (!eq.voltage) errors.voltage ??= '전압: 비워 둘 수 없습니다';
   if (!eq.description) errors.description ??= '설명: 비워 둘 수 없습니다';
-  if (eq.learnPoints.length === 0) errors.learnPoints ??= '학습 포인트: 1줄 이상 적어 주세요';
   // 기기 규칙(DI-08·20~27h·50) — 무결성 검사·DI 테스트와 같은 함수 (sourced→panel-sourced, 날짜 실존, 근거 URL https 포함)
   for (const c of coverageIssues(eq, ref)) {
     const k = (c.field === 'gapAssessment' ? 'gap' : c.field) as keyof FormState;
@@ -689,7 +688,7 @@ export default function EquipmentForm({ draft, editing, categories, products, on
 
       <div className="aform__field">
         <label htmlFor={`${uid}-learnPoints`}>
-          학습 포인트 <span className="aform__req">1줄 이상</span>
+          학습 포인트 <span className="aform__hint">(선택 · 화면에 표시하지 않음)</span>
         </label>
         <textarea
           {...fieldProps('learnPoints')}

@@ -8,7 +8,7 @@
  *
  * HARD(오류)/SOFT(경고) 구분은 RULES 표 참고 — DI 테스트의 expect / softWarn 과 같다.
  * 정격 사양 specs.json 규칙(DI-90~99b)은 checkSpecs (./specs.ts).
- * 파일 시스템이 필요한 규칙(DI-00a 파일 존재, DI-82·82b·86 사진 파일), docs.json(DI-60~)·learn.json(DI-70~) 규칙은 범위 밖.
+ * 파일 시스템이 필요한 규칙(DI-00a 파일 존재, DI-82·82b·86 사진 파일), docs.json(DI-60~) 규칙은 범위 밖. (learn.json·DI-70대는 교육 탭 제거로 폐지 — 2026-11-18)
  */
 import { z } from 'zod';
 import {
@@ -105,7 +105,6 @@ export const RULES: { id: string; severity: 'error' | 'warning' | 'both'; title:
   { id: 'DI-44b', severity: 'error', title: 'points 직교·노드 가장자리' },
   { id: 'DI-45a', severity: 'error', title: '전력선 교차·같은 선 겹침 없음' },
   { id: 'DI-46', severity: 'error', title: '모선 연결: 모선 위 점에서 수직' },
-  { id: 'DI-50', severity: 'error', title: '학습 포인트 ≥ 1' },
   { id: 'DI-51', severity: 'warning', title: '같은 계층 이름 중복' },
   { id: 'DI-52', severity: 'warning', title: '대외비 키워드' },
   { id: 'DI-81', severity: 'error', title: '사진 키 = 기기 id' },
