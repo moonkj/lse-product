@@ -100,6 +100,12 @@ export const EquipmentTypeSchema = z.object({
   productIds: z.array(z.string()).optional(),
   /** 공백 판정 근거 — missing·partial·affiliate·sourced 는 필수 (DI 테스트·관리자 폼에서 검사) */
   gapAssessment: GapAssessmentSchema.optional(),
+  /**
+   * 검색 별칭 (2026-11-18 사용자 결정: 브랜드명은 검색 별칭만, 타일에는 표기하지 않음).
+   * 대표 브랜드(GIMAC·XGT·Susol…)와 제품 id 없는 카테고리형 라인(Metasol MMS·M1000·E TAG…)의 모델명.
+   * 화면에는 보이지 않고 헤더 검색(searchRank)만 쓴다.
+   */
+  searchAliases: z.array(z.string().min(1)).optional(),
 });
 export type EquipmentType = z.infer<typeof EquipmentTypeSchema>;
 /** 판정 근거가 필요한 커버리지 */
@@ -115,13 +121,24 @@ export const DocRefSchema = z.object({
 });
 export type DocRef = z.infer<typeof DocRefSchema>;
 
+/**
+ * 제품 출처 (2026-11-18 사용자 결정: 국문·영문·Solution Square 전 제품).
+ * ko = 국문 사이트(기본), en = 영문 사이트 전용 시리즈, ssq = Solution Square(sol.ls-electric.com) 전용 라인.
+ * 생략 = ko. 출처별 id 형식은 integrity PRODUCT_ID_RE_BY_SOURCE (ko: P00000·D000000(자료실), en: EN-…, ssq: SSQ-…)
+ */
+export const ProductSourceSchema = z.enum(['ko', 'en', 'ssq']);
+export type ProductSource = z.infer<typeof ProductSourceSchema>;
+export const PRODUCT_SOURCE_LABELS: Record<ProductSource, string> = { ko: '국문 사이트', en: '영문 사이트', ssq: 'Solution Square' };
+
 export const ProductSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   categoryCode: z.string(),
   categoryPath: z.array(z.string()),
-  /** https 절대 URL */
+  /** 공식 페이지 https 절대 URL (출처 사이트의 제품·카테고리 페이지, 자료실 제품은 카탈로그 PDF) */
   url: httpsUrl,
+  /** 출처 — 생략 = ko */
+  source: ProductSourceSchema.optional(),
   business: z.enum(['power', 'automation']),
   discontinued: z.boolean(),
   docs: z.array(DocRefSchema),

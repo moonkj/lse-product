@@ -199,3 +199,18 @@
 5. **[데이터 품질]** 단종 4건(`p_status=close`)을 `discontinued:true`로 바꿉니다(fetch 단계에서 `hd_categories`의 p_status를 읽으면 됨). 일람표 3건은 제품에서 빼거나 `kind:"catalog"`로 표시합니다. XGT·XGB 모듈의 일반명사 이름에는 계열명을 앞에 붙입니다.
 6. **[범위 결정]** 영문 전용(a-3)과 SSQ 전용(a-4)은 국내 제품맵 범위인지 결정이 필요합니다. 넣는다면 `motor`(PMA SynRM), `servo`(iX7M·L7S·PEGA2), `vcb`(Metasol VCB), `power-meter`(GIMAC-i), `protection-relay`(GIPAM2000)부터 시작하기를 권합니다. 출처를 '공식 국문 자료실'로 한정한다면 '참고(영문/SSQ)' 표기를 붙입니다.
 7. **[검색 순위]** 브랜드 질의에서 연결 기기가 여러 개면 기기 결과를 최소 1~2개 보장합니다(XGT에서 `plc`가 빠지는 문제). 검색 결과에서 일람표는 아래로 내립니다.
+
+## 6. 후속 반영 (2026-11-18, 사용자 결정 반영)
+
+사용자 결정: 제품 범위 = 국문 + 영문 + Solution Square 전 제품, 감속기는 새 기기, 브랜드명은 검색 별칭만.
+
+| 항목 | 반영 내용 |
+|---|---|
+| 제품 | 199 → 243개. ko 198(기존 199 − 일람표 3 + 자료실 CTTS 2), en 18(EN-…), ssq 27(SSQ-…). `source` 필드 추가(생략 = ko) |
+| 숨은 국문 페이지 9건 | 넣지 않음. SmartSIZER(P01503)는 서보 용량 선정 SW이고 카테고리가 비표시(c_display=False)라 제품이 아닌 `servo` 검색 별칭으로만 둠 |
+| 카테고리형 라인 | 기기 `searchAliases`(화면 표시 없음, 검색 전용)로 모델명·브랜드 연결 |
+| 감속기 | 새 기기 `gearbox`(L7, 전동기 아래, 기계 연계), BBB004 연결(유성감속기 14종 + SSQ SSR·SAR) |
+| DEXA | `plc` 에 BBB009 연결 |
+| `aps` | 아크 보호 시스템(Arc Protection System, 7.2~24kV)으로 정정, L4로 이동, 보유(owned). UPS 기기는 새 타일이 필요해 만들지 않음(화면 배치 변경 금지) |
+| 단종·일람표 | iV5·iG5A·iP5A·XP 시리즈 discontinued, XGT·XGB·Smart I/O 일람표 3건 제품에서 제외 |
+| **`lv-ats` 공백 판정 취소** | missing(confirmed) → **owned**. 사유: 공개 자료실에 LV CTTS 카탈로그(d_id 421413, AAA010002, 2026-10)와 ACB 기반 ATS CAD("[Susol_Metasol ACB] ATS with ACB", d_id 417569·417570)가 있음 → 공백 확정 판정 취소. MV CTTS(d_id 420271)는 `alts` 에 연결 |

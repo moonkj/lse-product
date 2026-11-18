@@ -49,7 +49,7 @@ const prodCase = (() => {
 const tid = (page: Page, id: string) => page.locator(`[data-testid="${id}"]`);
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim();
 
-async function expectPageLink(page: Page, scope: ReturnType<typeof tid>, s: Src) {
+async function expectPageLink(_page: Page, scope: ReturnType<typeof tid>, s: Src) {
   const a = scope.locator(`a[href="${s.url}#page=${s.page}"]`).first();
   await expect(a).toBeVisible();
   await expect(a).toHaveAttribute('target', '_blank');

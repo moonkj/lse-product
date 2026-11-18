@@ -3,7 +3,11 @@
  * (DI-82·82b·86 사진 파일 실재·크기는 파일 시스템이 필요해 DI 테스트에 남긴다)
  */
 import type { Category, EquipmentImage, EquipmentType, Product } from '../schema';
-import { CATEGORY_CODE_RE, Collector, LSE_URL_RE, PRODUCT_ID_RE, duplicates } from './types';
+import { CATEGORY_CODE_RE, Collector, LSE_URL_RE, PRODUCT_ID_RE, PRODUCT_ID_RE_BY_SOURCE, duplicates } from './types';
+
+const sourceOf = (p: Product) => p.source ?? 'ko';
+/** 국문 사이트 카테고리 트리에 속한 제품 (categories.json 은 국문 사이트 사본 — 영문·SSQ 제품은 카테고리 목록에 넣지 않는다) */
+const inKoTree = (p: Product) => sourceOf(p) === 'ko';
 
 export function catalogRules(c: Collector, products: readonly Product[], categories: readonly Category[]) {
   const productById = new Map(products.map((p) => [p.id, p]));
@@ -15,7 +19,9 @@ export function catalogRules(c: Collector, products: readonly Product[], categor
     for (const code of duplicates(categories.map((x) => x.code))) c.error('DI-02', `카테고리 코드 중복: ${code}`, { categoryCode: code });
   });
   c.run('DI-05', () => {
-    for (const p of products) if (!PRODUCT_ID_RE.test(p.id)) c.error('DI-05', `제품 id 형식(P+숫자5자리) 아님: ${p.id}`, { productId: p.id });
+    for (const p of products)
+      if (!PRODUCT_ID_RE_BY_SOURCE[sourceOf(p)].test(p.id))
+        c.error('DI-05', `제품 id 형식 아님 (${sourceOf(p)}: 국문 P+숫자5자리·D+자료실 번호, 영문 EN-…, SSQ SSQ-…): ${p.id}`, { productId: p.id });
   });
   c.run('DI-06', () => {
     for (const x of categories) if (!CATEGORY_CODE_RE.test(x.code)) c.error('DI-06', `카테고리 코드 형식 아님: ${x.code}`, { categoryCode: x.code });
@@ -24,14 +30,23 @@ export function catalogRules(c: Collector, products: readonly Product[], categor
     for (const p of products) if (!p.name.trim()) c.error('DI-08', `제품 ${p.id}: 이름이 비어 있습니다`, { productId: p.id });
   });
   c.run('DI-12', () => {
-    for (const p of products) if (!categoryByCode.has(p.categoryCode)) c.error('DI-12', `제품 ${p.id}: 없는 카테고리 ${p.categoryCode}`, { productId: p.id });
+    for (const p of products) {
+      // 영문·SSQ 제품은 맞는 국문 카테고리가 없으면 categoryCode 를 비우고 기기 productIds 로 연결한다 (DI-12b)
+      if (!inKoTree(p) && p.categoryCode === '') continue;
+      if (!categoryByCode.has(p.categoryCode)) c.error('DI-12', `제품 ${p.id}: 없는 카테고리 ${p.categoryCode}`, { productId: p.id });
+    }
   });
   c.run('DI-13', () => {
     for (const x of categories) for (const id of x.productIds) if (!productById.has(id)) c.error('DI-13', `카테고리 ${x.code}: 없는 제품 ${id}`, { categoryCode: x.code });
+    for (const x of categories)
+      for (const id of x.productIds) {
+        const p = productById.get(id);
+        if (p && !inKoTree(p)) c.error('DI-13', `카테고리 ${x.code}: 영문·SSQ 제품 ${id} 는 국문 카테고리 목록에 넣지 않습니다`, { categoryCode: x.code });
+      }
   });
   c.run('DI-14', () => {
     for (const p of products)
-      if (!categoryByCode.get(p.categoryCode)?.productIds.includes(p.id))
+      if (inKoTree(p) && !categoryByCode.get(p.categoryCode)?.productIds.includes(p.id))
         c.error('DI-14', `제품 ${p.id}: 카테고리 ${p.categoryCode} 의 제품 목록에 없습니다 (양방향 불일치)`, { productId: p.id });
   });
   c.run('DI-15', () => {
@@ -61,7 +76,7 @@ export function catalogRules(c: Collector, products: readonly Product[], categor
   });
   c.run('DI-18', () => {
     for (const p of products)
-      if (p.url.startsWith('https://www.ls-electric.com') && !p.url.includes(p.id)) c.error('DI-18', `제품 ${p.id}: 주소에 제품 id 가 없습니다 (${p.url})`, { productId: p.id });
+      if (PRODUCT_ID_RE.test(p.id) && p.url.startsWith('https://www.ls-electric.com') && !p.url.includes(p.id)) c.error('DI-18', `제품 ${p.id}: 주소에 제품 id 가 없습니다 (${p.url})`, { productId: p.id });
   });
   c.run('DI-19', () => {
     for (const p of products) for (const u of duplicates(p.docs.map((d) => d.url))) c.error('DI-19', `제품 ${p.id}: 자료 주소 중복 ${u}`, { productId: p.id });

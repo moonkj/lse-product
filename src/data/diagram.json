@@ -1,6 +1,6 @@
 {
   "width": 2320,
-  "height": 4212,
+  "height": 4398,
   "review": {
     "status": "approved",
     "changedAt": "2026-11-18",
@@ -68,7 +68,7 @@
       "label": "분전반 및 부하",
       "voltage": "380/220V 분기",
       "y": 3564,
-      "height": 648,
+      "height": 834,
       "x": 0,
       "width": 1740
     },
@@ -88,7 +88,7 @@
       "x": 1769,
       "width": 551,
       "y": 1620,
-      "height": 2592
+      "height": 2778
     }
   ],
   "nodes": [
@@ -341,8 +341,8 @@
     {
       "id": "n-aps",
       "equipmentTypeId": "aps",
-      "x": 1668,
-      "y": 3474
+      "x": 478,
+      "y": 2214
     },
     {
       "id": "n-ats",
@@ -609,6 +609,12 @@
       "layer": "L6",
       "x": 1218,
       "y": 3114
+    },
+    {
+      "id": "n-gearbox",
+      "equipmentTypeId": "gearbox",
+      "x": 1015,
+      "y": 4263
     }
   ],
   "edges": [
@@ -1049,12 +1055,6 @@
       "kind": "power"
     },
     {
-      "id": "e049",
-      "from": "n-sag",
-      "to": "n-aps",
-      "kind": "power"
-    },
-    {
       "id": "e050",
       "from": "n-egen",
       "to": "n-ats",
@@ -1454,6 +1454,20 @@
           "y": 2354
         }
       ]
+    },
+    {
+      "id": "e087",
+      "from": "n-aps",
+      "to": "n-relay",
+      "kind": "signal",
+      "label": "아크 검출"
+    },
+    {
+      "id": "e088",
+      "from": "n-motor",
+      "to": "n-gearbox",
+      "kind": "power",
+      "label": "전동기 축 연결 (기계)"
     }
   ]
 }

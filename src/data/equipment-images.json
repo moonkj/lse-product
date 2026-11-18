@@ -470,5 +470,21 @@
     "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/xEMS_th(0).png",
     "bytes": 81420,
     "thumb": "images/equipment/thumb/xems.png"
+  },
+  "gearbox": {
+    "file": "images/equipment/gearbox.png",
+    "productId": null,
+    "productName": "유성감속기",
+    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/%EC%9C%A0%EC%84%B1%EA%B0%90%EC%86%8D%EA%B8%B0.png",
+    "bytes": 114194,
+    "thumb": "images/equipment/thumb/gearbox.png"
+  },
+  "lv-ats": {
+    "file": "images/equipment/lv-ats.png",
+    "productId": "D421413",
+    "productName": "LV CTTS",
+    "sourceUrl": "https://www.ls-electric.com/ko/cat/LV_CTTS_KO_C800%E2%93%961-01-202610.pdf",
+    "bytes": 47919,
+    "thumb": "images/equipment/thumb/lv-ats.png"
   }
 }

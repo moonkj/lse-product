@@ -193,3 +193,11 @@
 - 사이트 전수 대조(docs/research/product-coverage-audit.md): 국문 사업소개 199/137 차이 0. 숨은 페이지 9, 영문 전용 ~18, SSQ 전용 ~20라인, 카테고리=제품 라인 ~58(검색 안 됨), 미연결 15(감속기 14·DEXA), 단종 미반영 4, 일람표 3, aps 매핑 오류(APS=Arc Protection System).
 - 사용자 결정: 국문+영문+SSQ 모두 포함, 감속기 새 기기 추가, 타일 브랜드 표기 없이 검색 별칭만.
 - 검증: unit 483, E2E 138·1 skip, axe 8화면 0.
+
+## 2026-11-18 · 제품 범위 확장(국문+영문+SSQ)·감속기·ATS·APS 정정
+- 제품 199→243 (ko 198 · en 18 · ssq 27), ProductSchema source, id 접두(EN-·SSQ-·D자료실). 일람표 3 제거, 단종 4 반영, DEXA→plc.
+- searchAliases 37기기·176개(Metasol MMS·XGT·M1000·E TAG 등), 브랜드 검색 시 연결 기기 최대 2 보장.
+- 새 기기 gearbox(L7, 유성감속기 14+SSQ 2), 노드 n-gearbox·e088, L7 높이 648→834.
+- lv-ats: 자료실 근거(LV CTTS 카탈로그·ATS with ACB CAD)로 missing(확정)→owned, 사유 audit 6장. MV CTTS→alts.
+- aps: AAA010006 = Arc Protection System → '아크 보호 시스템'(L4, protection) 정정, 노드 이동. UPS 기기는 미생성(사용자 결정 필요).
+- 펼친 시트 카드 가림 수정(CSS). 검증: unit 505, E2E 139, axe target-size 0.

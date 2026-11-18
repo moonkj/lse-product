@@ -364,6 +364,16 @@
 
 .detail-panel.detail-panel--sheet.is-expanded {
   max-height: 88dvh;
+  /* 펼친 시트: 아래 고정 버튼 줄(.dp-sheet-actions)이 시트 바닥까지 덮게 바닥 여백은 버튼 줄이 갖는다 —
+     시트 padding 띠로 뒤 내용(첫 제품 카드)이 비쳐 보이며 버튼에 가리던 문제(axe target-size) 수정.
+     scroll-padding = 버튼 줄 높이(8 + 44 + 16) — 키보드 포커스로 스크롤될 때 카드가 버튼 줄 뒤에 숨지 않게 */
+  padding-bottom: 0;
+  scroll-padding-bottom: 68px;
+}
+
+.detail-panel--sheet.is-expanded .dp-sheet-actions {
+  padding: 8px 0 16px;
+  background: var(--color-surface);
 }
 
 /* 접힌 시트(요약): 넘치면 스크롤 대신 설명을 줄인다 — 잘린 채 누를 수 있는 요소가 남지 않게 */

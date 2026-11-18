@@ -57,3 +57,62 @@ describe('M1 숫자 든 모델명·형식명은 기존 기대 유지', () => {
     expect(rank('GIPAM 1000')[0].kind).toBe('product');
   });
 });
+
+describe('검색 별칭 (2026-11-18 사용자 결정: 브랜드는 검색 별칭만) — 카테고리형 라인·대표 브랜드', () => {
+  const eqIds = (q: string) => rank(q).filter((r) => r.kind === 'equipment').map((r) => (r.kind === 'equipment' ? r.node.eq.id : ''));
+  it.each([
+    ['XGT', 'plc'],
+    ['Metasol MMS', 'mms'],
+    ['Susol DC', 'dc-devices'],
+    ['M1000', 'mv-drive'],
+    ['SSM', 'soft-starter'],
+    ['E TAG', 'smart-device'],
+    ['GIMAC-TU', 'smart-device'],
+    ['XG5000', 'plc'],
+    ['SmartSIZER', 'servo'],
+    ['ATS', 'lv-ats'],
+    ['CTTS', 'lv-ats'],
+    ['감속기', 'gearbox'],
+  ])('"%s" → 1위 기기 %s', (q, eq) => {
+    expect(label(rank(q)[0])).toBe(`eq:${eq}`);
+  });
+  it.each([
+    ['GIMAC', ['power-meter']],
+    ['GIPAM', ['protection-relay']],
+    ['Susol', ['acb', 'mccb']],
+    ['Metasol', ['acb', 'mccb']],
+    ['iS7', ['lv-drive']],
+    ['XGT', ['plc']],
+  ])('대표 브랜드 "%s" → 연결 기기 보장 %j', (q, ids) => {
+    const got = eqIds(q);
+    for (const id of ids) expect(got).toContain(id);
+  });
+  it('기기 약어 정확 일치 질의(ACB)는 별칭 토큰으로 다른 기기를 끼워 넣지 않음', () => {
+    expect(eqIds('ACB')).toEqual(['acb']);
+  });
+  it('별칭은 화면에 쓰이지 않는 선택 필드 — 별칭이 있는 기기 수와 총 별칭 수', () => {
+    const eqs = getData().equipmentTypes.filter((e) => (e.searchAliases?.length ?? 0) > 0);
+    expect(eqs.length).toBeGreaterThan(20);
+    expect(eqs.flatMap((e) => e.searchAliases!).length).toBeGreaterThanOrEqual(58);
+  });
+});
+
+describe('제품 출처 (국문·영문·SSQ)', () => {
+  const ps = getData().products;
+  it('출처별 id 접두와 공식 URL 도메인', () => {
+    for (const p of ps) {
+      const src = p.source ?? 'ko';
+      if (src === 'en') expect(p.id.startsWith('EN-'), p.id).toBe(true);
+      if (src === 'ssq') {
+        expect(p.id.startsWith('SSQ-'), p.id).toBe(true);
+        expect(p.url.startsWith('https://sol.ls-electric.com/'), p.id).toBe(true);
+      }
+    }
+    expect(ps.some((p) => p.source === 'en')).toBe(true);
+    expect(ps.some((p) => p.source === 'ssq')).toBe(true);
+  });
+  it('일람표(비제품)는 제품에서 제외, 사이트 단종 4건은 discontinued', () => {
+    expect(ps.some((p) => p.name.includes('일람표'))).toBe(false);
+    for (const id of ['P01190', 'P01187', 'P01189', 'P01173']) expect(getData().productById.get(id)?.discontinued, id).toBe(true);
+  });
+});

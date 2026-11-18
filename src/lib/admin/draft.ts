@@ -46,6 +46,7 @@ export function canonicalEquipment(e: EquipmentType): EquipmentType {
   if (e.gapNote) out.gapNote = e.gapNote;
   if (e.affiliateName) out.affiliateName = e.affiliateName;
   if (e.gapAssessment) out.gapAssessment = canonicalGap(e.gapAssessment);
+  if (e.searchAliases && e.searchAliases.length > 0) out.searchAliases = [...e.searchAliases];
   return out as EquipmentType;
 }
 
