@@ -8,6 +8,7 @@ import EmptyProducts from '../components/common/EmptyProducts';
 import EquipmentOverview from '../components/common/EquipmentOverview';
 import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
+import ProductVisual from '../components/pages/ProductVisual';
 import { CATEGORY_LABELS, isGapCoverage, pageTitle } from '../lib/labels';
 import { diagramHref, layerStyle, nodeForEquipment, productsForEquipment } from '../lib/pages/catalog';
 import NotFoundPage from './NotFoundPage';
@@ -113,7 +114,7 @@ export default function EquipmentPage() {
                   <li key={p.id} className="eqp-product-item">
                     <CompareToggle kind="product" id={p.id} name={p.name} variant="icon" className="eqp-product__compare" />
                     <Link to={`/product/${p.id}`} className="eqp-product" data-testid={`product-card-${p.id}`}>
-                      <EquipmentVisual eq={eq} className="eqp-product__img" thumb />
+                      <ProductVisual product={p} eq={eq} className="eqp-product__img" thumb />
                       <span className="eqp-product__body">
                         <b className="eqp-product__name">{p.name}</b>
                         <span className="eqp-product__meta">{p.categoryPath.join(' › ')}</span>

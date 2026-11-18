@@ -6,8 +6,10 @@ import {
   SpecsFileSchema,
   EquipmentTypesSchema,
   EquipmentImagesSchema,
+  ProductImagesSchema,
   ProductsSchema,
   type EquipmentImage,
+  type ProductImage,
   type Category,
   type Diagram,
   type EquipmentType,
@@ -21,6 +23,7 @@ import equipmentTypesJson from './equipment-types.json';
 import diagramJson from './diagram.json';
 import docsJson from './docs.json';
 import equipmentImagesJson from './equipment-images.json';
+import productImagesJson from './product-images.json';
 
 import { DataValidationError } from '../lib/errors';
 /** 호환용 재수출 — 새 코드는 '../lib/errors' 에서 import */
@@ -45,6 +48,8 @@ export interface AppData {
   docsByProductId: Map<string, ProductDocs>;
   /** equipment-images.json — 기기별 대표 사진 (없는 기기는 키가 없음 → 단선결선도 심볼로 표시) */
   equipmentImageById: Map<string, EquipmentImage>;
+  /** product-images.json — 제품별 사진. products 에 있는 제품만 (고아 항목 제외). 없으면 기기 대표 사진으로 대체 */
+  productImageById: Map<string, ProductImage>;
 }
 
 let cache: AppData | undefined;
@@ -61,6 +66,8 @@ export function getData(): AppData {
   const diagram = parseOrThrow(DiagramSchema, diagramJson, 'diagram.json');
   const docs = parseOrThrow(DocsFileSchema, docsJson, 'docs.json');
   const images = parseOrThrow(EquipmentImagesSchema, equipmentImagesJson, 'equipment-images.json');
+  const productImages = parseOrThrow(ProductImagesSchema, productImagesJson, 'product-images.json');
+  const productIds = new Set(products.map((p) => p.id));
   cache = {
     products,
     categories,
@@ -72,6 +79,7 @@ export function getData(): AppData {
     equipmentTypeById: new Map(equipmentTypes.map((e) => [e.id, e])),
     docsByProductId: new Map(Object.entries(docs.products)),
     equipmentImageById: new Map(Object.entries(images)),
+    productImageById: new Map(Object.entries(productImages).filter(([id]) => productIds.has(id))),
   };
   return cache;
 }
@@ -125,6 +133,12 @@ export function equipmentImageUrl(equipmentId: string): string | undefined {
 export function equipmentThumbUrl(equipmentId: string): string | undefined {
   const img = getData().equipmentImageById.get(equipmentId);
   return img ? `${import.meta.env.BASE_URL}${img.thumb}` : undefined;
+}
+
+/** 제품 사진 (없으면 undefined → 기기 대표 사진으로 대체). thumb=true 면 160px 썸네일 */
+export function productImageUrl(productId: string, thumb = false): string | undefined {
+  const img = getData().productImageById.get(productId);
+  return img ? `${import.meta.env.BASE_URL}${thumb ? img.thumb : img.file}` : undefined;
 }
 
 /** 기기에 연결된 자사 제품: lseCategoryCodes 의 카테고리 제품(하위 포함) + productIds, 중복 제거 */

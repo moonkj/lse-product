@@ -1,11 +1,12 @@
 import { Fragment, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { DOC_TYPE_LABELS, LAYER_LABELS, type DocRef, type EquipmentType, type Product, type ProductDocs } from '../lib/schema';
-import { docsByProductId, useData } from '../data/load';
+import { docsByProductId, equipmentImageUrl, useData } from '../data/load';
 import ExternalLink from '../components/common/ExternalLink';
 import EquipmentOverview from '../components/common/EquipmentOverview';
 import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
+import ProductVisual, { FALLBACK_PHOTO_LABEL, hasProductPhoto } from '../components/pages/ProductVisual';
 import ProductSpecs, { SPECS_VARIANTS_ANCHOR } from '../components/pages/ProductSpecs';
 import { useSpecs } from '../components/compare/useSpecs';
 import { hasVariants } from '../lib/pages/compare';
@@ -66,10 +67,15 @@ export default function ProductPage() {
 
       <section className="pg-hero" aria-labelledby="product-title">
         <div className="pg-hero__media">
-          {eq ? (
-            <EquipmentVisual eq={eq} alt={`${product.name} 제품 사진 (${eq.name} 대표 사진)`} />
+          {hasProductPhoto(product.id) || eq ? (
+            <ProductVisual product={product} eq={eq} alt={`${product.name} 제품 사진`} lazy={false} />
           ) : (
             <span className="pg-muted">사진 없음</span>
+          )}
+          {!hasProductPhoto(product.id) && eq && equipmentImageUrl(eq.id) && (
+            <span className="pg-hero__caption" data-testid="product-photo-fallback">
+              {FALLBACK_PHOTO_LABEL} · {eq.name}
+            </span>
           )}
         </div>
         <div className="pg-hero__body">

@@ -4,7 +4,7 @@
  *  - 사진: 계통도 타일 = 160px 썸네일(images/equipment/thumb/), 패널·기기 페이지 큰 사진 = 원본(images/equipment/)
  */
 import { describe, it, expect } from 'vitest';
-import { equipmentImageUrl, equipmentThumbUrl, getData, resolveProducts, type AppData } from '../../../src/data/load';
+import { equipmentImageUrl, equipmentThumbUrl, getData, productImageUrl, resolveProducts, type AppData } from '../../../src/data/load';
 import { getDiagramModel } from '../../../src/lib/diagram/model';
 import type { Category, EquipmentType, Product } from '../../../src/lib/schema';
 
@@ -63,5 +63,21 @@ describe('UT-03 기기 사진 URL: 타일 = thumb, 큰 사진 = 원본', () => {
     const withImg = getDiagramModel().nodes.filter((n) => n.imageUrl);
     expect(withImg.length).toBeGreaterThan(0);
     expect(withImg.filter((n) => !n.imageUrl!.includes('images/equipment/thumb/')).map((n) => `${n.id}: ${n.imageUrl}`)).toEqual([]);
+  });
+});
+
+describe('UT-03b 제품 사진 URL (product-images.json)', () => {
+  it('products 에 있는 제품의 항목만 쓴다 (고아 항목 무시)', () => {
+    const data = getData();
+    expect([...data.productImageById.keys()].filter((id) => !data.productById.has(id))).toEqual([]);
+  });
+
+  it('productImageUrl: 원본 = images/products/, thumb = images/products/thumb/, 없으면 undefined', () => {
+    const [id] = [...getData().productImageById.keys()];
+    if (id) {
+      expect(productImageUrl(id)).toMatch(/images\/products\/[^/]+$/);
+      expect(productImageUrl(id, true)).toMatch(/images\/products\/thumb\/[^/]+$/);
+    }
+    expect(productImageUrl('__none__')).toBeUndefined();
   });
 });

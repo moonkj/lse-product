@@ -363,6 +363,29 @@ export const EquipmentImageSchema = z.object({
 export const EquipmentImagesSchema = z.record(z.string(), EquipmentImageSchema);
 export type EquipmentImage = z.infer<typeof EquipmentImageSchema>;
 
+/**
+ * product-images.json — 제품별 대표 사진 (key = Product.id).
+ * 같은 원본(sourceUrl)을 쓰는 제품끼리는 파일 하나를 공유할 수 있다.
+ * products.json 에서 빠진 제품의 항목(고아)은 화면에서 쓰지 않는다 (load.ts 의 productImageById 가 걸러 냄).
+ */
+export const ProductImageSchema = z.object({
+  file: z.string().regex(/^images\/products\/[A-Za-z0-9-]+\.(png|jpg|webp)$/),
+  /** 160px 썸네일 (목록·비교 열 머리용) */
+  thumb: z.string().regex(/^images\/products\/thumb\/[A-Za-z0-9-]+\.(png|jpg|webp)$/),
+  sourceUrl: httpsUrl,
+  bytes: z.number().int().positive(),
+  /** 원본 가로 px (최대 455). 화면에서 이보다 크게 늘리지 않는다 */
+  width: z.number().int().positive().optional(),
+  /** 출처 종류 — catalog: 카탈로그 PDF 에서 추출(정확한 제품 사진), product-page: 공식 제품 페이지 대표 이미지(임시) */
+  origin: z.enum(['catalog', 'product-page']),
+  /** origin=catalog 일 때 카탈로그 PDF 주소·제목·쪽 */
+  catalogUrl: httpsUrl.optional(),
+  catalogTitle: z.string().min(1).optional(),
+  page: z.number().int().positive().optional(),
+});
+export const ProductImagesSchema = z.record(z.string(), ProductImageSchema);
+export type ProductImage = z.infer<typeof ProductImageSchema>;
+
 export const EquipmentTypesSchema = z.array(EquipmentTypeSchema);
 export const ProductsSchema = z.array(ProductSchema);
 export const CategoriesSchema = z.array(CategorySchema);

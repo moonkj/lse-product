@@ -6,7 +6,7 @@ import EquipmentSymbol from '../common/EquipmentSymbol';
 /**
  * 기기 대표 사진, 없으면(또는 로드 실패 시) 단선결선도 심볼 — 사진/심볼 선택만 담당.
  * 심볼은 계통도와 같은 `common/EquipmentSymbol` 한 벌을 쓴다.
- * 제품별 사진은 없으므로 제품 화면도 소속 기기의 대표 사진을 쓴다.
+ * 제품 화면·목록은 ProductVisual(제품 사진 → 없으면 이 컴포넌트로 대체)을 쓴다.
  */
 interface Props {
   eq: EquipmentType;

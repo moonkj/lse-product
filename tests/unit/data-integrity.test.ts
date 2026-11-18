@@ -22,10 +22,12 @@ import {
   DiagramSchema,
   DocsFileSchema,
   EquipmentImagesSchema,
+  ProductImagesSchema,
   GapAssessmentSchema,
   SpecsFileSchema,
   type DocsFile,
   type EquipmentImage,
+  type ProductImage,
 } from '../../src/lib/schema';
 import {
   RULES,
@@ -441,6 +443,48 @@ describe('기기 사진 equipment-images.json (DI-80 ~)', () => {
       if (existsSync(PUBLIC_DIR + v.thumb) && statSync(PUBLIC_DIR + v.thumb).size > 500 * 1024) warn.push(`${id}: thumb ${Math.round(statSync(PUBLIC_DIR + v.thumb).size / 1024)}KB`);
     }
     softWarn('DI-86', warn);
+  });
+});
+
+describe('제품 사진 product-images.json (DI-87 ~)', () => {
+  const FILE = 'product-images.json';
+  let raw: unknown;
+  let images: [string, ProductImage][] = [];
+
+  beforeAll(() => {
+    raw = readJson(FILE);
+    images = Object.entries(ProductImagesSchema.parse(raw));
+  });
+
+  it('DI-87 ProductImagesSchema 통과 + 원본·썸네일 파일이 public/ 아래 존재', () => {
+    expect(ProductImagesSchema.safeParse(raw).success).toBe(true);
+    const ok = { file: 'images/products/P01065.png', thumb: 'images/products/thumb/P01065.png', sourceUrl: 'https://www.ls-electric.com/a.png', bytes: 1, origin: 'product-page' };
+    expect(ProductImagesSchema.safeParse({ P01065: ok }).success).toBe(true);
+    expect(ProductImagesSchema.safeParse({ P01065: { ...ok, file: 'images/products/../x.png' } }).success, '경로 탈출').toBe(false);
+    expect(ProductImagesSchema.safeParse({ P01065: { ...ok, thumb: 'images/products/P01065.png' } }).success, 'thumb 폴더 밖').toBe(false);
+    expect(ProductImagesSchema.safeParse({ P01065: { ...ok, origin: 'other' } }).success, 'origin 값').toBe(false);
+    const { origin: _o, ...noOrigin } = ok;
+    expect(ProductImagesSchema.safeParse({ P01065: noOrigin }).success, 'origin 누락').toBe(false);
+    expect(ProductImagesSchema.safeParse({ P01065: { ...ok, origin: 'catalog', catalogUrl: 'https://www.ls-electric.com/ko/cat/x.pdf', catalogTitle: 'X 카탈로그', page: 3 } }).success).toBe(true);
+    expect(ProductImagesSchema.safeParse({ P01065: { ...ok, origin: 'catalog', catalogUrl: 'http://x.com/a.pdf' } }).success, 'http 카탈로그').toBe(false);
+    const missing = images.flatMap(([id, v]) => [v.file, v.thumb].filter((f) => !existsSync(PUBLIC_DIR + f)).map((f) => `${id}: public/${f}`));
+    expect(missing).toEqual([]);
+  });
+
+  it('DI-88 (SOFT) 색인 키가 products.json 에 있음 — 빠진 제품의 항목(고아)은 화면에서 쓰지 않으므로 경고만', () => {
+    const ids = new Set((asArray(readJson(FILES.products), 'products') as Product[]).map((p) => p.id));
+    softWarn('DI-88', images.filter(([id]) => !ids.has(id)).map(([id]) => `${id}: products.json 에 없음`));
+  });
+
+  it('DI-89 (SOFT) 파일 크기가 bytes 와 다르거나 500KB 초과', () => {
+    const warn: string[] = [];
+    for (const [id, v] of images) {
+      if (!existsSync(PUBLIC_DIR + v.file)) continue;
+      const size = statSync(PUBLIC_DIR + v.file).size;
+      if (size !== v.bytes) warn.push(`${id}: 실제 ${size}B ≠ bytes ${v.bytes}`);
+      if (size > 500 * 1024) warn.push(`${id}: ${Math.round(size / 1024)}KB`);
+    }
+    softWarn('DI-89', warn);
   });
 });
 

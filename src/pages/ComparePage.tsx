@@ -7,6 +7,7 @@ import CoverageBadge from '../components/common/CoverageBadge';
 import ExternalLink from '../components/common/ExternalLink';
 import { OverviewPoints } from '../components/common/EquipmentOverview';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
+import ProductVisual, { hasProductPhoto } from '../components/pages/ProductVisual';
 import { CATEGORY_LABELS, COVERAGE_LABELS, confidenceLabel, gapConfidence, pageTitle } from '../lib/labels';
 import { layerTitle } from '../lib/diagram/model';
 import { overviewParts, overviewText } from '../lib/overview';
@@ -869,7 +870,13 @@ export default function ComparePage() {
                     <th key={c.id} scope="col" className="cmp-colhead" data-testid={`compare-col-${c.id}`}>
                       <div className="cmp-colhead__inner">
                         <div className="cmp-colhead__media">
-                          {c.eq ? <EquipmentVisual eq={c.eq} thumb /> : <span className="cmp-muted">사진 없음</span>}
+                          {c.product && (c.eq || hasProductPhoto(c.product.id)) ? (
+                            <ProductVisual product={c.product} eq={c.eq} thumb />
+                          ) : c.eq ? (
+                            <EquipmentVisual eq={c.eq} thumb />
+                          ) : (
+                            <span className="cmp-muted">사진 없음</span>
+                          )}
                         </div>
                         <span className="cmp-colhead__name">{c.name}</span>
                         {c.sub && <span className="cmp-colhead__sub">{c.sub}</span>}

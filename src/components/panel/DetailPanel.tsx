@@ -30,6 +30,7 @@ import GapSections from './GapSections';
 import NeighborChips from './NeighborChips';
 import PanelHero from './PanelHero';
 import EquipmentOverview from '../common/EquipmentOverview';
+import ProductVisual, { hasProductPhoto } from '../pages/ProductVisual';
 import './DetailPanel.css';
 
 const MAX_PRODUCTS = 8;
@@ -195,6 +196,7 @@ export default function DetailPanel() {
   // 참조 타일: 머리글 계층·전압 = 타일이 놓인 자리(밴드)·참조 라벨, 원래 기기 계층은 참조 안내에 "원래 위치"로 (T2 M5)
   const placeVoltage = node.ref ? (node.refLabel ?? model.layers.find((l) => l.id === node.layer)?.voltage) : eq.voltage;
   const products = productsForEquipment(eq.id);
+  const anyPhoto = products.slice(0, MAX_PRODUCTS).some((p) => hasProductPhoto(p.id));
   const rep = representative(products);
   const gapView = mode === 'gap' && isGapCoverage(eq.coverage);
   const variant = isMobile ? 'sheet' : 'side';
@@ -298,7 +300,12 @@ export default function DetailPanel() {
                     return (
                       <li key={p.id} className="dp-product-row">
                         <Link to={`/product/${p.id}`} className="dp-product" data-testid={`product-card-${p.id}`}>
-                          <strong>{p.name}</strong>
+                          {anyPhoto && (
+                            <span className="dp-product__img" aria-hidden="true">
+                              {hasProductPhoto(p.id) && <ProductVisual product={p} thumb size={36} />}
+                            </span>
+                          )}
+                          <strong className="dp-product__name">{p.name}</strong>
                           <span className={n > 0 ? 'dp-product__docs' : 'dp-muted'}>{n > 0 ? `자료 ${n} →` : '→'}</span>
                         </Link>
                         <CompareToggle kind="product" id={p.id} name={p.name} variant="icon" />

@@ -163,6 +163,7 @@ export function buildData(): AppData {
     equipmentTypeById: new Map(EQUIPMENT.map((e) => [e.id, e])),
     docsByProductId: new Map(Object.entries(DOCS)),
     equipmentImageById: new Map(),
+    productImageById: new Map(),
   };
 }
 
