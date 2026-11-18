@@ -187,3 +187,9 @@
 - 사진: 455px 원본 재수집, 56장 윤곽 자르기·흰 테두리 정리·여백 통일, 썸네일 재생성, 모든 사진 흰 판(테마 무관)·최대 300px.
 - 보유 초록 #1b8f44(대비). 검증: unit 474, E2E 133·1 skip, axe 0(라이트·다크).
 - 진행 중: 사이트 전체 제품 재대조(GIMAC 등), 기기 overview 보강(A·B).
+
+## 2026-11-18 · 기기 상세 설명(overview) 74종 + 사이트 전수 대조
+- overview: 3~5문장(역할·원리·정격/선정·자사 제품군), catalog 52 / general 22, 근거 링크(url#page=N). 스키마 EquipmentOverviewSchema, 관리자 저장 시 보존. 표시: 패널·펼친 시트·제품·기기·비교(4줄 clamp). 접힌 시트는 description 유지.
+- 사이트 전수 대조(docs/research/product-coverage-audit.md): 국문 사업소개 199/137 차이 0. 숨은 페이지 9, 영문 전용 ~18, SSQ 전용 ~20라인, 카테고리=제품 라인 ~58(검색 안 됨), 미연결 15(감속기 14·DEXA), 단종 미반영 4, 일람표 3, aps 매핑 오류(APS=Arc Protection System).
+- 사용자 결정: 국문+영문+SSQ 모두 포함, 감속기 새 기기 추가, 타일 브랜드 표기 없이 검색 별칭만.
+- 검증: unit 483, E2E 138·1 skip, axe 8화면 0.

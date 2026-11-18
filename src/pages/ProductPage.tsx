@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { DOC_TYPE_LABELS, LAYER_LABELS, type DocRef, type EquipmentType, type Product, type ProductDocs } from '../lib/schema';
 import { docsByProductId, useData } from '../data/load';
 import ExternalLink from '../components/common/ExternalLink';
+import EquipmentOverview from '../components/common/EquipmentOverview';
 import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import ProductSpecs, { SPECS_VARIANTS_ANCHOR } from '../components/pages/ProductSpecs';
@@ -196,7 +197,7 @@ function RoleBox({ eq }: { eq: EquipmentType }) {
   return (
     <div className="pg-role">
       <span className="pg-role__label">계통에서 하는 일 · {eq.name}</span>
-      <span>{eq.description}</span>
+      <EquipmentOverview eq={eq} testId="product-role-text" />
     </div>
   );
 }

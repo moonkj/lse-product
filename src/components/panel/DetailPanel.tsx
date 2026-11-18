@@ -29,6 +29,7 @@ import GapAssessmentSection from './GapAssessmentSection';
 import GapSections from './GapSections';
 import NeighborChips from './NeighborChips';
 import PanelHero from './PanelHero';
+import EquipmentOverview from '../common/EquipmentOverview';
 import './DetailPanel.css';
 
 const MAX_PRODUCTS = 8;
@@ -262,9 +263,9 @@ export default function DetailPanel() {
             </div>
           )}
 
-          <p className="dp-desc" data-testid="detail-desc">
-            {eq.description}
-          </p>
+          <div className="dp-overview">
+            <EquipmentOverview eq={eq} className="dp-desc" testId="detail-desc" />
+          </div>
 
           {eq.affiliateName && (
             <p className="dp-affiliate">

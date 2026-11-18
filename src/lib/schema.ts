@@ -67,6 +67,20 @@ export const GapAssessmentSchema = z
   });
 export type GapAssessment = z.infer<typeof GapAssessmentSchema>;
 
+/** 계통에서 하는 일 — 상세 설명 (2026-11-18 사용자 요청: 카탈로그·데이터시트 근거로 보강). description 은 한 줄 요약(타일·모바일 요약) */
+export const OverviewSourceSchema = z.object({
+  title: z.string().min(1),
+  url: httpsUrl,
+  page: z.number().int().positive().optional(),
+});
+export const EquipmentOverviewSchema = z.object({
+  text: z.string().min(1),
+  /** catalog = 카탈로그·데이터시트·공식 제품 페이지 근거, general = 일반 기술 설명(자사 자료 없음) */
+  basis: z.enum(['catalog', 'general']),
+  sources: z.array(OverviewSourceSchema),
+});
+export type EquipmentOverview = z.infer<typeof EquipmentOverviewSchema>;
+
 export const EquipmentTypeSchema = z.object({
   id: kebabId,
   name: z.string().min(1),
@@ -75,6 +89,7 @@ export const EquipmentTypeSchema = z.object({
   voltage: z.string(),
   category: EquipmentCategorySchema,
   description: z.string(),
+  overview: EquipmentOverviewSchema.optional(),
   learnPoints: z.array(z.string()),
   coverage: CoverageSchema,
   affiliateName: z.string().optional(),

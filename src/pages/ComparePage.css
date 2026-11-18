@@ -141,6 +141,13 @@
 .cmp-specs__value { font-weight: var(--fw-regular); color: var(--color-text); }
 .cmp-page { margin-left: 6px; font-size: var(--fs-xs); color: var(--color-link); }
 .cmp-text { margin: 0; line-height: var(--lh-normal); }
+.cmp-text--clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
 .cmp-more {
   margin-top: 4px;
   padding: 2px 8px;

@@ -6,6 +6,11 @@
     "voltage": "수~25kV",
     "category": "generation",
     "description": "연료·수력·원자력 등의 에너지를 전기로 바꾸는 계통의 시작점.",
+    "overview": {
+      "text": "발전소에서 터빈(증기·가스·수력)의 회전 에너지를 교류 전력으로 바꾸는 계통의 출발점이다. 회전자 계자에 여자 전류를 흘려 고정자 권선에 전압을 유기하며, 자동전압조정기(AVR)가 여자를 조절해 단자 전압과 무효전력을, 조속기가 터빈 입력을 조절해 주파수와 유효전력을 맞춘다. 단자 전압은 수 kV에서 25kV 안팎이어서 발전소용 승압 변압기와 짝을 이뤄 송전 전압으로 올린다. 고정자 차동, 계자상실, 역전력, 고정자 지락 같은 전용 보호가 필요하고, 발전기와 승압 변압기 사이에는 발전기 차단기(GCB)를 두기도 한다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "발전 전압은 보통 수십 kV 이하라 바로 승압이 필요",
       "계통 주파수(60Hz)를 유지하는 주체"
@@ -42,6 +47,26 @@
     "voltage": "발전전압→345kV",
     "category": "transformation",
     "description": "발전기 전압을 송전 전압(345/765kV)으로 올려 먼 거리를 적은 손실로 보낸다.",
+    "overview": {
+      "text": "발전기 단자 전압(수~25kV)을 송전 전압으로 올려 원거리 송전 손실을 줄이는 발전소 측 변압기다. 철심과 고·저압 권선을 절연유에 담근 유입식이 일반적이고, 용량·냉각방식(ONAN·ONAF·OFAF 등)·탭절환 방식(무부하 DETC, 부하시 OLTC)·임피던스가 주요 선정 항목이다. LS ELECTRIC 유입변압기 카탈로그는 Power Transformer를 최대 550kV, 3상 800MVA·단상 500MVA까지 IEC 60076·ANSI C57 기준으로 제작한다고 밝히며, 발전소·변전소·송배전 용도와 HVDC 변환용·SVC용 특수 변압기도 함께 소개한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "유입변압기(초고압+배전) 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+          "page": 4
+        },
+        {
+          "title": "유입변압기(초고압+배전) 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+          "page": 10
+        },
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - Power Transformer",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009005"
+        }
+      ]
+    },
     "learnPoints": [
       "전압을 높이면 같은 전력에서 전류가 줄어 선로 손실(I²R)이 감소",
       "최고 전압 등급은 제품별 사양 확인"
@@ -75,6 +100,16 @@
     "voltage": "345kV급",
     "category": "switching",
     "description": "차단기·단로기·접지개폐기·CT/PT를 SF6 등 절연가스로 채운 금속함에 넣은 개폐장치.",
+    "overview": {
+      "text": "초고압 변전소·발전소 개폐소에서 모선과 선로·변압기 회선을 개폐하고 고장 시 차단하는 설비다. 차단기·단로기·접지개폐기·CT/PT·모선을 SF6 등 절연가스로 채운 접지 금속함에 넣어, 공기절연 변전소보다 설치 면적이 작고 오염·기후 영향을 덜 받는다. 가스 구획을 나눠 내부 사고의 확산을 막는다. 선정 시 정격전압·정격전류·정격차단전류와 모선 방식을 본다. LS ELECTRIC GIS는 25.8kV~420kV 라인업을 갖췄고, 362kV급은 4000~6300A·50/63kA, 420kV급은 4000A·50kA로 제시되며, SF6 외 친환경 가스 적용도 안내한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - GIS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009004"
+        }
+      ]
+    },
     "learnPoints": [
       "공기절연(AIS) 대비 설치 면적이 크게 작음",
       "차단기(GCB)는 고장전류를 끊고, 단로기는 무부하 상태에서 회로를 분리"
@@ -108,6 +143,11 @@
     "voltage": "345kV급",
     "category": "protection",
     "description": "낙뢰·개폐 서지가 들어오면 대지로 방전시켜 기기 절연을 보호한다.",
+    "overview": {
+      "text": "초고압 변전소 인입부와 변압기 단자 가까이에 설치해 낙뢰·개폐 서지 전압을 제한하고 기기 절연을 보호한다. 현재는 갭이 없는 산화아연(ZnO) 소자형이 주류로, 평상시에는 거의 전류가 흐르지 않다가 과전압이 걸리면 저항이 급격히 낮아져 서지 전류를 대지로 흘린 뒤 원래 상태로 돌아온다. 선정 시 계통 최고전압에 맞는 정격전압·연속운전전압, 공칭방전전류(초고압은 10kA·20kA급), 제한전압과 보호 대상 기기 절연 수준(BIL) 사이의 여유, 에너지 내량을 검토한다. 애자형(자기·폴리머)과 GIS 내장형이 있다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "변압기·GIS 인입부에 설치",
       "정상 전압에서는 절연체처럼 동작"
@@ -144,6 +184,11 @@
     "voltage": "345kV급",
     "category": "measurement",
     "description": "큰 전류·전압을 계측·보호용 작은 값(5A, 110V 등)으로 바꾼다.",
+    "overview": {
+      "text": "초고압 선로와 모선의 큰 전류·전압을 보호계전기와 계측기가 받을 수 있는 작은 값으로 바꾸는 기기로, 옥외 변전소에서 단독으로 설치하는 형태다. 변류기(CT)는 2차 정격 1A 또는 5A, 계기용 변압기는 2차 110V급이 일반적이며, 초고압에서는 커패시터 분압을 이용한 CVT를 많이 쓴다. 선정 시 변류비·변압비, 정확도 계급(계측용 0.2·0.5급, 보호용 5P·10P 등), 부담(VA), 과전류 강도를 확인한다. 보호용 CT는 고장전류에서 포화되지 않아야 거리·차동 계전기가 오동작하지 않는다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "CT 2차측은 절대 개방하면 안 됨(고전압 발생)",
       "GIS 내장형은 GIS 제품에 포함"
@@ -180,6 +225,11 @@
     "voltage": "345/765kV",
     "category": "conductor",
     "description": "발전소와 변전소를 잇는 가공선로 또는 지중 케이블.",
+    "overview": {
+      "text": "발전소와 변전소, 변전소와 변전소를 잇는 고전압 전력 통로다. 국내 송전 전압은 154kV·345kV·765kV이고, 가공선로는 철탑과 애자에 강심알루미늄연선(ACSR) 등의 전선을 걸며, 도심·해저 구간은 XLPE 절연 지중 케이블을 쓴다. 선정과 설계에서는 송전 용량(허용 전류), 전압강하와 손실, 코로나, 절연 협조, 지중 케이블의 충전 전류와 냉각 조건을 함께 본다. 선로 양단에는 거리·전류차동 계전기와 피뢰기, 가공지선이 붙어 낙뢰와 고장으로부터 선로를 지킨다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "765kV는 국내 최고 송전 전압",
       "케이블은 계열사 LS전선 영역"
@@ -215,6 +265,21 @@
     "voltage": "±kV DC",
     "category": "system",
     "description": "교류를 직류로 바꿔 장거리·해저로 송전한 뒤 다시 교류로 변환하는 시스템.",
+    "overview": {
+      "text": "발전소나 계통의 교류 전력을 변환소에서 직류로 바꿔 보내고 수전 측에서 다시 교류로 바꾸는 송전 시스템이다. 변환용 변압기, 사이리스터(전류형) 또는 IGBT(전압형) 변환기, 직류 리액터·필터, 제어보호 장치로 구성되며, 서로 주파수나 위상이 다른 계통을 비동기로 연계할 수도 있다. LS ELECTRIC 제품 페이지는 300km가 넘는 가공 송전이나 40km가 넘는 해저·지중 송전에서 직류가 경제적이고, 대규모 전력을 부하 집중 지역에 직접 보내 기존 교류 계통의 과부하를 줄일 수 있다고 설명한다. 같은 회사 유입변압기 카탈로그에는 HVDC 변환용 변압기도 실려 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - HVDC",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009003"
+        },
+        {
+          "title": "유입변압기(초고압+배전) 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+          "page": 4
+        }
+      ]
+    },
     "learnPoints": [
       "장거리·해저 송전에서 교류보다 손실이 적음",
       "서로 다른 계통(주파수)을 연결할 수 있음"
@@ -232,6 +297,16 @@
     "voltage": "송전급",
     "category": "system",
     "description": "전력전자 장치로 송전선의 전압·조류를 빠르게 제어해 송전 용량과 안정도를 높인다.",
+    "overview": {
+      "text": "송전 계통에 전력전자 소자를 적용해 전압과 무효전력을 빠르게 제어하고 송전 용량·안정도를 높이는 설비군이다. SVC는 사이리스터로 커패시터(TSC)와 리액터(TCR)를 개폐·위상 제어하고, STATCOM은 IGBT 전압형 변환기로 무효전력을 직접 만들어 응답이 더 빠르고 고조파가 적다. LS ELECTRIC은 SVC와 MMC 방식 STATCOM을 공급하며, 제품 페이지 기준 Building Type은 345kV 연계 실적과 1뱅크 최대 150Mvar, 45ft Container Type은 1뱅크 최대 50Mvar, Panel Type은 90kVar~2Mvar(병렬 최대 24Mvar)로 제시된다. 계통 보상, 플리커 저감, 신재생 연계점 전압 보상에 쓰인다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - FACTS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009002"
+        }
+      ]
+    },
     "learnPoints": [
       "STATCOM, SVC 등이 대표적"
     ],
@@ -248,6 +323,22 @@
     "voltage": "송전급",
     "category": "protection",
     "description": "송전선·변압기 고장을 검출해 차단기에 트립 신호를 보낸다.",
+    "overview": {
+      "text": "송전선로·변압기·모선에서 생긴 고장을 수십 ms 안에 검출해 해당 구간 차단기만 트립시키는 보호 체계다. 송전선로는 거리계전(21)과 전류차동(87L), 변압기는 비율차동(87T), 모선은 모선보호(87B)를 주보호로 두고, 과전류·지락 요소와 재폐로(79)를 후비·보조로 조합하며 통신으로 양단 계전기를 연계한다. 선정 시 보호 대상, 계통 전압, CT/PT 정격(5A·110V 등), IEC 61850 같은 변전소 통신 규격 호환을 본다. LS ELECTRIC의 XGIPAM·GIPAM3000은 피더·변압기 차동(87T)·분산전원 연계 보호요소와 IEC 61850 통신을 갖춘 변전·배전급 디지털 보호계전기다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[XGIPAM] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BXGIPAM%5D_KO_C16091-03-202412.pdf",
+          "page": 13
+        },
+        {
+          "title": "[GIPAM3000] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIPAM3000%5D_KO_C16071-10-202605.pdf",
+          "page": 14
+        }
+      ]
+    },
     "learnPoints": [
       "거리계전·차동계전 방식이 주로 쓰임"
     ],
@@ -284,6 +375,16 @@
     "voltage": "154kV",
     "category": "system",
     "description": "송전 전압을 배전 전압으로 낮추고 계통을 나누는 설비 전체(EPC).",
+    "overview": {
+      "text": "송전 전압을 배전 전압으로 낮추고 계통을 분리·연계하는 변전소를 설계부터 시공까지 일괄로 공급하는 사업 범위다. GIS·주변압기·보호계전·자동화(SAS)·접지망·건축이 하나의 프로젝트로 묶이며, 계통해석 결과가 기기 정격을 정한다. LS ELECTRIC은 초고압 설비 턴키 프로젝트로 22.9kV·154kV·345kV 변전소 시공, 지중(200~2000SQ)·가공 송전선로 공사, 배치·기초·접지망 설계를 수행하며, 단락전류 계산, 계전기 정정, 고조파 해석, 안정도 해석 같은 전력계통해석도 제공한다고 밝히고 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - Substation",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009001"
+        }
+      ]
+    },
     "learnPoints": [
       "GIS·주변압기·보호·감시를 묶어 공급"
     ],
@@ -299,6 +400,16 @@
     "voltage": "154kV",
     "category": "switching",
     "description": "변전소의 154kV 모선과 선로를 개폐·보호한다.",
+    "overview": {
+      "text": "154kV 변전소에서 송전선로 인입, 모선, 주변압기 1차 회선을 개폐하고 고장전류를 차단하는 가스절연개폐장치다. 154kV 계통에는 정격전압 170kV급 GIS를 쓰며, 차단기·단로기·접지개폐기·CT/PT를 가스 구획별로 모듈화해 증설과 유지보수가 쉽다. 선정 시 정격전류, 정격차단전류, 모선 방식(단일·이중), 옥내·옥외 설치를 검토한다. LS ELECTRIC GIS 제품 페이지 기준 170kV급은 정격전류 1250~4000A, 정격차단전류 50kA, 뇌충격내전압 750kV로 제시되며, 금속 외함이 완전 접지돼 충전부가 노출되지 않는다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - GIS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009004"
+        }
+      ]
+    },
     "learnPoints": [
       "모선(Bus)은 여러 회선을 모으는 공통 도체"
     ],
@@ -315,6 +426,22 @@
     "voltage": "154/22.9kV",
     "category": "transformation",
     "description": "154kV를 배전 전압 22.9kV로 낮추는 변전소 핵심 기기.",
+    "overview": {
+      "text": "배전용 변전소에서 154kV를 22.9kV 배전 전압으로 낮추는 핵심 변압기로, 배전선로 여러 회선의 부하를 한꺼번에 맡는다. 수십 MVA급 유입식이 일반적이며, 부하 변동에 맞춰 2차 전압을 유지하도록 부하시 탭절환기(OLTC)를 단다. 선정 시 용량과 냉각방식(ONAN/ONAF), %임피던스(2차 단락전류 크기를 좌우), 결선, 소음·손실 기준을 본다. 부흐홀츠 계전기·유온·권선온도계 같은 기계적 보호와 비율차동 계전기를 함께 적용한다. LS ELECTRIC 유입변압기 카탈로그는 Power Transformer를 최대 550kV·800MVA까지 OLTC·DETC, ONAN·ONAF·OFAF 냉각으로 제작한다고 제시한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "유입변압기(초고압+배전) 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+          "page": 4
+        },
+        {
+          "title": "유입변압기(초고압+배전) 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+          "page": 10
+        }
+      ]
+    },
     "learnPoints": [
       "용량 단위는 MVA",
       "탭 절환으로 2차 전압을 조정"
@@ -332,6 +459,16 @@
     "voltage": "154kV",
     "category": "monitoring",
     "description": "변전소 내 보호·제어·계측 장치를 디지털 통신(IEC 61850)으로 통합한다.",
+    "overview": {
+      "text": "변전소 안의 보호계전기·차단기·변압기·보안 설비 정보를 디지털 통신으로 모아 감시·제어하고 무인 운전을 가능하게 하는 시스템이다. LS ELECTRIC SAS는 SAS Station(실시간 데이터 처리, 사고 인지, 자동절체·역률제어), CSD(상위 급전소 시스템과 정보 송수신·제어 지령 수행), RTU(IED가 없는 설비의 정보 취득), 통신 기능을 내장한 디지털 복합계전기를 수용한 보호계전반으로 구성된다. 계전기 동작특성·사고 분석, 모선 사활 표시, 원방 정정 기능을 갖췄고, 설계 시 IEC 61850 등 통신 규격과 기존 계전기의 프로토콜 호환을 확인한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - SAS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003003"
+        }
+      ]
+    },
     "learnPoints": [
       "IEC 61850은 변전소 통신 국제 표준"
     ],
@@ -348,6 +485,16 @@
     "voltage": "22.9kV",
     "category": "protection",
     "description": "고장 시 순간적으로 임피던스를 높여 고장전류 크기를 제한한다.",
+    "overview": {
+      "text": "변전소 2차 측이나 분산전원 연계점에 설치해 단락·지락 사고 때 흐르는 고장전류를 짧은 시간 안에 낮은 값으로 제한하는 기기다. 고장전류가 기존 차단기의 차단용량을 넘거나 기기에 큰 열적·기계적 스트레스를 줄 때 차단기 교체 대신 쓸 수 있고, 인접 건전 선로의 전압 강하(sag) 파급도 줄인다. LS ELECTRIC 한류기는 초전도 한류소자, 고속스위치(FS), 한류저항(CLR)을 조합해 수 ms 이내에 한류하고 동작 후 수분 이내 자동 회복한다. 제품 페이지 기준 정격은 22.9kV·2000A·정격단락전류 25kA/0.4s이며, 한류전류와 임피던스는 계통 조건에 맞춰 협의로 정한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - FCL",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA010005"
+        }
+      ]
+    },
     "learnPoints": [
       "차단기 차단용량 초과 문제를 해결"
     ],
@@ -364,6 +511,11 @@
     "voltage": "22.9kV",
     "category": "conductor",
     "description": "변전소에서 수용가까지 전기를 나르는 22.9kV 선로.",
+    "overview": {
+      "text": "배전용 변전소의 22.9kV 모선에서 나가 주상·지상 변압기와 고압 수용가까지 전력을 나르는 선로다. 국내 표준은 22.9kV-Y 3상 4선식 다중접지 방식이며, 가공선로는 전주와 애자에 절연전선을 걸고, 도심과 신도시는 동심중성선 전력케이블(CNCV 계열)로 지중화한다. 선로 중간에는 리클로저·자동화 개폐기·구분 개폐기를 두어 고장 구간을 나누고, 전압강하와 허용전류, 루프·방사상 구성, 고장 시 절체 경로가 설계의 주요 검토 항목이다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "국내 배전은 22.9kV-Y 다중접지 방식"
     ],
@@ -398,6 +550,11 @@
     "voltage": "22.9kV",
     "category": "protection",
     "description": "선로 고장 시 차단 후 자동으로 재투입해 일시 고장을 스스로 복구한다.",
+    "overview": {
+      "text": "배전선로 간선이나 분기점에 설치해 고장전류를 감지하면 스스로 차단하고, 정해진 시간 뒤 자동으로 재투입하는 차단 장치다. 수목 접촉이나 낙뢰처럼 잠깐 생겼다 사라지는 일시 고장은 재투입으로 바로 복구되고, 영구 고장이면 설정된 횟수만큼 재폐로한 뒤 개방 상태로 잠겨(lock-out) 고장 구간을 분리한다. 진공 인터럽터로 차단하고 전자식 제어함이 순시·지연 동작 곡선과 재폐로 횟수를 관리하며, 후단 퓨즈·구분 개폐기와의 보호 협조가 설정의 핵심이다. 선정 시 정격전압·정격전류·차단전류와 통신(배전자동화 연계) 기능을 확인한다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "배전 고장의 대부분은 일시 고장(나뭇가지, 낙뢰 등)"
     ],
@@ -433,6 +590,22 @@
     "voltage": "22.9kV",
     "category": "switching",
     "description": "배전선로를 구간별로 나누고 부하전류를 개폐한다. 배전자동화 단말과 연계된다.",
+    "overview": {
+      "text": "22.9kV급 배전선로에서 선로를 구간별로 나누고 부하전류를 개폐하는 가스절연 개폐기로, 지중 배전에서는 여러 회로를 한 함에 묶은 RMU(Ring Main Unit) 형태로 많이 쓴다. 개폐부를 SF6 가스로 채운 밀폐 탱크에 넣어 먼지·습기 영향을 받지 않고, 전동조작 기구와 RTU를 달면 배전자동화 시스템에서 원격 감시·제어할 수 있다. LS ELECTRIC 고압가스 부하개폐기 (RMU)는 12·17.5·24·36kV 계통에 적용되며, 카탈로그 기준 모선 정격전류 630A, 24kV급 정격 단시간 전류 21kA(3s)이다. 파워퓨즈나 VI 차단기와 조합해 변압기 보호와 고장구간 분리도 할 수 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[RMU] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BRMU%5D_KO_C09001-07-202310.pdf",
+          "page": 4
+        },
+        {
+          "title": "[RMU] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BRMU%5D_KO_C09001-07-202310.pdf",
+          "page": 10
+        }
+      ]
+    },
     "learnPoints": [
       "부하개폐기는 부하전류는 끊지만 고장전류는 못 끊음"
     ],
@@ -450,6 +623,11 @@
     "voltage": "22.9kV/220-380V",
     "category": "transformation",
     "description": "전주 위에 설치해 소규모 수용가(주택·상가)에 저압을 공급한다.",
+    "overview": {
+      "text": "가공 배전선로의 전주 위에 설치해 22.9kV 선로 전압을 주택·상가가 쓰는 저압으로 낮춰 공급하는 소형 유입 변압기다. 국내 22.9kV-Y 다중접지 계통에서는 상전압(약 13.2kV)을 받는 단상기를 주로 쓰며, 3상 부하에는 단상기 여러 대를 조합한다. 1차 측에는 컷아웃 스위치(퓨즈)와 피뢰기를 함께 달아 변압기 고장과 서지에 대비한다. 선정 시 용량(수십 kVA급), 무부하손·부하손 같은 효율 기준, 과부하 운전 이력, 염해 지역 여부를 검토한다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "대형 수용가는 자체 수전설비(L4)를 갖춤"
     ],
@@ -485,6 +663,28 @@
     "voltage": "22.9kV",
     "category": "system",
     "description": "수전설비 기기들을 넣은 함(패널). MCSG, C-GIS, C-AIS, DAIS 등 방식이 있다.",
+    "overview": {
+      "text": "고압·특고압 수용가의 수전실과 공장·발전소 전기실에서 차단기·개폐기·계기용 변성기·보호계전기를 한 패널에 모아 수전과 배전을 맡는 배전반이다. 절연 방식에 따라 공기절연(MCSG·C-AIS), 가스절연(C-GIS), 건조공기 절연(DAIS)으로 나뉘며, 선정 시 정격전압, 단락 내량, 내아크 등급, 설치 면적, 친환경성을 비교한다. LS ELECTRIC 제품으로는 7.2~36kV급 MCSG, 25.8·36kV급 C-GIS(정격 단시간 전류 최대 40kA), 24kV급 이하 C-AIS(내아크 21kA/1s A-FLR), SF6를 쓰지 않는 25.8kV급 DAIS가 있다. MCSG는 기존에 따로 두던 Incoming VCB반과 PT반을 한 면으로 통합한 구조다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 페이지 - MCSG",
+          "url": "https://www.ls-electric.com/ko/product/view/P01097"
+        },
+        {
+          "title": "LS ELECTRIC 제품 페이지 - C-GIS",
+          "url": "https://www.ls-electric.com/ko/product/view/P02201"
+        },
+        {
+          "title": "LS ELECTRIC 제품 페이지 - C-AIS",
+          "url": "https://www.ls-electric.com/ko/product/view/P02203"
+        },
+        {
+          "title": "LS ELECTRIC 제품 페이지 - DAIS",
+          "url": "https://www.ls-electric.com/ko/product/view/P02202"
+        }
+      ]
+    },
     "learnPoints": [
       "C-GIS는 가스절연, C-AIS는 공기절연 방식"
     ],
@@ -506,6 +706,21 @@
     "voltage": "22.9kV",
     "category": "switching",
     "description": "수전 인입구에서 회로를 개폐하고(LBS), 수용가 고장을 계통에서 자동 분리한다(ASS).",
+    "overview": {
+      "text": "22.9kV 수전설비 인입부에서 회로를 개폐하는 부하개폐기(LBS)와, 수용가 내부 고장을 계통에서 자동 분리하는 자동고장구분개폐기(ASS)를 묶은 항목이다. LBS는 부하전류를 개폐하되 단락전류는 차단하지 못하므로 전력퓨즈와 조합해 쓴다. ASS는 정격차단전류보다 큰 고장전류에서는 개폐를 잠근 뒤 변전소 측 후비보호장치가 고장을 제거해 무전압이 되면 개방해, 고장이 배전선로로 번지지 않게 한다. LS ELECTRIC 제품 페이지 기준 LBS는 24kV·630A·단시간전류 20kA(1s), ASS는 25.8kV·200A에 과전류 록 800A이며, 북미용 UL Load Interrupter Switch는 4.76~38kV급이다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 페이지 - Load Break Switch / Auto Section Switch",
+          "url": "https://www.ls-electric.com/ko/product/view/P03077"
+        },
+        {
+          "title": "[Susol LIS] Load Interrupter Switch 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_LIS%5DLoad_Interrupter_Switch_EN_C050N2-14-202609.pdf",
+          "page": 4
+        }
+      ]
+    },
     "learnPoints": [
       "ASS는 수용가 내부 고장이 배전선로로 번지는 것을 막음"
     ],
@@ -526,6 +741,11 @@
     "voltage": "22.9kV",
     "category": "protection",
     "description": "인입선으로 들어오는 서지를 대지로 방전해 수전설비를 보호한다.",
+    "overview": {
+      "text": "수전설비 인입구, 보통 LBS나 ASS 바로 앞에 설치해 배전선로를 타고 들어오는 낙뢰·개폐 서지를 대지로 흘리고 변압기·차단기 절연을 보호한다. 갭이 없는 산화아연(ZnO) 소자형이 주류이며, 과전압이 사라지면 곧바로 절연 상태로 돌아온다. 22.9kV-Y 계통에서는 정격전압 18kV급을 쓰며, 공칭방전전류(2.5kA·5kA·10kA 등)와 제한전압, 설치 장소(옥내·옥외), 단로 장치(디스커넥터) 유무를 확인한다. 접지 저항과 접지선 길이가 보호 성능에 직접 영향을 주므로 설치 위치와 접지 시공도 함께 검토한다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "보통 인입 개폐기 바로 뒤에 설치"
     ],
@@ -561,6 +781,16 @@
     "voltage": "22.9kV",
     "category": "switching",
     "description": "주 전원(상용) 정전 시 예비 전원 선로로 자동 전환한다.",
+    "overview": {
+      "text": "주 전원(상용 선로)이 정전되거나 전압이 떨어지면 예비 선로로 자동 전환해 정전 시간을 줄이는 특고압 개폐기로, 병원·데이터센터·공장처럼 2회선 수전을 하는 수용가 인입부에 쓴다. 제어함이 두 전원의 전압을 감시하다가 전환 조건이 되면 주회로를 절체하고, 주 전원이 복귀하면 자동 또는 수동으로 되돌린다. LS ELECTRIC 자동부하 전환개폐기는 제품 페이지 기준 25.8kV·630A, 정격 단시간전류 16kA/1s, 전환시간 200ms 이하이며, 모터 스프링 차지 조작에 디지털형 제어함과 비상용 DC 24V 배터리를 갖췄다. 선정 시 두 전원의 동기 여부와 전환 중 부하 영향을 함께 검토한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - 자동부하 전환개폐기 (ALTS)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015006"
+        }
+      ]
+    },
     "learnPoints": [
       "병원·데이터센터처럼 2회선 수전하는 곳에 사용"
     ],
@@ -577,6 +807,11 @@
     "voltage": "22.9kV",
     "category": "measurement",
     "description": "한전 거래용 전력량계에 맞게 전압·전류를 낮추는 변성기(CT+PT 일체).",
+    "overview": {
+      "text": "고압·특고압 수용가의 수전 지점에 설치해 한전 거래용 전력량계에 맞는 전류·전압 신호를 만드는 계기용 변성기 세트다. 한 외함 안에 계기용 변류기(CT)와 계기용 변압기(PT)를 함께 넣어 2차를 5A·110V급으로 낮추며, 요금 정산의 기준이 되므로 높은 정확도 계급이 요구된다. 변류비는 계약전력과 부하전류에 맞춰 정하는데, 너무 크면 경부하 때 계량 오차가 커지고 너무 작으면 과부하·단락에 취약하다. 거래용 설비라서 설치·교체·봉인 절차는 전력회사 기준을 따른다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "한전과 요금을 정산하는 기준점"
     ],
@@ -612,6 +847,22 @@
     "voltage": "22.9kV",
     "category": "measurement",
     "description": "사용한 전력량(kWh)을 계량한다.",
+    "overview": {
+      "text": "수용가가 사용한 전력량(kWh)을 계량하는 기기로, 요금 정산과 에너지 관리의 기초 데이터를 만든다. 전자식 전력량계는 전압·전류를 샘플링해 유효·무효전력량을 적산하고, 펄스 출력이나 통신으로 검침 시스템에 데이터를 보낸다. 선정 시 상·선식, 정격전압·전류, 정확도 계급, 변성기 결합 여부, 통신 방식을 본다. LS ELECTRIC Digital Electricity Meter는 표시부가 좌우 90도 회전하는 회전형으로 양방향 유효전력량을 계량하며, 카탈로그 기준 1.0급, 단상 2선식 AC 220V·3상 4선식 AC 220/380V, 40(10)~120(30)A 등급이다. DC Meter와 최대수요전력제어기 SDC-500도 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[AMR] 전력량계&원격검침시스템 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/Electric_Meter_Reading_System_KO_C11551-04-202611.pdf",
+          "page": 2
+        },
+        {
+          "title": "[AMR] 전력량계&원격검침시스템 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/Electric_Meter_Reading_System_KO_C11551-04-202611.pdf",
+          "page": 10
+        }
+      ]
+    },
     "learnPoints": [
       "MOF 2차측에 연결"
     ],
@@ -628,6 +879,16 @@
     "voltage": "22.9kV",
     "category": "protection",
     "description": "단락 시 녹아 끊어지며 고장전류를 빠르게 제한·차단한다.",
+    "overview": {
+      "text": "고압·특고압 회로에서 단락 사고가 나면 퓨즈 엘리먼트가 녹아 고장전류가 최대치에 이르기 전에 제한·차단하는 보호기기다. 은 엘리먼트와 소호용 모래를 밀폐관에 넣은 구조로, 차단기보다 값싸고 작으면서 차단용량이 커서 LBS와 조합한 변압기·콘덴서·전동기 회로나 PT 보호에 쓴다. 단락 보호 전용이라 과부하 보호는 따로 두어야 하며, 동작 후에는 교체한다. LS ELECTRIC 한류형 전력퓨즈는 DIN 규격 3.6/7.2kV·24kV급(5~200A, 차단전류 40kA 등)과 KS 규격 G형(일반부하용)·M형(전동기용)·P/J형(PT용)이 있고, 스트라이커로 동작 상태를 눈으로 확인할 수 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - 한류형 전력퓨즈 (PF)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015004"
+        }
+      ]
+    },
     "learnPoints": [
       "소용량 변압기 보호에 차단기 대신 경제적으로 사용"
     ],
@@ -644,6 +905,22 @@
     "voltage": "22.9kV (자사 제품 정격 4.76~38kV)",
     "category": "switching",
     "description": "진공 속에서 아크를 소호해 부하전류와 고장전류를 모두 차단한다.",
+    "overview": {
+      "text": "고압·특고압 배전반에서 부하전류는 물론 단락·지락 같은 고장전류까지 차단하는 주 차단기다. 진공 인터럽터(VI) 안에서 접점이 열릴 때 생기는 아크를 진공 소호로 끊으며, 스스로 고장을 판단하지 않고 외부 보호계전기의 트립 신호로 동작한다. 선정 시 정격전압, 정격전류, 정격차단전류, 투입·차단 조작 방식, 고정형·인출형 여부를 본다. LS ELECTRIC Susol VCB는 카탈로그 기준 7.2~36kV, 정격차단전류 최대 50kA, 정격전류 최대 5000A까지 갖췄고, 북미용 Susol UL VCB, 발전소용 VCB, 원자력 발전소용 VCB도 별도로 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Susol VCB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_KO_C05001-26-202609.pdf",
+          "page": 2
+        },
+        {
+          "title": "[Susol VCB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_KO_C05001-26-202609.pdf",
+          "page": 5
+        }
+      ]
+    },
     "learnPoints": [
       "보호계전기의 트립 신호로 동작",
       "핵심 부품은 진공 인터럽터(VI)"
@@ -661,6 +938,11 @@
     "voltage": "22.9kV",
     "category": "measurement",
     "description": "보호계전기·계측기에 입력할 전류·전압 신호를 만든다.",
+    "overview": {
+      "text": "수배전반 안에서 큰 전류·전압을 보호계전기와 계측기가 받을 수 있는 작은 신호로 바꾸는 기기다. 계기용 변류기(CT)는 2차 정격 5A(또는 1A), 계기용 변압기(PT)는 2차 110V가 일반적이고, 영상변류기(ZCT)는 지락 보호에 쓴다. 선정 시 변류비·변압비, 정확도 계급(계측용 0.5·1.0급, 보호용 5P·10P 등), 정격부담(VA), 과전류 강도를 확인한다. 보호용 CT가 단락전류에서 포화되면 계전기가 늦게 동작하거나 오동작하므로, 최대 고장전류와 계전기 부담을 함께 놓고 정한다. CT 2차 회로는 운전 중 개방하면 안 된다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "CT 2차 정격은 보통 5A 또는 1A"
     ],
@@ -696,6 +978,37 @@
     "voltage": "22.9kV",
     "category": "protection",
     "description": "CT/PT 신호로 과전류·지락 등 고장을 판단해 차단기를 트립시킨다.",
+    "overview": {
+      "text": "수배전반에서 CT/PT 신호로 과전류·지락·과전압·부족전압·차동 등 이상을 판단해 차단기에 트립 신호를 보내는 장치다. 디지털 보호계전기는 여러 보호요소와 계측·고장기록·통신을 한 대에 담아 피더, 전동기, 변압기, 분산전원 연계 등 용도별 모델로 나뉜다. 선정 시 보호 대상과 필요 보호요소, CT 5A·PT 110V 입력 정격, 제어전원, 통신(Modbus·DNP3.0·IEC 61850)을 확인한다. LS ELECTRIC은 XGIPAM(계측 정밀도 ±0.2%, IEC 61850), GIPAM3000(34/13종 보호요소), GIPAM1000, GIPAM115FI(7종 보호요소), GIPAM10, DPR1000, GIPAM2200DG를 갖추고 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[XGIPAM] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BXGIPAM%5D_KO_C16091-03-202412.pdf",
+          "page": 3
+        },
+        {
+          "title": "[XGIPAM] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BXGIPAM%5D_KO_C16091-03-202412.pdf",
+          "page": 13
+        },
+        {
+          "title": "[GIPAM3000] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIPAM3000%5D_KO_C16071-10-202605.pdf",
+          "page": 3
+        },
+        {
+          "title": "[GIPAM1000] 국문 카타로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIPAM1000%5D_KO_C160M1-08-202512.pdf",
+          "page": 3
+        },
+        {
+          "title": "[GIPAM115] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIPAM115%5D_KO_C160E1-01-202304.pdf",
+          "page": 2
+        }
+      ]
+    },
     "learnPoints": [
       "GIPAM 시리즈가 대표 제품",
       "OCR=과전류, OCGR=지락과전류"
@@ -713,6 +1026,20 @@
     "voltage": "3.3~6.6kV",
     "category": "switching",
     "description": "고압 전동기처럼 자주 켜고 끄는 부하를 개폐한다(VC). VI는 차단기·접촉기의 핵심 부품.",
+    "overview": {
+      "text": "고압 전자접촉기(VC)는 고압 전동기·콘덴서처럼 자주 켜고 끄는 부하를 진공 인터럽터로 개폐하는 기기로, 개폐 수명이 길고 단락 보호는 조합한 전력퓨즈가 맡는다. 진공 인터럽터(VI)는 세라믹관 안에 고정·가동 전극, 아크실드, 벨로우즈를 넣고 약 5×10⁻⁵ Torr의 진공을 유지하는 차단 핵심 부품으로, 진공차단기와 접촉기에 들어간다. LS ELECTRIC VC는 3.6/7.2kV·200/400A와 12kV·400A급으로 고정형·인출형·퓨즈 조합(콤비네이션)형이 있고, VI는 정격전압 7.2~36kV, 정격차단전류 8~50kA급 라인업을 제품 페이지에 제시한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - 고압전자접촉기 (VC)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002"
+        },
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - 진공 인터럽터 (VI)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003"
+        }
+      ]
+    },
     "learnPoints": [
       "VC는 개폐 수명이 길고, 차단은 PF와 조합"
     ],
@@ -730,6 +1057,16 @@
     "voltage": "3.3~11kV",
     "category": "control",
     "description": "고압 전동기의 속도를 제어해 팬·펌프의 에너지를 크게 절감한다.",
+    "overview": {
+      "text": "수 kV급 고압 전동기의 회전 속도를 바꿔 팬·펌프·압축기의 유량과 압력을 밸브·댐퍼 대신 속도로 조절하는 장치다. 입력 변압기로 받은 전원을 여러 개의 전력 셀이 직렬로 나눠 맡는 멀티레벨 방식이 많아, 출력 파형이 정현파에 가깝고 입력 고조파가 적다. LS ELECTRIC 고압 드라이브(M1000)는 제품 페이지 기준 3·4·6·10·11kV급, 출력 200~12,500kVA이며, 출력 최대 37레벨, 셀 바이패스 기본 내장, 입력 전류 THD는 IEEE 519-1992를 만족한다. 효율은 약 97%, 역률은 약 95%(정격 속도·부하 조건)로 제시된다. 선정 시 전동기 전압·용량, 부하 특성, 설치 환경(공랭, 0~40°C)을 확인한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - M1000",
+          "url": "https://www.ls-electric.com/ko/product/category/BBB006001"
+        }
+      ]
+    },
     "learnPoints": [
       "유량 제어를 밸브 대신 회전수로 하면 에너지가 크게 줄어듦"
     ],
@@ -746,6 +1083,32 @@
     "voltage": "22.9kV/380-220V",
     "category": "transformation",
     "description": "권선을 에폭시 수지로 몰딩한 건식 변압기. 화재 위험이 적어 건물 내부에 주로 사용.",
+    "overview": {
+      "text": "수변전설비에서 특고압(22.9kV 등)을 저압이나 6.6kV로 낮추는 건식 변압기로, 빌딩·데이터센터·지하 전기실처럼 옥내 설치가 많은 곳에 주로 쓰인다. 권선을 에폭시 수지로 진공 주형해 절연유가 없으므로 누유·화재 위험이 적고 난연·자기소화성이 있으며, 단락 기계력과 내습성이 좋다. 선정 시에는 1·2차 전압, 용량(kVA), 임피던스(%), 효율 등급, 절연 등급(F종 등), 고조파 부하 여부(K-factor)를 함께 본다. LS ELECTRIC Cast Resin Transformer는 최대 36kV·30MVA까지 맞춤 제작하며, 내진·충격전압 성능을 높인 Susol 프리미엄형과 고효율 Metasol형, 고조파 내량형·전철 급전용·VVVF용 등 특수용도 제품이 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "몰드변압기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+          "page": 3
+        },
+        {
+          "title": "몰드변압기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+          "page": 4
+        },
+        {
+          "title": "몰드변압기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+          "page": 6
+        },
+        {
+          "title": "몰드변압기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+          "page": 14
+        }
+      ]
+    },
     "learnPoints": [
       "유입식보다 난연성이 우수",
       "용량 단위는 kVA"
@@ -764,6 +1127,27 @@
     "voltage": "22.9kV/380-220V",
     "category": "transformation",
     "description": "절연유로 냉각·절연하는 변압기. 옥외·대용량에 유리.",
+    "overview": {
+      "text": "절연유로 권선을 절연·냉각하는 변압기로, 발전소·변전소의 대용량 전력용 변압기부터 옥외 수변전설비의 배전용 변압기까지 폭넓게 쓰인다. 냉각은 자냉식(ONAN)을 기본으로 용량에 따라 ONAF·OFAF·ODAF 강제 냉각을 적용하며, 절연유 보존 방식(콘서베이터·질소 봉입 등)과 설치 장소, 손실·소음 기준이 선정 포인트다. 몰드변압기보다 대용량·고전압에 유리하지만 절연유 관리와 방유 설비가 필요하다. LS ELECTRIC Oil-immersed Transformer는 정격전압 550kV, 3상 800MVA까지 생산하며, 22.9kV 배전용 표준 용량 제품과 부분방전 감시(PDPS·UHF PD 센서), 친환경 절연유 변압기 등 진단·환경 옵션을 갖췄다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "유입변압기(초고압+배전) 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+          "page": 3
+        },
+        {
+          "title": "유입변압기(초고압+배전) 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+          "page": 4
+        },
+        {
+          "title": "유입변압기(초고압+배전) 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf",
+          "page": 7
+        }
+      ]
+    },
     "learnPoints": [
       "절연유 상태 관리(온도·가스 분석)가 중요"
     ],
@@ -781,6 +1165,27 @@
     "voltage": "380/220V",
     "category": "system",
     "description": "변압기 2차측 저압 전력을 각 부하 계통으로 나누는 함(패널).",
+    "overview": {
+      "text": "변압기 2차 저압을 받아 주차단기(ACB)와 분기 차단기(MCCB)를 거쳐 각 간선·부하로 나누는 배전반으로, 메인·피더·MCC 구획으로 구성된다. 사양 포인트는 정격 사용전압, 모선 정격전류, 단시간 내전류(kA/1초), 내부 구획 형식(Form), 보호등급(IP), 아크 사고 내성(IEC TR 61641)이며, 적용 규격은 IEC 61439-1·2가 기준이다. LS ELECTRIC Susol LV SWGR은 최대 690V, 메인 6300A, 단시간 내전류 100kA/1초, Form 4b, IP54까지 대응하고 자사 ACB·MCCB를 탑재한다. 차단기·계측기를 원격 감시·진단하는 Smart LV Solution과 묶어 스마트 배전반으로 구성할 수 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Susol LV SWGR] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_LV_SWGR%5D_KO_C80041-02-201904.pdf",
+          "page": 4
+        },
+        {
+          "title": "[Susol LV SWGR] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_LV_SWGR%5D_KO_C80041-02-201904.pdf",
+          "page": 5
+        },
+        {
+          "title": "[Smart LV Solution] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_LV_Solution%5D_KO_C800R1-06-202604.pdf",
+          "page": 4
+        }
+      ]
+    },
     "learnPoints": [
       "Susol LV SWGR, Power Center 등"
     ],
@@ -801,6 +1206,42 @@
     "voltage": "380/220V",
     "category": "switching",
     "description": "변압기 2차 메인 등 대전류(수천 A) 저압 회로를 보호·개폐하는 주차단기.",
+    "overview": {
+      "text": "저압 배전반의 메인 차단기와 대용량 간선 차단기로 쓰이며, 수백~수천 A 회로를 개폐하고 과부하·단락·지락 사고 때 트립한다. 공기 중에서 아크를 소호하며, 전자식 트립 릴레이(OCR)로 장한시·단한시·순시·지락(LSIG) 특성을 설정해 하위 MCCB와 선택 차단 협조를 맞춘다. 선정 포인트는 프레임(AF)과 정격전류, 정격차단전류(Icu·Ics), 단시간 내전류(Icw), 고정형·인출형 여부다. LS ELECTRIC은 Susol ACB(690V, 630~6300AF, 최대 150kA), Metasol ACB(630~6300AF), 800~1600AF급 Susol Compact ACB, 북미용 Susol UL ACB를 공급하며, PV·ESS용으로 최대 1150Vac 고전압 제품도 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Susol ACB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_KO_C06061-23-202511.pdf",
+          "page": 18
+        },
+        {
+          "title": "[Susol ACB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_KO_C06061-23-202511.pdf",
+          "page": 19
+        },
+        {
+          "title": "[Metasol ACB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_ACB%5D_KO_C06091-28-202607.pdf",
+          "page": 4
+        },
+        {
+          "title": "[Metasol ACB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_ACB%5D_KO_C06091-28-202607.pdf",
+          "page": 5
+        },
+        {
+          "title": "[Susol Compact ACB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_Compact_ACB%5D_KO_C06001-04-202201.pdf",
+          "page": 5
+        },
+        {
+          "title": "[Susol ACB] up to 1150Vac 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_up_to_1150Vac_KO_C060C1-03-202501.pdf",
+          "page": 2
+        }
+      ]
+    },
     "learnPoints": [
       "정격전류 범위가 MCCB보다 큼",
       "전자식 트립 장치(OCR) 내장"
@@ -818,6 +1259,32 @@
     "voltage": "380/220V",
     "category": "switching",
     "description": "저압 간선·분기 회로를 과부하·단락으로부터 보호한다.",
+    "overview": {
+      "text": "저압 배전반과 분전반에서 간선·분기 회로를 과부하와 단락으로부터 보호하는 몰드 케이스 차단기다. 열동전자식 또는 전자식 트립 장치가 과부하에는 반한시로, 단락에는 순시로 동작하며, 전자식은 LSIG 설정과 계측·통신을 지원한다. 선정은 프레임(AF)·정격전류, 설치점 단락전류 이상의 정격차단전류(Icu), 극수, 상위 ACB와의 보호협조 순으로 본다. LS ELECTRIC은 범용 Metasol MCCB(30~1200AF), 고차단 Susol MCCB(160~1600AF, 415V에서 최대 150kA), LSIG 계전·계측·통신을 넣은 Smart MCCB, 북미용 Susol UL MCCB, 분전반용 차단기를 공급한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Metasol MCCB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_MCCB%5D_KO_C01031-35-202610.pdf",
+          "page": 22
+        },
+        {
+          "title": "[Susol MCCB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_MCCB%5D_KO_C01091-24-202509.pdf",
+          "page": 5
+        },
+        {
+          "title": "[Susol MCCB] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_MCCB%5D_KO_C01091-24-202509.pdf",
+          "page": 6
+        },
+        {
+          "title": "[Smart LV Solution] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_LV_Solution%5D_KO_C800R1-06-202604.pdf",
+          "page": 49
+        }
+      ]
+    },
     "learnPoints": [
       "가장 많이 쓰이는 저압 차단기",
       "AF(프레임)와 AT(트립 정격)를 구분"
@@ -835,6 +1302,22 @@
     "voltage": "380/220V",
     "category": "conductor",
     "description": "케이블 대신 금속 도체(부스바)를 덕트에 넣어 대전류를 공급하는 간선 시스템.",
+    "overview": {
+      "text": "변압기·저압 배전반에서 각 층 분전반이나 대형 부하까지 대전류를 보내는 간선 설비로, 절연 처리한 부스바를 금속 외함에 넣어 케이블을 대신한다. 플러그인 유닛으로 경로 중간에서 분기할 수 있어 빌딩 수직 간선, 공장·데이터센터 간선에 많이 쓰인다. 선정 포인트는 정격전류와 도체 재질(알루미늄·구리), 단시간 내전류, 전압강하, 보호등급, 내화 성능이다. LS ELECTRIC Susol Busway는 AC 1000V 이하, 알루미늄 630~6300A·구리 630~7500A, 단시간 내전류 최대 220kA/1초(구리), 옥내 IP54·옥외 IP65를 지원하며 온도 감시 시스템을 옵션으로 둔다. 이 밖에 GH-P Type Busway, Susol Mini Busway, NSPB가 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Susol Busway] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_Busway%5D_KO_C800A1-16-202608.pdf",
+          "page": 4
+        },
+        {
+          "title": "[Susol Busway] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_Busway%5D_KO_C800A1-16-202608.pdf",
+          "page": 6
+        }
+      ]
+    },
     "learnPoints": [
       "대전류·고층 건물에서 케이블보다 공간·시공에 유리"
     ],
@@ -850,6 +1333,32 @@
     "voltage": "380/220V",
     "category": "protection",
     "description": "낙뢰·개폐 서지로부터 저압 기기를 보호한다.",
+    "overview": {
+      "text": "낙뢰나 개폐 동작으로 생기는 과도 과전압을 대지로 흘려 저압 기기를 보호하는 장치로, 인입부·주배전반·분전반·기기 앞단에 단계적으로 설치한다. 평상시에는 높은 임피던스를 유지하다가 서지가 들어오면 MOV 등 소자가 도통해 전압을 제한한다. 선정 시 최대연속동작전압(Uc), 전압보호수준(Up), 공칭·최대방전전류(In·Imax), 시험 등급(Class I·II·III 또는 UL Type), 단락전류정격과 외부 분리기 조합을 확인한다. LS ELECTRIC은 IEC 계열 BK Series (Din/Box Type)와 UL 1449 인증 USP Series(Din Type)·USPE Series(Panel Type) 등을 공급하며, BK 시리즈에는 DC 1500V까지의 직류형도 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[SPD] 서지보호기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+          "page": 4
+        },
+        {
+          "title": "[SPD] 서지보호기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+          "page": 9
+        },
+        {
+          "title": "[SPD] 서지보호기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+          "page": 33
+        },
+        {
+          "title": "[SPD] 서지보호기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+          "page": 42
+        }
+      ]
+    },
     "learnPoints": [
       "Type1/2/3 등급별로 설치 위치가 다름"
     ],
@@ -866,6 +1375,37 @@
     "voltage": "380/220V",
     "category": "measurement",
     "description": "전압·전류·전력·역률·고조파 등 전력 품질을 측정하고 통신으로 전송한다.",
+    "overview": {
+      "text": "수배전반과 분전반에서 전압·전류·전력·전력량·역률·주파수를 측정하고 RS485·Ethernet 통신으로 상위 감시 시스템에 보내는 디지털 계측기다. PT·CT 2차 신호를 디지털 연산하며, 기종에 따라 고조파(THD), 수요전력, Sag·Swell 같은 전력품질 이벤트까지 기록한다. 선정 포인트는 결선 방식(1P2W~3P4W), PT·CT 입력 범위, 계측 정밀도, 통신 프로토콜(Modbus·DNP3.0 등), 제어전원이다. LS ELECTRIC은 GIMAC1000(전압·전류 ±0.3%, 전력량 Class 0.5, 31차 고조파), 전력품질 분석과 자동역률제어를 겸하는 GIMAC-V, GIMAC-IV, GIMAC-PQ, 직류용 GIMAC-DC 등을 공급한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[GIMAC1000] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIMAC1000%5D_KO_C16081-06-202412.pdf",
+          "page": 3
+        },
+        {
+          "title": "[GIMAC1000] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIMAC1000%5D_KO_C16081-06-202412.pdf",
+          "page": 5
+        },
+        {
+          "title": "[GIMAC-V] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIMAC-V%5D_KO_C160H1-01-202304.pdf",
+          "page": 2
+        },
+        {
+          "title": "[GIMAC-V] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIMAC-V%5D_KO_C160H1-01-202304.pdf",
+          "page": 3
+        },
+        {
+          "title": "[GIMAC-IV] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIMAC-IV%5D_KO_C160I1-02-202406.pdf",
+          "page": 10
+        }
+      ]
+    },
     "learnPoints": [
       "GIMAC 시리즈가 대표 제품"
     ],
@@ -882,6 +1422,11 @@
     "voltage": "380/220V",
     "category": "measurement",
     "description": "전동기 등 유도성 부하의 지상 무효전력을 보상해 역률을 개선한다.",
+    "overview": {
+      "text": "전동기·변압기 같은 유도성 부하가 소비하는 지상 무효전력을 콘덴서가 공급해 역률을 높이는 설비로, 수변전설비 모선이나 대용량 전동기 단자 측에 설치한다. 역률이 개선되면 선로 전류와 손실, 전압강하가 줄고 전기요금의 역률 조정에서도 유리하다. 부하 변동이 큰 곳에서는 역률제어기(APFC)가 목표 역률에 맞춰 여러 콘덴서 뱅크를 단계적으로 투입·개방하며, 개폐에는 콘덴서용 전자접촉기를 쓴다. 고조파가 많은 계통에서는 공진과 과열을 막기 위해 직렬 리액터를 함께 넣는다. 선정 포인트는 필요 무효전력(kvar), 정격전압, 뱅크 단수, 고조파 함유율이다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "역률이 낮으면 전기요금 할증·선로 손실 증가"
     ],
@@ -917,6 +1462,11 @@
     "voltage": "380/220V",
     "category": "protection",
     "description": "순간 전압강하(Sag) 때 전원을 보상해 설비 정지를 막는다.",
+    "overview": {
+      "text": "순간 전압강하(Sag)가 생기면 내부에 저장한 에너지로 부족한 전압을 보충해 부하 전압을 유지하는 장치로, 반도체·디스플레이·정밀 가공처럼 짧은 전압 저하에도 설비가 멈추는 공정의 제어 전원이나 설비 앞단에 둔다. 계통 사고나 대형 전동기 기동으로 생기는 Sag는 대부분 수 사이클에서 1초 이내로 짧아, UPS보다 짧은 보상 시간과 낮은 상시 손실에 맞춘 구성이 많다. 선정 시 보상 가능한 전압강하 깊이와 지속 시간, 부하 용량(kVA), 단상·3상 구분을 확인한다. LS ELECTRIC은 저압기기 제품군에 순간전압보상장치를 두고 있다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "반도체·정밀 공정에서 중요"
     ],
@@ -932,6 +1482,11 @@
     "voltage": "380/220V",
     "category": "system",
     "description": "정전·순간정전 시에도 중요 부하에 전원을 계속 공급한다.",
+    "overview": {
+      "text": "정전이나 순간정전 때 배터리 에너지를 인버터로 변환해 중요 부하에 전원을 끊김 없이 공급하는 장치로, 전산실·통신·제어 전원·비상 조명 같은 부하 앞단에 둔다. 정류기·배터리·인버터·바이패스 스위치로 구성되며, 상시 인버터 급전(온라인) 방식은 전원 품질 개선까지 겸하고 상용 급전 방식은 효율이 높다. 선정 포인트는 부하 용량(kVA·kW)과 역률, 필요한 백업 시간에 따른 배터리 용량, 단상·3상 구성, 병렬 이중화 여부다. 장시간 정전에는 비상발전기와 함께 운전해 발전기 기동 전까지의 공백을 메운다. LS ELECTRIC은 배전 제품군에 APS를 두고 있다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "배터리·인버터로 구성"
     ],
@@ -969,6 +1524,11 @@
     "voltage": "380/220V",
     "category": "switching",
     "description": "상용 전원 정전 시 비상발전기 전원으로 자동 절환한다.",
+    "overview": {
+      "text": "상용 전원과 비상발전기(또는 예비 전원) 사이에서 부하 측 전원을 자동으로 전환하는 개폐기로, 저압 배전반의 비상 부하 모선 앞에 설치한다. 상용 전원의 정전·저전압을 감지하면 발전기 기동 신호를 보내고, 발전기 전압·주파수가 확립되면 부하를 비상 전원으로 옮기며, 상용 복전 후에는 설정 시간 뒤 되돌린다. 두 전원이 동시에 연결되지 않도록 기계적·전기적 인터록을 갖춘다. 선정 포인트는 정격전류와 극수(중성선 절환 여부에 따른 3극·4극), 단락 내량, 개방 전환·폐쇄 전환 방식, 절환 시간이다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "비상 부하(소방·승강기)는 법으로 예비전원 의무"
     ],
@@ -1004,6 +1564,11 @@
     "voltage": "380/220V",
     "category": "generation",
     "description": "정전 시 비상 부하에 전원을 공급하는 디젤·가스 발전기.",
+    "overview": {
+      "text": "상용 전원이 끊겼을 때 소방·승강기·비상조명·중요 설비에 전원을 공급하는 디젤 또는 가스 엔진 발전기로, 자동절환개폐기(ATS)를 거쳐 저압 배전반의 비상 모선에 연결된다. 정전 감지 후 기동해 전압과 주파수가 확립되면 ATS가 부하를 넘기며, 기동까지의 공백은 UPS가 맡는 구성이 일반적이다. 선정 포인트는 부하 합계와 전동기 기동 용량을 반영한 정격 출력(kVA), 운전 시간에 맞춘 연료 용량, 상용·비상 용도 구분, 소음·배기·설치 공간이다. 대규모 시설은 저압 대신 고압 발전기를 쓰기도 한다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "ATS와 함께 동작"
     ],
@@ -1039,6 +1604,27 @@
     "voltage": "380/220V",
     "category": "system",
     "description": "여러 전동기의 기동·보호·제어 기기를 모아 둔 패널.",
+    "overview": {
+      "text": "공장·플랜트에서 펌프·팬·컨베이어 등 여러 전동기의 기동·보호·제어 기기를 유닛 단위로 모아 넣은 저압 배전반이다. 각 유닛에는 MCCB 또는 MMS, 전자접촉기, 전자식 모터보호계전기(EMPR), 필요 시 인버터·소프트 스타터가 들어가며, 인출형 유닛은 전체 정지 없이 교체·점검할 수 있다. 선정 포인트는 정격전압·모선 전류, 단시간 내전류, 유닛 크기와 수납 수량, 인출 방식, PLC·DCS와의 통신 방식이다. LS ELECTRIC Smart MCC는 스마트 전자식 모터보호계전기를 탑재해 모터별 전류·전력량·가동시간을 감시하며, Local HMI 1대에 최대 30개, PC manager 1대로 최대 300개의 계전기를 설정·감시할 수 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Smart MCC] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_MCC%5D_KO_C800I1-02-202504.pdf",
+          "page": 2
+        },
+        {
+          "title": "[Smart MCC] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_MCC%5D_KO_C800I1-02-202504.pdf",
+          "page": 3
+        },
+        {
+          "title": "[Smart MCC] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_MCC%5D_KO_C800I1-02-202504.pdf",
+          "page": 4
+        }
+      ]
+    },
     "learnPoints": [
       "Smart MCC는 통신으로 원격 감시·제어 가능"
     ],
@@ -1056,6 +1642,11 @@
     "voltage": "380/220V",
     "category": "system",
     "description": "층·구역별로 분기 차단기를 모아 조명·콘센트 회로를 나누는 함.",
+    "overview": {
+      "text": "층·구역 단위에서 저압 간선을 받아 조명·콘센트·소형 동력 등 최종 분기 회로로 나누는 함으로, 주차단기와 분기용 배선용차단기·누전차단기·소형 차단기(MCB)를 모아 넣는다. 주택용, 사무실·상가용, 산업용 동력 분전반으로 나뉘며, 분기 회로마다 차단기 하나가 과부하·단락을, 누전차단기가 감전·누전을 보호한다. 선정 포인트는 주간선 전류와 분기 회로 수, 설치점 단락전류에 맞춘 차단기 차단용량, 설치 방식(매입·노출), 외함 재질과 보호등급, 증설 여유다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "주택·사무실 벽에 있는 차단기 함이 분전반"
     ],
@@ -1090,6 +1681,22 @@
     "voltage": "380/220V",
     "category": "switching",
     "description": "분전반 메인 및 분기용으로 소형화한 배선용차단기.",
+    "overview": {
+      "text": "분전반의 메인 및 분기 회로에 쓰도록 크기를 줄인 배선용차단기로, 조명·콘센트·소형 동력 회로를 과부하와 단락으로부터 보호한다. 일반 MCCB와 같은 열동전자식 트립 원리를 쓰지만, 분전반 안에 나란히 배치하기 쉽게 폭과 취부 방식을 맞췄다. 선정 포인트는 정격전류와 극수, 정격전압, 설치점 단락전류 대비 정격차단전류, 같은 함에 들어갈 누전차단기와의 외형 통일이다. LS ELECTRIC 분전반용 차단기는 30·50·100AF 프레임(ABE Fb 계열 기준 AC 220/460V, 정격전류 3~100A, 정격차단전류 1.5~5kA)으로 구성되며, 나사 고정과 DIN 레일 부착을 겸용한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[분전반] 산업용 배선_누전 차단기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EC%82%B0%EC%97%85%EC%9A%A9_%EB%B0%B0%EC%84%A0_%EB%88%84%EC%A0%84_%EC%B0%A8%EB%8B%A8%EA%B8%B0_KO_C830A1-19-202607.pdf",
+          "page": 3
+        },
+        {
+          "title": "[분전반] 산업용 배선_누전 차단기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EC%82%B0%EC%97%85%EC%9A%A9_%EB%B0%B0%EC%84%A0_%EB%88%84%EC%A0%84_%EC%B0%A8%EB%8B%A8%EA%B8%B0_KO_C830A1-19-202607.pdf",
+          "page": 14
+        }
+      ]
+    },
     "learnPoints": [
       "분전반 버스바에 플러그인 방식으로 설치하기도 함"
     ],
@@ -1106,6 +1713,27 @@
     "voltage": "380/220V",
     "category": "protection",
     "description": "누설전류(감전·누전)를 검출하면 회로를 차단한다.",
+    "overview": {
+      "text": "누설전류(지락전류)를 영상변류기(ZCT)로 검출해 정해진 감도 이상이면 회로를 끊어 감전과 누전 화재를 막는 차단기로, 분전반 분기 회로와 물기가 있는 장소의 회로 등에 쓴다. 대부분 과부하·단락 보호를 겸하며, 정격감도전류는 인체 보호용 30mA(고감도)부터 설비 보호용 100mA 이상까지 나뉜다. 선정 시 정격전류와 극수, 감도전류와 동작시간, 정격차단전류, 그리고 인버터처럼 직류 성분이 섞이는 부하가 있으면 A형 등 누전동작 타입을 확인한다. LS ELECTRIC은 산업용 Metasol ELCB(A형, 30~400AF)와 분전반용 ELCB(30·50·100AF)를 공급한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Metasol ELCB] A Type 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_ELCB%5D_A_Type_KO_C02021-02-202202.pdf",
+          "page": 2
+        },
+        {
+          "title": "[Metasol ELCB] A Type 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_ELCB%5D_A_Type_KO_C02021-02-202202.pdf",
+          "page": 3
+        },
+        {
+          "title": "[분전반] 산업용 배선_누전 차단기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EC%82%B0%EC%97%85%EC%9A%A9_%EB%B0%B0%EC%84%A0_%EB%88%84%EC%A0%84_%EC%B0%A8%EB%8B%A8%EA%B8%B0_KO_C830A1-19-202607.pdf",
+          "page": 18
+        }
+      ]
+    },
     "learnPoints": [
       "감도전류 30mA는 인체 보호용",
       "시험 버튼으로 정기 점검"
@@ -1123,6 +1751,22 @@
     "voltage": "230/400V",
     "category": "switching",
     "description": "DIN 레일형 소형 차단기. RCBO는 누전 보호까지 겸한다.",
+    "overview": {
+      "text": "DIN 레일에 장착하는 소형 차단기로, 분전반의 조명·콘센트 분기 회로와 제어반 내부 보조 회로를 과부하·단락으로부터 보호한다. 순시 트립 특성은 B·C·D 곡선으로 나뉘어 부하의 돌입전류에 맞춰 고르며, RCBO는 여기에 누전 검출 기능을 더한 일체형이다. 선정 포인트는 정격전류, 극수, 트립 곡선, 정격차단용량(IEC 60898 또는 IEC 60947-2 기준), RCBO의 감도전류다. LS ELECTRIC BK63H는 1~63A, 1~4극, AC 240/415V, 정격차단용량 10kA, B·C·D 특성을 지원한다. 이 밖에 L-Series MCB, L-Series RCBO, BK63HU, 회로보호기 CP가 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[분전반] 산업용 배선_누전 차단기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EC%82%B0%EC%97%85%EC%9A%A9_%EB%B0%B0%EC%84%A0_%EB%88%84%EC%A0%84_%EC%B0%A8%EB%8B%A8%EA%B8%B0_KO_C830A1-19-202607.pdf",
+          "page": 4
+        },
+        {
+          "title": "[분전반] 산업용 배선_누전 차단기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EC%82%B0%EC%97%85%EC%9A%A9_%EB%B0%B0%EC%84%A0_%EB%88%84%EC%A0%84_%EC%B0%A8%EB%8B%A8%EA%B8%B0_KO_C830A1-19-202607.pdf",
+          "page": 6
+        }
+      ]
+    },
     "learnPoints": [
       "IEC 규격 분전반에서 주로 사용"
     ],
@@ -1139,6 +1783,11 @@
     "voltage": "220V",
     "category": "load",
     "description": "계통의 최종 소비처. 자사 사업 범위 밖.",
+    "overview": {
+      "text": "분전반 분기 회로 끝에 연결되는 조명기구·콘센트·소형 전기기기로, 계통의 최종 소비처다. 분기 회로는 주로 단상 220V로 구성되며, 회로마다 배선용차단기나 소형 차단기가 과부하·단락을, 누전차단기가 감전을 보호한다. 설계 시에는 회로당 부하 용량과 전선 굵기, 전압강하, 동시 사용률을 고려해 회로를 나누고, 욕실·옥외·주방처럼 물기가 있는 곳의 콘센트에는 고감도 누전차단기를 적용한다. LED 조명이나 전자기기는 돌입전류와 고조파를 만들 수 있어 차단기 트립 특성과 중성선 굵기 선정에 영향을 준다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "분기 회로마다 차단기가 하나씩 보호"
     ],
@@ -1152,6 +1801,11 @@
     "voltage": "380/220V",
     "category": "load",
     "description": "급속(DC)·완속(AC) 전기차 충전 설비.",
+    "overview": {
+      "text": "건물·주차장·충전소의 저압 배전반이나 분전반에서 전원을 받아 전기차 배터리를 충전하는 설비다. 완속 충전기는 교류 전원을 차량에 보내 차량 내 충전기(OBC)가 충전하며 국내에서는 7kW급이 일반적이고, 급속 충전기는 내부 전력변환장치가 직류로 바꿔 배터리에 직접 공급하며 수십~수백 kW급이다. 선정 포인트는 충전 출력과 커넥터 규격, 동시 충전 대수, 수전 용량과 분기 보호기기, 과금·원격관리 통신이다. LS ELECTRIC은 급속·완속 충전기와 EV 충전 솔루션을 제품군으로 두고 있다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "급속은 DC로 차량 배터리에 직접 충전"
     ],
@@ -1168,6 +1822,22 @@
     "voltage": "380V",
     "category": "protection",
     "description": "전동기 회로에서 단락·과부하 보호를 함께 수행한다.",
+    "overview": {
+      "text": "전동기 분기 회로에서 단락 보호(순시 트립)와 과부하 보호(열동 트립), 수동 개폐를 한 기기로 수행하는 모터 보호용 차단기다. 전류 조정 다이얼로 전동기 정격전류에 맞춰 과부하 설정을 하고, 전자접촉기(MC)와 조합하면 별도 열동계전기 없이 기동 회로를 구성할 수 있어 MCC·제어반 공간을 줄인다. 선정 포인트는 전동기 정격전류에 맞는 전류 조정 범위, 설치점 단락전류 대비 차단용량, 조합할 MC와의 단락 협조다. LS ELECTRIC Metasol MS 카탈로그에는 32AF·63AF 프레임 MMS가 전류 조정 범위 0.1~65A로 수록되어 있고, 같은 계열 MC와의 조합 단락용량이 함께 제시된다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Metasol MS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_MS%5D_KO_C04001-37-202609.pdf",
+          "page": 142
+        },
+        {
+          "title": "[Metasol MS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_MS%5D_KO_C04001-37-202609.pdf",
+          "page": 143
+        }
+      ]
+    },
     "learnPoints": [
       "MCCB + 열동계전기 기능을 하나로"
     ],
@@ -1184,6 +1854,37 @@
     "voltage": "380/220V",
     "category": "switching",
     "description": "코일 신호로 전동기 회로를 자주 켜고 끈다(MC). 열동계전기(TOR)와 조합하면 MS.",
+    "overview": {
+      "text": "전동기 회로를 코일 신호로 자주 투입·개방하는 전자접촉기(MC)와 과부하 때 회로를 여는 열동형 과부하계전기(TOR)를 조합한 기기로, MCC와 제어반의 전동기 기동 회로에 쓴다. MC는 사용 범주(AC-3 등)별 정격전류와 개폐 수명을 기준으로, 열동계전기는 전동기 정격전류에 맞는 설정 범위를 기준으로 고르며, 상위 MCCB·MMS와의 단락 협조도 확인한다. 조작 코일 전압(AC·DC)과 보조접점 구성도 선정 항목이다. LS ELECTRIC은 18~2650AF(최대 1000V)의 Metasol MS, 9~95A급 Susol MS, 6·9A 소형 Mini MS를 공급하며, 가역형·4극·직류 조작형 등 파생 모델이 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Metasol MS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_MS%5D_KO_C04001-37-202609.pdf",
+          "page": 3
+        },
+        {
+          "title": "[Metasol MS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_MS%5D_KO_C04001-37-202609.pdf",
+          "page": 6
+        },
+        {
+          "title": "[Metasol MS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_MS%5D_KO_C04001-37-202609.pdf",
+          "page": 7
+        },
+        {
+          "title": "[Susol MC] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_MC%5D_KO_C04071-07-202005.pdf",
+          "page": 14
+        },
+        {
+          "title": "[Mini MS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMini_MS%5D_KO_C04061-03-202609.pdf",
+          "page": 10
+        }
+      ]
+    },
     "learnPoints": [
       "Metasol MS가 대표 제품",
       "개폐 수명이 차단기보다 훨씬 김"
@@ -1201,6 +1902,32 @@
     "voltage": "380V",
     "category": "protection",
     "description": "전류를 정밀 측정해 과부하·결상·구속 등 전동기 이상을 보호한다.",
+    "overview": {
+      "text": "전동기 전류를 정밀하게 측정해 과부하·구속·결상·불평형·역상·지락 등 이상을 판별하고 전자접촉기를 개방시키는 전자식 보호계전기로, 열동계전기를 대신해 MCC와 현장 제어반에 쓴다. 바이메탈 방식보다 설정 정밀도가 높고 보호 요소를 고를 수 있으며, 고급형은 전압·전력량 계측과 통신, 고장 이력 저장을 지원한다. 선정 포인트는 전류 범위, 필요한 보호 요소, 기동 방식(직입·Y-Δ·인버터 등), 통신·아날로그 출력 여부다. LS ELECTRIC은 기본 보호용 GMP(0.3~80A 계열), 통신·지락 보호를 갖춘 DMPi, 전압·전력량 계측과 Modbus TCP를 지원하는 MMP, 그리고 IMP, IMC-III를 공급한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[GMP] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGMP%5D_KO_C15041-07-202409.pdf",
+          "page": 4
+        },
+        {
+          "title": "[DMPi] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BDMPi%5D_KO_C15021-06-202504.pdf",
+          "page": 9
+        },
+        {
+          "title": "[MMP] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMMP%5D_KO_C15011-11-202409.pdf",
+          "page": 3
+        },
+        {
+          "title": "[MMP] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMMP%5D_KO_C15011-11-202409.pdf",
+          "page": 17
+        }
+      ]
+    },
     "learnPoints": [
       "열동계전기보다 보호 기능이 다양하고 정확"
     ],
@@ -1217,6 +1944,37 @@
     "voltage": "380V",
     "category": "control",
     "description": "전동기 기동 시 전압을 서서히 올려 기동전류와 충격을 줄인다.",
+    "overview": {
+      "text": "전동기 기동 때 사이리스터(SCR)로 인가 전압을 서서히 올려 기동전류와 기계적 충격을 줄이는 장치로, 펌프·팬·컨베이어·압축기처럼 속도 제어가 필요 없는 부하의 MCC에 쓴다. 기동이 끝나면 바이패스로 전환해 운전 중 손실과 고조파를 줄이고, 소프트 스톱으로 펌프의 수격(워터 해머)을 완화한다. 선정 포인트는 전동기 정격전류와 기동 빈도, 부하에 따른 트립 클래스, 내장 바이패스 여부, 통신이다. LS ELECTRIC은 내장 바이패스형 LVSS Soft Starter(200~480V, 17~1080A)와 Motorsol Soft Starter(2.2~600kW)를 공급한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[LV Soft Stater] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BLV_Soft_Stater%5D_KO_C040C1-01-202203.pdf",
+          "page": 2
+        },
+        {
+          "title": "[LV Soft Stater] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BLV_Soft_Stater%5D_KO_C040C1-01-202203.pdf",
+          "page": 6
+        },
+        {
+          "title": "[LV Soft Stater] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BLV_Soft_Stater%5D_KO_C040C1-01-202203.pdf",
+          "page": 7
+        },
+        {
+          "title": "[Soft Starter] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSoft_Starter%5D_KO_C01581-07-201803.pdf",
+          "page": 8
+        },
+        {
+          "title": "[Soft Starter] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSoft_Starter%5D_KO_C01581-07-201803.pdf",
+          "page": 9
+        }
+      ]
+    },
     "learnPoints": [
       "직입 기동 전류는 정격의 6~8배"
     ],
@@ -1233,6 +1991,37 @@
     "voltage": "220/380V",
     "category": "control",
     "description": "주파수를 바꿔 전동기 속도를 제어한다.",
+    "overview": {
+      "text": "전동기에 공급하는 전압과 주파수를 바꿔 속도·토크를 제어하는 전력변환장치로, 펌프·팬의 에너지 절감과 컨베이어·호이스트·공작기계의 공정 제어를 위해 MCC나 기계 제어반에 설치한다. 입력 교류를 정류해 직류로 만든 뒤 IGBT 인버터로 가변 주파수를 출력하며, V/F 제어와 센서리스 벡터 제어 등을 지원한다. 선정 포인트는 전원 전압(200V·400V급), 전동기 용량과 부하 특성, 과부하 내량, 보호등급(IP), 통신, 고조파 대책이다. LS ELECTRIC은 고성능 범용 iS7(400V급 최대 375kW), 소형 S100·G100/G100C, 팬·펌프용 H100(최대 750kW, BACnet 내장) 등을 공급한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "iS7 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16957054248320/iS7_Catalog_KR_202309.pdf",
+          "page": 13
+        },
+        {
+          "title": "iS7 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16957054248320/iS7_Catalog_KR_202309.pdf",
+          "page": 14
+        },
+        {
+          "title": "S100 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17070989202140/S100_Catalog_KR_202402.pdf",
+          "page": 12
+        },
+        {
+          "title": "H100 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17936100709070/H100_KO_C55041-31-202611.pdf",
+          "page": 5
+        },
+        {
+          "title": "H100 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17936100709070/H100_KO_C55041-31-202611.pdf",
+          "page": 13
+        }
+      ]
+    },
     "learnPoints": [
       "팬·펌프 에너지 절감의 핵심",
       "iS7, S100, G100 등"
@@ -1250,6 +2039,11 @@
     "voltage": "380V",
     "category": "load",
     "description": "전기에너지를 회전력으로 바꾸는 대표 부하.",
+    "overview": {
+      "text": "전기 에너지를 회전력이나 직선 운동으로 바꾸는 부하로, 산업 현장에서는 3상 유도전동기가 펌프·팬·압축기·컨베이어 구동의 대부분을 맡는다. 유도전동기는 MCC를 통해 직입·Y-Δ·소프트 스타터·인버터 방식으로 기동되며, 정밀 위치 제어가 필요한 설비에는 서보 모터, 리니어 모터, DD(다이렉트 드라이브) 모터를 서보 드라이브와 함께 쓴다. 선정 포인트는 출력(kW)과 전압, 극수·회전수, 효율 등급(IE), 기동 토크와 기동전류, 보호등급과 냉각 방식이다. LS ELECTRIC은 서보 시스템용 F Series 모터, Standard DD모터, 리니어 모터(코어타입·코어리스)를 공급한다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "산업 전력 소비의 큰 비중을 차지"
     ],
@@ -1289,6 +2083,27 @@
     "voltage": "220/380V",
     "category": "control",
     "description": "위치·속도를 정밀 제어하는 구동 시스템(드라이브+모터+컨트롤러).",
+    "overview": {
+      "text": "서보 드라이브가 엔코더 피드백으로 모터의 위치·속도·토크를 폐루프 제어하는 구동 시스템으로, 반도체·디스플레이 장비, 포장기, 로봇, 공작기계처럼 정밀 위치 결정이 필요한 기계에 쓴다. 상위 모션 컨트롤러나 PLC가 EtherCAT 등 네트워크로 지령을 보내고, 드라이브는 전류·속도·위치 제어 루프를 수십~수백 μs 주기로 처리한다. 선정 포인트는 모터 용량과 관성비, 정격·최대 토크, 엔코더 종류, 통신 방식이다. LS ELECTRIC iX7NH는 200V급 100W~3.5kW, EtherCAT 최소 통신 주기 0.125ms를 지원하며, L7NH·L7P·L7C 등 드라이브와 XMC·MXP 모션 컨트롤러를 함께 공급한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "iX7NH 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/16389370233610/iX7NH%20Series_KR_202104.pdf",
+          "page": 2
+        },
+        {
+          "title": "iX7NH 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/16389370233610/iX7NH%20Series_KR_202104.pdf",
+          "page": 3
+        },
+        {
+          "title": "iX7NH 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/16389370233610/iX7NH%20Series_KR_202104.pdf",
+          "page": 4
+        }
+      ]
+    },
     "learnPoints": [
       "로봇·반도체 장비 등 정밀 위치 제어"
     ],
@@ -1304,6 +2119,27 @@
     "voltage": "DC24V 제어",
     "category": "control",
     "description": "입력 신호에 따라 프로그램대로 기계를 제어하는 산업용 컨트롤러.",
+    "overview": {
+      "text": "센서·스위치 입력을 받아 사용자 프로그램에 따라 전자접촉기·밸브·인버터 등으로 출력을 내는 산업용 컨트롤러로, 기계 제어반과 MCC 상위에서 설비 시퀀스와 공정 제어를 맡는다. CPU, 전원, 디지털·아날로그 I/O, 통신·위치결정·고속카운터 등 특수 모듈로 구성되며, 상위 HMI·SCADA와 하위 드라이브·리모트 I/O를 네트워크로 연결한다. 선정 포인트는 I/O 점수, 연산 속도와 메모리, 특수 기능, 지원 네트워크, 이중화 여부다. LS ELECTRIC은 모듈형 XGT 시리즈(XGK-CPU·XGI-CPU·이중화용 XGR-CPU)와 일체형 XGB 시리즈(U·H·SU·E 타입, 슬림 타입)를 공급하며, XGB U타입은 고속카운터 8채널·위치결정 4축·PID를 내장한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "XGB 시리즈 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+          "page": 3
+        },
+        {
+          "title": "XGB 시리즈 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+          "page": 5
+        },
+        {
+          "title": "XGB 시리즈 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17936656563220/XGB%20Series_KO_202611.pdf",
+          "page": 7
+        }
+      ]
+    },
     "learnPoints": [
       "XGT, XGB 시리즈",
       "XG5000으로 프로그래밍"
@@ -1321,6 +2157,32 @@
     "voltage": "제어",
     "category": "control",
     "description": "작업자가 설비 상태를 보고 조작하는 터치 화면.",
+    "overview": {
+      "text": "PLC·인버터·서보 등 제어기와 통신해 설비 상태를 화면으로 보여주고 작업자가 운전 명령과 설정값을 입력하는 터치 패널로, 기계 제어반 문이나 현장 조작반에 설치한다. 작화 소프트웨어로 화면을 구성하며 알람 이력, 레시피, 데이터 로깅, 원격 접속 기능을 쓴다. 선정 포인트는 화면 크기와 해상도, 지원 통신(Ethernet·RS-232C·RS-422/485), 사용 온도, 보안 기능이다. LS ELECTRIC은 XGT Panel 계열로 iXP3 시리즈(8.4~15인치, IACS UR E27 보안 규격 준수), iXP2 시리즈, 보급형 eXP2 시리즈, 리눅스 기반 LXP 시리즈, iXP2H 핸디HMI와 작화 소프트웨어 XP-Builder를 공급한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "XGT Panel 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866947030/XGT%20Panel_KR_202607.pdf",
+          "page": 2
+        },
+        {
+          "title": "XGT Panel 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866947030/XGT%20Panel_KR_202607.pdf",
+          "page": 3
+        },
+        {
+          "title": "XGT Panel 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866947030/XGT%20Panel_KR_202607.pdf",
+          "page": 5
+        },
+        {
+          "title": "XGT Panel 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866947030/XGT%20Panel_KR_202607.pdf",
+          "page": 6
+        }
+      ]
+    },
     "learnPoints": [
       "XGT Panel 시리즈"
     ],
@@ -1337,6 +2199,11 @@
     "voltage": "380V",
     "category": "measurement",
     "description": "MCC 등에서 계측·보호·제어를 하나로 통합한 장치.",
+    "overview": {
+      "text": "MCC 유닛이나 저압 피더에서 전류·전압 계측, 전동기·회로 보호, 기동·정지 제어를 하나로 통합한 디지털 계측제어기다. 기존에 계기, 보호계전기, 보조 릴레이, 트랜스듀서로 나눠 구성하던 기능을 한 장치에 담아 배선과 유닛 크기를 줄이고, 통신으로 PLC·DCS에서 원격 감시·제어를 한다. 선정 포인트는 정격전류 범위와 CT 구성, 필요한 보호 요소, 지원 기동 방식, 디지털 입출력 점수, 통신 프로토콜이다. LS ELECTRIC은 저압기기 제품군에 디지털계측제어기(DMC)를 두고 있다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "통신으로 상위 감시 시스템과 연결"
     ],
@@ -1353,6 +2220,22 @@
     "voltage": "380/220V",
     "category": "measurement",
     "description": "분기 회로 계측기, 센서, 데이터수집장치로 현장 데이터를 모은다.",
+    "overview": {
+      "text": "배전반 안의 분기 회로와 차단기에서 전기량과 상태 데이터를 모아 상위 감시 시스템으로 보내는 기기군으로, 분기 계측기, 센서, 데이터수집장치(DAU), 디지털 입출력기, 통신장치가 포함된다. 분기마다 계측기를 두기 어려운 곳에서 소형 센싱 모듈로 전압·전류·전력을 측정하고, 차단기 개폐·트립 상태를 접점으로 읽어 배전반 전체를 원격 감시·제어할 수 있게 한다. 선정 포인트는 계측 회로 수, 설치 공간, 유·무선 통신 방식, 상위 시스템과의 프로토콜 호환이다. LS ELECTRIC은 Smart LV Solution 구성품으로 태그형 소형 센싱모듈과 무선 수집기, MCB·MCCB 상태 감시·제어용 입출력기, ACB 온도 감시 모듈, 게이트웨이를 제시한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Smart LV Solution] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_LV_Solution%5D_KO_C800R1-06-202604.pdf",
+          "page": 4
+        },
+        {
+          "title": "[Smart LV Solution] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_LV_Solution%5D_KO_C800R1-06-202604.pdf",
+          "page": 5
+        }
+      ]
+    },
     "learnPoints": [
       "스마트 배전반·에너지 관리의 기초 데이터"
     ],
@@ -1369,6 +2252,17 @@
     "voltage": "DC→AC",
     "category": "generation",
     "description": "태양전지 모듈로 직류 전력을 생산하는 신재생 발전 시스템.",
+    "overview": {
+      "text": "태양전지 모듈이 만든 직류 전력을 인버터(PCS)로 교류로 바꿔 계통이나 구내 부하에 공급하는 발전 설비다. 모듈을 직렬로 묶은 스트링을 접속반에서 모아 인버터로 보내며, 직류 측은 1000~1500V급이 많아 직류 전용 차단기·SPD·퓨즈가 필요하다. 인버터 출력은 승압 변압기와 수배전반을 거쳐 계통에 연계된다. 선정 포인트는 설비 용량(kWp)과 직류 전압, 인버터 방식(중앙형·스트링형), 연계 전압, 계통 연계 기준 충족이다. LS ELECTRIC은 PV System 제품군을 두고 있으며, Susol ACB 카탈로그에는 PV·ESS·풍력 설비에 맞춘 최대 1150Vac 제품이 수록되어 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Susol ACB] up to 1150Vac 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_up_to_1150Vac_KO_C060C1-03-202501.pdf",
+          "page": 2
+        }
+      ]
+    },
     "learnPoints": [
       "직류를 PCS(인버터)로 교류로 바꿔 계통에 연계"
     ],
@@ -1385,6 +2279,11 @@
     "voltage": "DC↔AC",
     "category": "control",
     "description": "PV·배터리의 직류와 계통의 교류를 상호 변환한다.",
+    "overview": {
+      "text": "태양광·ESS의 직류와 계통의 교류를 상호 변환하는 전력변환장치로, PV에서는 직류를 교류로 바꾸는 인버터 역할을, ESS에서는 충전 때 교류→직류, 방전 때 직류→교류의 양방향 변환을 맡는다. IGBT 등 전력반도체 스위칭으로 변환하며, 최대전력점추종(MPPT), 계통 동기, 유·무효전력 제어, 단독운전 방지 같은 연계 기능을 갖춘다. 선정 포인트는 정격 출력(kW·kVA), 직류 입력 전압 범위, 교류 연계 전압, 변환 효율, 계통 연계 기준 대응, 냉각 방식이다. LS ELECTRIC의 PV System·ESS 제품군에 해당하는 기기다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "ESS용 PCS는 충전·방전 양방향 동작"
     ],
@@ -1403,6 +2302,17 @@
     "voltage": "DC",
     "category": "system",
     "description": "배터리에 전기를 저장했다가 필요할 때 공급한다.",
+    "overview": {
+      "text": "배터리에 전력을 저장했다가 필요할 때 방전하는 설비로, 배터리, 배터리 관리 시스템(BMS), 양방향 PCS, 운영 시스템(EMS)과 직류·교류 보호 개폐기로 구성된다. 피크 저감과 요금 절감, 신재생 출력 변동 완화, 주파수 조정, 비상 전원 등 운전 목적에 따라 충·방전 스케줄과 용량 설계가 달라진다. 선정 포인트는 출력(kW)과 저장 용량(kWh), 방전 지속 시간, 배터리 종류와 수명, 직류 전압, 화재 안전 기준과 설치 장소다. LS ELECTRIC은 ESS 제품군을 두고 있으며, Susol ACB 카탈로그에는 고도 등 환경 조건이 까다로운 PV·ESS·풍력 설비용 최대 1150Vac 제품이 수록되어 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[Susol ACB] up to 1150Vac 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_up_to_1150Vac_KO_C060C1-03-202501.pdf",
+          "page": 2
+        }
+      ]
+    },
     "learnPoints": [
       "피크 저감, 신재생 출력 안정화에 활용"
     ],
@@ -1419,6 +2329,22 @@
     "voltage": "DC 1500V 이하",
     "category": "switching",
     "description": "태양광·ESS·DC 배전용 차단기·개폐기·접촉기·SPD·릴레이.",
+    "overview": {
+      "text": "태양광·ESS·직류 배전·전기차 충전 설비처럼 직류 회로가 있는 곳에서 쓰는 차단기·개폐기·접촉기·MCB·SPD·릴레이다. 직류는 교류와 달리 전류가 0을 지나는 순간이 없어 아크 소호가 어렵기 때문에 아크 소호 구조와 접점을 직류용으로 설계하고, 극을 직렬로 연결해 정격전압을 높이는 경우가 많다. 선정 포인트는 직류 정격전압, 정격전류와 차단용량, 극수와 결선, 극성 조건이다. LS ELECTRIC은 Susol DC 기중차단기·배선용차단기, DC 접촉기, DC MCB, DC SPD, DC 릴레이를 공급하며, BK 시리즈 직류형 SPD는 DC 1500V, 분전반용 DC MCB는 DC 1000V(4극)·10kA까지 수록되어 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "[SPD] 서지보호기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
+          "page": 9
+        },
+        {
+          "title": "[분전반] 산업용 배선_누전 차단기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5B%EB%B6%84%EC%A0%84%EB%B0%98%5D_%EC%82%B0%EC%97%85%EC%9A%A9_%EB%B0%B0%EC%84%A0_%EB%88%84%EC%A0%84_%EC%B0%A8%EB%8B%A8%EA%B8%B0_KO_C830A1-19-202607.pdf",
+          "page": 4
+        }
+      ]
+    },
     "learnPoints": [
       "직류는 전류가 0이 되는 순간이 없어 차단이 더 어려움"
     ],
@@ -1434,6 +2360,11 @@
     "voltage": "계통 연계/독립",
     "category": "system",
     "description": "신재생·ESS·부하를 묶어 독립 운전도 가능한 소규모 전력망.",
+    "overview": {
+      "text": "태양광·풍력·ESS·발전기와 부하를 하나의 소규모 전력망으로 묶어, 평상시에는 상용 계통과 연계 운전하고 계통 정전 때는 분리해 독립 운전할 수 있게 한 시스템이다. 운영 시스템(EMS)이 발전 예측과 부하에 따라 ESS 충·방전과 발전기 출력을 조정하고, 연계점 차단기로 계통 연결과 분리를 제어한다. 도서 지역, 산업단지, 캠퍼스처럼 전원 신뢰도나 에너지 자립이 중요한 곳에 쓰인다. 설계 포인트는 중요 부하 구분, 신재생 비율, ESS 용량, 독립 운전 때 주파수·전압 유지 능력, 보호 협조다. LS ELECTRIC은 Micro Grid를 별도 제품군으로 두고 있다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "섬·캠퍼스·산업단지에 적용"
     ],
@@ -1449,6 +2380,11 @@
     "voltage": "MV/LV",
     "category": "system",
     "description": "변전·배전 기기를 공장에서 컨테이너형으로 조립해 현장에 설치한다.",
+    "overview": {
+      "text": "변압기·고압 배전반·저압 배전반·보호 및 제어 기기를 공장에서 컨테이너형 구조물에 조립·시험한 뒤 현장에 옮겨 설치하는 변전설비다. 현장 공사를 줄여 공기를 단축하고, 공장 시험을 마친 상태로 출하해 품질 편차를 줄일 수 있어 플랜트·광산·데이터센터·신재생 발전소처럼 공기가 짧거나 현장 여건이 어려운 곳에 쓴다. 선정 포인트는 수전·배전 전압과 용량, 내장 기기 구성, 운송 가능한 크기와 중량, 냉방·환기와 방화, 설치 지역 환경이다. LS ELECTRIC은 Modular Substation 제품군으로 E-House, MGS, CSS를 두고 있다.",
+      "basis": "general",
+      "sources": []
+    },
     "learnPoints": [
       "E-House, MGS, CSS",
       "공기 단축에 유리"
@@ -1466,6 +2402,22 @@
     "voltage": "AC/DC 급전",
     "category": "system",
     "description": "전기철도에 전력을 공급하는 AC·DC 급전 설비.",
+    "overview": {
+      "text": "전기철도 차량에 전력을 공급하는 급전 설비로, 특고압을 받아 변전소에서 차량용 전압으로 바꿔 전차선이나 제3궤조로 보낸다. 고속철도·일반철도는 주로 교류 25kV 급전을, 도시철도·경전철은 정류기를 거친 직류 1500V·750V 급전을 쓴다. 차량 가속과 회생 제동으로 부하가 크게 변동하므로 변압기와 차단기는 과부하와 잦은 부하 변동에 견디는 사양이 필요하다. LS ELECTRIC은 Railway Power Supply 제품군에 AC System과 DC System을 두고 있으며, 몰드변압기 카탈로그에는 과부하와 격심한 부하 변동을 고려한 전철 급전용 변압기가 수록되어 있다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "몰드변압기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+          "page": 3
+        },
+        {
+          "title": "몰드변압기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf",
+          "page": 6
+        }
+      ]
+    },
     "learnPoints": [
       "도시철도는 주로 DC 1500V 급전"
     ],
@@ -1481,6 +2433,24 @@
     "voltage": "통신",
     "category": "monitoring",
     "description": "전력 설비를 원격으로 감시·제어하는 상위 시스템.",
+    "overview": {
+      "text": "현장의 RTU·IED가 수집한 계측·상태 정보를 통신망으로 중앙 감시실 서버에 모아 전력 설비를 원격 감시·제어하는 상위 시스템이다. 발전소 전기설비용 ECMS, 전력품질을 감시하는 PQMS 같은 응용으로 확장된다. LS ELECTRIC SCADA는 서버·FEP·DB·네트워크 이중화로 무중단 운영을 지원하고, DNP 101/104, IEC 61850, Modbus, OPC UA 등 프로토콜을 쓰며, 대용량 실시간 데이터 처리(실증 20만 포인트)를 제시한다. PQMS는 PQ 미터 파형과 CBEMA·ITIC·SEMI 표준 곡선 분석을, ECMS는 이중화 시스템과 원격 IED 설정·파형 분석을 지원한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - SCADA",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003"
+        },
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - ECMS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003001"
+        },
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - PQMS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003002"
+        }
+      ]
+    },
     "learnPoints": [
       "ECMS=전력 제어, PQMS=전력 품질 감시"
     ],
@@ -1497,6 +2467,16 @@
     "voltage": "통신",
     "category": "monitoring",
     "description": "에너지 생산·소비 데이터를 분석해 최적 운전과 비용 절감을 돕는다.",
+    "overview": {
+      "text": "대규모 전력계통의 발전·송전 설비를 실시간으로 감시하고 제어해 안정적이고 경제적으로 운영하는 급전용 시스템이다. 계통 상태를 추정하고 발전기 출력을 배분하는 경제급전, 주파수와 연계선 조류를 맞추는 자동발전제어(AGC), 설비 탈락 시 영향을 미리 계산하는 사고 분석이 핵심 기능이다. LS ELECTRIC EMS는 실시간 OS 기반 데이터 취득, 선로·발전기 분리 시 파급 효과를 분석하는 사고 분석 프로그램, 경제급전·자동발전제어, 과거 사고 시나리오 재구성 기능과 개방형 구조(ODBC·ADO)를 제시한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - EMS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA002"
+        }
+      ]
+    },
     "learnPoints": [
       "계통 운영자용 EMS와 수용가용 xEMS를 구분"
     ],
@@ -1513,6 +2493,16 @@
     "voltage": "통신",
     "category": "monitoring",
     "description": "배전선로의 개폐기·고장 정보를 모아 고장 구간을 자동 분리·복구한다.",
+    "overview": {
+      "text": "배전선로의 자동화 개폐기와 단말장치(FRTU)를 통신으로 연결해 운전 상태를 원격 감시·제어하고, 고장 시 고장 구간을 찾아 분리한 뒤 건전 구간에 전력을 다시 보내는 시스템이다. 중앙시스템, DAU, 유·무선 통신장치, FRTU, 지중·가공 개폐기로 구성된다. LS ELECTRIC DMS는 사고 지점 탐색, 고장 모드(수동/자동 FI) 자동 판단, 고장 구간 자동 분리·복구를 지원하고, SBO·CBO로 제어 신뢰성을 높이며 RF·CDMA·광통신 등 통신 방식을 지원한다. 선정 시 현장 개폐기·FRTU의 통신 방식과 프로토콜 호환을 확인한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - DMS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA004"
+        }
+      ]
+    },
     "learnPoints": [
       "배전자동화의 상위 시스템"
     ],
@@ -1529,6 +2519,20 @@
     "voltage": "통신",
     "category": "monitoring",
     "description": "빌딩(BEMS)·공장(FEMS)의 에너지를 관리한다.",
+    "overview": {
+      "text": "빌딩(BEMS)과 공장(FEMS)의 전력·열 등 에너지 사용을 계측하고 분석해 낭비를 줄이고 비용을 최적화하는 관리 시스템이다. 전력량계·계측기·설비 제어기에서 데이터를 모아 시간·공간·설비별 사용량을 시각화하고, 목표 사용량 설정과 초과 알람, 피크 제어로 운영을 개선한다. LS ELECTRIC BEMS·FEMS는 에너지 모니터링, 목표 설정·알람, 열원·피크 부하 제어, ESS 경제 운전, 신재생 설비 진단, 태양광 발전량과 에너지 사용량 예측 기능을 제시한다. FEMS는 공정·설비 가동 현황을 바탕으로 에너지 수요를 예측해 공급을 맞추는 데 초점을 둔다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - BEMS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA005001"
+        },
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - FEMS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA005002"
+        }
+      ]
+    },
     "learnPoints": [
       "일정 규모 이상 건물은 BEMS 설치 의무화 추세"
     ],
@@ -1545,6 +2549,28 @@
     "voltage": "통신",
     "category": "monitoring",
     "description": "Smart MV/LV, Smart Diagnosis, AMS로 기기 상태를 진단하고 수명을 관리한다.",
+    "overview": {
+      "text": "배전반과 변압기·GIS 같은 전력 설비의 상태를 센서와 데이터로 감시해 고장을 예방하고, 자산의 수명과 교체 시기를 관리하는 솔루션군이다. LS ELECTRIC은 기기 내장 센서로 VCB 동작 기구와 발열 부위를 감시하는 Smart MV, ACB부터 MCB까지 원격 감시·온도 감시를 하는 Smart LV, 부분방전(PD) 분석 기반의 송배전 통합 광역감시 진단 Smart Diagnosis(최대 200개 사이트 통합 감시)를 제공한다. AMS는 ISO 55000 기반 자산관리 솔루션으로 APM·WP·AIP 모듈을 통해 설비 건전 지수, 고장 가능성, 리스크를 산출하고 유지보수·투자 우선순위를 정하도록 돕는다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - Smart MV",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA001001"
+        },
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - Smart LV",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA001002"
+        },
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - Smart Diagnosis",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA001003"
+        },
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - AMS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA001004"
+        }
+      ]
+    },
     "learnPoints": [
       "고장이 나기 전에 예측 정비"
     ],
@@ -1561,6 +2587,26 @@
     "voltage": "통신",
     "category": "monitoring",
     "description": "전력량계 데이터를 원격으로 자동 수집한다.",
+    "overview": {
+      "text": "공동주택·사무실의 전기·가스·수도·온수·열량 계량기 사용량을 검침원 방문 없이 관리사무소 검침센터에서 자동으로 수집하는 시스템이다. 세대의 계량기가 통신 단말을 거쳐 RS-485 전용선 등으로 데이터를 보내고, 검침 소프트웨어가 사용량 조회·이상 세대 확인·고지 자료 작성을 처리한다. LS ELECTRIC 원격검침시스템은 소프트웨어 Amos Plus, 통신 단말기(HCUM), 회전형 Digital Electricity Meter, 설비 미터로 구성되며, 홈네트워크·멀티에어컨 시스템과 연동할 수 있다. 누수 감지를 위한 극미소량 사용량 검출과 세대별 시간대·일별 사용 추이 조회 기능도 제시한다.",
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "LS ELECTRIC 제품 카테고리 페이지 - AMRS",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA008"
+        },
+        {
+          "title": "[AMR] 전력량계&원격검침시스템 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/Electric_Meter_Reading_System_KO_C11551-04-202611.pdf",
+          "page": 4
+        },
+        {
+          "title": "[AMR] 전력량계&원격검침시스템 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/Electric_Meter_Reading_System_KO_C11551-04-202611.pdf",
+          "page": 6
+        }
+      ]
+    },
     "learnPoints": [
       "검침 인력과 오류를 줄임"
     ],

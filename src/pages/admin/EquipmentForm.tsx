@@ -39,6 +39,8 @@ interface FormState {
   category: EquipmentCategory;
   coverage: Coverage;
   description: string;
+  /** 상세 설명 — 폼에서 편집하지 않고 저장 시 그대로 보존 (데이터 파일에서 관리) */
+  overview: EquipmentType['overview'];
   learnPoints: string;
   lseCategoryCodes: string[];
   productIds: string[];
@@ -123,6 +125,7 @@ function initial(editing: EquipmentType | undefined, draft: Draft): FormState {
       category: 'switching',
       coverage: 'owned',
       description: '',
+      overview: undefined,
       learnPoints: '',
       lseCategoryCodes: [],
       productIds: [],
@@ -141,6 +144,7 @@ function initial(editing: EquipmentType | undefined, draft: Draft): FormState {
     category: editing.category,
     coverage: editing.coverage,
     description: editing.description,
+    overview: editing.overview,
     learnPoints: editing.learnPoints.join('\n'),
     lseCategoryCodes: [...editing.lseCategoryCodes],
     productIds: [...(editing.productIds ?? [])],
@@ -172,6 +176,7 @@ function toEquipment(f: FormState): EquipmentType {
   if (f.gapNote.trim()) eq.gapNote = f.gapNote.trim();
   if (f.coverage === 'affiliate' && f.affiliateName.trim()) eq.affiliateName = f.affiliateName.trim();
   if (f.gap) eq.gapAssessment = formToGap(f.gap);
+  if (f.overview) eq.overview = f.overview;
   return eq;
 }
 

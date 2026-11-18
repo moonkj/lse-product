@@ -121,6 +121,13 @@
   font-size: var(--fs-md);
 }
 
+/* 펼친 패널의 상세 설명 + 근거 줄 */
+.dp-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
 .dp-affiliate {
   margin: 0;
 }

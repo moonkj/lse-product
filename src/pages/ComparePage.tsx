@@ -8,6 +8,7 @@ import ExternalLink from '../components/common/ExternalLink';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import { CATEGORY_LABELS, COVERAGE_LABELS, confidenceLabel, gapConfidence, pageTitle } from '../lib/labels';
 import { layerTitle } from '../lib/diagram/model';
+import { overviewText } from '../lib/overview';
 import { equipmentForProduct, productsForEquipment } from '../lib/pages/catalog';
 import {
   MAIN_DOC_TYPES,
@@ -97,6 +98,35 @@ function FoldList({ items }: { items: { key: string; node: ReactNode }[] }) {
       {items.length > FOLD_LIMIT && (
         <button type="button" className="cmp-more" aria-expanded={open} data-testid="compare-spec-more" onClick={() => setOpen((v) => !v)}>
           {open ? '접기' : `더 보기 (${items.length - FOLD_LIMIT}개)`}
+        </button>
+      )}
+    </>
+  );
+}
+
+/** 긴 설명 4줄 clamp — 실제로 넘칠 때만 "더 보기" 토글 */
+function ClampText({ text }: { text: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [open, setOpen] = useState(false);
+  const [overflow, setOverflow] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || open) return;
+    const check = () => setOverflow(el.scrollHeight > el.clientHeight + 1);
+    check();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [text, open]);
+  return (
+    <>
+      <p ref={ref} className={`cmp-text${open ? '' : ' cmp-text--clamp'}`} data-testid="compare-desc-text">
+        {text}
+      </p>
+      {(overflow || open) && (
+        <button type="button" className="cmp-more" aria-expanded={open} data-testid="compare-desc-more" onClick={() => setOpen((v) => !v)}>
+          {open ? '접기' : '더 보기'}
         </button>
       )}
     </>
@@ -241,7 +271,11 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
     {
       key: 'description',
       label: '설명',
-      cells: list.map((eq) => ({ text: eq.description, node: <p className="cmp-text">{eq.description}</p> })),
+      // 상세 설명(overview) — 열이 길어지지 않게 4줄 clamp + 더 보기. 차이 비교 키는 본문 전체
+      cells: list.map((eq) => {
+        const t = overviewText(eq);
+        return { text: t, node: <ClampText text={t} /> };
+      }),
     },
     {
       key: 'upstream',

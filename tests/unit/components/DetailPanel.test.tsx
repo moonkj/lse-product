@@ -123,3 +123,34 @@ describe('UX 라운드 U — DetailPanel', () => {
     expect(screen.getByText(/^자사 제품 · \d+개$/)).toBeInTheDocument();
   });
 });
+
+// ── 상세 설명(overview) — 펼친 패널은 overview 문단 + 근거 줄 ──
+const catalogPaged = model.nodes.find((n) => n.eq.overview?.basis === 'catalog' && n.eq.overview.sources.some((s) => s.page));
+const generalNode = model.nodes.find((n) => n.eq.overview?.basis === 'general');
+
+describe('상세 설명 overview — DetailPanel', () => {
+  it.skipIf(!catalogPaged)('펼친 패널 설명 자리 = overview 본문(description 아님), 근거 쪽 링크는 url#page=N 새 탭', () => {
+    const n = catalogPaged!;
+    renderAt(n.id);
+    const desc = screen.getByTestId('detail-desc');
+    expect(desc).toHaveTextContent(n.eq.overview!.text);
+    expect(desc).toHaveAttribute('data-overview', 'true');
+    const src = screen.getByTestId('overview-sources');
+    expect(src).toHaveAttribute('data-basis', 'catalog');
+    expect(src).toHaveTextContent(/^근거:/);
+    const paged = n.eq.overview!.sources.find((s) => s.page)!;
+    const link = within(src)
+      .getAllByRole('link')
+      .find((a) => a.getAttribute('href') === `${paged.url}#page=${paged.page}`);
+    expect(link).toBeDefined();
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link!.getAttribute('rel')).toMatch(/noopener/);
+  });
+
+  it.skipIf(!generalNode)('general 근거 → "일반 기술 설명", 링크 없음', () => {
+    renderAt(generalNode!.id);
+    const src = screen.getByTestId('overview-sources');
+    expect(src).toHaveTextContent('일반 기술 설명');
+    expect(within(src).queryAllByRole('link')).toHaveLength(0);
+  });
+});

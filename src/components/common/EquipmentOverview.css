@@ -1,0 +1,17 @@
+/* 계통에서 하는 일 — 상세 설명 문단 (3~5문장이라 줄간격을 넉넉하게) */
+.ov-text {
+  margin: 0;
+  line-height: 1.7;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ov-src {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-normal);
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+.ov-src__link {
+  color: var(--color-link);
+}

@@ -5,6 +5,7 @@ import { docsByProductId, useData } from '../data/load';
 import CoverageBadge from '../components/common/CoverageBadge';
 import DocsList from '../components/common/DocsList';
 import EmptyProducts from '../components/common/EmptyProducts';
+import EquipmentOverview from '../components/common/EquipmentOverview';
 import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import { CATEGORY_LABELS, isGapCoverage, pageTitle } from '../lib/labels';
@@ -70,7 +71,7 @@ export default function EquipmentPage() {
 
           <div className="pg-role">
             <span className="pg-role__label">계통에서 하는 일</span>
-            <span>{eq.description}</span>
+            <EquipmentOverview eq={eq} testId="equipment-role-text" />
           </div>
 
           {eq.affiliateName && (

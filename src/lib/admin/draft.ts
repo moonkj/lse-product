@@ -35,10 +35,12 @@ export function canonicalEquipment(e: EquipmentType): EquipmentType {
     voltage: e.voltage,
     category: e.category,
     description: e.description,
-    learnPoints: [...e.learnPoints],
-    coverage: e.coverage,
-    lseCategoryCodes: [...e.lseCategoryCodes],
   };
+  // overview(상세 설명)는 description 바로 뒤 — 원본 파일 키 순서 유지 (관리자 저장 시 보존)
+  if (e.overview) out.overview = { text: e.overview.text, basis: e.overview.basis, sources: e.overview.sources.map((s) => ({ ...s })) };
+  out.learnPoints = [...e.learnPoints];
+  out.coverage = e.coverage;
+  out.lseCategoryCodes = [...e.lseCategoryCodes];
   if (e.abbr) out.abbr = e.abbr;
   if (e.productIds && e.productIds.length > 0) out.productIds = [...e.productIds];
   if (e.gapNote) out.gapNote = e.gapNote;
