@@ -1,12 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useData } from '../../data/load';
-import { COMPARE_MAX, compareHref, useCompareStore, type CompareKind } from '../../store/useCompareStore';
+import { peekSpecs, useData } from '../../data/load';
+import { COMPARE_MAX, compareHref, compareIdInData, splitCompareId, useCompareStore, type CompareKind } from '../../store/useCompareStore';
 import './Compare.css';
 
 const KIND_LABEL: Record<CompareKind, string> = { equipment: '기기', product: '제품' };
 
-/** 담긴 id 중 데이터에 있는 것만 (데이터가 바뀌어 사라진 id 는 조용히 제외) */
+/**
+ * 담긴 id 중 데이터에 있는 것만 (데이터가 바뀌어 사라진 id 는 조용히 제외).
+ * "제품:옵션" 항목 이름은 "제품명 · 옵션 label" — 사양을 아직 안 불러왔으면 옵션 id 로 (옵션 검증은 비교 화면에서)
+ */
 export function useCompareItems(kind: CompareKind): { id: string; name: string }[] {
   const data = useData();
   const list = useCompareStore((s) => s[kind]);
@@ -15,8 +18,12 @@ export function useCompareItems(kind: CompareKind): { id: string; name: string }
       const eq = data.equipmentTypeById.get(id);
       return eq ? [{ id, name: eq.abbr ? `${eq.name} (${eq.abbr})` : eq.name }] : [];
     }
-    const p = data.productById.get(id);
-    return p ? [{ id, name: p.name }] : [];
+    if (!compareIdInData('product', id, data)) return [];
+    const { baseId, variantId } = splitCompareId(id);
+    const p = data.productById.get(baseId)!;
+    if (!variantId) return [{ id, name: p.name }];
+    const label = peekSpecs()?.get(baseId)?.variants?.find((v) => v.id === variantId)?.label ?? variantId;
+    return [{ id, name: `${p.name} · ${label}` }];
   });
 }
 

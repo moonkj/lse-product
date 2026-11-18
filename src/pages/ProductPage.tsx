@@ -5,6 +5,7 @@ import { docsByProductId, useData } from '../data/load';
 import ExternalLink from '../components/common/ExternalLink';
 import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
+import ProductSpecs from '../components/pages/ProductSpecs';
 import {
   DOC_SOURCE_LABELS,
   diagramHref,
@@ -124,6 +125,8 @@ export default function ProductPage() {
           </div>
         </div>
       </section>
+
+      <ProductSpecs product={product} />
 
       <div className="pg-split">
         <section className="pg-card pg-split__main" aria-labelledby="docs-h">

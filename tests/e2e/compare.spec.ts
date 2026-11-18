@@ -25,8 +25,27 @@ interface DNode {
   equipmentTypeId?: string;
   ref?: boolean;
 }
+interface SpecItemJ {
+  key: string;
+  value: string;
+  unit?: string;
+  page?: number;
+}
+interface SpecVariantJ {
+  id: string;
+  label: string;
+  items: SpecItemJ[];
+  page?: number;
+}
+interface ProductSpecsJ {
+  items: SpecItemJ[];
+  variants?: SpecVariantJ[];
+  variantAxis?: string;
+  source: { url: string; page?: number };
+  reviewed: boolean;
+}
 interface Specs {
-  products: Record<string, { items: { key: string; page?: number }[]; source: { url: string; page?: number }; reviewed: boolean }>;
+  products: Record<string, ProductSpecsJ>;
 }
 
 const load = <T>(f: string): T => JSON.parse(readFileSync(fileURLToPath(new URL(`../../src/data/${f}`, import.meta.url)), 'utf8')) as T;
@@ -65,8 +84,17 @@ const STANDARD_ORDER = [
   'insulation', 'motorPower', 'protection', 'communication', 'mounting', 'standards',
 ];
 /** 기대 사양 행 = 세 제품 key 합집합 (표준 순서 → 비표준 처음 나온 순) */
+/** v1.1: 공통 items + 모든 옵션 items 의 key ("시리즈 전체" 열은 옵션 key 도 행으로) */
+const allKeysOf = (id: string) => {
+  const sp = specs.products[id];
+  return sp ? [...sp.items, ...(sp.variants ?? []).flatMap((v) => v.items)].map((i) => i.key) : [];
+};
+const orderKeys = (keys: string[]) => {
+  const all = [...new Set(keys)];
+  return [...STANDARD_ORDER.filter((k) => all.includes(k)), ...all.filter((k) => !STANDARD_ORDER.includes(k))];
+};
 const expectedSpecKeys = (() => {
-  const all = [...new Set(PRODUCT_IDS.flatMap((id) => specs.products[id]?.items.map((i) => i.key) ?? []))];
+  const all = [...new Set(PRODUCT_IDS.flatMap(allKeysOf))];
   const std = STANDARD_ORDER.filter((k) => all.includes(k));
   return [...std, ...all.filter((k) => !STANDARD_ORDER.includes(k))];
 })();
@@ -309,5 +337,134 @@ test.describe('E2E-7 비교 기능', () => {
     await gotoHome(page, '?mode=gap');
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
     await expect(tid(page, 'gap-candidate-note')).toHaveCount(hasCandidate ? 1 : 0);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// v1.1 사양 옵션 (variants)
+// ─────────────────────────────────────────────────────────────
+/** 옵션 선택 열의 key → 표기 문자열 (공통 + 옵션, 같은 key 는 옵션 우선) */
+function variantColumn(pid: string, vid: string): Map<string, string> {
+  const sp = specs.products[pid];
+  const v = sp.variants!.find((x) => x.id === vid)!;
+  const m = new Map<string, string>();
+  for (const i of sp.items) if (!v.items.some((x) => x.key === i.key)) m.set(i.key, `${i.value}|${i.unit ?? ''}`);
+  for (const i of v.items) m.set(i.key, `${i.value}|${i.unit ?? ''}`);
+  return m;
+}
+const OPT_PID = 'P01900';
+const OPT_A = 'ts250';
+const OPT_B = 'ts800';
+const optReady = !!specs.products[OPT_PID]?.variants?.some((v) => v.id === OPT_A) && !!specs.products[OPT_PID]?.variants?.some((v) => v.id === OPT_B);
+const DETAIL_PID = 'P00206';
+const detailSpecs = specs.products[DETAIL_PID];
+/** 시리즈 전체 열에서 값이 6개(FOLD_LIMIT) 넘는 key 가 있는 제품·key (더 보기 접기) */
+const FOLD_LIMIT = 6;
+const foldTarget = (() => {
+  for (const [pid, sp] of Object.entries(specs.products)) {
+    if (!productIds.has(pid) || !sp.variants?.length) continue;
+    for (const key of orderKeys(allKeysOf(pid))) {
+      const n = allKeysOf(pid).filter((k) => k === key).length;
+      if (n > FOLD_LIMIT) return { pid, key, n };
+    }
+  }
+  return undefined;
+})();
+const otherProduct = [...productIds].find((id) => id !== foldTarget?.pid && specs.products[id]);
+
+test.describe('E2E-8 사양 옵션 (v1.1)', () => {
+  test('제품 상세: 정격 사양 ready, 옵션 열 = 데이터 옵션 수, 셀 페이지 링크 #page=, 옵션 담기 → 비교 바 "제품명 · 옵션"', async ({ page }) => {
+    test.skip(!detailSpecs?.variants?.length || !productIds.has(DETAIL_PID), '옵션 데이터 없음');
+    const vs = detailSpecs.variants!;
+    await page.goto(`./#/product/${DETAIL_PID}`);
+    await expect(tid(page, 'product-specs')).toHaveAttribute('data-state', 'ready');
+    await expect(tid(page, 'product-specs').getByTestId(/^product-spec-variant-/)).toHaveCount(vs.length);
+    for (const v of vs) await expect(tid(page, `product-spec-variant-${v.id}`)).toContainText(v.label);
+    // 셀 값 링크 = source.url#page=(item.page ?? variant.page)
+    const firstWithPage = vs.flatMap((v) => v.items.map((i) => i.page ?? v.page)).find((x) => !!x);
+    const cellLinks = tid(page, 'product-specs-variants').locator('td a');
+    expect(await cellLinks.count()).toBeGreaterThan(0);
+    await expect(cellLinks.first()).toHaveAttribute('href', `${detailSpecs.source.url}#page=${firstWithPage}`);
+    const hrefs = await cellLinks.evaluateAll((els) => els.map((e) => e.getAttribute('href') ?? ''));
+    expect(hrefs.every((h) => h.startsWith(`${detailSpecs.source.url}#page=`))).toBe(true);
+    if (!detailSpecs.reviewed) await expect(tid(page, 'product-specs-unreviewed')).toBeVisible();
+
+    const v0 = vs[0];
+    const toggle = tid(page, `compare-toggle-${DETAIL_PID}:${v0.id}`);
+    await expect(toggle).toContainText('이 옵션 비교에 담기');
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    const productName = await page.getByRole('heading', { level: 1 }).first().innerText();
+    await expect(tid(page, `compare-tray-item-${DETAIL_PID}:${v0.id}`)).toContainText(`${productName.trim()} · ${v0.label}`);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('lse-compare-v1') ?? 'null'));
+    expect(stored.product).toEqual([`${DETAIL_PID}:${v0.id}`]);
+  });
+
+  test('제품 상세: 사양 청크 실패 → 정격 사양 섹션에 안내 (data-state=error)', async ({ page }) => {
+    test.skip(!productIds.has(DETAIL_PID), '제품 없음');
+    await page.route(/\/assets\/specs-[^/]*\.js(\?.*)?$/, (r) => r.abort());
+    await page.goto(`./#/product/${DETAIL_PID}`);
+    await expect(tid(page, 'product-page')).toBeVisible();
+    await expect(tid(page, 'product-specs')).toHaveAttribute('data-state', 'error');
+    await expect(tid(page, 'product-specs')).toContainText('사양 데이터를 불러오지 못했습니다');
+  });
+
+  test('같은 제품 옵션 2개 비교: 열 2, 차이만 보기 → 값이 다른 사양 행 + 출처 행만 (데이터 계산)', async ({ page }) => {
+    test.skip(!optReady, '옵션 데이터 없음');
+    await page.goto(`./#/compare?type=product&ids=${OPT_PID}:${OPT_A},${OPT_PID}:${OPT_B}`);
+    await expect(tid(page, 'compare-table').getByTestId(/^compare-col-/)).toHaveCount(2);
+    await expect(tid(page, `compare-col-${OPT_PID}:${OPT_A}`)).toBeVisible();
+    const a = variantColumn(OPT_PID, OPT_A);
+    const b = variantColumn(OPT_PID, OPT_B);
+    const keys = orderKeys([...a.keys(), ...b.keys()]);
+    const differing = keys.filter((k) => a.get(k) !== b.get(k));
+    expect(differing).toEqual(['ratedCurrent', 'breakingCapacity', 'frame']); // 리더 기대(데이터 확인용)
+    await tid(page, 'compare-diff-only').click();
+    await expect(tid(page, 'compare-section-basic')).toHaveCount(0); // 같은 제품 → 기본 정보 모두 같음
+    const shown = await tid(page, 'compare-section-specs')
+      .getByTestId(/^compare-row-/)
+      .evaluateAll((els) => els.map((e) => e.getAttribute('data-testid')!.replace('compare-row-', '')));
+    expect(shown).toEqual([...differing.map((k) => `spec-${k}`), 'spec-source']);
+  });
+
+  test('옵션 select: 바꾸면 URL 갱신, 다른 열이 쓰는 조합은 비활성', async ({ page }) => {
+    test.skip(!optReady, '옵션 데이터 없음');
+    const other = specs.products[OPT_PID].variants!.find((v) => v.id !== OPT_A && v.id !== OPT_B)!;
+    await page.goto(`./#/compare?type=product&ids=${OPT_PID}:${OPT_A},${OPT_PID}:${OPT_B}`);
+    const sel = tid(page, `compare-variant-select-${OPT_PID}:${OPT_A}`);
+    await expect(sel).toHaveValue(OPT_A);
+    await expect(sel.locator(`option[value="${OPT_B}"]`)).toBeDisabled();
+    await expect(sel.locator(`option[value="${other.id}"]`)).toBeEnabled();
+    await expect(sel.locator('option[value=""]')).toBeEnabled();
+    await sel.selectOption(other.id);
+    await expect(page).toHaveURL(new RegExp(`ids=${OPT_PID}:${other.id},${OPT_PID}:${OPT_B}$`));
+    await expect(tid(page, `compare-col-${OPT_PID}:${other.id}`)).toBeVisible();
+    // 시리즈 전체로
+    await tid(page, `compare-variant-select-${OPT_PID}:${OPT_B}`).selectOption('');
+    await expect(page).toHaveURL(new RegExp(`ids=${OPT_PID}:${other.id},${OPT_PID}$`));
+  });
+
+  test('사양에 없는 옵션 id → 시리즈 전체 열 + 안내', async ({ page }) => {
+    test.skip(!optReady || !productCompareReady, '데이터 없음');
+    await page.goto(`./#/compare?type=product&ids=${OPT_PID}:no-such-opt,${PRODUCT_IDS[0]}`);
+    await expect(tid(page, 'compare-notice')).toContainText('no-such-opt');
+    await expect(tid(page, `compare-col-${OPT_PID}`)).toBeVisible();
+    await expect(tid(page, `compare-variant-select-${OPT_PID}`)).toHaveValue('');
+  });
+
+  test('시리즈 전체 열: 옵션 값이 6개 넘는 칸은 "더 보기"로 접고 펼침', async ({ page }) => {
+    test.skip(!foldTarget || !otherProduct, '접을 데이터 없음');
+    const { pid, key, n } = foldTarget!;
+    await page.goto(`./#/compare?type=product&ids=${pid},${otherProduct}`);
+    const cell = tid(page, `compare-row-spec-${key}`).getByRole('cell').first();
+    const more = cell.getByTestId('compare-spec-more');
+    await expect(more).toHaveAttribute('aria-expanded', 'false');
+    await expect(cell.getByRole('listitem')).toHaveCount(FOLD_LIMIT);
+    await expect(more).toContainText(`${n - FOLD_LIMIT}`);
+    await more.click();
+    await expect(more).toHaveAttribute('aria-expanded', 'true');
+    await expect(cell.getByRole('listitem')).toHaveCount(n);
+    await more.click();
+    await expect(cell.getByRole('listitem')).toHaveCount(FOLD_LIMIT);
   });
 });

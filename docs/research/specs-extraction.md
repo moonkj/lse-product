@@ -8,105 +8,168 @@
 - 텍스트 추출: PyMuPDF(별도 venv). Susol MC는 이미지형 PDF라 페이지 이미지를 사람 눈으로 판독.
 - 2026-11-18 T2 PDF 대조(docs/reviews/compare-debug-report.md M7·데이터 대조표) 결과 반영: 출처 문서 35/35·페이지 범위 229/229 정상, 표본 대조 일치 6건, 인용 페이지 불일치 9건 정정, Susol MC(P01261) 7항목은 텍스트로 확인 불가.
 - 범위 값의 최소·최대가 두 페이지 표에 걸친 경우 item.page는 표가 시작되는 페이지, 해당 제품 note에 "항목: p.N~M 표에 걸침"으로 기록.
+- **2026-11-18 옵션 구조 재구성**: 카탈로그 정격표가 프레임·전압 등급·모델·용량 단계 등 옵션별로 값을 나눈 제품은 `variants`(옵션별 사양)로 분리. 옵션과 관계없이 같은 값은 `items`(공통). 범위로 뭉쳐 두었던 값(예: 630~6300AF)은 옵션별 값으로 쪼갬. 옵션이 많으면 대표 옵션만 넣고 note에 "대표 옵션만" 기록. 31개 제품 · 옵션 122개 · 공통 항목 164 · 옵션 항목 375.
 
 ## 사람 검수 우선 (판단 필요)
 
-1. **P02212 GIPAM1000 통신** — 정격표(p12) "RS-485 : Modbus" vs 특징(p3) "MODBUS, DNP, IEC61850". T2 대조: 값은 p12와 일치. 어느 쪽을 사양으로 볼지 판단 필요.
+1. **P02212 GIPAM1000 통신** — 정격표(p12) "RS-485 : Modbus" vs 통신기능(p11) "RS-485: DNP3.0 SERIAL, MODBUS-RTU / Ethernet: DNP3.0 TCP, MODBUS-TCP, IEC61850". 옵션 재구성 때 p11 값으로 교체 — 정격표와 다르므로 최종 판단 필요.
 2. **P00206 Susol ACB / P01021 Susol MCCB — 변형 카탈로그** — 표준 카탈로그가 40MB 초과라 각각 1150Vac판·1000Vac(UTV)판 값을 사용. T2 대조: 값 일치. 표준 제품 사양으로 노출해도 되는지 판단 필요.
-3. **P01084 GIMAC-V — APFC 표** — p6 자동역률 제어장치(APFC) 정격표 값. T2 대조: 값 일치. GIMAC-V 본품(집중표시장치) 정격으로 써도 되는지 확인 필요.
+3. **옵션 열 구분을 텍스트 순서로 읽은 값** — P01065 발전소용 VCB 모델별 정격전류, P01027 Metasol ELCB 125AF 정격전류(줄바꿈된 셀), P01260 Metasol MS 각 프레임 Ue 매핑. 원문 표와 열 대조 필요.
+4. **P01084 GIMAC-V — APFC 표** — p6 자동역률 제어장치(APFC) 정격표 값. T2 대조: 값 일치. GIMAC-V 본품(집중표시장치) 정격으로 써도 되는지 확인 필요.
 
 ## 요약
 
 | 제품ID | 제품명 | 기기 | 카탈로그 | 대표 페이지 | 항목 수 | 검수 상태 |
 |---|---|---|---|---|---|---|
-| P00206 | Susol ACB | 기중차단기 | [Susol ACB] up to 1150Vac | 12 | 6 | T2 대조 일치 · 변형 카탈로그 판단 필요 |
-| P01021 | Susol MCCB | 배선용차단기 | [Susol MCCB] Up to 1000Vac | 2 | 7 | 페이지 정정(정격전류 p.2~3) · 변형 카탈로그 판단 필요 |
-| P01900 | Smart MCCB | 배선용차단기 | [Smart LV Solution] | 56 | 8 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01024 | 분전반용 차단기 | 배선용차단기, 분전반용 차단기 | [분전반] 산업용 배선_누전 차단기 | 14 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01027 | Metasol ELCB | 누전차단기 | [Metasol ELCB] A Type | 2 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01028 | 분전반용 ELCB | 누전차단기 | [분전반] 산업용 배선_누전 차단기 | 18 | 8 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01062 | Susol VCB | 진공차단기 | [Susol VCB]_VL type 기반 전동인입출형 | 3 | 6 | T2 대조 일치(VL type 카탈로그) |
-| P01065 | 발전소용 VCB | 진공차단기 | 발전소용 VCB | 4 | 6 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01064 | 원자력 발전소용 VCB | 진공차단기 | [Susol VCB] 원전용 | 14 | 6 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P03080 | 고압가스 부하개폐기 (RMU) | 배전용 가스절연 부하개폐기 | [RMU] | 10 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01110 | Cast Resin Transformer | 몰드변압기 | 몰드변압기 | 14 | 7 | 페이지 정정(절연 → "F종" p14로 수정) |
-| P01109 | Oil-immersed Transformer | 유입변압기 | 유입변압기(초고압+배전) | 4 | 7 | T2 대조 일치 |
-| P01072 | XGIPAM | 송전용 보호계전 시스템, 디지털 보호계전기 | [XGIPAM] | 13 | 8 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01249 | GIPAM3000 | 송전용 보호계전 시스템, 디지털 보호계전기 | [GIPAM3000] | 14 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P02212 | GIPAM1000 | 송전용 보호계전 시스템, 디지털 보호계전기 | [GIPAM1000] 국문 카타로그 | 12 | 7 | T2 대조 일치 · 사람 판단 필요(통신) |
-| P01075 | GIPAM115FI | 송전용 보호계전 시스템, 디지털 보호계전기 | [GIPAM115] | 5 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01084 | GIMAC-V | 디지털 계측기 | [GIMAC-V] | 6 | 7 | T2 대조 일치 · APFC 표 판단 필요 |
-| P01079 | GIMAC-IV | 디지털 계측기 | [GIMA-IV] | 10 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01255 | GIMAC1000 | 디지털 계측기 | [GIMAC1000] | 5 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P02213 | Digital Electricity Meter | 전력량계 | [AMR] 전력량계&원격검침시스템 | 10 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P03082 | USP Series(Din Type) | 서지보호기 | [UL SPD]UL SPD 카달로그_국문 | 33 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P03083 | USPV Series(Din Type) | 서지보호기 | [UL SPD]UL SPD 카달로그_국문 | 39 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P03084 | USPE Series(Panel Type) | 서지보호기 | [UL SPD]UL SPD 카달로그_국문 | 42 | 6 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01260 | Metasol MS | 전자개폐기 (MC+열동계전기) | [Metasol MS] | 10 | 6 | 페이지 정정(프레임·과부하·규격) |
-| P01261 | Susol MS | 전자개폐기 (MC+열동계전기) | [Susol MC] | 14 | 7 | 텍스트 확인 불가(이미지 PDF, 7항목 사람 판독값) |
-| P01043 | Mini MS | 전자개폐기 (MC+열동계전기) | [Mini MS] | 10 | 6 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01053 | GMP | 전자식 모터보호 계전기 | [GMP] | 4 | 3 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01054 | DMPi | 전자식 모터보호 계전기 | [DMPi] | 9 | 5 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01056 | MMP | 전자식 모터보호 계전기 | [MMP] | 17 | 5 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P02210 | LVSS Soft Starter | 소프트 스타터 | [LV Soft Stater] | 6 | 7 | 자동 대조 통과 · 통신 "(표준)/(옵션)" 주석 표기 |
-| P01045 | Motorsol Soft Starter | 소프트 스타터 | [Soft Starter] | 8 | 6 | 페이지 정정(전동기·전류) · 냉각 요약 표기 |
-| P01188 | iS7 | 저압 인버터 | iS7 카탈로그 | 13 | 7 | T2 대조 일치(IP) · 페이지 정정(전동기) · 통신 요약 표기 |
-| P01184 | S100 | 저압 인버터 | S100 카탈로그 | 16 | 6 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01247 | G100/G100C | 저압 인버터 | G100(C) 카탈로그 | 11 | 7 | 자동 대조 통과(숫자·출처) · 미검수 |
-| P01183 | H100 | 저압 인버터 | H100 카탈로그 | 12 | 5 | 페이지 정정(전동기) |
+| P00206 | Susol ACB | 기중차단기 | [Susol ACB] up to 1150Vac | 12 | 3 | 프레임 · 6 | T2 대조 일치 · 변형 카탈로그 판단 필요 |
+| P01021 | Susol MCCB | 배선용차단기 | [Susol MCCB] Up to 1000Vac | 2 | 3 | 프레임 · 2 | 페이지 정정 반영(옵션 분리로 UTV250 p2·UTV400 p3) · 변형 카탈로그 판단 필요 |
+| P01900 | Smart MCCB | 배선용차단기 | [Smart LV Solution] | 56 | 5 | 프레임 · 6 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01024 | 분전반용 차단기 | 배선용차단기, 분전반용 차단기 | [분전반] 산업용 배선_누전 차단기 | 14 | 4 | 프레임 · 3 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01027 | Metasol ELCB | 누전차단기 | [Metasol ELCB] A Type | 2 | 5 | 프레임 · 7 | 자동 대조 통과 · 125AF 정격전류 검수 필요 |
+| P01028 | 분전반용 ELCB | 누전차단기 | [분전반] 산업용 배선_누전 차단기 | 18 | 4 | 프레임 · 3 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01062 | Susol VCB | 진공차단기 | [Susol VCB]_VL type 기반 전동인입출형 | 3 | 3 | 정격전압 등급 · 4 | T2 대조 일치(VL type 카탈로그) |
+| P01065 | 발전소용 VCB | 진공차단기 | 발전소용 VCB | 4 | 4 | 모델 · 3 | 자동 대조 통과 · 모델별 열 구분 검수 필요 |
+| P01064 | 원자력 발전소용 VCB | 진공차단기 | [Susol VCB] 원전용 | 14 | 4 | 정격전압 등급 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P03080 | 고압가스 부하개폐기 (RMU) | 배전용 가스절연 부하개폐기 | [RMU] | 10 | 5 | 정격전압 · 4 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01110 | Cast Resin Transformer | 몰드변압기 | 몰드변압기 | 14 | 6 | 용량 (3P 22.9kV/6.6kV DD) · 5 | 페이지 정정(절연 → "F종" p14로 수정) |
+| P01109 | Oil-immersed Transformer | 유입변압기 | 유입변압기(초고압+배전) | 4 | 6 | 배전용 용량 (3ph 60Hz 22.9kV/저압, 표준소비효율) · 4 | T2 대조 일치 |
+| P01072 | XGIPAM | 송전용 보호계전 시스템, 디지털 보호계전기 | [XGIPAM] | 13 | 7 | 형식 · 6 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01249 | GIPAM3000 | 송전용 보호계전 시스템, 디지털 보호계전기 | [GIPAM3000] | 14 | 6 | 형식 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P02212 | GIPAM1000 | 송전용 보호계전 시스템, 디지털 보호계전기 | [GIPAM1000] 국문 카타로그 | 12 | 6 | 형식 · 2 | 통신 값 p11로 교체 · 사람 판단 필요(통신) |
+| P01075 | GIPAM115FI | 송전용 보호계전 시스템, 디지털 보호계전기 | [GIPAM115] | 5 | 7 | - | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01084 | GIMAC-V | 디지털 계측기 | [GIMAC-V] | 6 | 7 | - | T2 대조 일치 · APFC 표 판단 필요 |
+| P01079 | GIMAC-IV | 디지털 계측기 | [GIMA-IV] | 10 | 7 | - | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01255 | GIMAC1000 | 디지털 계측기 | [GIMAC1000] | 5 | 7 | - | 자동 대조 통과(숫자·출처) · 미검수 |
+| P02213 | Digital Electricity Meter | 전력량계 | [AMR] 전력량계&원격검침시스템 | 10 | 5 | 상 및 선식 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P03082 | USP Series(Din Type) | 서지보호기 | [UL SPD]UL SPD 카달로그_국문 | 33 | 5 | 모델 · 8 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P03083 | USPV Series(Din Type) | 서지보호기 | [UL SPD]UL SPD 카달로그_국문 | 39 | 5 | 모델 · 7 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P03084 | USPE Series(Panel Type) | 서지보호기 | [UL SPD]UL SPD 카달로그_국문 | 42 | 5 | Surge Capacity · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01260 | Metasol MS | 전자개폐기 (MC+열동계전기) | [Metasol MS] | 10 | 3 | 프레임 · 8 | 페이지 정정 반영(옵션별 페이지·규격 p10) · 옵션 Ue 매핑 검수 필요 |
+| P01261 | Susol MS | 전자개폐기 (MC+열동계전기) | [Susol MC] | 14 | 3 | 프레임 · 3 | 텍스트 확인 불가(이미지 PDF, 7항목 사람 판독값) |
+| P01043 | Mini MS | 전자개폐기 (MC+열동계전기) | [Mini MS] | 10 | 4 | 프레임 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01053 | GMP | 전자식 모터보호 계전기 | [GMP] | 4 | 1 | 모델 · 6 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01054 | DMPi | 전자식 모터보호 계전기 | [DMPi] | 9 | 4 | 정격전류 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01056 | MMP | 전자식 모터보호 계전기 | [MMP] | 17 | 4 | 정격전류 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P02210 | LVSS Soft Starter | 소프트 스타터 | [LV Soft Stater] | 6 | 5 | 용량 (Trip Class 10 선정 모델) · 4 | 자동 대조 통과 · 통신 "(표준)/(옵션)" 주석 표기 |
+| P01045 | Motorsol Soft Starter | 소프트 스타터 | [Soft Starter] | 8 | 4 | 용량 · 4 | 페이지 정정 반영(옵션별 p8·p9) · 냉각 요약 표기 |
+| P01188 | iS7 | 저압 인버터 | iS7 카탈로그 | 13 | 5 | 전압·용량 등급 · 4 | T2 대조 일치(IP) · 페이지 정정 반영(옵션별 p13·p14) · 통신 요약 표기 |
+| P01184 | S100 | 저압 인버터 | S100 카탈로그 | 16 | 4 | 입력 전압 · 3 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01247 | G100/G100C | 저압 인버터 | G100(C) 카탈로그 | 11 | 5 | 입력 전압 · 2 | 자동 대조 통과(숫자·출처) · 미검수 |
+| P01183 | H100 | 저압 인버터 | H100 카탈로그 | 12 | 3 | 전압·용량 등급 · 4 | 페이지 정정 반영(옵션별 p12·p13) |
 
-## 제품별 항목
+## 제품별 항목 (공통 + 옵션별)
 
 ### P00206 Susol ACB
 
 - 기기: 기중차단기
 - 카탈로그: [[Susol ACB] up to 1150Vac](https://www.ls-electric.com/ko/cat/%5BSusol_ACB%5D_up_to_1150Vac_KO_C060C1-03-202501.pdf) · 대표 p.12
-- 비고: 고전압(최대 1150Vac) 사양 카탈로그 기준. 표준 Susol ACB 카탈로그는 40MB 초과로 미확인
+- 비고: 고전압 카탈로그([Susol ACB] up to 1150Vac) 기준 — AV(~1150Vac)·AW(~900Vac) 프레임별. 표준 Susol ACB 카탈로그는 40MB 초과로 미확인
 - 검수 상태: T2 대조 일치 · 변형 카탈로그 판단 필요
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | ~1150 | Vac | 12 |
-| frame | 프레임 | 630~6300 | AF | 4 |
 | poles | 극수 | 3 / 4 | P | 12 |
-| breakingCapacity | 정격차단전류 | 최대 85 (900Vac) / 65 (1150Vac) | kA | 5 |
 | mounting | 설치·인출 방식 | 고정형 / 인출형 |  | 12 |
 | standards | 적용 규격 | IEC 60947-2 |  | 12 |
+
+옵션 기준: **프레임** (6개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| av-d | AV-D (~2000AF, ~1150Vac) (p.12) | ratedVoltage | 정격전압 | ~1150 | Vac | 12 |
+|  |  | insulationVoltage | 정격절연전압 | 1250 | V | 12 |
+|  |  | frame | 프레임 | 630~2000 | AF | 12 |
+|  |  | ratedCurrent | 정격전류 | 200~2000 (In max) | A | 12 |
+|  |  | breakingCapacity | 정격차단전류 | 30 (1150V) / 42 (1000V) / 50 (900V) / 50 (800V) | kA | 12 |
+| av-e | AV-E (~4000AF, ~1150Vac) (p.13) | ratedVoltage | 정격전압 | ~1150 | Vac | 13 |
+|  |  | insulationVoltage | 정격절연전압 | 1250 | V | 13 |
+|  |  | frame | 프레임 | 630~4000 | AF | 13 |
+|  |  | ratedCurrent | 정격전류 | 400~4000 (In max) | A | 13 |
+|  |  | breakingCapacity | 정격차단전류 | 50 (1150V) / 65 (1000V) / 75 (900V) / 75 (800V) | kA | 13 |
+| av-g | AV-G (~6300AF, ~1150Vac) (p.13) | ratedVoltage | 정격전압 | ~1150 | Vac | 13 |
+|  |  | insulationVoltage | 정격절연전압 | 1250 | V | 13 |
+|  |  | frame | 프레임 | 4000~6300 | AF | 13 |
+|  |  | ratedCurrent | 정격전류 | 2000~6300 (In max) | A | 13 |
+|  |  | breakingCapacity | 정격차단전류 | 65 (1150V) / 85 (1000V) / 85 (900V) / 85 (800V) | kA | 13 |
+| aw-d | AW-D (~2000AF, ~900Vac) (p.14) | ratedVoltage | 정격전압 | ~900 | Vac | 14 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 14 |
+|  |  | frame | 프레임 | 630~2000 | AF | 14 |
+|  |  | ratedCurrent | 정격전류 | 200~2000 (In max) | A | 14 |
+|  |  | breakingCapacity | 정격차단전류 | 42 (900V) / 50 (800V) | kA | 14 |
+| aw-e | AW-E (~4000AF, ~900Vac) (p.14) | ratedVoltage | 정격전압 | ~900 | Vac | 14 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 14 |
+|  |  | frame | 프레임 | 630~4000 | AF | 14 |
+|  |  | ratedCurrent | 정격전류 | 400~4000 (In max) | A | 14 |
+|  |  | breakingCapacity | 정격차단전류 | 50 (900V) / 65 (800V) | kA | 14 |
+| aw-g | AW-G (~6300AF, ~900Vac) (p.14) | ratedVoltage | 정격전압 | ~900 | Vac | 14 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 14 |
+|  |  | frame | 프레임 | 4000~6300 | AF | 14 |
+|  |  | ratedCurrent | 정격전류 | 2000~6300 (In max) | A | 14 |
+|  |  | breakingCapacity | 정격차단전류 | 85 (900V) / 85 (800V) | kA | 14 |
 
 ### P01021 Susol MCCB
 
 - 기기: 배선용차단기
 - 카탈로그: [[Susol MCCB] Up to 1000Vac](https://www.ls-electric.com/ko/cat/%5BSusol_MCCB%5D_Up_to_1000Vac_KO_C010O1-05-202610.pdf) · 대표 p.2
-- 비고: 1000Vac급 UTV 시리즈(UTV250·UTV400) 카탈로그 기준. 표준 Susol MCCB 카탈로그는 40MB 초과로 미확인. 정격전류: p.2~3 표에 걸침
-- 검수 상태: 페이지 정정(정격전류 p.2~3) · 변형 카탈로그 판단 필요
+- 비고: 1000Vac급 UTV 시리즈 카탈로그 기준. 표준 Susol MCCB 카탈로그는 40MB 초과로 미확인
+- 검수 상태: 페이지 정정 반영(옵션 분리로 UTV250 p2·UTV400 p3) · 변형 카탈로그 판단 필요
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 690 / 800 / 1000 | V AC | 2 |
-| frame | 프레임 | 250 / 400 | AF | 4 |
-| ratedCurrent | 정격전류 | 60~400 | A | 2 |
 | poles | 극수 | 3 / 4 | P | 2 |
-| breakingCapacity | 정격차단전류 | 15~30 (1000 V AC, IEC Icu) | kA | 2 |
 | protection | 보호 기능 | FTU / FMU / ATU 트립장치 |  | 2 |
 | standards | 적용 규격 | UL 489, IEC 60947-2 |  | 2 |
+
+옵션 기준: **프레임** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| utv250 | UTV250 (250AF) (p.2) | frame | 프레임 | 250 | AF | 4 |
+|  |  | ratedVoltage | 정격전압 | 690/800/1000 | V AC | 2 |
+|  |  | ratedCurrent | 정격전류 | 60, 80, 100, 150, 200, 250 | A | 2 |
+|  |  | breakingCapacity | 정격차단전류 | 15 / 20 / 30 (1000 V AC, IEC Icu, E/N/H) | kA | 2 |
+| utv400 | UTV400 (400AF) (p.3) | frame | 프레임 | 400 | AF | 4 |
+|  |  | ratedVoltage | 정격전압 | 690*/800/1000 (*690 V AC는 UL 489에만 해당) | V AC | 3 |
+|  |  | ratedCurrent | 정격전류 | 320, 400 | A | 3 |
+|  |  | breakingCapacity | 정격차단전류 | 15 / 20 / 25 (1000 V AC, IEC Icu, E/N/H) | kA | 3 |
 
 ### P01900 Smart MCCB
 
 - 기기: 배선용차단기
 - 카탈로그: [[Smart LV Solution]](https://www.ls-electric.com/ko/cat/%5BSmart_LV_Solution%5D_KO_C800R1-06-202604.pdf) · 대표 p.56
-- 비고: Susol Smart MCCB(TS100~TS800) 정격표 기준. 정격전압은 TS100/160 표 값
+- 비고: Susol Smart MCCB(TS100~TS800) 정격표 기준. 정격전압 690V(Ue)는 TS100/160 표(p56) 값
 - 검수 상태: 자동 대조 통과(숫자·출처) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| frame | 프레임 | 100~800 | AF | 54 |
-| ratedCurrent | 정격전류 | 40~800 | A | 55 |
 | poles | 극수 | 3, 4 | P | 54 |
 | ratedVoltage | 정격전압 | 690 (Ue) | V AC | 56 |
-| breakingCapacity | 정격차단전류 | 50~150 (380/415V, Ni/Hi/Li) | kA | 54 |
 | protection | 보호 기능 | LSIG (장한시, 단한시, 순시, 지락) |  | 49 |
 | communication | 통신 | RS485, 모바일통신(ETLi) |  | 49 |
 | mounting | 설치·인출 방식 | 고정형 / plug-in |  | 56 |
+
+옵션 기준: **프레임** (6개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| ts100 | TS100 (100AF) (p.54) | frame | 프레임 | 100 | AF | 54 |
+|  |  | ratedCurrent | 정격전류 | 40, 100 | A | 54 |
+|  |  | breakingCapacity | 정격차단전류 | 50 / 85 / 150 (380/415V, Ni/Hi/Li) | kA | 54 |
+| ts160 | TS160 (160AF) (p.54) | frame | 프레임 | 160 | AF | 54 |
+|  |  | ratedCurrent | 정격전류 | 40, 100, 160 | A | 54 |
+|  |  | breakingCapacity | 정격차단전류 | 50 / 85 / 150 (380/415V, Ni/Hi/Li) | kA | 54 |
+| ts250 | TS250 (250AF) (p.55) | frame | 프레임 | 250 | AF | 55 |
+|  |  | ratedCurrent | 정격전류 | 40, 100, 160, 250 | A | 55 |
+|  |  | breakingCapacity | 정격차단전류 | 50 / 85 / 150 (380/415V, Ni/Hi/Li) | kA | 55 |
+| ts400 | TS400 (400AF) (p.55) | frame | 프레임 | 400 | AF | 55 |
+|  |  | ratedCurrent | 정격전류 | 250, 400 | A | 55 |
+|  |  | breakingCapacity | 정격차단전류 | 65 / 85 / 150 (380/415V, Ni/Hi/Li) | kA | 55 |
+| ts630 | TS630 (630AF) (p.55) | frame | 프레임 | 630 | AF | 55 |
+|  |  | ratedCurrent | 정격전류 | 250, 400, 630 | A | 55 |
+|  |  | breakingCapacity | 정격차단전류 | 65 / 85 / 150 (380/415V, Ni/Hi/Li) | kA | 55 |
+| ts800 | TS800 (800AF) (p.55) | frame | 프레임 | 800 | AF | 55 |
+|  |  | ratedCurrent | 정격전류 | 630, 800 | A | 55 |
+|  |  | breakingCapacity | 정격차단전류 | 65 / 100 / 150 (380/415V, Ni/Hi/Li) | kA | 55 |
 
 ### P01024 분전반용 차단기
 
@@ -117,30 +180,61 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| frame | 프레임 | 30 / 50 / 100 | AF | 14 |
 | poles | 극수 | 2, 3 | P | 14 |
-| ratedCurrent | 정격전류 | 3~100 | A | 14 |
 | ratedVoltage | 정격전압 | AC 220 / 460 | V | 14 |
-| breakingCapacity | 정격차단전류 | 1.5~2.5 (460V) / 2.5~5 (220V) | kA | 14 |
 | mounting | 설치·인출 방식 | 나사 및 DIN rail 부착 겸용 |  | 14 |
 | standards | 적용 규격 | KS C 8321, IEC 60947-2 |  | 14 |
+
+옵션 기준: **프레임** (3개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| abe30fb | ABE30Fb (30AF) (p.14) | frame | 프레임 | 30 | AF | 14 |
+|  |  | ratedCurrent | 정격전류 | 3, 5, 10, 15, 20, 30 | A | 14 |
+|  |  | breakingCapacity | 정격차단전류 | 1.5 (460V) / 2.5 (220V) | kA | 14 |
+| abe50fb | ABE50Fb (50AF) (p.14) | frame | 프레임 | 50 | AF | 14 |
+|  |  | ratedCurrent | 정격전류 | 5, 10, 15, 20, 30, 40, 50 | A | 14 |
+|  |  | breakingCapacity | 정격차단전류 | 1.5 (460V) / 2.5 (220V) | kA | 14 |
+| abe100fb | ABE100Fb (100AF) (p.14) | frame | 프레임 | 100 | AF | 14 |
+|  |  | ratedCurrent | 정격전류 | 60, 75, 100 | A | 14 |
+|  |  | breakingCapacity | 정격차단전류 | 2.5 (460V) / 5 (220V) | kA | 14 |
 
 ### P01027 Metasol ELCB
 
 - 기기: 누전차단기
 - 카탈로그: [[Metasol ELCB] A Type](https://www.ls-electric.com/ko/cat/%5BMetasol_ELCB%5D_A_Type_KO_C02021-02-202202.pdf) · 대표 p.2
-- 비고: A Type(맥동 DC 누설전류 검출) 누전차단기 리플렛 기준
-- 검수 상태: 자동 대조 통과(숫자·출처) · 미검수
+- 비고: A Type(맥동 DC 누설전류 검출) 누전차단기 리플렛 기준. 정격차단전류는 30~60AF(p2)만 표 열이 명확해 넣음 — 100AF 이상은 미기재
+- 검수 상태: 자동 대조 통과 · 125AF 정격전류 검수 필요
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| frame | 프레임 | 30~400 | AF | 3 |
-| ratedCurrent | 정격전류 | 5~400 | A | 3 |
 | poles | 극수 | 3, 4 | P | 2 |
 | sensitivity | 정격감도전류 | 0.03/0.1/0.3/0.5 (또는 0.1/0.2/0.5/1) | A | 2 |
 | leakageType | 누전동작 타입 | A |  | 2 |
 | protection | 보호 기능 | 누전·과부하·단락보호겸용 |  | 2 |
 | standards | 적용 규격 | KS C 4613, IEC 60947-2 |  | 2 |
+
+옵션 기준: **프레임** (7개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 30af | 30AF (EBS33c/34c) (p.2) | frame | 프레임 | 30 | AF | 2 |
+|  |  | ratedCurrent | 정격전류 | (5, 10), 15, 16, 20, 25, 30 | A | 2 |
+|  |  | breakingCapacity | 정격차단전류 | 14(10) (415/460V) / 30(25) (220/250V) | kA | 2 |
+| 50af | 50AF (EBN53c·EBS53c·EBH53c) (p.2) | frame | 프레임 | 50 | AF | 2 |
+|  |  | ratedCurrent | 정격전류 | 15, 16, 20, 25, 30, 32, 40, 50 | A | 2 |
+|  |  | breakingCapacity | 정격차단전류 | 14 / 18 / 50 (415/460V, N/S/H) | kA | 2 |
+| 60af | 60AF (EBN63c·EBS63c) (p.2) | frame | 프레임 | 60 | AF | 2 |
+|  |  | ratedCurrent | 정격전류 | 60 | A | 2 |
+|  |  | breakingCapacity | 정격차단전류 | 14 / 18 (415/460V, N/S) | kA | 2 |
+| 100af | 100AF (p.3) | frame | 프레임 | 100 | AF | 3 |
+|  |  | ratedCurrent | 정격전류 | 60, 63, 75, 80, 100 | A | 3 |
+| 125af | 125AF (p.3) | frame | 프레임 | 125 | AF | 3 |
+|  |  | ratedCurrent | 정격전류 | 15, 16, 20, 25, 30, 32, 40, 50, 60, 63, 75, 80, 100, 125 | A | 3 |
+| 250af | 250AF (p.3) | frame | 프레임 | 250 | AF | 3 |
+|  |  | ratedCurrent | 정격전류 | 100, 125, 150, 160, 175, 200, 225, 250 | A | 3 |
+| 400af | 400AF (p.3) | frame | 프레임 | 400 | AF | 3 |
+|  |  | ratedCurrent | 정격전류 | 250, 300, 350, 400 | A | 3 |
 
 ### P01028 분전반용 ELCB
 
@@ -151,46 +245,90 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| frame | 프레임 | 30 / 50 / 100 | AF | 18 |
 | poles | 극수 | 2, 3 | P | 18 |
-| ratedCurrent | 정격전류 | 3~100 | A | 18 |
-| sensitivity | 정격감도전류 | 15, 30, 50, 100 (프레임·극수별) | mA | 18 |
 | ratedVoltage | 정격전압 | AC 110/220 (2극), 220/380 (3극) | V | 18 |
-| breakingCapacity | 정격차단전류 | 2.5~5 (220V) | kA | 18 |
 | protection | 보호 기능 | 누전, 과부하, 순시 및 단락전류 |  | 18 |
 | standards | 적용 규격 | KS C 4613, IEC 60947-2 |  | 18 |
+
+옵션 기준: **프레임** (3개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| ebe30fb | EBE30Fb (30AF) (p.18) | frame | 프레임 | 30 | AF | 18 |
+|  |  | ratedCurrent | 정격전류 | 3, 5, 10, 15, 20, 30 | A | 18 |
+|  |  | sensitivity | 정격감도전류 | 30, *50 (2극) / 15, 30 (3극) | mA | 18 |
+|  |  | breakingCapacity | 정격차단전류 | 1.5 (380V, 3극) / 2.5 (220V) | kA | 18 |
+| ebe50fb | EBE50Fb (50AF) (p.18) | frame | 프레임 | 50 | AF | 18 |
+|  |  | ratedCurrent | 정격전류 | 5, 10, 15, 20, 30, 40, 50 | A | 18 |
+|  |  | sensitivity | 정격감도전류 | 30, *50 (2극) / 15, 30 (3극) | mA | 18 |
+|  |  | breakingCapacity | 정격차단전류 | 1.5 (380V, 3극) / 2.5 (220V) | kA | 18 |
+| ebe100fb | EBE100Fb (100AF) (p.18) | frame | 프레임 | 100 | AF | 18 |
+|  |  | ratedCurrent | 정격전류 | 60, 75, 100 | A | 18 |
+|  |  | sensitivity | 정격감도전류 | 30, 100 (2, 3극) | mA | 18 |
+|  |  | breakingCapacity | 정격차단전류 | 2.5 (380V, 3극) / 5 (220V) | kA | 18 |
 
 ### P01062 Susol VCB
 
 - 기기: 진공차단기
 - 카탈로그: [[Susol VCB]_VL type 기반 전동인입출형](https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_%EC%A0%84%EB%8F%99%EC%9D%B8%EC%9E%85%EC%B6%9C%ED%98%95_KO_C050M1-06-202507.pdf) · 대표 p.3
-- 비고: VL type 전동인출형 카탈로그 기준. Susol VCB 종합 카탈로그는 40MB 초과로 미확인
+- 비고: VL type 전동인출형 카탈로그 기준(p3 표는 페이지 이미지로 열 확인). Susol VCB 종합 카탈로그는 40MB 초과로 미확인
 - 검수 상태: T2 대조 일치(VL type 카탈로그)
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 7.2 / 12 / 17.5 / 24 / 25.8 | kV | 3 |
-| ratedCurrent | 정격전류 | 630 / 1250 / 2000 / 2500 | A | 3 |
-| breakingCapacity | 정격차단전류 | 12.5~31.5 | kA | 3 |
 | frequency | 정격주파수 | 50 / 60 | Hz | 3 |
 | mounting | 설치·인출 방식 | H형 (전동인출형) |  | 3 |
 | standards | 적용 규격 | IEC 62271-100:2012 |  | 3 |
+
+옵션 기준: **정격전압 등급** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 7-2kv | 7.2kV (VL-06H25A·VL-06H32A·VL-06H32B25) (p.3) | ratedVoltage | 정격전압 | 7.2 | kV | 3 |
+|  |  | ratedCurrent | 정격전류 | 630 / 1250 / 2500 | A | 3 |
+|  |  | breakingCapacity | 정격차단전류 | 25 / 32 | kA | 3 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 20 | kV | 3 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 60 | kV | 3 |
+| 12kv | 12kV (VL-12H32A·VL-12H32B25) (p.3) | ratedVoltage | 정격전압 | 12 | kV | 3 |
+|  |  | ratedCurrent | 정격전류 | 630 / 1250 / 2500 | A | 3 |
+|  |  | breakingCapacity | 정격차단전류 | 32 | kA | 3 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 28 | kV | 3 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 75 | kV | 3 |
+| 17-5kv | 17.5kV (VL-17H32A·VL-17H32B25) (p.3) | ratedVoltage | 정격전압 | 17.5 | kV | 3 |
+|  |  | ratedCurrent | 정격전류 | 630 / 1250 / 2500 | A | 3 |
+|  |  | breakingCapacity | 정격차단전류 | 32 | kA | 3 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 38 | kV | 3 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 95 | kV | 3 |
+| 24-25-8kv | 24/25.8kV (VL-20,25H) (p.4) | ratedVoltage | 정격전압 | 24 / 25.8 | kV | 4 |
+|  |  | ratedCurrent | 정격전류 | 630 / 1250 / 2000 | A | 4 |
+|  |  | breakingCapacity | 정격차단전류 | 12.5 / 16 / 25 | kA | 4 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 50 / 60 | kV | 4 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 125 | kV | 4 |
 
 ### P01065 발전소용 VCB
 
 - 기기: 진공차단기
 - 카탈로그: [발전소용 VCB](https://www.ls-electric.com/ko/cat/%5B%EB%B0%9C%EC%A0%84%EC%86%8C%EC%9A%A9_VCB%5D_KO_C050I1-02-202311.pdf) · 대표 p.4
-- 비고: LVB-06G 시리즈 정격표 기준
-- 검수 상태: 자동 대조 통과(숫자·출처) · 미검수
+- 비고: LVB-06G 시리즈 정격표(p4) 기준. 모델별 정격전류 열 구분은 텍스트 순서로 읽음 — 검수 필요
+- 검수 상태: 자동 대조 통과 · 모델별 열 구분 검수 필요
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
 | ratedVoltage | 정격전압 | 7.2 | kV | 4 |
-| ratedCurrent | 정격전류 | 1200~3150 | A | 4 |
-| breakingCapacity | 정격차단전류 | 40 / 50 | kA | 4 |
 | frequency | 정격주파수 | 60 | Hz | 4 |
 | mounting | 설치·인출 방식 | 인출형 (G형) |  | 4 |
 | standards | 적용 규격 | ES150, IEC 62271-100 |  | 4 |
+
+옵션 기준: **모델** (3개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| lvb-06g-40h | LVB-06G-40H (p.4) | ratedCurrent | 정격전류 | 1200 / 2000 / 3000 | A | 4 |
+|  |  | breakingCapacity | 정격차단전류 | 40 | kA | 4 |
+| lvb-06g-40j | LVB-06G-40J (p.4) | ratedCurrent | 정격전류 | 1250 / 2000 / 2500 / 3150 | A | 4 |
+|  |  | breakingCapacity | 정격차단전류 | 40 | kA | 4 |
+| lvb-06g-50j | LVB-06G-50J (p.4) | ratedCurrent | 정격전류 | 1250 / 2000 / 3150 | A | 4 |
+|  |  | breakingCapacity | 정격차단전류 | 50 | kA | 4 |
 
 ### P01064 원자력 발전소용 VCB
 
@@ -201,12 +339,23 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 4.76 / 15 | kV | 14 |
 | ratedCurrent | 정격전류 | 1250 / 2000 / 3150 | A | 14 |
-| breakingCapacity | 정격차단전류 | 40, 50 | kA | 14 |
 | frequency | 정격주파수 | 50/60 | Hz | 14 |
 | mounting | 설치·인출 방식 | 인출형 (H type) |  | 14 |
 | standards | 적용 규격 | ANSI/IEEE Std. C37.09 |  | 14 |
+
+옵션 기준: **정격전압 등급** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| vh-05 | VH-05 (4.76kV) (p.14) | ratedVoltage | 정격전압 | 4.76 | kV | 14 |
+|  |  | breakingCapacity | 정격차단전류 | 50 | kA | 14 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 19 | kV | 14 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 60 | kV | 14 |
+| vh-15 | VH-15 (15kV) (p.14) | ratedVoltage | 정격전압 | 15 | kV | 14 |
+|  |  | breakingCapacity | 정격차단전류 | 40, 50 | kA | 14 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 36 | kV | 14 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 95 | kV | 14 |
 
 ### P03080 고압가스 부하개폐기 (RMU)
 
@@ -217,53 +366,116 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 12 / 17.5 / 24 / 36 | kV | 10 |
 | ratedCurrent | 정격전류 | 630 (Busbar) | A | 10 |
-| shortTimeCurrent | 정격 단시간 전류 | 21 (12~24kV) / 20 (36kV), 3s | kA | 10 |
 | frequency | 정격주파수 | 50 / 60 | Hz | 10 |
 | insulation | 절연·냉각 방식 | SF6 가스절연 |  | 2 |
 | ipRating | 보호등급(IP) | IP 3X (전면), IP 67 (SF6 Tank) |  | 10 |
 | standards | 적용 규격 | IEC 62271-1, -100, -102, -103, -105, -200 |  | 10 |
 
+옵션 기준: **정격전압** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 12kv | 12kV (p.10) | ratedVoltage | 정격전압 | 12 | kV | 10 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 28 | kV | 10 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 75 | kV | 10 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 21 (3s) | kA | 10 |
+| 17-5kv | 17.5kV (p.10) | ratedVoltage | 정격전압 | 17.5 | kV | 10 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 38 | kV | 10 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 95 | kV | 10 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 21 (3s) | kA | 10 |
+| 24kv | 24kV (p.10) | ratedVoltage | 정격전압 | 24 | kV | 10 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 50 | kV | 10 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 125 | kV | 10 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 21 (3s) | kA | 10 |
+| 36kv | 36kV (p.10) | ratedVoltage | 정격전압 | 36 | kV | 10 |
+|  |  | powerFreqWithstand | 상용주파 내전압 | 70 | kV | 10 |
+|  |  | impulseWithstand | 뇌임펄스 내전압 | 170 | kV | 10 |
+|  |  | shortTimeCurrent | 정격 단시간 전류 | 20 (3s) | kA | 10 |
+
 ### P01110 Cast Resin Transformer
 
 - 기기: 몰드변압기
 - 카탈로그: [몰드변압기](https://www.ls-electric.com/ko/cat/%5BCast_Resin_Transformer%5D_Premium_type_KO_C84001-9-202601.pdf) · 대표 p.14
-- 비고: 표준사양표 기준. 주문 제작 시 ~36kV, ~30MVA
+- 비고: 공통 사양은 표준사양표(p14). 옵션은 3P 22.9kV/6.6kV DD 특성표(p17)의 대표 용량만 — 표준사양 용량 범위 100~10000kVA, 주문 제작 ~36kV·~30MVA
 - 검수 상태: 페이지 정정(절연 → "F종" p14로 수정)
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
 | ratedVoltage | 정격전압 | 22.9 / 6.6 / 3.3 (1차, 표준사양) | kV | 14 |
-| capacity | 정격용량 | 100~10000 (표준사양) | kVA | 14 |
 | phases | 상 및 선식 | 3상 / 단상 |  | 14 |
 | frequency | 정격주파수 | 60 | Hz | 14 |
 | insulation | 절연·냉각 방식 | F종 |  | 14 |
 | mounting | 설치·인출 방식 | 옥내 (옥외는 옥외용 외함 필요) |  | 14 |
 | standards | 적용 규격 | KS C 4311 |  | 14 |
 
+옵션 기준: **용량 (3P 22.9kV/6.6kV DD)** (5개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 500kva | 500kVA (p.17) | capacity | 정격용량 | 500 | kVA | 17 |
+|  |  | impedance | 임피던스 | 6.0 | %IZ | 17 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.25 | % | 17 |
+|  |  | weight | 중량 | 2,650 | kg | 17 |
+| 1000kva | 1000kVA (p.17) | capacity | 정격용량 | 1000 | kVA | 17 |
+|  |  | impedance | 임피던스 | 7.0 | %IZ | 17 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.40 | % | 17 |
+|  |  | weight | 중량 | 3,900 | kg | 17 |
+| 2000kva | 2000kVA (p.17) | capacity | 정격용량 | 2000 | kVA | 17 |
+|  |  | impedance | 임피던스 | 8.0 | %IZ | 17 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.50 | % | 17 |
+|  |  | weight | 중량 | 6,600 | kg | 17 |
+| 5000kva | 5000kVA (p.17) | capacity | 정격용량 | 5000 | kVA | 17 |
+|  |  | impedance | 임피던스 | 8.0 | %IZ | 17 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.50 | % | 17 |
+|  |  | weight | 중량 | 11,400 | kg | 17 |
+| 10000kva | 10000kVA (p.17) | capacity | 정격용량 | 10000 | kVA | 17 |
+|  |  | impedance | 임피던스 | 10.0 | %IZ | 17 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.50 | % | 17 |
+|  |  | weight | 중량 | 19,850 | kg | 17 |
+
 ### P01109 Oil-immersed Transformer
 
 - 기기: 유입변압기
 - 카탈로그: [유입변압기(초고압+배전)](https://www.ls-electric.com/ko/cat/%5BOil-immersed_Transformer%5D_KO_C84021-06-202504.pdf) · 대표 p.4
-- 비고: 전력용 유입변압기 사양표 기준(p4). 배전용 표준 용량은 p7
+- 비고: 공통 사양은 전력용 유입변압기 사양표(p4, 최대 550kV/800MVA). 옵션은 배전용 표준소비효율 특성표(p7) 22.9kV/저압 — 대표 용량만
 - 검수 상태: T2 대조 일치
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
 | ratedVoltage | 정격전압 | Up to 550 | kV | 4 |
 | capacity | 정격용량 | Up to 800 (3상) / Up to 500 (단상) | MVA | 4 |
-| distributionCapacity | 배전용 표준 용량 | 500~3000 | kVA | 7 |
 | frequency | 정격주파수 | 50/60 | Hz | 4 |
 | insulation | 절연·냉각 방식 | Oil Type, ONAN / ONAN/ONAF / OFAF / ODAF |  | 4 |
 | mounting | 설치·인출 방식 | Outdoor / Indoor |  | 4 |
 | standards | 적용 규격 | IEC 60076 / ANSI(IEEE) C57 |  | 4 |
 
+옵션 기준: **배전용 용량 (3ph 60Hz 22.9kV/저압, 표준소비효율)** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 500kva | 500kVA (22.9kV/저압) (p.7) | distributionCapacity | 배전용 표준 용량 | 500 | kVA | 7 |
+|  |  | impedance | 임피던스 | 4.5 | % | 7 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.25 | % | 7 |
+|  |  | weight | 중량 | 2,020 | kg | 7 |
+| 1000kva | 1000kVA (22.9kV/저압) (p.7) | distributionCapacity | 배전용 표준 용량 | 1000 | kVA | 7 |
+|  |  | impedance | 임피던스 | 6 | % | 7 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.35 | % | 7 |
+|  |  | weight | 중량 | 2,980 | kg | 7 |
+| 2000kva | 2000kVA (22.9kV/저압) (p.7) | distributionCapacity | 배전용 표준 용량 | 2000 | kVA | 7 |
+|  |  | impedance | 임피던스 | 6 | % | 7 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.45 | % | 7 |
+|  |  | weight | 중량 | 5,220 | kg | 7 |
+| 3000kva | 3000kVA (22.9kV/저압) (p.7) | distributionCapacity | 배전용 표준 용량 | 3000 | kVA | 7 |
+|  |  | impedance | 임피던스 | 7 | % | 7 |
+|  |  | efficiency50 | 효율 (50% 부하) | 99.50 | % | 7 |
+|  |  | weight | 중량 | 6,950 | kg | 7 |
+
 ### P01072 XGIPAM
 
 - 기기: 송전용 보호계전 시스템, 디지털 보호계전기
 - 카탈로그: [[XGIPAM]](https://www.ls-electric.com/ko/cat/%5BXGIPAM%5D_KO_C16091-03-202412.pdf) · 대표 p.13
-- 비고: 정격표(p13) 기준. 보호요소는 XGIPAM F(Feeder) 형식 기준
+- 비고: 정격표(p13) 기준. 옵션은 형식별 보호요소(p12)
 - 검수 상태: 자동 대조 통과(숫자·출처) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
@@ -271,17 +483,27 @@
 | ratedVoltage | 정격전압 | 100/√3, 110/√3, 120/√3, 190/√3, 100, 110, 120 (PT 입력) | V | 13 |
 | ratedCurrent | 정격전류 | 5 (CT 입력) | A | 13 |
 | frequency | 정격주파수 | 60, 50 | Hz | 13 |
-| protection | 보호 기능 | OCR, OCGR, UVR, OVR, SGR, DGR, OVGR, NSOVR, POR, SYNC, Reclosing 등 |  | 12 |
 | communication | 통신 | RS485: Modbus, DNP3.0 / Ethernet: Modbus, DNP3.0, IEC61850 |  | 13 |
 | accuracy | 계측 정밀도 | 전압·전류 ±0.2% |  | 12 |
 | auxPower | 제어전원 | AC 110V, DC 110~125V |  | 13 |
 | standards | 적용 규격 | IEC 60255 시리즈, IEC 61850, KEMC 1120 |  | 13 |
 
+옵션 기준: **형식** (6개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| f | XGIPAM F (Feeder/Incomming) (p.12) | protection | 보호 기능 | OCR(50/51), OCGR(50/51N), UVR(27), OVR(59), SGR(67G), DGR(67N), OVGR(64I/D), NSOVR(47N), POR(47), SYNC Check(25), Reclosing(79), Temperature(38) |  | 12 |
+| b | XGIPAM B (Bay Controller) (p.12) | protection | 보호 기능 | OCR(50/51), OCGR(50/51N), UVR(27), OVR(59), SGR(67G), DGR(67N), OVGR(64I/D), NSOVR(47N), POR(47), SYNC Check(25), Reclosing(79), Temperature(38), DOCR(67I/D), NSOCR(46I/D), UFR(81U), OFR(81O), DPR(32P), DQR(32Q) |  | 12 |
+| m | XGIPAM M (Motor) (p.12) | protection | 보호 기능 | OCR(50/51), OCGR(50/51N), UVR(27), OVR(59), SGR(67G), DGR(67N), OVGR(64I/D), NSOVR(47N), POR(47), Temperature(38), Stall/Locked Rotor(48/51LR), THR(49), DOCR(67I/D), UCR(37), NCH(66), NSOCR(46I/D) |  | 12 |
+| t | XGIPAM T (Transformer) (p.12) | protection | 보호 기능 | OCR(50/51)×2, OCGR(50/51N), UVR(27), OVR(59), Temperature(38), DPR(32P), DFR(87T) |  | 12 |
+| dg | XGIPAM DG (Distributed Generation) (p.12) | protection | 보호 기능 | OCR(50/51), OCGR(50/51N), UVR(27), OVR(59), DPR(32P), UPR(37P), DQR(32Q), UFR(81U), OFR(81O), DGR(67N), SYNC Check(25), DOCR(67I/D), NSOCR(46I/D), POR(47), NSOVR(47N), ROCOF(81R), SGR(67G), OVGR(64I/D) |  | 12 |
+| 3wt | XGIPAM 3wT (Transformer 3권선) (p.12) | protection | 보호 기능 | OCR(50/51)×3, OCGR(50N/51N), UVR(27), OVR(59), OVGR(64I/D), DFR(3W87T) |  | 12 |
+
 ### P01249 GIPAM3000
 
 - 기기: 송전용 보호계전 시스템, 디지털 보호계전기
 - 카탈로그: [[GIPAM3000]](https://www.ls-electric.com/ko/cat/%5BGIPAM3000%5D_KO_C16071-10-202605.pdf) · 대표 p.14
-- 비고: 정격표(p14) 기준
+- 비고: 정격표(p14) 기준. 옵션은 형식별 보호요소(p12, 34/13종)
 - 검수 상태: 자동 대조 통과(숫자·출처) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
@@ -289,27 +511,39 @@
 | ratedVoltage | 정격전압 | 110 (55~125) (PT 입력) | V | 14 |
 | ratedCurrent | 정격전류 | 5 (CT 입력) | A | 14 |
 | frequency | 정격주파수 | 60, 50 | Hz | 14 |
-| protection | 보호 기능 | 2개 모델에 34/13종 보호요소 (OCR, OCGR, UVR, OVR, DPR, DFR 등) |  | 3 |
 | communication | 통신 | RS485: Modbus, DNP3.0 / Ethernet: Modbus, DNP3.0, IEC61850 |  | 14 |
 | auxPower | 제어전원 | AC/DC110V, DC125V |  | 14 |
 | standards | 적용 규격 | KEMC 1120, IEC 60255-26, IEC 61850 |  | 14 |
+
+옵션 기준: **형식** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| fi | GIPAM3000 FI (Feeder·Motor·Distributed Generation) (p.12) | protection | 보호 기능 | OCR(50/51), OCGR(50/51N), SGR(67G), SEF(51S), DOCGR(67NI/67ND), UVR(27), UVRR(27R), OVR(59), OVRR(59R), OVGR(64), NSOVR(47N), POR(47P), DPR(32P), DQR(32Q), DOCR(67I/67D), UFR(81U), OFR(81O), ROCOF(81R), NSOCR(46), THR(49), STALL-LOCK(48/51LR), UPR(37P), UCR(37), SYNC(25), RECLOSING(79), NCH(66), CBF(50BF), PTF(60F), CLP, LOCK-OUT(86) 등 34종 |  | 12 |
+| t | GIPAM3000 T (Transformer) (p.12) | protection | 보호 기능 | OCR(50/51w1·w2·w3), OCGR(50/51N-1·-2), DFRG(87N), DFR(87T), LOCK-OUT(86) 등 13종 |  | 12 |
 
 ### P02212 GIPAM1000
 
 - 기기: 송전용 보호계전 시스템, 디지털 보호계전기
 - 카탈로그: [[GIPAM1000] 국문 카타로그](https://www.ls-electric.com/ko/cat/%5BGIPAM1000%5D_KO_C160M1-08-202512.pdf) · 대표 p.12
-- 비고: 정격표(p12) 통신방식은 RS-485 Modbus만 기재, 특징(p3)에는 MODBUS·DNP·IEC61850 원방 통신 지원으로 기재 — 검수 필요
-- 검수 상태: T2 대조 일치 · 사람 판단 필요(통신)
+- 비고: 정격표(p12) 통신방식 칸에는 "RS-485 : Modbus"만 있으나 통신기능 페이지(p11)에 프로토콜 목록이 있어 p11 값으로 교체. 옵션은 형식별 보호요소(p10)
+- 검수 상태: 통신 값 p11로 교체 · 사람 판단 필요(통신)
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
 | ratedVoltage | 정격전압 | 110 (55~125) (PT 입력) | V | 12 |
 | ratedCurrent | 정격전류 | 5 (CT 입력) | A | 12 |
 | frequency | 정격주파수 | 60, 50 | Hz | 12 |
-| protection | 보호 기능 | 2개 모델에 12/24종 보호요소 |  | 3 |
-| communication | 통신 | RS-485: Modbus |  | 12 |
 | auxPower | 제어전원 | AC/DC110V, DC125V |  | 12 |
 | standards | 적용 규격 | KEMC 1120 |  | 12 |
+| communication | 통신 | RS-485: DNP3.0 SERIAL, MODBUS-RTU / Ethernet: DNP3.0 TCP, MODBUS-TCP, IEC61850 Ed.1/Ed.2 |  | 11 |
+
+옵션 기준: **형식** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| fi | GIPAM1000 FI (Feeder, 13종) (p.10) | protection | 보호 기능 | OCR(50/51), OCGR(50N/51N), SGR(67G), SEF(51S), UVR(27), OVR(59), OVGR(64), POR(47P), CBF(50BF), PTF(60F), LOCK-OUT(86) 등 13종 |  | 10 |
+| dg | GIPAM1000 DG (Distributed Generation, 25종) (p.10) | protection | 보호 기능 | OCR(50/51), OCGR(50N/51N), SGR(67G), SEF(51S), DOCGR(67NI/ND), DOCR(67I/67D), UVR(27), OVR(59), OVGR(64), POR(47P), UFR(81U), OFR(81O), DPR(32P), DQR(32Q), UPR(37P), UCR(37), ROCOF(81R), VVS(78V), SYNC(25), CBF(50BF), PTF(60F), LOCK-OUT(86) 등 25종 |  | 10 |
 
 ### P01075 GIPAM115FI
 
@@ -388,13 +622,22 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | AC 220 (단상 2선) / AC 220/380 (3상 4선) | V | 10 |
 | ratedCurrent | 정격전류 | 40(10), 80(20), 120(30) | A | 10 |
 | frequency | 정격주파수 | 60 | Hz | 10 |
 | accuracy | 계측 정밀도 | 1.0 급 |  | 10 |
-| phases | 상 및 선식 | 단상 2선식 / 3상 4선식 (단독계기) |  | 10 |
 | mounting | 설치·인출 방식 | 회전형 (표시부 좌/우 90도 회전) |  | 10 |
 | ipRating | 보호등급(IP) | IP51 |  | 8 |
+
+옵션 기준: **상 및 선식** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 1p2w | 단상 2선식 (단독계기) (p.10) | phases | 상 및 선식 | 단상 2선식 (단독계기) |  | 10 |
+|  |  | ratedVoltage | 정격전압 | AC 220 | V | 10 |
+|  |  | pulseOutput | 외부출력(펄스) | 1 / 10 / 100 Wh/pulse (P-type) |  | 10 |
+| 3p4w | 3상 4선식 (단독계기) (p.10) | phases | 상 및 선식 | 3상 4선식 (단독계기) |  | 10 |
+|  |  | ratedVoltage | 정격전압 | AC 220/380 (상전압 220V) | V | 10 |
+|  |  | pulseOutput | 외부출력(펄스) | 2 / 4 / 8 Wh/pulse (P-type) |  | 10 |
 
 ### P03082 USP Series(Din Type)
 
@@ -405,13 +648,40 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 120~600 (Un) | V | 33 |
-| mcov | 최대연속동작전압(Uc) | 150~690 | Vac | 33 |
 | poles | 극수 | 1P, 2P, 3P, 4P, 1P+N, 3P+N |  | 33 |
 | nominalDischarge | 공칭방전전류(In) | 20 | kA | 33 |
 | maxDischarge | 최대방전전류(Imax) | 50 / 40 | kA | 33 |
 | sccr | 단락전류정격(SCCR) | 200 | kA | 33 |
 | standards | 적용 규격 | ANSI/UL1449 5th Type 1ca, IEC/EN 61643-11 Class II |  | 33 |
+
+옵션 기준: **모델** (8개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| usp150 | USP150 (p.33) | ratedVoltage | 정격전압 | 120 (Un) | V | 33 |
+|  |  | mcov | 최대연속동작전압(Uc) | 150 | V | 33 |
+|  |  | tov | 일시적 과전압(TOV) | 175V/5s |  | 33 |
+| usp180 | USP180 (p.33) | ratedVoltage | 정격전압 | 120~127 (Un) | V | 33 |
+|  |  | mcov | 최대연속동작전압(Uc) | 180 | V | 33 |
+|  |  | tov | 일시적 과전압(TOV) | 228V/5s |  | 33 |
+| usp275 | USP275 (p.33) | ratedVoltage | 정격전압 | 220~230 (Un) | V | 33 |
+|  |  | mcov | 최대연속동작전압(Uc) | 275 | V | 33 |
+|  |  | tov | 일시적 과전압(TOV) | 335V/5s |  | 33 |
+| usp320 | USP320 (p.33) | ratedVoltage | 정격전압 | 240~277 (Un) | V | 33 |
+|  |  | mcov | 최대연속동작전압(Uc) | 320 | V | 33 |
+|  |  | tov | 일시적 과전압(TOV) | 335V/5s |  | 33 |
+| usp385 | USP385 (p.33) | ratedVoltage | 정격전압 | 240~277 (Un) | V | 33 |
+|  |  | mcov | 최대연속동작전압(Uc) | 385 | V | 33 |
+|  |  | tov | 일시적 과전압(TOV) | 403V/5s |  | 33 |
+| usp420 | USP420 (p.33) | ratedVoltage | 정격전압 | 277~347 (Un) | V | 33 |
+|  |  | mcov | 최대연속동작전압(Uc) | 420 | V | 33 |
+|  |  | tov | 일시적 과전압(TOV) | 504V/5s |  | 33 |
+| usp550 | USP550 (p.33) | ratedVoltage | 정격전압 | ~480 (Un) | V | 33 |
+|  |  | mcov | 최대연속동작전압(Uc) | 550 | V | 33 |
+|  |  | tov | 일시적 과전압(TOV) | 697V/5s |  | 33 |
+| usp690 | USP690 (p.33) | ratedVoltage | 정격전압 | ~600 (Un) | V | 33 |
+|  |  | mcov | 최대연속동작전압(Uc) | 690 | V | 33 |
+|  |  | tov | 일시적 과전압(TOV) | 872V/5s |  | 33 |
 
 ### P03083 USPV Series(Din Type)
 
@@ -422,13 +692,37 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 48~1500 (DC, Un) | V | 39 |
 | poles | 극수 | 1P, 2P, 3P, 5P |  | 39 |
 | nominalDischarge | 공칭방전전류(In) | 20 | kA | 39 |
 | maxDischarge | 최대방전전류(Imax) | 50 | kA | 39 |
-| sccr | 단락전류정격(SCCR) | 최대 100 | kA | 39 |
 | ipRating | 보호등급(IP) | IP20 |  | 39 |
 | standards | 적용 규격 | ANSI/UL1449 5th Type 1ca, IEC/EN 61643-11 Class II/Type 2 |  | 39 |
+
+옵션 기준: **모델** (7개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| uspv48 | USPV48 (p.39) | ratedVoltage | 정격전압 | 48 (DC, Un) | V | 39 |
+|  |  | maxDcVoltage | 최대 허용 직류전압 | 85 (Vpvd) | V | 39 |
+|  |  | sccr | 단락전류정격(SCCR) | 30 | kA | 39 |
+| uspv500 | USPV500 (p.39) | ratedVoltage | 정격전압 | 500 (DC, Un) | V | 39 |
+|  |  | maxDcVoltage | 최대 허용 직류전압 | 560 (Vpvd) | V | 39 |
+|  |  | sccr | 단락전류정격(SCCR) | 100 | kA | 39 |
+| uspv600 | USPV600 (p.39) | ratedVoltage | 정격전압 | 600 (DC, Un) | V | 39 |
+|  |  | maxDcVoltage | 최대 허용 직류전압 | 700 (Vpvd) | V | 39 |
+|  |  | sccr | 단락전류정격(SCCR) | 50 | kA | 39 |
+| uspv800 | USPV800 (p.39) | ratedVoltage | 정격전압 | 800 (DC, Un) | V | 39 |
+|  |  | maxDcVoltage | 최대 허용 직류전압 | 920 (Vpvd) | V | 39 |
+|  |  | sccr | 단락전류정격(SCCR) | 50 | kA | 39 |
+| uspv1000 | USPV1000 (p.39) | ratedVoltage | 정격전압 | 1000 (DC, Un) | V | 39 |
+|  |  | maxDcVoltage | 최대 허용 직류전압 | 1120 (Vpvd) | V | 39 |
+|  |  | sccr | 단락전류정격(SCCR) | 50 | kA | 39 |
+| uspv1200 | USPV1200 (p.39) | ratedVoltage | 정격전압 | 1200 (DC, Un) | V | 39 |
+|  |  | maxDcVoltage | 최대 허용 직류전압 | 1340 (Vpvd) | V | 39 |
+|  |  | sccr | 단락전류정격(SCCR) | 50 | kA | 39 |
+| uspv1500 | USPV1500 (p.39) | ratedVoltage | 정격전압 | 1500 (DC, Un) | V | 39 |
+|  |  | maxDcVoltage | 최대 허용 직류전압 | 1500 (Vpvd) | V | 39 |
+|  |  | sccr | 단락전류정격(SCCR) | 100 | kA | 39 |
 
 ### P03084 USPE Series(Panel Type)
 
@@ -441,72 +735,160 @@
 |---|---|---|---|---|
 | mcov | 최대연속동작전압(Uc) | 150, 320, 420, 550, 690 | V | 42 |
 | nominalDischarge | 공칭방전전류(In) | 10 | kA | 42 |
-| maxDischarge | 최대방전전류(Imax) | 25 / 50 (8/20μs) | kA | 42 |
 | sccr | 단락전류정격(SCCR) | 200 | kA | 42 |
 | frequency | 정격주파수 | 47~63 | Hz | 42 |
 | standards | 적용 규격 | ANSI/UL1449 5th, CSA C22.2 (Type1 SPD) |  | 42 |
+
+옵션 기준: **Surge Capacity** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 25ka | USPE 25kA (p.42) | maxDischarge | 최대방전전류(Imax) | 25 (8/20μs) | kA | 42 |
+| 50ka | USPE 50kA (p.42) | maxDischarge | 최대방전전류(Imax) | 50 (8/20μs) | kA | 42 |
 
 ### P01260 Metasol MS
 
 - 기기: 전자개폐기 (MC+열동계전기)
 - 카탈로그: [[Metasol MS]](https://www.ls-electric.com/ko/cat/%5BMetasol_MS%5D_KO_C04001-37-202609.pdf) · 대표 p.10
-- 비고: 기종일람표(p10~13) 기준. 3극형 MC + MT 열동형 과부하계전기. 프레임: p.10~13 표에 걸침. 과부하계전기 전류설정범위: p.10~13 표에 걸침. 적용 규격: IEC 60947은 p.10, UL 508은 p.3(목차)
-- 검수 상태: 페이지 정정(프레임·과부하·규격)
+- 비고: 기종 개요(p6~7)·기종일람표(p10~13) 기준, 대표 옵션만(전체 18~2650AF 13종 중 8종). 3극형 MC + MT 열동형 과부하계전기. 적용 규격: IEC 60947은 p.10, UL 508은 p.3(목차)
+- 검수 상태: 페이지 정정 반영(옵션별 페이지·규격 p10) · 옵션 Ue 매핑 검수 필요
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| frame | 프레임 | 18~2650 | AF | 10 |
-| ratedVoltage | 정격전압 | 690 (18·22AF) / 1000 (40AF 이상) (Ue) | V | 10 |
 | frequency | 정격주파수 | 50/60 | Hz | 10 |
 | poles | 극수 | 3 | P | 10 |
-| olrRange | 과부하계전기 전류설정범위 | 0.1~800 | A | 10 |
 | standards | 적용 규격 | IEC 60947, UL 508 |  | 10 |
+
+옵션 기준: **프레임** (8개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 18af | 18AF (MC-6a, 9a, 12a, 18a) (p.6) | frame | 프레임 | 18 | AF | 6 |
+|  |  | ratedCurrent | 정격전류 | 6, 9, 12, 18 | A | 6 |
+|  |  | ratedVoltage | 정격전압 | 690 (Ue) | V | 10 |
+|  |  | insulationVoltage | 정격절연전압 | 690 | V | 6 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 0.1~18 (MT-12) | A | 6 |
+| 40af | 40AF (MC-32a, 40a) (p.6) | frame | 프레임 | 40 | AF | 6 |
+|  |  | ratedCurrent | 정격전류 | 32, 40 | A | 6 |
+|  |  | ratedVoltage | 정격전압 | 1000 (Ue) | V | 11 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 6 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 0.1~40 (MT-32) | A | 6 |
+| 65af | 65AF (MC-50a, 65a) (p.6) | frame | 프레임 | 65 | AF | 6 |
+|  |  | ratedCurrent | 정격전류 | 50, 65 | A | 6 |
+|  |  | ratedVoltage | 정격전압 | 1000 (Ue) | V | 11 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 6 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 4~65 (MT-63) | A | 6 |
+| 100af | 100AF (MC-75a, 85a, 100a) (p.6) | frame | 프레임 | 100 | AF | 6 |
+|  |  | ratedCurrent | 정격전류 | 75, 85, 100 | A | 6 |
+|  |  | ratedVoltage | 정격전압 | 1000 (Ue) | V | 11 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 6 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 7~100 (MT-95) | A | 6 |
+| 225af | 225AF (MC-185a, 225a) (p.7) | frame | 프레임 | 225 | AF | 7 |
+|  |  | ratedCurrent | 정격전류 | 185, 225 | A | 7 |
+|  |  | ratedVoltage | 정격전압 | 1000 (Ue) | V | 12 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 7 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 65~240 (MT-225) | A | 7 |
+| 400af | 400AF (MC-265a, 330a, 400a) (p.7) | frame | 프레임 | 400 | AF | 7 |
+|  |  | ratedCurrent | 정격전류 | 265, 330, 400 | A | 7 |
+|  |  | ratedVoltage | 정격전압 | 1000 (Ue) | V | 12 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 7 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 85~400 (MT-400) | A | 7 |
+| 800af | 800AF (MC-500a, 630a, 800a) (p.7) | frame | 프레임 | 800 | AF | 7 |
+|  |  | ratedCurrent | 정격전류 | 500, 630, 800 | A | 7 |
+|  |  | ratedVoltage | 정격전압 | 1000 (Ue) | V | 13 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 7 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 200~800 (MT-800) | A | 7 |
+| 2650af | 2650AF (MC-1400a, 1700a, 2100a, 2650a) (p.7) | frame | 프레임 | 2650 | AF | 7 |
+|  |  | ratedCurrent | 정격전류 | 1400, 1700, 2100, 2650 | A | 7 |
+|  |  | ratedVoltage | 정격전압 | 1000 (Ue) | V | 13 |
+|  |  | insulationVoltage | 정격절연전압 | 1000 | V | 7 |
 
 ### P01261 Susol MS
 
 - 기기: 전자개폐기 (MC+열동계전기)
 - 카탈로그: [[Susol MC]](https://www.ls-electric.com/ko/cat/%5BSusol_MC%5D_KO_C04071-07-202005.pdf) · 대표 p.14
-- 비고: 이미지형 PDF(텍스트 없음) — 기종일람표(p14~15) 페이지 이미지를 판독
+- 비고: 이미지형 PDF(텍스트 없음) — 기종일람표(p14~15) 페이지 이미지를 판독. 적용 전동기 용량·정격전류는 AC-3, 380/440V 행
 - 검수 상태: 텍스트 확인 불가(이미지 PDF, 7항목 사람 판독값)
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| frame | 프레임 | 32 / 63 / 95 | AF | 14 |
 | ratedVoltage | 정격전압 | 1000 (Ue) | V | 14 |
 | frequency | 정격주파수 | 50/60 | Hz | 14 |
 | poles | 극수 | 3 | P | 14 |
-| motorPower | 적용 전동기 용량 | 4~45 (AC-3, 380/440V) | kW | 15 |
-| ratedCurrent | 정격전류 | 9~95 (AC-3, 380/440V) | A | 15 |
-| olrRange | 과부하계전기 전류설정범위 | 0.1~95 | A | 15 |
+
+옵션 기준: **프레임** (3개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 32af | 32AF (MC-9, 12, 18, 25, 32) (p.14) | frame | 프레임 | 32 | AF | 14 |
+|  |  | motorPower | 적용 전동기 용량 | 4, 5.5, 7.5, 11, 15 (AC-3, 380/440V) | kW | 14 |
+|  |  | ratedCurrent | 정격전류 | 9, 12, 18, 25, 32 (AC-3, 380/440V) | A | 14 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 0.1~32 (MT-32) | A | 14 |
+| 63af | 63AF (MC-35, 40, 50, 63) (p.15) | frame | 프레임 | 63 | AF | 15 |
+|  |  | motorPower | 적용 전동기 용량 | 18.5, 18.5, 22, 25 (AC-3, 380/440V) | kW | 15 |
+|  |  | ratedCurrent | 정격전류 | 35, 40, 50, 63 (AC-3, 380/440V) | A | 15 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 4~65 (MT-63) | A | 15 |
+| 95af | 95AF (MC-65, 75, 85, 95) (p.15) | frame | 프레임 | 95 | AF | 15 |
+|  |  | motorPower | 적용 전동기 용량 | 30, 37, 45, 45 (AC-3, 380/440V) | kW | 15 |
+|  |  | ratedCurrent | 정격전류 | 65, 75, 85, 95 (AC-3, 380/440V) | A | 15 |
+|  |  | olrRange | 과부하계전기 전류설정범위 | 7~95 (MT-95) | A | 15 |
 
 ### P01043 Mini MS
 
 - 기기: 전자개폐기 (MC+열동계전기)
 - 카탈로그: [[Mini MS]](https://www.ls-electric.com/ko/cat/%5BMini_MS%5D_KO_C04061-03-202609.pdf) · 대표 p.10
-- 비고: 기종일람표(p10) 및 특징(p4~5) 기준
+- 비고: 기종일람표(p10) 및 특징(p4~5) 기준. 특징(p4)에는 "7.5kW 이하의 소형 모터 부하"로 기재. 옵션 값은 AC3급 380~440V
 - 검수 상태: 자동 대조 통과(숫자·출처) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| frame | 프레임 | 6 / 9 | A | 10 |
-| motorPower | 적용 전동기 용량 | 7.5 이하 | kW | 4 |
 | insulationVoltage | 정격절연전압 | 690 | V | 10 |
 | ratedCurrent | 정격전류 | 20 (AC1급 연속통전전류) | A | 10 |
 | mounting | 설치·인출 방식 | 나사, DIN rail 취부 겸용 (35mm) |  | 10 |
 | standards | 적용 규격 | IEC 60947-4-1, IEC 60947-5-1, IEC 60947-1, K 60947, UL 508 |  | 5 |
 
+옵션 기준: **프레임** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 6a | 6A (GMC-6M) (p.10) | frame | 프레임 | 6 | A | 10 |
+|  |  | motorPower | 적용 전동기 용량 | 2.2 (AC3급, 380~440V) | kW | 10 |
+| 9a | 9A (GMC-9M) (p.10) | frame | 프레임 | 9 | A | 10 |
+|  |  | motorPower | 적용 전동기 용량 | 4 (AC3급, 380~440V) | kW | 10 |
+
 ### P01053 GMP
 
 - 기기: 전자식 모터보호 계전기
 - 카탈로그: [[GMP]](https://www.ls-electric.com/ko/cat/%5BGMP%5D_KO_C15041-07-202409.pdf) · 대표 p.4
-- 비고: 표준기종일람표(p4) 기준
+- 비고: 표준기종일람표(p4) 기준. 보호요소는 같은 모델 계열 안에서도 형명(2P/3P/3PR 등)에 따라 다름
 - 검수 상태: 자동 대조 통과(숫자·출처) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedCurrent | 정격전류 | 0.3~80 (전류 설정범위, 모델별) | A | 4 |
-| protection | 보호 기능 | 과전류, 구속, 결상, 불평형, 역상, 저전류, 지락 (모델별) |  | 4 |
-| mounting | 설치·인출 방식 | 직결형(Pin) / 단자형(Screw) / 관통형(Tunnel) |  | 4 |
+| standards | 적용 규격 | 안전인증(S마크) |  | 5 |
+
+옵션 기준: **모델** (6개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| gmp22 | GMP22 (p.4) | ratedCurrent | 정격전류 | 0.3~1.5 / 1~5 / 4.4~22 | A | 4 |
+|  |  | protection | 보호 기능 | 과전류, 구속, 결상 (3P: +불평형, 3PR: +역상) |  | 4 |
+|  |  | mounting | 설치·인출 방식 | 직결형(Pin) / 단자형(Screw) / 관통형(Tunnel) |  | 4 |
+| gmp22i | GMP22i (p.4) | ratedCurrent | 정격전류 | 0.3~3.6 / 1~12 / 2~22 | A | 4 |
+|  |  | protection | 보호 기능 | 과전류, 결상 (구속은 과전류로 동작) |  | 4 |
+|  |  | mounting | 설치·인출 방식 | 직결형(Pin) / 단자형(Screw) / 관통형(Tunnel) |  | 4 |
+| gmp40 | GMP40 (p.4) | ratedCurrent | 정격전류 | 4~20 / 8~40 | A | 4 |
+|  |  | protection | 보호 기능 | 과전류, 구속, 결상 (3P: +불평형, 3PR: +역상) |  | 4 |
+|  |  | mounting | 설치·인출 방식 | 직결형(Pin) / 단자형(Screw) / 관통형(Tunnel) |  | 4 |
+| gmp40i | GMP40i (p.4) | ratedCurrent | 정격전류 | 4~40 | A | 4 |
+|  |  | protection | 보호 기능 | 과전류, 결상 (구속은 과전류로 동작) |  | 4 |
+|  |  | mounting | 설치·인출 방식 | 직결형(Pin) / 단자형(Screw) / 관통형(Tunnel) |  | 4 |
+| gmp60 | GMP60 (p.4) | ratedCurrent | 정격전류 | 0.5~6 / 3~30 / 5~60 (GMP60T), 0.5~60 | A | 4 |
+|  |  | protection | 보호 기능 | 과전류, 구속, 결상 (3T/3S: +불평형, R: +역상, Z/N: +지락, TDa: +저전류) |  | 4 |
+|  |  | mounting | 설치·인출 방식 | 관통형(Tunnel) / 단자형(Screw) |  | 4 |
+| gmp80 | GMP80 (p.4) | ratedCurrent | 정격전류 | 16~80 | A | 4 |
+|  |  | protection | 보호 기능 | 과전류, 구속, 결상 (3S: +불평형, 3SR: +역상) |  | 4 |
+|  |  | mounting | 설치·인출 방식 | 단자형(Screw) |  | 4 |
 
 ### P01054 DMPi
 
@@ -517,11 +899,17 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedCurrent | 정격전류 | 0.5~6 / 5~65 (주문 시 선택) | A | 9 |
 | protection | 보호 기능 | 과전류, 구속, 결상, 불평형, 역상, 부족전류, 지락(선택), 순시단락(선택) |  | 9 |
 | communication | 통신 | RS485 Modbus, 4~20mA (형명 선택) |  | 9 |
 | auxPower | 제어전원 | AC/DC 85~260V, AC/DC 24V |  | 9 |
 | mounting | 설치·인출 방식 | 관통형/단자형, 35mm DIN rail/나사, 표시창 분리 설치 가능 |  | 9 |
+
+옵션 기준: **정격전류** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 06i | 06i (0.5~6A) (p.9) — 65A 이상 부하는 외부 CT와 함께 06i 선정 | ratedCurrent | 정격전류 | 0.5~6 | A | 9 |
+| 65i | 65i (5~65A) (p.9) | ratedCurrent | 정격전류 | 5~65 | A | 9 |
 
 ### P01056 MMP
 
@@ -532,61 +920,104 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedCurrent | 정격전류 | 0.5~10 / 5~100 (주문 시 선택) | A | 17 |
 | protection | 보호 기능 | 과전류, 구속(Stall/Locked), 결상/불평형 등 |  | 7 |
 | communication | 통신 | MODBUS TCP/IP, MODBUS RS485 |  | 17 |
 | auxPower | 제어전원 | AC 110V, AC 220V 50/60Hz |  | 17 |
 | accuracy | 계측 정밀도 | 전류·전압 ±1% 또는 최소정격의 ±2% |  | 17 |
 
+옵션 기준: **정격전류** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 10 | 10 (0.5~10A) (p.17) — 100A 이상 부하는 외부 CT와 함께 "10" 선정 | ratedCurrent | 정격전류 | 0.5~10 | A | 17 |
+| 100 | 100 (5~100A) (p.17) | ratedCurrent | 정격전류 | 5~100 | A | 17 |
+
 ### P02210 LVSS Soft Starter
 
 - 기기: 소프트 스타터
 - 카탈로그: [[LV Soft Stater]](https://www.ls-electric.com/ko/cat/%5BLV_Soft_Stater%5D_KO_C040C1-01-202203.pdf) · 대표 p.6
-- 비고: 선택 가이드(p6)·Specifications(p7) 기준
+- 비고: 선택 가이드(p6)·Specifications(p7) 기준. 옵션은 Trip Class 10 열 기준 대표 모델만(전체 17~1080A)
 - 검수 상태: 자동 대조 통과 · 통신 "(표준)/(옵션)" 주석 표기
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
 | ratedVoltage | 정격전압 | 200~480 | V | 6 |
 | frequency | 정격주파수 | 50/60 | Hz | 6 |
-| ratedCurrent | 정격전류 | 17~1080 | A | 6 |
-| motorPower | 적용 전동기 용량 | 7.5~630 (400V, Trip Class 10) | kW | 6 |
 | bypass | 바이패스 | Internally Bypassed |  | 7 |
 | communication | 통신 | Modbus RTU (표준) / Ethernet IP, Modbus TCP, Profibus DP (Anybus 옵션) |  | 7 |
 | standards | 적용 규격 | IEC 60947-4-2: 2012, CE, CETL, KC |  | 7 |
+
+옵션 기준: **용량 (Trip Class 10 선정 모델)** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| lvss-101 | LS-LVSS-101 (p.6) | ratedCurrent | 정격전류 | 17 | A | 6 |
+|  |  | motorPower | 적용 전동기 용량 | 4 (230V) / 7.5 (400V) / 7.5 (440V) | kW | 6 |
+| lvss-205 | LS-LVSS-205 (p.6) | ratedCurrent | 정격전류 | 195 | A | 6 |
+|  |  | motorPower | 적용 전동기 용량 | 55 (230V) / 110 (400V) / 132 (440V) | kW | 6 |
+| lvss-309 | LS-LVSS-309-1/-2 (p.6) | ratedCurrent | 정격전류 | 500 | A | 6 |
+|  |  | motorPower | 적용 전동기 용량 | 160 (230V) / 280 (400V) / 315 (440V) | kW | 6 |
+| lvss-505 | LS-LVSS-505-1/-2 (p.6) | ratedCurrent | 정격전류 | 1080 | A | 6 |
+|  |  | motorPower | 적용 전동기 용량 | 355 (230V) / 630 (400V) / 670 (440V) | kW | 6 |
 
 ### P01045 Motorsol Soft Starter
 
 - 기기: 소프트 스타터
 - 카탈로그: [[Soft Starter]](https://www.ls-electric.com/ko/cat/%5BSoft_Starter%5D_KO_C01581-07-201803.pdf) · 대표 p.8
-- 비고: LSFS 단방향(S) 기종일람표(p8~9) 기준. 적용 전동기 용량: p.8~9 표에 걸침. 정격전류: p.8~9 표에 걸침
-- 검수 상태: 페이지 정정(전동기·전류) · 냉각 요약 표기
+- 비고: LSFS 단방향(S) 기종일람표(p8~9) 기준, 380V급 대표 모델만(전체 2.2~600kW)
+- 검수 상태: 페이지 정정 반영(옵션별 p8·p9) · 냉각 요약 표기
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
 | ratedVoltage | 정격전압 | 220 / 380 / 440 | V | 8 |
-| motorPower | 적용 전동기 용량 | 2.2~600 | kW | 8 |
-| ratedCurrent | 정격전류 | 7.5~1200 | A | 8 |
 | frequency | 정격주파수 | 50 / 60 | Hz | 8 |
 | insulation | 절연·냉각 방식 | 방열판 자연냉각 및 방열판+Fan 강제냉각 |  | 8 |
 | standards | 적용 규격 | EN 61131-2, EN 50178 |  | 8 |
+
+옵션 기준: **용량** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 3-7kw | 3.7kW (LSFS 3003 S) (p.8) | motorPower | 적용 전동기 용량 | 3.7 | kW | 8 |
+|  |  | ratedCurrent | 정격전류 | 7.5 (380/440V) | A | 8 |
+| 37kw | 37kW (LSFS 3037 S) (p.8) | motorPower | 적용 전동기 용량 | 37 | kW | 8 |
+|  |  | ratedCurrent | 정격전류 | 75 (380/440V) | A | 8 |
+| 150kw | 150kW (LSFS 3150 S) (p.9) | motorPower | 적용 전동기 용량 | 150 | kW | 9 |
+|  |  | ratedCurrent | 정격전류 | 300 (380/440V) | A | 9 |
+| 600kw | 600kW (LSFS 3600 S) (p.9) | motorPower | 적용 전동기 용량 | 600 | kW | 9 |
+|  |  | ratedCurrent | 정격전류 | 1200 (380/440V) | A | 9 |
 
 ### P01188 iS7
 
 - 기기: 저압 인버터
 - 카탈로그: [iS7 카탈로그](https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16957054248320/iS7_Catalog_KR_202309.pdf) · 대표 p.13
-- 비고: 기본규격(p13~15) 기준. 적용 전동기는 중부하(CT) 기준(경부하 VT 기준 400V급은 450kW까지). 적용 전동기 용량: p.13~14 표에 걸침
-- 검수 상태: T2 대조 일치(IP) · 페이지 정정(전동기) · 통신 요약 표기
+- 비고: 기본규격(p13~15) 기준. 적용 전동기·정격전류(출력)는 중부하(CT) 기준(경부하 VT 기준 400V급은 450kW까지)
+- 검수 상태: T2 대조 일치(IP) · 페이지 정정 반영(옵션별 p13·p14) · 통신 요약 표기
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 3상 200~230 / 3상 380~480 | VAC | 13 |
-| motorPower | 적용 전동기 용량 | 0.75~75 (200V급) / 0.75~375 (400V급), 중부하(CT) | kW | 13 |
 | frequency | 정격주파수 | 입력 50~60 (±5%) / 출력 0~400 | Hz | 13 |
 | protection | 보호 기능 | 과전류, 과전압, 저전압, 지락 전류 검출, 과열, 입출력 결상, 과부하 등 |  | 15 |
 | insulation | 절연·냉각 방식 | 강제 풍냉 |  | 15 |
 | ipRating | 보호등급(IP) | IP 21 (75kW 이하), IP 00 (200V 30~75kW·90kW 이상), IP 54 (22kW 이하 별도제품) |  | 15 |
 | communication | 통신 | 옵션: Profibus DP, DeviceNet, CANopen, Ethernet IP/Modbus-TCP, PROFInet 등 |  | 7 |
+
+옵션 기준: **전압·용량 등급** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 200v-0-75-22kw | 200V급 0.75~22kW (p.13) | ratedVoltage | 정격전압 | 3상 200~230 | VAC | 13 |
+|  |  | motorPower | 적용 전동기 용량 | 0.75~22 (CT) | kW | 13 |
+|  |  | ratedCurrent | 정격전류 | 5~88 (CT, 출력) | A | 13 |
+| 200v-30-75kw | 200V급 30~75kW (p.13) | ratedVoltage | 정격전압 | 3상 200~230 | VAC | 13 |
+|  |  | motorPower | 적용 전동기 용량 | 30~75 (CT) | kW | 13 |
+|  |  | ratedCurrent | 정격전류 | 116~288 (CT, 출력) | A | 13 |
+| 400v-0-75-22kw | 400V급 0.75~22kW (p.13) | ratedVoltage | 정격전압 | 3상 380~480 | VAC | 13 |
+|  |  | motorPower | 적용 전동기 용량 | 0.75~22 (CT) | kW | 13 |
+|  |  | ratedCurrent | 정격전류 | 2.5~45 (CT, 출력) | A | 13 |
+| 400v-30-375kw | 400V급 30~375kW (p.14) | ratedVoltage | 정격전압 | 3상 380~480 | VAC | 14 |
+|  |  | motorPower | 적용 전동기 용량 | 30~375 (CT) | kW | 14 |
+|  |  | ratedCurrent | 정격전류 | 61~731 (CT, 출력) | A | 14 |
 
 ### P01184 S100
 
@@ -597,44 +1028,80 @@
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 1상 200~240 / 3상 200~240 / 3상 380~480 | V | 12 |
-| motorPower | 적용 전동기 용량 | 1Ø 200V: 0.4~2.2 / 3Ø 200V: 0.4~15 / 3Ø 400V: 0.4~75 | kW | 95 |
 | frequency | 정격주파수 | 입력 50~60 (±5%) | Hz | 14 |
 | protection | 보호 기능 | 과전류, 과전압, 저전압, 입력·출력 결상, 지락, 인버터·모터 과부하 등 트립 |  | 16 |
 | ipRating | 보호등급(IP) | IP20/UL Open (기본), UL Enclosed Type 1·IP66/NEMA 4X (옵션) |  | 16 |
 | communication | 통신 | 내장 RS485 / Field Bus: Ethernet IP, Modbus TCP, CANopen, EtherCAT, PROFInet |  | 6 |
 
+옵션 기준: **입력 전압** (3개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 1ph-200v | 1Ø 200V (p.95) | ratedVoltage | 정격전압 | 1상 200~240 | VAC | 12 |
+|  |  | motorPower | 적용 전동기 용량 | 0.4~2.2 | kW | 95 |
+|  |  | ip66Power | IP66/NEMA4X 적용 용량 | 0.4~2.2 | kW | 95 |
+| 3ph-200v | 3Ø 200V (p.95) | ratedVoltage | 정격전압 | 3상 200~240 | VAC | 12 |
+|  |  | motorPower | 적용 전동기 용량 | 0.4~15 | kW | 95 |
+|  |  | ip66Power | IP66/NEMA4X 적용 용량 | 0.4~15 | kW | 95 |
+| 3ph-400v | 3Ø 400V (p.95) | ratedVoltage | 정격전압 | 3상 380~480 | VAC | 12 |
+|  |  | motorPower | 적용 전동기 용량 | 0.4~75 | kW | 95 |
+|  |  | ip66Power | IP66/NEMA4X 적용 용량 | 0.4~22 | kW | 95 |
+
 ### P01247 G100/G100C
 
 - 기기: 저압 인버터
 - 카탈로그: [G100(C) 카탈로그](https://ssq.ls-electric.com/uploads/document/17531425436680/G100%20Series_Catalog_KR_202506.pdf) · 대표 p.11
-- 비고: 기본 규격(p11~12) 기준. G100C는 0.4~4kW
+- 비고: 기본 규격(p11~12) 기준. 적용 전동기·정격전류(출력)는 중부하 기준. G100C는 0.4~4kW
 - 검수 상태: 자동 대조 통과(숫자·출처) · 미검수
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 3상 200~240 / 3상 380~480 | VAC | 11 |
-| motorPower | 적용 전동기 용량 | 0.4~22 (중부하) | kW | 11 |
 | frequency | 정격주파수 | 입력 50~60 (±5%) / 출력 0~400 | Hz | 11 |
 | protection | 보호 기능 | 과전류, 암 단락, 과열, 입력 결상, 지락, 모터 과열 등 트립 |  | 12 |
 | ipRating | 보호등급(IP) | IP 20, UL Open Type |  | 12 |
 | communication | 통신 | RAPIEnet+ (RAPIEnet, EtherNet/IP, Modbus TCP) |  | 3 |
 | standards | 적용 규격 | UL 61800-5-1, EN 61508 SIL2 |  | 3 |
 
+옵션 기준: **입력 전압** (2개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 200v | 3-phase 200V급 (p.11) | ratedVoltage | 정격전압 | 3상 200~240 | VAC | 11 |
+|  |  | motorPower | 적용 전동기 용량 | 0.4~22 (중부하) | kW | 11 |
+|  |  | ratedCurrent | 정격전류 | 2.5~88 (중부하, 출력) | A | 11 |
+| 400v | 3-phase 400V급 (p.11) | ratedVoltage | 정격전압 | 3상 380~480 | VAC | 11 |
+|  |  | motorPower | 적용 전동기 용량 | 0.4~22 (중부하) | kW | 11 |
+|  |  | ratedCurrent | 정격전류 | 1.3~45 (중부하, 출력) | A | 11 |
+
 ### P01183 H100
 
 - 기기: 저압 인버터
 - 카탈로그: [H100 카탈로그](https://ssq.ls-electric.com/uploads/document/17936100709070/H100_KO_C55041-31-202611.pdf) · 대표 p.12
-- 비고: 입·출력 규격(p12~13) 기준. 팬·펌프(HVAC) 전용. 적용 전동기 용량: p.12~13 표에 걸침
-- 검수 상태: 페이지 정정(전동기)
+- 비고: 입·출력 규격(p12~13) 기준. 팬·펌프(HVAC) 전용
+- 검수 상태: 페이지 정정 반영(옵션별 p12·p13)
 
 | key | 항목 | 값 | 단위 | 페이지 |
 |---|---|---|---|---|
-| ratedVoltage | 정격전압 | 3상 200~240 / 3상 380~480 / 3상 380~500 (110kW 이상) | VAC | 12 |
-| motorPower | 적용 전동기 용량 | 0.75~18.5 (200V급) / 0.75~750 (400V급) | kW | 12 |
 | frequency | 정격주파수 | 입력 50~60 (±5%) / 출력 0~400 | Hz | 12 |
 | communication | 통신 | 내장(RS-485): BACnet, Modbus-RTU, Metasys N2 / 옵션: LonWorks, BACnet/IP, EtherNet/IP, Modbus TCP 등 |  | 5 |
 | ipRating | 보호등급(IP) | IP 20 (0.75~185kW), IP00 (220~500kW) |  | 14 |
+
+옵션 기준: **전압·용량 등급** (4개)
+
+| 옵션 id | 옵션 | key | 항목 | 값 | 단위 | 페이지 |
+|---|---|---|---|---|---|---|
+| 200v-0-75-18-5kw | 3상 200V급 (0.75~18.5kW) (p.12) | ratedVoltage | 정격전압 | 3상 200~240 / 단상 240 | VAC | 12 |
+|  |  | motorPower | 적용 전동기 용량 | 0.75~18.5 | kW | 12 |
+|  |  | ratedCurrent | 정격전류 | 5~69 (출력) | A | 12 |
+| 400v-0-75-22kw | 3상 400V급 (0.75~22kW) (p.12) | ratedVoltage | 정격전압 | 3상 380~480 / 단상 480 | VAC | 12 |
+|  |  | motorPower | 적용 전동기 용량 | 0.75~22 | kW | 12 |
+|  |  | ratedCurrent | 정격전류 | 2.5~45 (출력) | A | 12 |
+| 400v-30-90kw | 3상 400V급 (30~90kW) (p.12) | ratedVoltage | 정격전압 | 3상 380~480 / 단상 480 | VAC | 12 |
+|  |  | motorPower | 적용 전동기 용량 | 30~90 | kW | 12 |
+|  |  | ratedCurrent | 정격전류 | 61~169 (출력) | A | 12 |
+| 400v-110-750kw | 3상 400V급 (110~750kW) (p.13) | ratedVoltage | 정격전압 | 3상 380~500 | VAC | 13 |
+|  |  | motorPower | 적용 전동기 용량 | 110~750 | kW | 13 |
+|  |  | ratedCurrent | 정격전류 | 223~1200 (출력) | A | 13 |
 
 ## 추출 실패·건너뛴 제품
 
@@ -652,18 +1119,20 @@
 | P01055 IMP, P01077 DPR1000, GIMAC-PQ/II Plus/DC/B 등 | — | 각 기기 | 기기당 2~3개 비교 목표를 채워 우선순위에서 제외 |
 | P03085 USPB, P03086 USPC | 서지보호기 | 같은 카탈로그에 형명별 결선표만 있고 시리즈 정격표가 텍스트로 명확히 분리되지 않아 제외 |
 
-## 신뢰도가 낮은 값 (10건, 위 '사람 검수 우선' 3건 포함)
+## 신뢰도가 낮은 값 (12건, 위 '사람 검수 우선' 항목 포함)
 
-1. **P02212 GIPAM1000 통신**: 정격표(p12)와 특징(p3) 불일치 — 정격표 값 사용. (사람 검수 우선)
+1. **P02212 GIPAM1000 통신**: 정격표(p12)는 RS-485 Modbus만, 통신기능(p11)은 DNP3.0·MODBUS·IEC61850 — 옵션 재구성 때 p11 값으로 교체. (사람 검수 우선)
 2. **P00206 Susol ACB**: 1150Vac 고전압판 값(차단전류 85/65kA는 G-Frame 최대). (사람 검수 우선)
 3. **P01021 Susol MCCB**: 1000Vac UTV 시리즈 값. (사람 검수 우선)
 4. **P01062 Susol VCB**: VL type 전동인출형 카탈로그 값. T2 대조로 p3 숫자 모두 확인됨.
 5. **P01261 Susol MC**: 이미지 판독값(텍스트 레이어 없음, T2 텍스트 대조 불가).
-6. **P01260 Metasol MS**: 적용 전동기 용량은 대형 프레임 표 열 정렬이 불확실해 넣지 않음. 페이지 정정 완료.
+6. **P01260 Metasol MS**: 적용 전동기 용량은 대형 프레임 표 열 정렬이 불확실해 넣지 않음. 옵션(프레임)별 Ue는 기종일람표 p10~13 프레임 열에서 읽음.
 7. **P01024 / P01028 분전반용**: ABE/EBE Fb 경제형 1개 시리즈만 대표값으로 사용.
 8. **P01084 GIMAC-V**: APFC 정격표 값. (사람 검수 우선)
 9. **P01109 유입변압기**: 전력용·배전용 값 혼재(항목 분리). T2 대조 일치.
 10. **P01188 iS7**: IP 등급 요약 — T2 대조로 원문과 일치 확인. 전동기 용량은 중부하(CT) 기준(VT 기준 400V급 450kW)으로 값에 명시.
+11. **P01065 발전소용 VCB**: 모델(40H/40J/50J)별 정격전류·차단전류 열 구분을 텍스트 순서와 형명으로 읽음. (사람 검수 우선)
+12. **P01027 Metasol ELCB 125AF**: 정격전류 셀이 두 줄로 나뉘어 추출됨(같은 셀로 판단). 100AF 이상 정격차단전류는 열 정렬이 불명확해 넣지 않음.
 
 ## 2026-11-18 정정 내역 (T2 대조 M7 반영)
 
@@ -678,3 +1147,10 @@
 | P01188 | 적용 전동기 용량 | page 14 → 13, 값에 "중부하(CT)" 추가, note "p.13~14 표에 걸침" |
 | P01183 | 적용 전동기 용량 | page 13 → 12, note "p.12~13 표에 걸침" |
 | P01110 | 절연·냉각 방식 | "F종 (Epoxy Resin 몰드)" → "F종" (p14 정격표 표기 그대로) |
+
+## 2026-11-18 옵션 구조 재구성 메모
+
+- 옵션 분리 31개 제품, 옵션을 두지 않은 제품 4개: P01075 GIPAM115FI(단일 모델), P01084 GIMAC-V, P01079 GIMAC-IV, P01255 GIMAC1000(각각 단일 모델 정격표).
+- 옵션 분리로 이전 페이지 정정 9건 중 범위 걸침 7건은 옵션별 페이지로 해소됨(P01021·P01260·P01045·P01188·P01183). P01260 규격 p10, P01110 "F종" p14 정정은 유지.
+- 새 비표준 key: powerFreqWithstand(상용주파 내전압), impulseWithstand(뇌임펄스 내전압), impedance(임피던스), efficiency50(효율 (50% 부하)), weight(중량), tov(일시적 과전압(TOV)), maxDcVoltage(최대 허용 직류전압), pulseOutput(외부출력(펄스)), ip66Power(IP66/NEMA4X 적용 용량). 공통·옵션 항목 전체에서 key↔label 1:1 확인.
+- 데이터 무결성 테스트(DI-93·94·95·96·97)는 공통 items만 검사하고 variants 항목은 검사하지 않음. DI-96(items 1~10)은 스키마(공통 items 빈 배열 허용)와 다름 — 현재 데이터는 모든 제품에 공통 항목을 1개 이상 두어 충돌하지 않음.

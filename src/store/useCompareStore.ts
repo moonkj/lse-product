@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { getData } from '../data/load';
+import { getData, type AppData } from '../data/load';
 
 /**
  * 비교 담기 목록 (2026-11-18 비교 기능). 기기와 제품은 별도 목록, 각 최대 4개.
@@ -10,6 +10,12 @@ import { getData } from '../data/load';
  *  - B2 데이터에서 사라진 id 는 불러올 때·담을 때 목록에서 정리하고 정리 결과를 저장 (가득 판정은 유효 id 기준).
  *  - M1 여러 탭: storage 이벤트로 다른 탭의 변경을 받아 반영하고, 변경 직전에도 저장소를 다시 읽어
  *    다른 탭이 바꾼 목록 위에 내 변경을 얹는다 (덮어써서 유실되지 않게).
+ *
+ * 사양 옵션 (2026-11-18 "사양이 모델 옵션별로 다름"):
+ *  - 제품 목록의 항목은 "P00206"(시리즈 전체) 또는 "P00206:4000af"(옵션) — 같은 제품의 다른 옵션은 다른 항목.
+ *    기존 저장값(옵션 없는 id)은 그대로 유효.
+ *  - B2 정리 규칙은 **제품 존재** 기준만 본다. 옵션 id 가 사양에 실제로 있는지는 여기서 검증하지 않는다
+ *    (specs.json 은 지연 로딩이라 담기 store 가 기다릴 수 없음) → 비교 화면이 "시리즈 전체"로 되돌리고 안내.
  */
 export type CompareKind = 'equipment' | 'product';
 export const COMPARE_MAX = 4;
@@ -29,13 +35,41 @@ export interface CompareState extends Persisted {
   setActive: (kind: CompareKind) => void;
 }
 
+/** 비교 항목 id 의 옵션 구분자 (URL 에도 그대로: ids=P00206:4000af) */
+export const VARIANT_SEP = ':';
+const VARIANT_ID_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/**
+ * 비교 항목 id 나누기: "P00206:4000af" → { baseId: 'P00206', variantId: '4000af' }, "P00206" → { baseId: 'P00206' }.
+ * 구분자 뒤가 비어 있으면 variantId = '' (형식 오류 — compareIdInData 가 거른다).
+ */
+export function splitCompareId(id: string): { baseId: string; variantId?: string } {
+  const i = id.indexOf(VARIANT_SEP);
+  return i === -1 ? { baseId: id } : { baseId: id.slice(0, i), variantId: id.slice(i + 1) };
+}
+
+/** 비교 항목 id 만들기 (옵션 없으면 제품 id 그대로) */
+export function joinCompareId(baseId: string, variantId?: string): string {
+  return variantId ? `${baseId}${VARIANT_SEP}${variantId}` : baseId;
+}
+
+/**
+ * 데이터에 있는 비교 항목인가 — 기기: id 그대로, 제품: 제품 id 가 있고 옵션 부분은 kebab-case 형식이면 통과
+ * (옵션이 사양에 실제로 있는지는 보지 않음 — 비교 화면에서 처리)
+ */
+export function compareIdInData(kind: CompareKind, id: string, data: AppData): boolean {
+  if (kind === 'equipment') return data.equipmentTypeById.has(id);
+  const { baseId, variantId } = splitCompareId(id);
+  if (variantId !== undefined && !VARIANT_ID_RE.test(variantId)) return false;
+  return data.productById.has(baseId);
+}
+
 const empty: Persisted = { equipment: [], product: [], active: 'equipment' };
 
 /** 데이터에 있는 id 인가. 데이터 검증이 실패하면(렌더 중 ErrorBoundary 가 따로 처리) 정리하지 않는다 */
 function exists(kind: CompareKind, id: string): boolean {
   try {
-    const data = getData();
-    return kind === 'equipment' ? data.equipmentTypeById.has(id) : data.productById.has(id);
+    return compareIdInData(kind, id, getData());
   } catch {
     return true;
   }
@@ -147,7 +181,7 @@ export const useCompareStore = create<CompareState>()((set, get) => {
   };
 });
 
-/** 비교 화면 주소 */
+/** 비교 화면 주소 — 옵션 구분자 ':' 는 인코딩하지 않고 그대로 둔다 (ids=P00206:4000af,P01021) */
 export function compareHref(kind: CompareKind, list: string[]): string {
-  return `/compare?type=${kind}&ids=${list.map(encodeURIComponent).join(',')}`;
+  return `/compare?type=${kind}&ids=${list.map((id) => encodeURIComponent(id).replace(/%3A/gi, VARIANT_SEP)).join(',')}`;
 }

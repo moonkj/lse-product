@@ -36,9 +36,20 @@ import {
   specProductCount,
   specValueText,
   compareKey,
+  columnSpecEntries,
+  findVariant,
+  hasVariants,
+  joinCompareId,
+  resolveProductColumn,
+  specEntriesKey,
+  splitCompareId,
+  variantDisplayName,
+  variantSpecRows,
+  type SpecEntry,
 } from '../../../src/lib/pages/compare';
+import type { ProductSpecs } from '../../../src/lib/schema';
 import { equipmentForProduct } from '../../../src/lib/pages/catalog';
-import { COMPARE_MAX } from '../../../src/store/useCompareStore';
+import { COMPARE_MAX, compareHref } from '../../../src/store/useCompareStore';
 import { DOCS, FAKE_SPECS, URL1 } from './compare-fixture';
 
 const parse = (q: string) => parseCompareParams(new URLSearchParams(q));
@@ -254,5 +265,167 @@ describe('UT-13 linkedEquipment — 상류·하류 연결 기기 (모선 건너�
     expect(linkedEquipment('eq-nonode', 'in')).toEqual([]);
     expect(linkedEquipment('eq-a', 'in')[0].label).toBe('UP');
     expect(linkedEquipment('eq-up', 'out')[1].label).toBe('기기 B');
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// v1.1 사양 옵션(variants) — 합성 사양으로, 기대값은 손으로
+// ─────────────────────────────────────────────────────────────
+const V_SPECS: ProductSpecs = {
+  items: [
+    { key: 'ratedVoltage', label: '정격전압', value: '690', unit: 'V', page: 3 },
+    { key: 'poles', label: '극수', value: '3', unit: 'P' },
+  ],
+  variantAxis: '프레임',
+  variants: [
+    {
+      id: 'a',
+      label: 'A형',
+      page: 7,
+      items: [
+        { key: 'frame', label: '프레임', value: '250', unit: 'AF' },
+        { key: 'ratedCurrent', label: '정격전류', value: '100', unit: 'A', page: 8 },
+      ],
+    },
+    {
+      id: 'b-2',
+      label: 'B형',
+      items: [
+        { key: 'frame', label: '프레임', value: '400', unit: 'AF' },
+        { key: 'poles', label: '극수', value: '4', unit: 'P', page: 9 }, // 공통과 같은 key → 옵션 선택 시 옵션 값 우선
+        { key: 'ipRating', label: '보호등급(IP)', value: 'IP20' },
+      ],
+    },
+  ],
+  source: { title: '[V] 카탈로그', url: URL1, page: 2 },
+  extractedAt: '2026-11-18',
+  reviewed: false,
+};
+const NO_V_SPECS: ProductSpecs = { ...V_SPECS, variants: undefined, variantAxis: undefined };
+/** 키 → "값(옵션id@페이지)" 목록 */
+const view = (m: Map<string, SpecEntry[]>) =>
+  Object.fromEntries([...m].map(([k, list]) => [k, list.map((e) => `${e.item.value}${e.variant ? `(${e.variant.id})` : ''}@${e.page ?? '-'}`)]));
+
+describe('UT-13 (v1.1) 비교 id "제품:옵션"', () => {
+  it('splitCompareId·joinCompareId', () => {
+    expect(splitCompareId('P90001:ts250')).toEqual({ baseId: 'P90001', variantId: 'ts250' });
+    expect(splitCompareId('P90001')).toEqual({ baseId: 'P90001' });
+    expect(splitCompareId('P90001:')).toEqual({ baseId: 'P90001', variantId: '' });
+    expect(splitCompareId('P90001:a:b')).toEqual({ baseId: 'P90001', variantId: 'a:b' });
+    expect(joinCompareId('P90001', 'ts250')).toBe('P90001:ts250');
+    expect(joinCompareId('P90001')).toBe('P90001');
+    expect(joinCompareId('P90001', '')).toBe('P90001');
+  });
+
+  it('parseCompareParams: "제품:옵션" 허용(옵션 실존 여부는 안 봄), "P:" ·대문자·이중 구분자·없는 제품은 missing', () => {
+    expect(parse('type=product&ids=P90001:ts250,P90001:not-in-specs,P90001')).toEqual({
+      type: 'product',
+      ids: ['P90001:ts250', 'P90001:not-in-specs', 'P90001'],
+      missing: [],
+      overflow: [],
+    });
+    expect(parse('type=product&ids=P90001:,P90001:TS,P90001:a:b,P99999:a,P90002').missing).toEqual(['P90001:', 'P90001:TS', 'P90001:a:b', 'P99999:a']);
+    expect(parse('type=product&ids=P90001:a,P90001:a,P90001:b').ids).toEqual(['P90001:a', 'P90001:b']); // 같은 조합만 합침
+    expect(parse('type=product&ids=P90001:a,P90001:b,P90001:c,P90001:d,P90001:e').overflow).toEqual(['P90001:e']);
+    expect(parse('type=product&ids=P90001%3Aa').ids).toEqual(['P90001:a']); // 인코딩돼 와도 같음
+    expect(parse('type=equipment&ids=eq-a:x').missing).toEqual(['eq-a:x']); // 기기는 옵션 없음
+  });
+
+  it('compareHref: ":" 는 그대로, 그 밖의 특수문자는 인코딩', () => {
+    expect(compareHref('product', ['P90001:ts250', 'P90002'])).toBe('/compare?type=product&ids=P90001:ts250,P90002');
+    expect(compareHref('product', ['P 1:a', 'x,y'])).toBe('/compare?type=product&ids=P%201:a,x%2Cy');
+  });
+});
+
+describe('UT-13 (v1.1) 옵션 헬퍼', () => {
+  it('findVariant·hasVariants·variantDisplayName', () => {
+    expect(findVariant(V_SPECS, 'b-2')?.label).toBe('B형');
+    expect(findVariant(V_SPECS, 'zz')).toBeUndefined();
+    expect(findVariant(V_SPECS, undefined)).toBeUndefined();
+    expect(findVariant(undefined, 'a')).toBeUndefined();
+    expect(findVariant(NO_V_SPECS, 'a')).toBeUndefined();
+    expect(hasVariants(V_SPECS)).toBe(true);
+    expect(hasVariants(NO_V_SPECS)).toBe(false);
+    expect(hasVariants({ ...V_SPECS, variants: [] })).toBe(false);
+    expect(hasVariants(undefined)).toBe(false);
+    expect(variantDisplayName('Smart MCCB', 'TS250')).toBe('Smart MCCB · TS250');
+    expect(variantDisplayName('Smart MCCB')).toBe('Smart MCCB');
+  });
+
+  it('columnSpecEntries(옵션 선택): 공통 + 그 옵션, 같은 key 는 옵션 값 우선, 페이지 = item → 옵션 page (source 아님)', () => {
+    expect(view(columnSpecEntries(V_SPECS, 'a'))).toEqual({
+      ratedVoltage: ['690@3'],
+      poles: ['3@-'],
+      frame: ['250(a)@7'],
+      ratedCurrent: ['100(a)@8'],
+    });
+    expect(view(columnSpecEntries(V_SPECS, 'b-2'))).toEqual({
+      ratedVoltage: ['690@3'],
+      frame: ['400(b-2)@-'],
+      poles: ['4(b-2)@9'],
+      ipRating: ['IP20(b-2)@-'],
+    });
+  });
+
+  it('columnSpecEntries(시리즈 전체·틀린 옵션): 공통 + 옵션마다 값 하나씩 (합치기 없음)', () => {
+    const series = {
+      ratedVoltage: ['690@3'],
+      poles: ['3@-', '4(b-2)@9'],
+      frame: ['250(a)@7', '400(b-2)@-'],
+      ratedCurrent: ['100(a)@8'],
+      ipRating: ['IP20(b-2)@-'],
+    };
+    expect(view(columnSpecEntries(V_SPECS))).toEqual(series);
+    expect(view(columnSpecEntries(V_SPECS, 'zz'))).toEqual(series);
+    expect(view(columnSpecEntries(NO_V_SPECS, 'a'))).toEqual({ ratedVoltage: ['690@3'], poles: ['3@-'] });
+  });
+
+  it('specEntriesKey: 시리즈 열은 "옵션label=값", 옵션 열은 값만 (정규화)', () => {
+    const frame = columnSpecEntries(V_SPECS).get('frame')!;
+    expect(specEntriesKey(frame, true)).toBe('a형=250af|b형=400af');
+    expect(specEntriesKey(frame)).toBe('250af|400af');
+    // 공통 값은 시리즈 모드에서도 label 없음
+    expect(specEntriesKey(columnSpecEntries(V_SPECS).get('poles')!, true)).toBe('3p|b형=4p');
+    // 다른 옵션의 같은 값 → 옵션 열끼리는 같은 문자열 (차이만 보기에서 숨김)
+    const va = columnSpecEntries(V_SPECS, 'a').get('ratedVoltage')!;
+    const vb = columnSpecEntries(V_SPECS, 'b-2').get('ratedVoltage')!;
+    expect(specEntriesKey(va)).toBe(specEntriesKey(vb));
+    expect(specEntriesKey([])).toBe('');
+  });
+
+  it('variantSpecRows: 행 = 옵션 key (SPEC_KEYS 순 → 비표준), 열 = 옵션, 없으면 빈 칸, 공통 key 는 옵션에 있을 때만', () => {
+    const rows = variantSpecRows(V_SPECS);
+    expect(rows.map((r) => [r.key, r.label])).toEqual([
+      ['ratedCurrent', '정격전류'],
+      ['frame', '프레임'],
+      ['poles', '극수'],
+      ['ipRating', '보호등급(IP)'],
+    ]);
+    expect(rows.map((r) => r.cells.map((c) => c.map((e) => `${e.item.value}@${e.page ?? '-'}`)))).toEqual([
+      [['100@8'], []],
+      [['250@7'], ['400@-']],
+      [[], ['4@9']],
+      [[], ['IP20@-']],
+    ]);
+    expect(variantSpecRows(NO_V_SPECS)).toEqual([]);
+  });
+
+  it('resolveProductColumn: 옵션 확인, 틀린 옵션 → 시리즈 전체 + invalidVariantId, 사양 미로딩이면 그대로', () => {
+    expect(resolveProductColumn('P90001', V_SPECS, true)).toEqual({ colId: 'P90001', productId: 'P90001' });
+    const ok = resolveProductColumn('P90001:a', V_SPECS, true);
+    expect([ok.colId, ok.productId, ok.variant?.id, ok.invalidVariantId]).toEqual(['P90001:a', 'P90001', 'a', undefined]);
+    expect(resolveProductColumn('P90001:zz', V_SPECS, true)).toEqual({ colId: 'P90001', productId: 'P90001', invalidVariantId: 'zz' });
+    expect(resolveProductColumn('P90001:a', NO_V_SPECS, true)).toEqual({ colId: 'P90001', productId: 'P90001', invalidVariantId: 'a' });
+    expect(resolveProductColumn('P90001:a', undefined, true)).toEqual({ colId: 'P90001', productId: 'P90001', invalidVariantId: 'a' });
+    expect(resolveProductColumn('P90001:a', undefined, false)).toEqual({ colId: 'P90001:a', productId: 'P90001' });
+  });
+
+  it('equipmentSpecMap: 공통 값 다음 옵션 값을 옵션 순서대로, 항목에 variant', () => {
+    const specs = new Map([...FAKE_SPECS, ['P90002', { ...V_SPECS }]]);
+    const m = equipmentSpecMap('eq-a', specs);
+    const f = (k: string) => m.get(k)!.map((e) => `${e.product.id}:${e.item.value}${e.variant ? `(${e.variant.id})` : ''}`);
+    expect(f('frame')).toEqual(['P90002:250(a)', 'P90002:400(b-2)']);
+    expect(f('poles')).toEqual(['P90001:3', 'P90001:4', 'P90002:3', 'P90002:4(b-2)']);
+    expect(f('ratedVoltage')).toEqual(['P90001:690', 'P90002:690']);
   });
 });

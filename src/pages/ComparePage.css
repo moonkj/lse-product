@@ -140,6 +140,32 @@
 .cmp-specs__value { font-weight: var(--fw-bold); color: var(--color-text); }
 .cmp-page { margin-left: 6px; font-size: var(--fs-xs); color: var(--color-link); }
 .cmp-text { margin: 0; line-height: var(--lh-normal); }
+.cmp-more {
+  margin-top: 4px;
+  padding: 2px 8px;
+  min-height: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-link);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+}
+.cmp-more:focus-visible,
+.cmp-variant__select:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+/* 제품 열 옵션 선택 (사양 옵션별) */
+.cmp-variant { display: flex; flex-direction: column; gap: 2px; font-weight: var(--fw-regular); }
+.cmp-variant__label { font-size: var(--fs-xs); color: var(--color-text-muted); }
+.cmp-variant__select {
+  width: 100%;
+  min-height: 32px;
+  padding: 4px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--fs-xs);
+}
 .cmp-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .cmp-muted { color: var(--color-text-muted); }
 .cmp-none { color: var(--color-text-muted); }

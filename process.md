@@ -140,3 +140,6 @@
 - [사용자] "사양이 모델 옵션별로 다름" → 사양을 시리즈 공통(items) + 옵션별(variants: id·label·items·page, variantAxis)로 저장·비교
 - [리더] 스키마: SpecVariantSchema, ProductSpecs.variants·variantAxis(+ 규칙: 공통 또는 옵션 필수, 옵션 있으면 기준 이름 필수, 옵션 id 고유). URL 형식 /compare?type=product&ids=P00206:4000af
 - 병렬: 데이터 담당 = 카탈로그 옵션별 표 재추출 / T1 = 제품 상세 옵션별 사양표 + 비교 열 옵션 선택(URL 반영)
+- [옵션별 사양 완료] 데이터: 31개 제품 옵션 122개(공통 164·옵션 375항목, 값마다 페이지), 옵션 없는 4개 / T1: 제품 상세 "정격 사양"(공통+옵션 표, 옵션 담기), 비교 열 옵션 선택(URL P:옵션, 같은 제품 옵션끼리 비교, 시리즈 전체 나열·더 보기), 기기 비교 옵션 표기 / T3: DI-93~97 옵션 확장 + DI-96b~e, 단위 +18, E2E-8 6건
+  - 리더 재검증: typecheck(src·tests)·build 통과, unit 382/382, E2E 68 통과·1 skip·0 실패
+  - 사람 검수 우선 4건: GIPAM1000 통신(정격표 vs 통신기능 페이지), 발전소용 VCB 모델별 열, Metasol ELCB 125AF 셀·100AF 이상 차단전류, Metasol MS 프레임별 Ue

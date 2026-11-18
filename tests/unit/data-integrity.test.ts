@@ -514,6 +514,9 @@ interface SpecIssue {
   msg: string;
 }
 const SPEC_ITEMS_MAX = 10;
+/** 옵션 수 권장 상한 (v1.1 SOFT) */
+const VARIANTS_MAX = 8;
+const KEBAB_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const STANDARD_SPEC_LABELS = SPEC_KEYS as Record<string, string>;
 /** KST 오늘 (YYYY-MM-DD) */
 const todayKstIso = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
@@ -522,11 +525,12 @@ const todayKstIso = () => new Date(Date.now() + 9 * 3600_000).toISOString().slic
  * specs.json 규칙 (스키마 통과 후의 의미 규칙).
  * - DI-91 productId ∈ products.json
  * - DI-92 source.url ∈ 그 제품 docs.json 의 doc.url (근거: 현재 35/35 일치 — 추출 담당이 docs.json 카탈로그만 사용. 같은 도메인 허용보다 엄격하게 둬서 오타·다른 제품 카탈로그 연결을 잡는다)
- * - DI-93 제품 안 key 중복 없음
- * - DI-94 표준 key 의 label = SPEC_KEYS 라벨
- * - DI-95 비표준 key: 파일 전체에서 같은 key = 같은 label / DI-95b 같은 label = 같은 key (표준 라벨 포함 — 행 이름 중복 방지)
- * - DI-96 items 1~10개, label·value 공백 문자열 아님
- * - DI-97 값마다 페이지 추적 가능 (item.page ?? source.page)
+ * - DI-93 key 중복 없음: 공통 안·옵션 안, 공통↔옵션 겹침 금지 (v1.1 — 옵션끼리 같은 key 는 정상)
+ * - DI-94 표준 key 의 label = SPEC_KEYS 라벨 (공통+옵션 전체)
+ * - DI-95 비표준 key: 파일 전체(공통+옵션)에서 같은 key = 같은 label / DI-95b 같은 label = 같은 key (표준 라벨 포함 — 행 이름 중복 방지)
+ * - DI-96 개수: 공통 0~10, 옵션당 1~10, 공통+옵션 ≥ 1 (v1.1 스키마와 같은 계약 + 상한), label·value 공백 문자열 아님
+ * - DI-96b 옵션 id kebab-case·제품 안 고유 / DI-96c 옵션 있으면 variantAxis / DI-96d (SOFT) 옵션 ≤ 8 / DI-96e (SOFT) 옵션 label 고유
+ * - DI-97 값마다 페이지 추적 가능 (item.page ?? variant.page ?? source.page)
  * - DI-98 extractedAt 실제 날짜 + 미래 아님(KST), generatedAt 날짜로 파싱됨
  * - DI-99b 개인정보 의심 패턴 0건 (title·url·label·value·unit·note)
  */
@@ -543,28 +547,52 @@ function checkSpecs(
   const keyOfLabel = new Map<string, { key: string; where: string }>();
   for (const [k, l] of Object.entries(STANDARD_SPEC_LABELS)) keyOfLabel.set(l, { key: k, where: 'SPEC_KEYS' });
   for (const [id, s] of Object.entries(file.products)) {
+    const variants = s.variants ?? [];
     if (!productIds.has(id)) add('DI-91', `${id}: products.json 에 없는 제품`);
     if (!(docUrlsByProduct.get(id) ?? []).includes(s.source.url)) add('DI-92', `${id}: source.url 이 그 제품 docs.json 자료가 아님 (${s.source.url})`);
-    if (s.items.length < 1 || s.items.length > SPEC_ITEMS_MAX) add('DI-96', `${id}: items ${s.items.length}개 (1~${SPEC_ITEMS_MAX})`);
+    // v1.1 개수: 공통 0~10, 옵션당 1~10, 공통+옵션 합 ≥ 1 (스키마 superRefine 과 같은 계약 + 상한)
+    if (s.items.length > SPEC_ITEMS_MAX) add('DI-96', `${id}: 공통 items ${s.items.length}개 (0~${SPEC_ITEMS_MAX})`);
+    if (s.items.length === 0 && variants.length === 0) add('DI-96', `${id}: 공통·옵션 사양이 모두 없음`);
+    for (const v of variants)
+      if (v.items.length < 1 || v.items.length > SPEC_ITEMS_MAX) add('DI-96', `${id}:${v.id}: 옵션 items ${v.items.length}개 (1~${SPEC_ITEMS_MAX})`);
+    // v1.1 옵션 id 고유·kebab (URL "제품:옵션"), variantAxis 필수, 옵션 수·label
+    if (variants.length > 0 && !s.variantAxis?.trim()) add('DI-96c', `${id}: 옵션이 있는데 variantAxis 없음`);
+    for (const v of variants) if (!KEBAB_RE.test(v.id)) add('DI-96b', `${id}: 옵션 id "${v.id}" 가 kebab-case 아님`);
+    for (const d of duplicates(variants.map((v) => v.id))) add('DI-96b', `${id}: 옵션 id 중복 ${d}`);
+    if (variants.length > VARIANTS_MAX) add('DI-96d', `${id}: 옵션 ${variants.length}개 (권장 ≤ ${VARIANTS_MAX} — 비교 select·상세 표가 길어짐)`);
+    for (const d of duplicates(variants.map((v) => v.label.trim()))) add('DI-96e', `${id}: 옵션 label 중복 "${d}" (select 에서 구분 불가)`);
     if (!isRealDate(s.extractedAt)) add('DI-98', `${id}: extractedAt 없는 날짜 ${s.extractedAt}`);
     else if (s.extractedAt > today) add('DI-98', `${id}: extractedAt 미래 ${s.extractedAt}`);
-    for (const k of duplicates(s.items.map((i) => i.key))) add('DI-93', `${id}: key 중복 ${k}`);
-    const texts = [s.source.title, decodeURIComponentSafe(s.source.url), s.note ?? ''];
-    for (const it of s.items) {
+    // DI-93 key 중복: 공통 안, 옵션 안, 공통↔옵션 겹침 (옵션끼리는 같은 key 가 정상)
+    const commonKeys = new Set(s.items.map((i) => i.key));
+    for (const k of duplicates(s.items.map((i) => i.key))) add('DI-93', `${id}: 공통 key 중복 ${k}`);
+    for (const v of variants) {
+      for (const k of duplicates(v.items.map((i) => i.key))) add('DI-93', `${id}:${v.id}: 옵션 안 key 중복 ${k}`);
+      for (const i of v.items) if (commonKeys.has(i.key)) add('DI-93', `${id}:${v.id}: key ${i.key} 가 공통 사양과 겹침`);
+    }
+    const texts = [s.source.title, decodeURIComponentSafe(s.source.url), s.note ?? '', s.variantAxis ?? ''];
+    const all: { it: SpecsFileT['products'][string]['items'][number]; where: string; vPage?: number }[] = [
+      ...s.items.map((it) => ({ it, where: id })),
+      ...variants.flatMap((v) => {
+        texts.push(v.label, v.note ?? '');
+        return v.items.map((it) => ({ it, where: `${id}:${v.id}`, vPage: v.page }));
+      }),
+    ];
+    for (const { it, where, vPage } of all) {
       texts.push(it.label, it.value, it.unit ?? '');
-      if (!it.label.trim() || !it.value.trim()) add('DI-96', `${id}/${it.key}: label·value 공백`);
-      if (!(it.page ?? s.source.page)) add('DI-97', `${id}/${it.key}: 페이지 없음 (item.page·source.page 모두 없음)`);
+      if (!it.label.trim() || !it.value.trim()) add('DI-96', `${where}/${it.key}: label·value 공백`);
+      if (!(it.page ?? vPage ?? s.source.page)) add('DI-97', `${where}/${it.key}: 페이지 없음 (item·옵션·source 모두 없음)`);
       const std = STANDARD_SPEC_LABELS[it.key];
       if (std !== undefined) {
-        if (it.label !== std) add('DI-94', `${id}/${it.key}: label "${it.label}" ≠ SPEC_KEYS "${std}"`);
+        if (it.label !== std) add('DI-94', `${where}/${it.key}: label "${it.label}" ≠ SPEC_KEYS "${std}"`);
       } else {
         const prev = labelOfKey.get(it.key);
-        if (prev && prev.label !== it.label) add('DI-95', `key ${it.key}: label "${prev.label}"(${prev.where}) ≠ "${it.label}"(${id})`);
-        if (!prev) labelOfKey.set(it.key, { label: it.label, where: id });
+        if (prev && prev.label !== it.label) add('DI-95', `key ${it.key}: label "${prev.label}"(${prev.where}) ≠ "${it.label}"(${where})`);
+        if (!prev) labelOfKey.set(it.key, { label: it.label, where });
       }
       const pk = keyOfLabel.get(it.label);
-      if (pk && pk.key !== it.key) add('DI-95b', `label "${it.label}": key ${pk.key}(${pk.where}) ≠ ${it.key}(${id})`);
-      if (!pk) keyOfLabel.set(it.label, { key: it.key, where: id });
+      if (pk && pk.key !== it.key) add('DI-95b', `label "${it.label}": key ${pk.key}(${pk.where}) ≠ ${it.key}(${where})`);
+      if (!pk) keyOfLabel.set(it.label, { key: it.key, where });
     }
     for (const f of texts) {
       if (EMAIL_RE.test(f)) add('DI-99b', `${id}: 이메일 의심 "${f}"`);
@@ -619,11 +647,26 @@ describe('정격 사양 specs.json (DI-90 ~)', () => {
     expect(bad({ items: [{ ...goodItem, value: '' }] }), '빈 value 통과').toBe(false);
     expect(bad({ extractedAt: '2026/11/18' }), '날짜 형식 통과').toBe(false);
     expect(bad({ reviewed: 'no' }), 'reviewed 문자열 통과').toBe(false);
+    // v1.1 옵션 (superRefine)
+    const v = (id: string, items = [{ key: 'frame', label: '프레임', value: '250', page: 2 }]) => ({ id, label: id.toUpperCase(), items });
+    expect(bad({ items: [], variants: [v('ts250')], variantAxis: '프레임' }), '공통 0 + 옵션 1 은 허용').toBe(true);
+    expect(bad({ items: [], variants: [] }), '공통·옵션 모두 없음 통과').toBe(false);
+    expect(bad({ variants: [v('ts250')] }), 'variantAxis 없음 통과').toBe(false);
+    expect(bad({ variants: [v('ts250'), v('ts250')], variantAxis: '프레임' }), '옵션 id 중복 통과').toBe(false);
+    expect(bad({ variants: [v('TS250')], variantAxis: '프레임' }), '대문자 옵션 id 통과').toBe(false);
+    expect(bad({ variants: [v('ts 250')], variantAxis: '프레임' }), '공백 옵션 id 통과').toBe(false);
+    expect(bad({ variants: [v('ts:250')], variantAxis: '프레임' }), "':' 옵션 id 통과 (URL 구분자)").toBe(false);
+    expect(bad({ variants: [v('ts250', [])], variantAxis: '프레임' }), '빈 옵션 items 통과').toBe(false);
+    expect(bad({ variants: [{ ...v('ts250'), page: 0 }], variantAxis: '프레임' }), '옵션 page 0 통과').toBe(false);
+    expect(bad({ variants: [{ ...v('ts250'), label: '' }], variantAxis: '프레임' }), '빈 옵션 label 통과').toBe(false);
   });
 
   it('DI-90b checkSpecs 자기검증: 정상 합성 = 위반 0, 규칙마다 위반 1건 → 그 ID', () => {
     expect(rulesFor(fileOf({ P90001: goodEntry() }))).toEqual([]);
     const e = goodEntry;
+    const fr = { key: 'frame', label: '프레임', value: '250', unit: 'AF', page: 2 };
+    /** 옵션: id → label 은 대문자 (서로 다른 id 는 다른 label) */
+    const vr = (id: string, items: Record<string, unknown>[] = [fr]) => ({ id, label: id.toUpperCase(), items });
     const cases: [string, SpecsFileT][] = [
       ['DI-91', fileOf({ P99999: e() })],
       ['DI-92', fileOf({ P90001: { ...e(), source: { title: 'x', url: 'https://www.ls-electric.com/ko/cat/B.pdf', page: 1 } } })],
@@ -644,6 +687,27 @@ describe('정격 사양 specs.json (DI-90 ~)', () => {
       ['DI-98', fileOf({ P90001: { ...e(), extractedAt: '2026-11-19' } })],
       ['DI-99b', fileOf({ P90001: { ...e(), note: '문의 sales@example.com' } })],
       ['DI-99b', fileOf({ P90001: { ...e(), note: '담당 010-1234-5678' } })],
+      // v1.1 옵션
+      ['DI-93', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [vr('a', [fr, { ...fr, value: '400' }])] } })],
+      ['DI-93', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [vr('a', [{ ...goodItem, value: '1000' }])] } })],
+      ['DI-94', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [vr('a', [{ ...fr, label: '프레임 크기' }])] } })],
+      [
+        'DI-95',
+        fileOf({
+          P90001: { ...e(), items: [{ key: 'ipRating', label: '보호등급(IP)', value: 'IP20', page: 1 }] },
+          P90002: { ...e(), variantAxis: '프레임', variants: [vr('a', [{ key: 'ipRating', label: 'IP 등급', value: 'IP54', page: 1 }])] },
+        }),
+      ],
+      ['DI-96', fileOf({ P90001: { ...e(), items: [], variants: [] } })],
+      ['DI-96', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [vr('a', [])] } })],
+      ['DI-96', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [vr('a', Array.from({ length: 11 }, (_, i) => ({ key: `k${i}`, label: `항목${i}`, value: 'v', page: 1 })))] } })],
+      ['DI-96b', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [vr('a'), { ...vr('a'), label: 'A2' }] } })],
+      ['DI-96b', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [vr('TS:1')] } })],
+      ['DI-96c', fileOf({ P90001: { ...e(), variants: [vr('a')] } })],
+      ['DI-96d', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: Array.from({ length: 9 }, (_, i) => vr(`v${i}`)) } })],
+      ['DI-96e', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [vr('a'), { ...vr('b'), label: 'A' }] } })],
+      ['DI-97', fileOf({ P90001: { ...e(), source: { title: 'x', url: URL_A }, items: [{ ...goodItem }], variantAxis: '프레임', variants: [vr('a', [{ key: 'frame', label: '프레임', value: '250' }])] } })],
+      ['DI-99b', fileOf({ P90001: { ...e(), variantAxis: '프레임', variants: [{ ...vr('a'), note: '문의 a@b.co' }] } })],
     ];
     for (const [rule, f] of cases) expect(rulesFor(f), rule).toEqual([rule]);
     // 비표준 key 가 같은 label 로 일관되면 통과, item.page 없어도 source.page 가 있으면 통과
@@ -652,6 +716,20 @@ describe('정격 사양 specs.json (DI-90 ~)', () => {
         fileOf({
           P90001: { ...e(), items: [{ key: 'ipRating', label: '보호등급(IP)', value: 'IP20' }] },
           P90002: { ...e(), items: [{ key: 'ipRating', label: '보호등급(IP)', value: 'IP54', page: 2 }] },
+        }),
+      ),
+    ).toEqual([]);
+    // v1.1: 공통 0 + 옵션, 옵션끼리 같은 key, 옵션 page 로 페이지 대체(item·source page 없음), 옵션 8개 → 통과
+    expect(
+      rulesFor(
+        fileOf({
+          P90001: {
+            ...e(),
+            items: [],
+            source: { title: 'x', url: URL_A },
+            variantAxis: '프레임',
+            variants: Array.from({ length: 8 }, (_, i) => ({ id: `ts${i}`, label: `TS${i}`, page: 4, items: [{ key: 'frame', label: '프레임', value: `${i}` }] })),
+          },
         }),
       ),
     ).toEqual([]);
@@ -667,7 +745,7 @@ describe('정격 사양 specs.json (DI-90 ~)', () => {
     expect(notAllowed).toEqual([]);
   });
 
-  it('DI-93 같은 제품 안에서 key 중복 없음', () => {
+  it('DI-93 key 중복 없음 — 공통 안·옵션 안, 공통↔옵션 겹침 0', () => {
     expect(issuesOf('DI-93')).toEqual([]);
   });
 
@@ -680,11 +758,28 @@ describe('정격 사양 specs.json (DI-90 ~)', () => {
     expect(issuesOf('DI-95b')).toEqual([]);
   });
 
-  it('DI-96 items 1~10개, label·value 공백 아님', () => {
+  it('DI-96 개수: 공통 0~10 · 옵션당 1~10 · 합 ≥ 1, label·value 공백 아님', () => {
     expect(issuesOf('DI-96')).toEqual([]);
   });
 
-  it('DI-97 값마다 카탈로그 페이지 추적 가능 (item.page 또는 source.page, 양의 정수)', () => {
+  it('DI-96b 옵션 id kebab-case·제품 안 고유, DI-96c 옵션 있으면 variantAxis', () => {
+    expect(issuesOf('DI-96b')).toEqual([]);
+    expect(issuesOf('DI-96c')).toEqual([]);
+  });
+
+  it('DI-96d (SOFT) 옵션 수 ≤ 8, DI-96e (SOFT) 옵션 label 제품 안 고유', () => {
+    softWarn('DI-96d', issuesOf('DI-96d'));
+    softWarn('DI-96e', issuesOf('DI-96e'));
+    const entries = Object.values(specs.products);
+    const withV = entries.filter((s) => (s.variants?.length ?? 0) > 0);
+    // eslint-disable-next-line no-console
+    console.info(
+      `[DI-96d] 옵션 있는 제품 ${withV.length}/${entries.length}, 옵션 ${withV.reduce((n, s) => n + s.variants!.length, 0)}개, ` +
+        `공통 항목 ${entries.reduce((n, s) => n + s.items.length, 0)} · 옵션 항목 ${withV.reduce((n, s) => n + s.variants!.reduce((m, v) => m + v.items.length, 0), 0)}`,
+    );
+  });
+
+  it('DI-97 값마다 카탈로그 페이지 추적 가능 (item.page → variant.page → source.page, 양의 정수)', () => {
     expect(issuesOf('DI-97')).toEqual([]);
   });
 

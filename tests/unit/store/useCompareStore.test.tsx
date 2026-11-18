@@ -266,6 +266,51 @@ describe('UT-14 비교 바 표시 경로', () => {
   });
 });
 
+describe('UT-14 (v1.1) 사양 옵션 "제품:옵션" 항목', () => {
+  it('같은 제품의 다른 옵션 2개 + 시리즈 전체를 따로 담고 뺄 수 있음, 4개 판정도 조합 기준', async () => {
+    const m = await freshStore();
+    const st = () => m.useCompareStore.getState();
+    expect(st().toggle('product', `${P1}:ts250`)).toBe('added');
+    expect(st().toggle('product', `${P1}:ts800`)).toBe('added');
+    expect(st().toggle('product', P1)).toBe('added');
+    expect(st().product).toEqual([`${P1}:ts250`, `${P1}:ts800`, P1]);
+    expect(st().toggle('product', `${P1}:ts250`)).toBe('removed');
+    expect(st().product).toEqual([`${P1}:ts800`, P1]);
+    st().toggle('product', `${P2}:a`);
+    st().toggle('product', `${P2}:b`);
+    expect(st().toggle('product', `${P2}:c`)).toBe('full');
+    expect(saved()?.product).toEqual([`${P1}:ts800`, P1, `${P2}:a`, `${P2}:b`]);
+  });
+
+  it('옵션 없는 기존 저장값은 그대로 유효 (호환), 옵션 항목과 섞여도 유지', async () => {
+    const raw = json({ equipment: [a], product: [P1, `${P2}:ts-100`], active: 'product' });
+    const m = await freshStore(raw);
+    expect(m.useCompareStore.getState().product).toEqual([P1, `${P2}:ts-100`]);
+    expect(localStorage.getItem(KEY)).toBe(raw); // 정리할 것 없음 → 다시 쓰지 않음
+  });
+
+  it('B2 정리: 없는 제품의 옵션, 형식이 틀린 옵션("P:"·대문자·공백·이중 구분자) 제거, 옵션 실존은 보지 않음', async () => {
+    const m = await freshStore(
+      json({ equipment: [], product: ['P00000:a', `${P1}:`, `${P1}:TS250`, `${P1}:ts 250`, `${P1}:a:b`, `${P1}:no-such-option`, `${P2}:x`], active: 'product' }),
+    );
+    expect(m.useCompareStore.getState().product).toEqual([`${P1}:no-such-option`, `${P2}:x`]);
+    expect(saved()?.product).toEqual([`${P1}:no-such-option`, `${P2}:x`]);
+  });
+
+  it('compareIdInData·splitCompareId·joinCompareId (store 공용 도우미)', async () => {
+    const m = await freshStore();
+    expect(m.compareIdInData('product', `${P1}:ts250`, data)).toBe(true);
+    expect(m.compareIdInData('product', `${P1}:`, data)).toBe(false);
+    expect(m.compareIdInData('product', `${P1}:-a`, data)).toBe(false);
+    expect(m.compareIdInData('product', 'P00000:ts250', data)).toBe(false);
+    expect(m.compareIdInData('equipment', `${a}:x`, data)).toBe(false);
+    expect(m.compareIdInData('equipment', a, data)).toBe(true);
+    expect(m.splitCompareId(`${P1}:x`)).toEqual({ baseId: P1, variantId: 'x' });
+    expect(m.joinCompareId(P1, 'x')).toBe(`${P1}:x`);
+    expect(m.compareHref('product', [`${P1}:ts250`, P2])).toBe(`/compare?type=product&ids=${P1}:ts250,${P2}`);
+  });
+});
+
 describe('UT-14 CompareToggle', () => {
   it('누르면 aria-pressed 토글, 4개 차면 다른 항목 버튼 비활성 + 안내 title', async () => {
     const m = await freshStore();

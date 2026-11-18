@@ -1,0 +1,56 @@
+/* 제품 상세 "정격 사양" 섹션 (ProductSpecs.tsx) */
+.ps { gap: var(--space-3); }
+.ps-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: var(--fs-sm); }
+.ps-source { color: var(--color-link); }
+.ps-note { margin: 0; }
+.ps-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+.ps-badge--ok { background: var(--cov-owned-bg); color: var(--cov-owned-text); }
+.ps-badge--draft { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
+.ps-block { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.ps-h3 { margin: 0; font-size: var(--fs-md); }
+.ps-axis { font-size: var(--fs-sm); font-weight: var(--fw-regular); color: var(--color-text-muted); }
+.ps-axis b { color: var(--color-text); }
+.ps-common { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px 16px; margin: 0; }
+.ps-common__row { display: flex; gap: 8px; min-width: 0; padding: 4px 0; border-bottom: 1px solid var(--color-border); }
+.ps-common__row dt { flex: none; width: 7.5em; color: var(--color-text-muted); font-size: var(--fs-sm); }
+.ps-common__row dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.ps-value { font-weight: var(--fw-bold); color: var(--color-text); }
+.ps-page { margin-left: 6px; font-size: var(--fs-xs); color: var(--color-link); white-space: nowrap; }
+.ps-none { color: var(--color-text-muted); }
+.ps-values { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+
+/* 옵션이 많으면 가로 스크롤 — 첫 열(사양 이름) 고정 */
+.ps-scroll { overflow-x: auto; max-width: 100%; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.ps-scroll:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.ps-table { border-collapse: separate; border-spacing: 0; min-width: 100%; font-size: var(--fs-sm); }
+.ps-table th,
+.ps-table td { padding: 8px 10px; border-bottom: 1px solid var(--color-border); text-align: left; vertical-align: top; }
+.ps-table tbody tr:last-child > * { border-bottom: 0; }
+.ps-table thead th { background: var(--color-surface-2); }
+.ps-table th[scope='row'],
+.ps-corner {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 7.5em;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-weight: var(--fw-regular);
+}
+.ps-corner { background: var(--color-surface-2); }
+.ps-table td { min-width: 9em; overflow-wrap: anywhere; }
+.ps-vhead { min-width: 10em; }
+.ps-vhead > * { display: block; }
+.ps-vhead__label { color: var(--color-text); font-weight: var(--fw-bold); }
+.ps-vhead .ps-page { margin: 2px 0 0; }
+.ps-vhead__note { margin-top: 2px; font-size: var(--fs-xs); font-weight: var(--fw-regular); color: var(--color-text-muted); }
+.ps-vhead__toggle { margin-top: 6px; white-space: nowrap; }
+.ps-foot { margin: 0; font-size: var(--fs-xs); }

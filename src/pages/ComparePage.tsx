@@ -1,7 +1,8 @@
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { DOC_TYPE_LABELS, type EquipmentType, type Product } from '../lib/schema';
-import { getData, loadSpecs, peekSpecs, useData, type SpecsMap } from '../data/load';
+import { DOC_TYPE_LABELS, type EquipmentType, type Product, type ProductSpecs, type SpecVariant } from '../lib/schema';
+import { getData, useData, type SpecsMap } from '../data/load';
+import { SPECS_ERROR_TEXT, useSpecs, type SpecsState } from '../components/compare/useSpecs';
 import CoverageBadge from '../components/common/CoverageBadge';
 import ExternalLink from '../components/common/ExternalLink';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
@@ -23,10 +24,18 @@ import {
   specProductCount,
   specValueText,
   compareKey,
+  columnSpecEntries,
+  hasVariants,
+  joinCompareId,
+  resolveProductColumn,
+  specEntriesKey,
+  splitCompareId,
+  variantDisplayName,
   type DocCounts,
   type LinkedItem,
+  type SpecEntry,
 } from '../lib/pages/compare';
-import { compareHref, useCompareStore, type CompareKind } from '../store/useCompareStore';
+import { compareHref, compareIdInData, useCompareStore, type CompareKind } from '../store/useCompareStore';
 import './pages.css';
 import './ComparePage.css';
 
@@ -48,42 +57,49 @@ interface Section {
   rows: Row[];
 }
 interface Column {
+  /** 열 id — 제품 비교는 "제품id" 또는 "제품id:옵션id" */
   id: string;
   name: string;
   sub?: string;
   eq?: EquipmentType;
   href: string;
+  /** 제품 열: 옵션 선택용 (사양에 옵션이 있을 때만 select 표시) */
+  product?: Product;
+  specs?: ProductSpecs;
+  variant?: SpecVariant;
+}
+
+/** 제품 비교 열 (옵션 해석 후) */
+interface ProductCol {
+  colId: string;
+  product: Product;
+  specs?: ProductSpecs;
+  /** 선택된 옵션 — 없으면 시리즈 전체 */
+  variant?: SpecVariant;
+}
+
+/** 긴 값 목록 접기 (기기 대표 사양·시리즈 전체 옵션 목록) — 처음 FOLD_LIMIT 개 + "더 보기" */
+const FOLD_LIMIT = 6;
+function FoldList({ items }: { items: { key: string; node: ReactNode }[] }) {
+  const [open, setOpen] = useState(false);
+  const shown = open || items.length <= FOLD_LIMIT ? items : items.slice(0, FOLD_LIMIT);
+  return (
+    <>
+      <ul className="cmp-list cmp-specs">
+        {shown.map((it) => (
+          <li key={it.key}>{it.node}</li>
+        ))}
+      </ul>
+      {items.length > FOLD_LIMIT && (
+        <button type="button" className="cmp-more" aria-expanded={open} data-testid="compare-spec-more" onClick={() => setOpen((v) => !v)}>
+          {open ? '접기' : `더 보기 (${items.length - FOLD_LIMIT}개)`}
+        </button>
+      )}
+    </>
+  );
 }
 
 const KIND_LABEL: Record<CompareKind, string> = { equipment: '기기', product: '제품' };
-
-/** specs.json 지연 로딩 상태 (디버그 M6 — 첫 화면 번들에서 빼고, 실패해도 이 화면에서만 안내) */
-type SpecsState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; map: SpecsMap };
-
-const SPECS_ERROR_TEXT = '사양 데이터를 불러오지 못했습니다';
-
-function useSpecs(): SpecsState {
-  const [state, setState] = useState<SpecsState>(() => {
-    const map = peekSpecs();
-    return map ? { status: 'ready', map } : { status: 'loading' };
-  });
-  useEffect(() => {
-    if (state.status === 'ready') return;
-    let alive = true;
-    loadSpecs().then(
-      (map) => alive && setState({ status: 'ready', map }),
-      (e: unknown) => {
-        console.error('[compare] specs.json', e);
-        if (alive) setState({ status: 'error' });
-      },
-    );
-    return () => {
-      alive = false;
-    };
-    // 한 번만 시도 (실패하면 화면에 다시 들어올 때 재시도)
-  }, []);
-  return state;
-}
 
 /** 사양을 아직 못 그리는 상태(불러오는 중·실패)의 구역 행 */
 function specsPendingRow(state: SpecsState, label: string, n: number): Row | undefined {
@@ -291,28 +307,34 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
           const entries = m.get(key) ?? [];
           if (entries.length === 0) return { text: '', node: <None /> };
           return {
-            text: entries.map((e) => `${e.product.id}:${compareKey(specValueText(e.item))}`).join('|'),
+            text: entries
+              .map((e) => `${e.product.id}${e.variant ? `:${e.variant.id}` : ''}:${compareKey(specValueText(e.item))}`)
+              .join('|'),
+            // 옵션이 있는 제품은 "제품명 · 옵션 label: 값" — 길면 접기 (처음 6개 + 더 보기)
             node: (
-              <ul className="cmp-list cmp-specs">
-                {entries.map(({ product, item }, i) => {
+              <FoldList
+                items={entries.map(({ product, item, variant }, i) => {
                   const src = specsByProductId.get(product.id);
                   if (src && !src.reviewed) anyUnreviewed = true;
-                  const page = item.page ?? src?.source.page;
-                  return (
-                    <li key={`${product.id}-${i}`}>
-                      <Link to={`/product/${product.id}`} className="cmp-specs__name">
-                        {product.name}
-                      </Link>
-                      : <span className="cmp-specs__value">{specValueText(item)}</span>
-                      {src && (
-                        <ExternalLink href={pageHref(src.source.url, page)} className="cmp-page" title={src.source.title}>
-                          {page ? `p.${page}` : '출처'}
-                        </ExternalLink>
-                      )}
-                    </li>
-                  );
+                  const page = item.page ?? variant?.page ?? src?.source.page;
+                  return {
+                    key: `${product.id}-${variant?.id ?? ''}-${i}`,
+                    node: (
+                      <>
+                        <Link to={`/product/${product.id}`} className="cmp-specs__name">
+                          {variantDisplayName(product.name, variant?.label)}
+                        </Link>
+                        : <span className="cmp-specs__value">{specValueText(item)}</span>
+                        {src && (
+                          <ExternalLink href={pageHref(src.source.url, page)} className="cmp-page" title={src.source.title}>
+                            {page ? `p.${page}` : '출처'}
+                          </ExternalLink>
+                        )}
+                      </>
+                    ),
+                  };
                 })}
-              </ul>
+              />
             ),
           };
         }),
@@ -351,9 +373,31 @@ function mainEquipment(e: EquipmentType[], common: Set<string>): EquipmentType |
   return e.find((x) => common.has(x.id)) ?? e[0];
 }
 
-function productSections(list: Product[], specsState: SpecsState): { sections: Section[]; anyUnreviewed: boolean; mixed: boolean } {
+/** 열 하나의 사양 값 목록 (시리즈 전체면 옵션 값마다 "옵션 label: 값") */
+function SpecEntryList({ entries, specs, series }: { entries: SpecEntry[]; specs: ProductSpecs; series: boolean }) {
+  return (
+    <FoldList
+      items={entries.map((e, i) => ({
+        key: `${e.variant?.id ?? ''}-${i}`,
+        node: (
+          <>
+            {series && e.variant && <span className="cmp-specs__name">{e.variant.label}: </span>}
+            <span className="cmp-specs__value">{specValueText(e.item)}</span>
+            {e.page && (
+              <ExternalLink href={pageHref(specs.source.url, e.page)} className="cmp-page" title={specs.source.title}>
+                p.{e.page}
+              </ExternalLink>
+            )}
+          </>
+        ),
+      }))}
+    />
+  );
+}
+
+function productSections(cols: ProductCol[], specsState: SpecsState): { sections: Section[]; anyUnreviewed: boolean; mixed: boolean } {
   const { docsByProductId } = getData();
-  const specsByProductId: SpecsMap = specsState.status === 'ready' ? specsState.map : new Map();
+  const list = cols.map((c) => c.product);
   const eqs = list.map((p) => equipmentForProduct(p.id));
   const common = commonEquipmentIds(eqs);
   // 연결 기기가 하나라도 있는 제품끼리 공통 기기가 없을 때만 안내
@@ -433,8 +477,10 @@ function productSections(list: Product[], specsState: SpecsState): { sections: S
     },
   ];
 
-  const specs = list.map((p) => specsByProductId.get(p.id));
-  const keys = orderSpecKeys(specs.flatMap((s) => s?.items.map((i) => i.key) ?? []));
+  const specs = cols.map((c) => c.specs);
+  // 열마다 사양 = 공통 + 선택 옵션(같은 key 는 옵션 우선), 시리즈 전체면 옵션 값을 모두 나열 (columnSpecEntries)
+  const entryMaps = cols.map((c) => (c.specs ? columnSpecEntries(c.specs, c.variant?.id) : undefined));
+  const keys = orderSpecKeys(entryMaps.flatMap((m) => (m ? [...m.keys()] : [])));
   const specRows: Row[] = [];
   const pending = specsPendingRow(specsState, '정격 사양', list.length);
   if (pending) {
@@ -455,32 +501,17 @@ function productSections(list: Product[], specsState: SpecsState): { sections: S
     });
   }
   for (const key of keys) {
-    const firstLabel = specs.flatMap((s) => s?.items.filter((i) => i.key === key) ?? [])[0]?.label;
+    const firstLabel = entryMaps.flatMap((m) => m?.get(key) ?? [])[0]?.item.label;
     specRows.push({
       key: `spec-${key}`,
       label: specLabel(key, firstLabel),
-      cells: specs.map((s) => {
-        const items = s?.items.filter((i) => i.key === key) ?? [];
+      cells: cols.map((c, i) => {
+        const s = c.specs;
+        const entries = entryMaps[i]?.get(key) ?? [];
         // 사양 미수집(제품 자체에 사양 없음)과 카탈로그에 없음(키 없음)은 차이만 보기에서 다른 값 (L9)
         if (!s) return { text: '∅no-spec', node: <None why="사양 미수집" /> };
-        if (items.length === 0) return { text: '', node: <None /> };
-        return {
-          text: items.map((it) => compareKey(specValueText(it))).join('|'),
-          node: (
-            <ul className="cmp-list cmp-specs">
-              {items.map((it, i) => (
-                <li key={i}>
-                  <span className="cmp-specs__value">{specValueText(it)}</span>
-                  {it.page && (
-                    <ExternalLink href={pageHref(s.source.url, it.page)} className="cmp-page" title={s.source.title}>
-                      p.{it.page}
-                    </ExternalLink>
-                  )}
-                </li>
-              ))}
-            </ul>
-          ),
-        };
+        if (entries.length === 0) return { text: '', node: <None /> };
+        return { text: specEntriesKey(entries, !c.variant), node: <SpecEntryList entries={entries} specs={s} series={!c.variant} /> };
       }),
     });
   }
@@ -489,18 +520,25 @@ function productSections(list: Product[], specsState: SpecsState): { sections: S
     key: 'spec-source',
     label: '사양 출처',
     keep: true,
-    cells: list.map((p, i) => {
+    cells: cols.map((c, i) => {
       const s = specs[i];
+      const v = c.variant;
       return {
         text: s ? `${s.source.url}#${s.source.page ?? ''}` : '',
         node: (
-          <div className="cmp-stack" data-testid={`compare-spec-source-${p.id}`}>
+          <div className="cmp-stack" data-testid={`compare-spec-source-${c.colId}`}>
             {s ? (
               <>
                 <ExternalLink href={pageHref(s.source.url, s.source.page)} className="cmp-doclink">
                   {s.source.title}
                   {s.source.page ? ` · p.${s.source.page}` : ''} ↗
                 </ExternalLink>
+                {v?.page && (
+                  <ExternalLink href={pageHref(s.source.url, v.page)} className="cmp-doclink">
+                    {v.label} 옵션 표 · p.{v.page} ↗
+                  </ExternalLink>
+                )}
+                {v?.note && <span className="cmp-muted">{v.note}</span>}
                 {s.reviewed ? (
                   <span className="cmp-badge cmp-badge--ok">검수 완료</span>
                 ) : (
@@ -530,11 +568,58 @@ function productSections(list: Product[], specsState: SpecsState): { sections: S
 
 // ───────────── 화면 ─────────────
 
+/**
+ * 제품 열 머리의 옵션 선택. "시리즈 전체(모든 옵션)" 기본 + 각 옵션.
+ * 다른 열이 이미 같은 "제품:옵션" 을 보고 있으면 그 항목은 고를 수 없게(중복 열 방지).
+ */
+function VariantSelect({
+  col,
+  specs,
+  usedIds,
+  onChange,
+}: {
+  col: Column;
+  specs: ProductSpecs & { variants: SpecVariant[] };
+  usedIds: string[];
+  onChange: (colId: string, variantId: string) => void;
+}) {
+  const pid = col.product!.id;
+  const selectId = `cmp-variant-${col.id.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+  const taken = (vid?: string) => {
+    const id = joinCompareId(pid, vid);
+    return id !== col.id && usedIds.includes(id);
+  };
+  return (
+    <div className="cmp-variant">
+      <label htmlFor={selectId} className="cmp-variant__label">
+        {specs.variantAxis}
+      </label>
+      <select
+        id={selectId}
+        className="cmp-variant__select"
+        data-testid={`compare-variant-select-${col.id}`}
+        value={col.variant?.id ?? ''}
+        onChange={(e) => onChange(col.id, e.target.value)}
+      >
+        <option value="" disabled={taken(undefined)}>
+          시리즈 전체(모든 옵션){taken(undefined) ? ' — 다른 열에서 비교 중' : ''}
+        </option>
+        {specs.variants.map((v) => (
+          <option key={v.id} value={v.id} disabled={taken(v.id)}>
+            {v.label}
+            {taken(v.id) ? ' — 다른 열에서 비교 중' : ''}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 function EmptyState({ type }: { type: CompareKind | null }) {
   const stored = useCompareStore((s) => s);
   const data = useData();
   const ready = (['equipment', 'product'] as const).filter((k) =>
-    stored[k].filter((id) => (k === 'equipment' ? data.equipmentTypeById.has(id) : data.productById.has(id))).length >= 2,
+    stored[k].filter((id) => compareIdInData(k, id, data)).length >= 2,
   );
   return (
     <section className="pg-card cmp-empty" data-testid="compare-empty">
@@ -577,23 +662,61 @@ export default function ComparePage() {
     document.title = pageTitle(type ? `${KIND_LABEL[type]} 비교` : '비교');
   }, [type]);
 
+  // ───── 제품 열 옵션 해석 (사양을 불러온 뒤 URL 의 옵션 id 검증 — 틀리면 시리즈 전체로 되돌리고 안내) ─────
+  const specsMap = specsState.status === 'ready' ? specsState.map : undefined;
+  const productCols: (ProductCol & { rawId: string })[] = [];
+  const invalidVariants: string[] = [];
+  let dupAfterFallback = 0;
+  if (type === 'product') {
+    const seen = new Set<string>();
+    for (const rawId of ids) {
+      const r = resolveProductColumn(rawId, specsMap?.get(splitCompareId(rawId).baseId), !!specsMap);
+      const product = data.productById.get(r.productId)!;
+      if (r.invalidVariantId) invalidVariants.push(`${product.name}의 "${r.invalidVariantId}"`);
+      // 되돌린 결과가 다른 열과 같아지면(예: P1:없는옵션 + P1) 한 번만
+      if (seen.has(r.colId)) {
+        dupAfterFallback += 1;
+        continue;
+      }
+      seen.add(r.colId);
+      productCols.push({ rawId, colId: r.colId, product, specs: specsMap?.get(r.productId), variant: r.variant });
+    }
+  }
+  /** 화면에 실제로 보이는 열 id (옵션 되돌림 반영) — 열 빼기·옵션 바꾸기는 이 목록 기준으로 주소를 다시 만든다 */
+  const effectiveIds = type === 'product' ? productCols.map((c) => c.colId) : ids;
+
+  const go = (nextIds: string[]) => {
+    if (!type) return;
+    // 같은 비교를 이어 가는 것 — 차이만 보기 상태 유지
+    setDiffState({ key: `${type}:${nextIds.join(',')}`, on: diffOnly });
+    // 주소는 compareHref 형식(쉼표·옵션 구분자 그대로)으로 (L4)
+    navigate(compareHref(type, nextIds), { replace: true });
+  };
+
+  /** 열 옵션 바꾸기 — variantId '' = 시리즈 전체 */
+  const changeVariant = (colId: string, variantId: string) => {
+    const { baseId } = splitCompareId(colId);
+    go(effectiveIds.map((x) => (x === colId ? joinCompareId(baseId, variantId || undefined) : x)));
+  };
+
   const removeColumn = (id: string) => {
     if (!type) return;
-    const nextIds = ids.filter((x) => x !== id);
-    // 열 빼기는 같은 비교를 이어 가는 것 — 차이만 보기 상태 유지
-    setDiffState({ key: `${type}:${nextIds.join(',')}`, on: diffOnly });
-    // 주소는 compareHref 형식(쉼표 그대로)으로 (L4)
-    navigate(compareHref(type, nextIds), { replace: true });
+    const rawId = productCols.find((c) => c.colId === id)?.rawId ?? id;
+    const nextIds = effectiveIds.filter((x) => x !== id);
+    go(nextIds);
     // 내 담기 목록과 같은 비교일 때만 목록에서도 뺀다 — 공유받은 링크에서 열을 빼도 내 목록은 그대로 (L3)
     const stored = type === 'equipment' ? storedEquipment : storedProduct;
     const same = stored.length === ids.length && ids.every((x) => stored.includes(x));
-    if (same) removeStored(type, id);
+    if (same) removeStored(type, rawId);
   };
 
   const notices: string[] = [];
   if (parsed.badType) notices.push(`비교 종류(type=${parsed.badType})를 알 수 없습니다 — equipment 또는 product 만 됩니다.`);
   if (missing.length > 0) notices.push(`등록되지 않은 항목 ${missing.length}개(${missing.join(', ')})는 제외했습니다.`);
   if (overflow.length > 0) notices.push(`한 번에 최대 4개까지 비교합니다 — ${overflow.length}개는 제외했습니다.`);
+  if (invalidVariants.length > 0)
+    notices.push(`사양에 없는 옵션 ${invalidVariants.join(', ')}은(는) "시리즈 전체(모든 옵션)"로 표시합니다.`);
+  if (dupAfterFallback > 0) notices.push(`옵션을 되돌려 같아진 열 ${dupAfterFallback}개는 한 번만 표시합니다.`);
 
   let columns: Column[] = [];
   let sections: Section[] = [];
@@ -602,14 +725,25 @@ export default function ComparePage() {
     const list = ids.map((id) => data.equipmentTypeById.get(id)!);
     columns = list.map((eq) => ({ id: eq.id, name: eq.name, sub: eq.abbr, eq, href: `/equipment/${eq.id}` }));
     ({ sections, anyUnreviewed } = equipmentSections(list, specsState));
-  } else if (type === 'product' && ids.length >= 2) {
-    const list = ids.map((id) => data.productById.get(id)!);
-    const common = commonEquipmentIds(list.map((p) => equipmentForProduct(p.id)));
-    columns = list.map((p) => {
+  } else if (type === 'product' && productCols.length >= 2) {
+    const common = commonEquipmentIds(productCols.map((c) => equipmentForProduct(c.product.id)));
+    columns = productCols.map((c) => {
+      const p = c.product;
       const eq = mainEquipment(equipmentForProduct(p.id), common);
-      return { id: p.id, name: p.name, sub: eq ? (eq.abbr ?? eq.name) : undefined, eq, href: `/product/${p.id}` };
+      // 사양을 불러오기 전에는 옵션 label 을 모르므로 옵션 id 로 표시
+      const label = c.variant?.label ?? splitCompareId(c.colId).variantId;
+      return {
+        id: c.colId,
+        name: variantDisplayName(p.name, label),
+        sub: eq ? (eq.abbr ?? eq.name) : undefined,
+        eq,
+        href: `/product/${p.id}`,
+        product: p,
+        specs: c.specs,
+        variant: c.variant,
+      };
     });
-    const r = productSections(list, specsState);
+    const r = productSections(productCols, specsState);
     sections = r.sections;
     anyUnreviewed = r.anyUnreviewed;
     if (r.mixed) notices.push('서로 다른 기기의 제품을 함께 비교하고 있습니다 — "소속 기기" 행으로 구분하세요.');
@@ -700,6 +834,9 @@ export default function ComparePage() {
                         </div>
                         <span className="cmp-colhead__name">{c.name}</span>
                         {c.sub && <span className="cmp-colhead__sub">{c.sub}</span>}
+                        {c.product && hasVariants(c.specs) && (
+                          <VariantSelect col={c} specs={c.specs} usedIds={effectiveIds} onChange={changeVariant} />
+                        )}
                         <div className="cmp-colhead__actions">
                           <Link to={c.href} className="cmp-colhead__link">
                             상세 보기<span className="visually-hidden"> — {c.name}</span> →

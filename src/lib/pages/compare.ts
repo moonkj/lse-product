@@ -3,15 +3,22 @@
  * 사양 값은 계산·합치기 없이 카탈로그 표기 그대로 나열한다.
  */
 import { getData, type SpecsMap } from '../../data/load';
-import { SPEC_KEYS, type DocRef, type EquipmentType, type Product, type SpecItem } from '../schema';
+import { SPEC_KEYS, type DocRef, type EquipmentType, type Product, type ProductSpecs, type SpecItem, type SpecVariant } from '../schema';
 import { edgeKind, isBus, isEndpoint, type EdgeKind } from '../diagram/geometry';
 import { hopsAcrossBus } from '../diagram/topology';
 import { nodeForEquipment, productsForEquipment } from './catalog';
-import { COMPARE_MAX, type CompareKind } from '../../store/useCompareStore';
+import { COMPARE_MAX, compareIdInData, joinCompareId, splitCompareId, type CompareKind } from '../../store/useCompareStore';
+
+/** 비교 항목 id 도우미 재수출 (제품 열 id = "제품id" 또는 "제품id:옵션id") */
+export { joinCompareId, splitCompareId };
 
 export interface CompareParams {
   type: CompareKind | null;
-  /** 데이터에 있는 id (중복 제거, 최대 4) */
+  /**
+   * 데이터에 있는 id (중복 제거, 최대 4). 제품 비교에서는 열 id = "P00206" 또는 "P00206:4000af"(옵션) —
+   * 중복 제거 기준도 이 조합이라 같은 제품의 다른 옵션 2개를 나란히 비교할 수 있다.
+   * 옵션 id 가 사양에 실제로 있는지는 여기서 보지 않는다(사양 지연 로딩) → resolveProductColumn.
+   */
   ids: string[];
   /** 데이터에 없어 제외한 id */
   missing: string[];
@@ -28,7 +35,7 @@ export function parseCompareParams(params: URLSearchParams): CompareParams {
   const raw = [...new Set(params.getAll('ids').flatMap((v) => v.split(',')).map((s) => s.trim()).filter(Boolean))];
   if (!type) return { type, ids: [], missing: [], overflow: [], badType: t || undefined };
   const data = getData();
-  const exists = (id: string) => (type === 'equipment' ? data.equipmentTypeById.has(id) : data.productById.has(id));
+  const exists = (id: string) => compareIdInData(type, id, data);
   const valid = raw.filter(exists);
   return {
     type,
@@ -135,21 +142,131 @@ export function pageHref(url: string, page?: number): string {
 export interface EquipmentSpecEntry {
   product: Product;
   item: SpecItem;
+  /** 옵션별 사양에서 온 값이면 그 옵션 ("제품명 · 옵션 label: 값" 으로 표시) */
+  variant?: SpecVariant;
 }
 
-/** 기기의 제품들 specs 를 표준 키별로 모은다 (값은 표기 그대로) */
+/**
+ * 기기의 제품들 specs 를 표준 키별로 모은다 (값은 표기 그대로). 공통 사양 다음에 옵션별 사양을
+ * 옵션 순서대로 하나씩 넣는다 — 옵션 값을 합치거나 범위로 계산하지 않는다.
+ */
 export function equipmentSpecMap(eqId: string, specs: SpecsMap): Map<string, EquipmentSpecEntry[]> {
   const map = new Map<string, EquipmentSpecEntry[]>();
+  const push = (e: EquipmentSpecEntry) => {
+    const list = map.get(e.item.key) ?? [];
+    list.push(e);
+    map.set(e.item.key, list);
+  };
   for (const product of productsForEquipment(eqId)) {
     const s = specs.get(product.id);
     if (!s) continue;
-    for (const item of s.items) {
-      const list = map.get(item.key) ?? [];
-      list.push({ product, item });
-      map.set(item.key, list);
-    }
+    for (const item of s.items) push({ product, item });
+    for (const variant of s.variants ?? []) for (const item of variant.items) push({ product, item, variant });
   }
   return map;
+}
+
+// ───────────── 사양 옵션 (variants) ─────────────
+
+/** 사양의 옵션 찾기 (없거나 id 가 틀리면 undefined) */
+export function findVariant(specs: ProductSpecs | undefined, variantId: string | undefined): SpecVariant | undefined {
+  if (!specs || !variantId) return undefined;
+  return specs.variants?.find((v) => v.id === variantId);
+}
+
+/** 옵션이 있는 사양인가 */
+export function hasVariants(specs: ProductSpecs | undefined): specs is ProductSpecs & { variants: SpecVariant[] } {
+  return !!specs?.variants && specs.variants.length > 0;
+}
+
+/** 열 머리·담기 목록 표시 이름: "제품명 · 옵션 label" (옵션 없으면 제품명) */
+export function variantDisplayName(productName: string, variantLabel?: string): string {
+  return variantLabel ? `${productName} · ${variantLabel}` : productName;
+}
+
+/** 사양 한 값 + 그 값이 어느 옵션에서 왔는지 + 링크할 카탈로그 페이지 */
+export interface SpecEntry {
+  item: SpecItem;
+  /** 옵션별 사양에서 온 값이면 그 옵션 (공통 사양이면 undefined) */
+  variant?: SpecVariant;
+  /** 값의 페이지 → 없으면 옵션 표 페이지 (출처 페이지는 출처 행에서 따로 보여 줌) */
+  page?: number;
+}
+
+const entryOf = (item: SpecItem, variant?: SpecVariant): SpecEntry => ({ item, variant, page: item.page ?? variant?.page });
+
+/**
+ * 비교 열 하나의 사양 (키 → 값 목록, 키는 처음 나온 순서 — 행 정렬은 orderSpecKeys 로).
+ *  - 옵션 선택(variantId 가 있고 사양에 있음): 공통 items + 선택 옵션 items. 같은 key 는 **옵션 값 우선**
+ *    (그 key 의 공통 값은 버림).
+ *  - 시리즈 전체(variantId 없음·틀림): 공통 값 + 옵션마다 그 옵션의 값을 하나씩 (variant 표시) — 합치기·계산 없음.
+ */
+export function columnSpecEntries(specs: ProductSpecs, variantId?: string): Map<string, SpecEntry[]> {
+  const map = new Map<string, SpecEntry[]>();
+  const push = (e: SpecEntry) => {
+    const list = map.get(e.item.key) ?? [];
+    list.push(e);
+    map.set(e.item.key, list);
+  };
+  const selected = findVariant(specs, variantId);
+  if (selected) {
+    const overridden = new Set(selected.items.map((i) => i.key));
+    for (const item of specs.items) if (!overridden.has(item.key)) push(entryOf(item));
+    for (const item of selected.items) push(entryOf(item, selected));
+    return map;
+  }
+  for (const item of specs.items) push(entryOf(item));
+  for (const v of specs.variants ?? []) for (const item of v.items) push(entryOf(item, v));
+  return map;
+}
+
+/**
+ * "차이만 보기" 비교 문자열.
+ * series=true(시리즈 전체 열)면 옵션 값마다 옵션 label 을 붙인다 — "옵션 label: 값" 목록끼리, 또는 목록과 단일 옵션 값을 구분.
+ * series=false(옵션 선택 열)면 값만 — 같은 제품의 다른 옵션끼리 같은 값(예: 정격전압 ~1150)은 같은 행으로 숨겨진다.
+ */
+export function specEntriesKey(entries: SpecEntry[], series = false): string {
+  return entries.map((e) => `${series && e.variant ? `${compareKey(e.variant.label)}=` : ''}${compareKey(specValueText(e.item))}`).join('|');
+}
+
+export interface VariantSpecRow {
+  key: string;
+  label: string;
+  /** 옵션 순서대로 — 그 옵션에 이 key 값이 없으면 빈 배열 ("—") */
+  cells: SpecEntry[][];
+}
+
+/** 제품 상세 옵션별 사양 표: 행 = 옵션들에 나온 사양 키(SPEC_KEYS 순서 → 비표준), 열 = 옵션 */
+export function variantSpecRows(specs: ProductSpecs): VariantSpecRow[] {
+  const variants = specs.variants ?? [];
+  const all = variants.flatMap((v) => v.items);
+  return orderSpecKeys(all.map((i) => i.key)).map((key) => ({
+    key,
+    label: specLabel(key, all.find((i) => i.key === key)?.label),
+    cells: variants.map((v) => v.items.filter((i) => i.key === key).map((i) => entryOf(i, v))),
+  }));
+}
+
+export interface ResolvedProductColumn {
+  /** 실제로 쓰는 열 id ("제품id" 또는 "제품id:옵션id") — 틀린 옵션은 제품 id 로 되돌림 */
+  colId: string;
+  productId: string;
+  /** 선택된(그리고 사양에 있는) 옵션 */
+  variant?: SpecVariant;
+  /** URL 의 옵션 id 가 사양에 없어 "시리즈 전체"로 되돌렸으면 그 id */
+  invalidVariantId?: string;
+}
+
+/**
+ * URL 의 제품 열 id 를 사양과 맞춰 본다. specs 를 아직 못 불러왔으면(undefined 전달 + loaded=false) 검증하지 않고 그대로.
+ * 옵션 id 가 사양에 없으면(사양 자체가 없거나 옵션이 없는 제품 포함) "시리즈 전체"로 되돌리고 invalidVariantId 로 알린다.
+ */
+export function resolveProductColumn(colId: string, specs: ProductSpecs | undefined, loaded: boolean): ResolvedProductColumn {
+  const { baseId, variantId } = splitCompareId(colId);
+  if (!variantId) return { colId: baseId, productId: baseId };
+  if (!loaded) return { colId, productId: baseId };
+  const variant = findVariant(specs, variantId);
+  return variant ? { colId, productId: baseId, variant } : { colId: baseId, productId: baseId, invalidVariantId: variantId };
 }
 
 /** 사양이 수집된 제품 수 */

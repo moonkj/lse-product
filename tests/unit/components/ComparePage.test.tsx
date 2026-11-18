@@ -283,6 +283,21 @@ describe('CT-07 제품 비교 (/compare?type=product)', () => {
     expect(screen.getAllByTestId(/^compare-col-/)).toHaveLength(4);
   });
 
+  it('(v1.1) 옵션 없는 제품의 옵션 id → 시리즈 전체로 되돌림 + 안내, 되돌려 같아진 열은 한 번만', () => {
+    renderAt('type=product&ids=P90001:zz,P90001,P90002');
+    const notice = screen.getByTestId('compare-notice');
+    expect(notice).toHaveTextContent('"zz"');
+    expect(notice).toHaveTextContent('1개는 한 번만');
+    expect(screen.getAllByTestId(/^compare-col-/).map((c) => c.getAttribute('data-testid'))).toEqual(['compare-col-P90001', 'compare-col-P90002']);
+    expect(screen.queryByTestId(/^compare-variant-select-/)).toBeNull(); // 옵션 없는 제품 → select 없음
+  });
+
+  it('(v1.1) 되돌린 열 빼기 → 주소는 보이는 열 기준으로 다시 만듦', () => {
+    renderAt('type=product&ids=P90001:zz,P90002,P90003');
+    fireEvent.click(screen.getByTestId('compare-remove-P90003'));
+    expect(new URLSearchParams(lastSearch).get('ids')).toBe('P90001,P90002');
+  });
+
   it('빈 상태: 담아 둔 목록이 2개 이상이면 그 종류 비교 링크', () => {
     useCompareStore.setState({ equipment: ['eq-a'], product: ['P90001', 'P90002'], active: 'product' });
     renderAt('');
