@@ -19,6 +19,7 @@ import {
   productsForEquipment,
 } from '../lib/pages/catalog';
 import { gapConfidence, pageTitle } from '../lib/labels';
+import { requestPanelFocus } from '../lib/diagram/url';
 import NotFoundPage from './NotFoundPage';
 import './pages.css';
 import './ProductPage.css';
@@ -108,7 +109,7 @@ export default function ProductPage() {
 
           <div className="pg-actions">
             {node && (
-              <Link className="pg-btn pg-btn--primary" to={diagramHref(node.id)}>
+              <Link className="pg-btn pg-btn--primary" to={diagramHref(node.id)} onClick={requestPanelFocus}>
                 계통도에서 위치 보기
               </Link>
             )}

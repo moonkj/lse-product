@@ -96,3 +96,81 @@ export function isFullyVisible(r: Rect, va: VisibleArea, margin = 8): boolean {
 
 /** 보이는 영역의 가운데 (viewport 화면 좌표) */
 export const centerOf = (r: Rect) => ({ x: r.x + r.w / 2, y: r.y + r.h / 2 });
+
+/**
+ * 보이는 영역 캐시 (리뷰 R3) — 팬·핀치의 onView 는 프레임마다 불리므로 매번 DOM 을 재지 않는다.
+ * - 다시 잴 때: viewport·덮개 크기 변화(ResizeObserver), 창 크기 변화, viewport 밖 DOM 구조·class·style 변화(패널 열기·닫기 등).
+ *   viewport 안(타일·sizer 스타일) 변화는 무시 — 줌할 때마다 바뀌지만 덮개와 무관.
+ * - 다시 재는 것도 한 프레임에 한 번(rAF 스로틀). 같은 프레임 안 호출은 직전 값을 쓴다.
+ * - ResizeObserver·MutationObserver 가 없는 환경(jsdom 등)에서는 매번 잰다 (기존 동작).
+ */
+export interface VisibleAreaCache {
+  get(): VisibleArea;
+  /** 강제로 다음 get 에서 다시 잼 */
+  invalidate(): void;
+  destroy(): void;
+}
+
+export function createVisibleAreaCache(vp: HTMLElement): VisibleAreaCache {
+  const supported =
+    typeof ResizeObserver !== 'undefined' && typeof MutationObserver !== 'undefined' && typeof requestAnimationFrame !== 'undefined';
+  if (!supported) return { get: () => measureVisibleArea(vp), invalidate: () => {}, destroy: () => {} };
+
+  let cached: VisibleArea | undefined;
+  let dirty = true;
+  let locked = false;
+  let raf = 0;
+  const observed = new Set<Element>();
+  const invalidate = () => {
+    dirty = true;
+  };
+  const ro = new ResizeObserver(invalidate);
+  ro.observe(vp);
+  const mo = new MutationObserver((records) => {
+    if (dirty) return;
+    for (const r of records) {
+      const t = r.target;
+      if (vp.contains(t)) continue; // viewport 자신·안쪽 변화(타일·sizer)는 덮개와 무관 — 크기는 ResizeObserver 가 봄
+      dirty = true;
+      return;
+    }
+  });
+  mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden'] });
+  window.addEventListener('resize', invalidate);
+
+  /** 지금 있는 덮개 요소도 크기 변화를 지켜본다 (새로 생긴 요소는 MutationObserver 가 잡음) */
+  const observeObscurers = () => {
+    for (const el of document.querySelectorAll(OBSCURER_SELECTOR)) {
+      if (observed.has(el)) continue;
+      observed.add(el);
+      ro.observe(el);
+    }
+    for (const el of observed) {
+      if (el.isConnected) continue;
+      ro.unobserve(el);
+      observed.delete(el);
+    }
+  };
+
+  return {
+    get() {
+      if (cached && (!dirty || locked)) return cached;
+      cached = measureVisibleArea(vp);
+      observeObscurers();
+      dirty = false;
+      locked = true;
+      raf = requestAnimationFrame(() => {
+        locked = false;
+      });
+      return cached;
+    },
+    invalidate,
+    destroy() {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      mo.disconnect();
+      window.removeEventListener('resize', invalidate);
+      observed.clear();
+    },
+  };
+}

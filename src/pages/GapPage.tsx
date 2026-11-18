@@ -190,7 +190,9 @@ export default function GapPage() {
                         );
                       const counts = countCoverage(items);
                       const selected = cell?.layer === row.layer && cell.category === cat;
-                      const label = `${row.layer} ${CATEGORY_LABELS[cat]}: ${COVERAGE_ORDER.filter((c) => counts[c] > 0)
+                      const present = COVERAGE_ORDER.filter((c) => counts[c] > 0);
+                      // 화면에 보이는 숫자로 시작 (WCAG 2.5.3, 리뷰 R5) — 예: "2 1 · L4 보호: 보유 2, 미보유 1"
+                      const label = `${present.map((c) => counts[c]).join(' ')} · ${row.layer} ${CATEGORY_LABELS[cat]}: ${present
                         .map((c) => `${COVERAGE_LABELS[c]} ${counts[c]}`)
                         .join(', ')}`;
                       return (

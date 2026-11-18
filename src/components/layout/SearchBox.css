@@ -3,3 +3,12 @@
   background: var(--cov-partial-bg);
   color: var(--cov-partial-text);
 }
+
+/* 형식명 색인(specs) 로딩 실패 안내 한 줄 (리뷰 R2) */
+.search__warn {
+  margin: 0;
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+}

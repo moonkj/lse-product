@@ -83,15 +83,58 @@ test.describe('C1 압축 화면 · 발표 보기', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);
   });
 
-  test('390×844 세로: 압축 아님, 헤더 2줄(≤120px)·버튼 44px', async ({ page }) => {
+  test('390×844 세로: 압축 아님, 헤더 2줄(≤120px)·버튼 44px, 발표 보기 버튼 숨김(M2)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await gotoHome(page);
     await expect(tid(page, 'app-shell')).toHaveAttribute('data-density', 'default');
     const header = await page.getByRole('banner').boundingBox();
     expect(header!.height).toBeLessThanOrEqual(120);
-    for (const id of ['view-mode-gap', 'present-toggle', 'layer-nav-L4']) {
+    for (const id of ['view-mode-gap', 'layer-nav-L4']) {
       expect((await tid(page, id).boundingBox())!.height, id).toBeGreaterThanOrEqual(44);
     }
+    await expect(tid(page, 'present-toggle')).toBeHidden();
+  });
+});
+
+/** 리뷰 M2: 휴대폰 세로에서 저장된 발표 보기(lse-present-v1=1)가 켜져 있어도 압축 헤더·사이드 패널을 쓰지 않음 */
+test.describe('M2 휴대폰 세로 + 저장된 발표 보기', () => {
+  for (const [w, h] of [
+    [390, 844],
+    [360, 740],
+  ] as const) {
+    test.describe(`${w}×${h}`, () => {
+      test.use({ viewport: { width: w, height: h }, isMobile: true, hasTouch: true });
+      test('가로 넘침 없음 · 검색창 ≥120px · 하단 시트 · 발표 보기 버튼 숨김', async ({ page }) => {
+        await page.addInitScript(() => localStorage.setItem('lse-present-v1', '1'));
+        await gotoHome(page, '?node=n-vcb');
+        await expect(tid(page, 'app-shell')).toHaveAttribute('data-density', 'default');
+        await expect(tid(page, 'present-toggle')).toBeHidden();
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(w);
+        expect((await tid(page, 'search-input').boundingBox())!.width).toBeGreaterThanOrEqual(120);
+        const panel = tid(page, 'detail-panel');
+        await expect(panel).toBeVisible();
+        await expect(panel).toHaveAttribute('data-sheet', 'bottom');
+        const r = (await panel.boundingBox())!;
+        expect(r.width).toBeGreaterThanOrEqual(w - 2); // 사이드 패널이 아니라 전체 폭 시트
+        // 제품 화면도 넘침·검색창 깨짐 없음
+        await page.goto('./#/product/P00206');
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(w);
+        expect((await tid(page, 'search-input').boundingBox())!.width).toBeGreaterThanOrEqual(120);
+      });
+    });
+  }
+
+  test.describe('844×390 가로 (저장된 발표 보기)', () => {
+    test.use({ viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true });
+    test('압축 + 오른쪽 사이드 패널 유지, 넘침 없음', async ({ page }) => {
+      await page.addInitScript(() => localStorage.setItem('lse-present-v1', '1'));
+      await gotoHome(page, '?node=n-vcb');
+      await expect(tid(page, 'app-shell')).toHaveAttribute('data-density', 'compact');
+      await expect(tid(page, 'present-toggle')).toBeVisible();
+      await expect(tid(page, 'detail-panel')).toHaveAttribute('data-sheet', 'side');
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(844);
+    });
   });
 });
 
@@ -177,6 +220,15 @@ test.describe('C4 첫 방문 시작 카드', () => {
     expect(await page.evaluate(() => localStorage.getItem('lse-start-card-dismissed'))).toBe('1');
   });
 
+  test('R1 "기기를 눌러 보세요" Enter → 포커스가 상세 패널 제목으로 (body 로 사라지지 않음)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('./');
+    await tid(page, 'start-card-device').focus();
+    await page.keyboard.press('Enter');
+    await expect(tid(page, 'detail-panel')).toBeVisible();
+    await expect(page.locator('#detail-panel-title')).toBeFocused();
+  });
+
   test('모바일(390): 1줄 배너(≤50px), 계통도를 덮지 않음', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('./');
@@ -204,5 +256,15 @@ test.describe('B10 live region · 라우트 포커스', () => {
 
     await tid(page, 'gap-table-link').click();
     await expect(page.getByRole('heading', { level: 1, name: '공백 표' })).toBeFocused();
+  });
+
+  test('R1 제품 화면 "계통도에서 위치 보기" Enter → 계통도 상세 패널 제목에 포커스', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('./#/product/P00206');
+    const link = page.getByRole('link', { name: '계통도에서 위치 보기' });
+    await link.focus();
+    await page.keyboard.press('Enter');
+    await expect(tid(page, 'detail-panel')).toBeVisible();
+    await expect(page.locator('#detail-panel-title')).toBeFocused();
   });
 });

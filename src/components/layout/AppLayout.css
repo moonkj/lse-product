@@ -716,6 +716,17 @@
   font-weight: var(--fw-bold);
 }
 
+/* 휴대폰 세로: 발표 보기는 의미가 없고 압축하면 헤더가 깨진다 → 버튼 숨김 (리뷰 M2, shellLayout PORTRAIT_PHONE_QUERY 와 같은 조건) */
+@media (max-width: 600px) and (orientation: portrait) {
+  .present-toggle {
+    display: none;
+  }
+
+  .app-header .mode-toggle {
+    flex-basis: 100%;
+  }
+}
+
 .present-toggle__icon {
   flex: none;
   fill: none;

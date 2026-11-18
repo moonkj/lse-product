@@ -43,7 +43,7 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
       style={{ left: item.x - TILE_W / 2, top: item.y - TILE_H / 2 }}
       data-testid={`diagram-node-${id}`}
       data-node-id={id}
-      aria-label={ref ? `참조: ${eq.name}${item.refLabel ? ` (${item.refLabel})` : ''}` : `${eq.name}, ${COVERAGE_LABELS[coverage]}`}
+      aria-label={nodeLabel(item.title, caption, eq.name, ref ? undefined : COVERAGE_LABELS[coverage])}
       aria-pressed={selected}
       data-coverage={coverage}
       data-confidence={confidence}
@@ -75,14 +75,25 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
         <EquipmentSymbol category={eq.category} equipmentId={eq.id} size={72} className="dnode__symbol" />
       )}
       <span className="dnode__title">{item.title}</span>
+      {/* 공백 텍스트: 세로 flex 라 화면엔 안 그려지지만 글자 추출(axe 2.5.3·복사)에서 제목과 캡션이 붙지 않게 */}{' '}
       {caption && (
         <span className="dnode__caption" title={caption}>
           {caption}
         </span>
-      )}
+      )}{' '}
       <CoverageBadge coverage={coverage} variant="icon" className="dnode__badge" />
     </div>
   );
+}
+
+/**
+ * 타일 이름 — 화면에 보이는 글자(제목·캡션)로 시작하고 기기명·커버리지를 덧붙인다 (WCAG 2.5.3, 리뷰 R5).
+ * 예: "VCB 진공차단기, 보유" (캡션이 기기명이면 한 번만), "VCB 참조 · L4, 진공차단기"
+ */
+export function nodeLabel(title: string, caption: string | undefined, name: string, coverage?: string): string {
+  const visible = [title, caption].filter(Boolean).join(' ');
+  const extra = [visible.includes(name) ? undefined : name, coverage && !visible.includes(coverage) ? coverage : undefined].filter(Boolean);
+  return extra.length ? `${visible}, ${extra.join(', ')}` : visible;
 }
 
 export default memo(DiagramNode);

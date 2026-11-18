@@ -130,10 +130,13 @@ export function searchOptions(index: readonly OptionDoc[], query: string, limit:
   return hits.sort((a, b) => a.score - b.score).slice(0, limit);
 }
 
-/** 제품명의 모델 토큰이 질의와 정확히 같으면 true (예: "GIPAM 1000" ↔ "GIPAM1000", "115FI" ↔ "GIPAM115FI" 는 아님) */
+/**
+ * 제품명의 모델 토큰이 질의와 정확히 같으면 true (예: "GIPAM 1000" ↔ "GIPAM1000", "115FI" ↔ "GIPAM115FI" 는 아님).
+ * 숫자가 든 질의만 대상 — "ACB"·"VCB" 같은 영문자 토큰은 기기 약어와 겹쳐 기기를 밀어내므로 제외 (리뷰 M1).
+ */
 export function productNameExact(name: string, query: string): boolean {
   const qn = normalizeModel(query);
-  if (qn.length < MIN_QUERY) return false;
+  if (qn.length < MIN_QUERY || !/\d/.test(qn)) return false;
   return normalizeModel(name) === qn || modelTokens(name).includes(qn);
 }
 

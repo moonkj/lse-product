@@ -62,15 +62,25 @@ describe('CT-03 DiagramNode', () => {
     expect(node()).toHaveTextContent('자사 제품 없음'); // 미보유 캡션 (디자인 규칙)
   });
 
-  it.each(COVERAGES)('%s: role=button·tabindex=0, aria-label "{기기명}, {커버리지}", data-coverage, 아이콘 병행', (c) => {
+  it.each(COVERAGES)('%s: role=button·tabindex=0, aria-label = 화면 글자로 시작 + 기기명·커버리지 (WCAG 2.5.3), data-coverage, 아이콘 병행', (c) => {
     render(<DiagramNode item={makeItem(c)} mode="product" selected={false} onActivate={() => {}} />);
     const el = node();
     expect(el).toHaveAttribute('role', 'button');
     expect(el).toHaveAttribute('tabindex', '0');
-    expect(el).toHaveAttribute('aria-label', `테스트 차단기, ${COVERAGE_LABELS[c]}`);
+    const label = el.getAttribute('aria-label')!;
+    const visible = [...el.querySelectorAll('.dnode__title, .dnode__caption')].map((n) => n.textContent).join(' ');
+    expect(label.startsWith(visible)).toBe(true);
+    expect(label).toContain('테스트 차단기');
+    expect(label).toContain(COVERAGE_LABELS[c]);
     expect(el).toHaveAttribute('data-coverage', c);
     expect(el).toHaveAttribute('aria-pressed', 'false');
     expect(screen.getByTestId(`coverage-icon-${c}`)).toHaveTextContent(COVERAGE_ICONS[c]);
+  });
+
+  it('R5 약어 타일: "VCB 진공차단기, 보유" — 약어로 시작, 기기명은 한 번만', () => {
+    const item = makeItem('owned', { abbr: 'VCB' });
+    render(<DiagramNode item={{ ...item, eq: { ...item.eq, name: '진공차단기' }, subtitle: '진공차단기' }} mode="product" selected={false} onActivate={() => {}} />);
+    expect(node()).toHaveAttribute('aria-label', `VCB 진공차단기, ${COVERAGE_LABELS.owned}`);
   });
 
   it('Gap 모드(R-08): missing·partial 강조, owned·na 흐림, affiliate 보통 / 제품 모드는 모두 보통', () => {

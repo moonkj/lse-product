@@ -82,6 +82,45 @@ test.describe('B6 명판 형식명 검색', () => {
   });
 });
 
+test.describe('리뷰 M1 기기 약어 검색 + Enter → 기기', () => {
+  for (const [q, node] of [
+    ['VCB', 'n-vcb'],
+    ['ACB', 'n-acb'],
+    ['MCCB', 'n-mccb'],
+    ['진공차단기', 'n-vcb'],
+  ] as const) {
+    test(`"${q}" Enter → ${node} 선택·상세 패널`, async ({ page }) => {
+      await page.goto('./#/');
+      const input = tid(page, 'search-input');
+      await input.fill(q);
+      await expect(tid(page, 'search-results').getByRole('option').first()).toHaveAttribute('data-testid', /^search-result-equipment-/);
+      await input.press('Enter');
+      await expect(page).toHaveURL(new RegExp(`node=${node}(&|$)`));
+      await expect(tid(page, 'detail-panel')).toBeVisible();
+    });
+  }
+});
+
+test.describe('리뷰 R2 형식명 색인 로딩 실패', () => {
+  test('specs 청크 실패 → 안내 한 줄, 30초 안에는 입력해도 다시 요청하지 않음, 기기·제품 검색은 그대로', async ({ page }) => {
+    let requests = 0;
+    await page.route(/\/assets\/specs-[^/]+\.js$/, (route) => {
+      requests++;
+      return route.abort();
+    });
+    await page.goto('./#/');
+    const input = tid(page, 'search-input');
+    await input.fill('TS2');
+    await expect(tid(page, 'search-specs-failed')).toContainText('모델명 색인을 불러오지 못했습니다');
+    for (const ch of ['5', '0']) await input.press(ch);
+    await input.fill('');
+    await input.fill('VCB');
+    await expect(tid(page, 'search-results').getByTestId('search-result-equipment-vcb')).toBeVisible();
+    await expect(tid(page, 'search-specs-failed')).toBeVisible();
+    expect(requests).toBe(1);
+  });
+});
+
 test.describe('C5 자료 바로가기 칩', () => {
   test('옵션별 사양·카탈로그 칩 → 해당 섹션이 화면 안으로, 모바일 44px', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });

@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { getDiagramModel } from '../../lib/diagram/model';
+import { requestPanelFocus } from '../../lib/diagram/url';
 import { useUiStore } from '../../store/useUiStore';
 
 /** 예시로 보여 줄 기기 (진공차단기 VCB — 보유 제품이 많은 대표 기기). 없으면 첫 기기 */
@@ -53,7 +54,11 @@ export default function StartCard() {
       <ul className="start-card__list">
         {ex && (
           <li>
-            <Link to={`/?node=${ex.id}`} className="start-card__link" data-testid="start-card-device" onClick={dismiss}>
+            <Link to={`/?node=${ex.id}`} className="start-card__link" data-testid="start-card-device" onClick={() => {
+                // 같은 화면에서 노드만 선택 → 상세 패널 제목으로 포커스 (B4, 리뷰 R1 — 카드가 사라지며 포커스가 body 로 가지 않게)
+                requestPanelFocus();
+                dismiss();
+              }}>
               <b>기기를 눌러 보세요</b>
               <span className="start-card__sub">· 예: {ex.label}</span>
             </Link>

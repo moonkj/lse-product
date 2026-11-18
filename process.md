@@ -178,3 +178,4 @@
 - 교육 탭·/learn(→ / 리디렉트)·계통도 learn 모드·용어집·learn.json/learnSchema 삭제, DI-70~79 폐지, 시작 카드 링크 2개 + 모델명 검색 안내. index.html 설명 수정.
 - 검증: typecheck·build, unit 456, E2E 112·1 skip. LearnPage 청크 소멸, 첫 화면 gzip 80.07kB.
 - T3 리뷰(docs/reviews/ux-round-u-review.md): 반드시 2(M1 기기 약어 검색 회귀, M2 폰 세로 발표 보기 깨짐) · 권장 5 → 수정 라운드 R-U2.
+- R-U2 (T3 리뷰 수정): M1 기기 약어 검색 1위 복구(searchRank.ts, 숫자 든 질의만 제품명 정확 일치), M2 세로 폰은 발표 보기·자동 압축 무시(버튼 숨김), R1 계통도 진입 포커스, R2 specs 실패 30초 재요청 금지+안내, R3 보이는 영역 캐시(ResizeObserver·rAF), R5 axe 2.5.3 0건(타일·계층 내비·공백 표 이름 = 화면 글자로 시작), S3·S7. 검증: unit 474, E2E 122·1 skip, axe 122→4(남은 4 = 390 접힌 시트 target-size, 시트 배치 변경 필요 → 사용자 확인).

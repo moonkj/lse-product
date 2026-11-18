@@ -57,15 +57,24 @@ export default function LayerNav() {
                   className={`layer-nav__btn${isCurrent ? ' is-current' : ''}`}
                   data-testid={`layer-nav-${l.id}`}
                   aria-current={isCurrent ? 'true' : undefined}
-                  aria-label={`${main ? `${l.id} ` : ''}${l.label} — ${gap ? `공백 ${s.gaps}` : `보유 ${s.owned} / 전체 ${s.total}`}`}
                   onClick={() => jump(l.id)}
                 >
+                  {/* 이름 = 화면 글자 + 보조 설명(스크린리더 전용) — aria-label 로 덮으면 화면 글자와 이름이 달라짐 (WCAG 2.5.3, 리뷰 R5) */}
                   <span className="layer-nav__name">
-                    {main && <b className="layer-nav__code">{l.id}</b>}
+                    {main && (
+                      <b className="layer-nav__code">
+                        {l.id}
+                        <span className="visually-hidden">&nbsp;</span>
+                      </b>
+                    )}
                     <span className="layer-nav__label">{name}</span>
                   </span>
+                  <span className="visually-hidden">&nbsp;</span>
                   <span className={`layer-nav__count${gap && s.gaps > 0 ? ' has-gap' : ''}`}>
                     {gap ? s.gaps : `${s.owned}/${s.total}`}
+                  </span>
+                  <span className="visually-hidden">
+                    {` · ${l.label}, ${gap ? `공백 ${s.gaps}` : `보유 ${s.owned} / 전체 ${s.total}`}`}
                   </span>
                 </button>
               </li>

@@ -20,8 +20,7 @@ import {
 } from '../../lib/diagram/url';
 import { getDiagramController } from '../../lib/diagram/view';
 import { announce } from '../../lib/announce';
-import { useUiStore } from '../../store/useUiStore';
-import { COMPACT_QUERY } from '../layout/shellLayout';
+import { useCompactState } from '../layout/shellLayout';
 import CoverageBadge from '../common/CoverageBadge';
 import CompareToggle from '../compare/CompareToggle';
 import DocsList from '../common/DocsList';
@@ -44,8 +43,14 @@ function pillText(coverage: Coverage, productCount: number, confirmed: boolean):
 /** gapNote 라벨: 상태에 맞게 (보유 기기 메모에 "공백"이 붙지 않게) */
 const NOTE_LABELS: Partial<Record<Coverage, string>> = { partial: '일부 보유 메모', missing: '공백 메모' };
 
-/** 기록 항목(location.key)별 패널 스크롤 위치 — 제품 페이지 등에서 뒤로가기로 돌아오면 복원 (B5) */
+/** 기록 항목(location.key)별 패널 스크롤 위치 — 제품 페이지 등에서 뒤로가기로 돌아오면 복원 (B5). 최근 100개만 (리뷰 S7) */
 const panelScroll = new Map<string, number>();
+const MAX_PANEL_SCROLL = 100;
+function savePanelScroll(key: string, top: number) {
+  panelScroll.delete(key);
+  panelScroll.set(key, top);
+  if (panelScroll.size > MAX_PANEL_SCROLL) panelScroll.delete(panelScroll.keys().next().value!);
+}
 
 /** 자료를 보여줄 대표 제품: 자료가 있는 첫 제품, 없으면 첫 제품 */
 function representative(products: Product[]): Product | undefined {
@@ -66,10 +71,9 @@ export default function DetailPanel() {
   const navType = useNavigationType();
   // 모바일 시트 펼침 = 기록 항목의 state → 뒤로가기로 돌아오면 그때 펼침 상태 그대로, 새 기기를 열면 접힘
   // 압축 화면(창 높이 ≤600·발표 보기)의 모바일 폭 = 하단 시트 대신 오른쪽 사이드 패널(AppLayout.css) →
-  // 항상 펼친 상태, 시트 핸들·펼치기 버튼·접힌 머리글 없음
-  const compactDensity = useMediaQuery(COMPACT_QUERY);
-  const present = useUiStore((st) => st.present);
-  const sideSheet = isMobile && (compactDensity || present);
+  // 항상 펼친 상태, 시트 핸들·펼치기 버튼·접힌 머리글 없음. 휴대폰 세로는 발표 보기여도 하단 시트(리뷰 M2)
+  const { compact: compactDensity } = useCompactState();
+  const sideSheet = isMobile && compactDensity;
   const expanded = sideSheet || (isMobile && (location.state as PanelHistoryState | null)?.sheet === 'expanded');
   const setExpanded = (v: boolean) => {
     const prev = (location.state ?? {}) as Record<string, unknown>;
@@ -81,6 +85,8 @@ export default function DetailPanel() {
   const panelRef = useRef<HTMLElement>(null);
   const keyRef = useRef(location.key);
   keyRef.current = location.key;
+  /** 이번 선택에서 패널 제목으로 포커스를 옮겼는가 (안내 중복 방지) */
+  const titleFocusedRef = useRef(false);
   const node = selectedId ? getDiagramModel().nodeById.get(selectedId) : undefined;
 
   /** 닫기(Esc·×) → 포커스를 원래 타일로 돌려주고, 그 타일이 화면(보이는 영역) 안에 들어오도록 팬 (B4) */
@@ -124,19 +130,25 @@ export default function DetailPanel() {
       if (el.scrollTo) el.scrollTo({ top: saved ?? 0 });
       else el.scrollTop = saved ?? 0;
     }
-    if (selectedId && takePanelFocusRequest()) focusPanelTitle();
+    titleFocusedRef.current = !!selectedId && takePanelFocusRequest() && focusPanelTitle();
     // location.key 는 선택과 함께 바뀌므로 선택 기준으로만 실행 (시트 펼침 replace 때 스크롤을 지우지 않게)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId]);
 
   // 스크린리더 안내 (앱 공용 live region)
   const openedName = node ? (node.eq.abbr ?? node.eq.name) : null;
+  // 제목으로 포커스를 옮겼으면 제목 낭독과 겹치므로 생략 (리뷰 S3)
   useEffect(() => {
-    if (openedName) announce(`${openedName} 상세 열림`);
+    if (!openedName) return;
+    if (titleFocusedRef.current) {
+      titleFocusedRef.current = false;
+      return;
+    }
+    announce(`${openedName} 상세 열림`);
   }, [selectedId, openedName]);
 
   const onScroll = (e: React.UIEvent<HTMLElement>) => {
-    panelScroll.set(keyRef.current, e.currentTarget.scrollTop);
+    savePanelScroll(keyRef.current, e.currentTarget.scrollTop);
   };
 
   if (!node) {

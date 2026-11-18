@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { focusPanelTitle } from '../../lib/diagram/url';
 
 interface NavState {
   focusNode?: string;
@@ -34,9 +35,24 @@ export function useRouteFocus() {
     const before = prev.current;
     prev.current = pathname;
     if (before === null || before === pathname) return;
-    if (diagramHandlesFocus(pathname, search, state)) return;
-
     let cancelled = false;
+    if (diagramHandlesFocus(pathname, search, state)) {
+      // 계통도가 패널 제목·타일로 포커스를 옮긴다. 그래도 포커스가 body 로 사라졌으면(리뷰 R1)
+      // 노드가 있으면 상세 패널 제목, 없으면 계통도 영역으로 보낸다.
+      const hasNode = new URLSearchParams(search).has('node');
+      const fallback = setTimeout(() => {
+        if (cancelled) return;
+        const a = document.activeElement;
+        if (a && a !== document.body) return;
+        if (hasNode && focusPanelTitle()) return;
+        document.getElementById('diagram-viewport')?.focus({ preventScroll: true });
+      }, 120);
+      return () => {
+        cancelled = true;
+        clearTimeout(fallback);
+      };
+    }
+
     let tries = 0;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const attempt = () => {

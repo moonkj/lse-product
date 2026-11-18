@@ -9,18 +9,32 @@ import { useUiStore } from '../../store/useUiStore';
  * 내용은 바꾸지 않는다(토론 합의 — 보기 모드별로 다른 내용 금지).
  */
 export const COMPACT_QUERY = '(max-height: 600px)';
+/**
+ * 휴대폰 세로 — 폭이 좁아 압축 헤더(한 줄)·사이드 패널을 쓰면 검색창이 사라지고 가로로 넘친다 (리뷰 M2).
+ * 이 조건에서는 발표 보기 설정(저장값 포함)이 켜져 있어도 압축하지 않고, 발표 보기 버튼도 숨긴다(CSS).
+ */
+export const PORTRAIT_PHONE_QUERY = '(max-width: 600px) and (orientation: portrait)';
+
+/** 압축 상태 계산만 (부수 효과 없음) — present 는 실제로 적용되는 발표 보기 (세로 폰이면 false) */
+export function useCompactState(): { compact: boolean; auto: boolean; present: boolean } {
+  const auto = useMediaQuery(COMPACT_QUERY);
+  const portraitPhone = useMediaQuery(PORTRAIT_PHONE_QUERY);
+  const presentSetting = useUiStore((s) => s.present);
+  const present = presentSetting && !portraitPhone;
+  const compact = !portraitPhone && (auto || present);
+  return { compact, auto, present };
+}
 
 export function useCompactDensity(): { compact: boolean; auto: boolean; present: boolean } {
-  const auto = useMediaQuery(COMPACT_QUERY);
-  const present = useUiStore((s) => s.present);
-  const compact = auto || present;
+  const state = useCompactState();
+  const { compact, present } = state;
   useEffect(() => {
     const root = document.documentElement;
     root.dataset.density = compact ? 'compact' : 'default';
     if (present) root.dataset.present = 'true';
     else delete root.dataset.present;
   }, [compact, present]);
-  return { compact, auto, present };
+  return state;
 }
 
 export interface ShellOptions {

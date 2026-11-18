@@ -6,7 +6,7 @@ import { getDiagramModel, layerAt, type DiagramModel } from '../../lib/diagram/m
 import { TILE_H, TILE_W } from '../../lib/diagram/geometry';
 import { PanZoom, type Rect } from '../../lib/diagram/panzoom';
 import { getSavedView, registerDiagramController, saveView, viewStore } from '../../lib/diagram/view';
-import { centerOf, isFullyVisible, measureVisibleArea } from '../../lib/diagram/viewport';
+import { centerOf, createVisibleAreaCache, isFullyVisible, measureVisibleArea } from '../../lib/diagram/viewport';
 import {
   MOBILE_QUERY,
   focusNode,
@@ -185,6 +185,8 @@ export default function DiagramCanvas() {
     const sizer = sizerRef.current;
     const inner = innerRef.current;
     if (!vp || !sizer || !inner) return;
+    // 보이는 영역은 덮개 크기가 바뀔 때만 다시 잰다 (onView 는 팬·핀치 프레임마다 불림 — 리뷰 R3)
+    const visible = createVisibleAreaCache(vp);
     const pz = new PanZoom(vp, sizer, inner, {
       width: model.width,
       height: model.height,
@@ -199,7 +201,7 @@ export default function DiagramCanvas() {
         if (pinRef.current) layer = pinRef.current.layer;
         else {
           // 패널·시트·비교 바가 가린 부분을 뺀 "보이는 영역"의 가운데로 현재 계층을 판정
-          const c = centerOf(measureVisibleArea(vp).free);
+          const c = centerOf(visible.get().free);
           layer = layerAt(model, v.x + c.x / v.scale, v.y + c.y / v.scale);
         }
         viewStore.set({ ...v, layer, ready: true });
@@ -235,6 +237,7 @@ export default function DiagramCanvas() {
       saveView(keyRef.current, { view: pz.view(), pinned: pinRef.current ? { layer: pinRef.current.layer } : undefined });
       unregister();
       pz.destroy();
+      visible.destroy();
       pzRef.current = null;
       pinRef.current = null;
       viewStore.set({ ready: false, layer: null });
