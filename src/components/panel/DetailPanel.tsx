@@ -134,7 +134,9 @@ export default function DetailPanel() {
   const closeRef = useRef(close);
   closeRef.current = close;
 
-  useEffect(() => {
+  // Esc 수신은 패널이 DOM 에 붙는 커밋과 같은 시점에 등록 (useLayoutEffect) — useEffect 는 화면에 그린 뒤로 밀릴 수 있어
+  // 패널이 보이자마자 누른 Esc 를 놓치는 경쟁이 있었다 (E2E 간헐 실패, docs/reviews/flaky-tests.md)
+  useLayoutEffect(() => {
     if (!selectedId) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented) return;

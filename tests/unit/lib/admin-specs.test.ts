@@ -295,8 +295,15 @@ async function freshStore(saved?: unknown): Promise<StoreMod> {
 }
 
 describe('UT-16 specsStore', () => {
-  beforeEach(() => localStorage.clear());
+  // 자동 저장 타이머(300ms)는 모듈 전역이라 vi.resetModules() 뒤에도 이전 인스턴스의 것이 살아 있다.
+  // 실제 타이머로 두면 앞 테스트의 commit 이 다음 테스트 load() 도중 localStorage 에 초안을 써서 결과가 흔들린다(간헐 실패).
+  // → 모든 테스트를 가짜 타이머로 돌리고, 끝날 때 남은 타이머는 실행하지 않고 버린다.
+  beforeEach(() => {
+    vi.useFakeTimers();
+    localStorage.clear();
+  });
   afterEach(() => {
+    vi.clearAllTimers();
     vi.useRealTimers();
     localStorage.clear();
   });
@@ -341,7 +348,6 @@ describe('UT-16 specsStore', () => {
     const m = await freshStore();
     const s = () => m.useSpecsAdminStore.getState();
     await s().load();
-    vi.useFakeTimers();
     const pid = Object.keys(s().draft!.products)[0];
     s().commit(setReviewed(s().draft!, pid, true, '품질보증팀', DATE).file);
     expect(localStorage.getItem(m.SPECS_STORAGE_KEY)).toBeNull();

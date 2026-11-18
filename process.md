@@ -203,3 +203,4 @@
 - 펼친 시트 카드 가림 수정(CSS). 검증: unit 505, E2E 139, axe target-size 0.
 - 설명 v2: 75종 "요약 + 역할·동작 원리·선정 포인트·LS ELECTRIC 제품" 구조(overview {summary, points, basis, sources}), 화면 근거 줄 전면 제거(사용자 요청), 비교 '설명' 요약+더 보기, 라벨 열 108px. 연결 기기 칩 aria-label 수정(axe 12→0). DI-OV1~3 추가.
 - 검증: unit 508, E2E 140. ⚠ 간헐 실패 관찰: unit 1건(전체 실행 중 1회, 재실행 통과 — 이전 admin-specs 저장본 손상 케이스와 동일 추정), E2E ux-diagram 접힌 시트 390 1건·core-flows 키보드 Esc 1건(재실행 통과) → T2 플래키 조사 필요.
+- T2 플래키 3건 해결(docs/reviews/flaky-tests.md): UT-16 모듈 전역 자동저장 타이머 격리(가짜 타이머), Esc 리스너 useLayoutEffect(경쟁 조건), 접힌 시트 측정은 --sheet-h 동기화까지 expect.poll. 반복: vitest 20/20, 대상 spec repeat 10×workers 1/4/8 통과. 별건: shuffle 시 순서 의존 메타 테스트 실패(기본 순서는 정상).

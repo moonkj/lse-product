@@ -265,7 +265,19 @@ for (const [w, h] of [
         const p = tid(page, 'detail-panel');
         await expect(p).toHaveAttribute('data-sheet', 'bottom');
         await expect(p).not.toHaveClass(/is-expanded/);
-        await expect(tid(page, 'detail-title')).toBeVisible();
+        // 같은 문서 안 해시 이동이라 이전 기기의 패널이 그대로 남아 있을 수 있다 → 이번 기기로 바뀐 뒤에 잰다
+        await expect(tid(page, 'detail-title')).toContainText(c.eq.name);
+        // 비교 바 위치는 ResizeObserver 가 넣는 --sheet-h 를 따른다. 패널 높이가 바뀐(내용 교체·사진 로드) 직후 다음 프레임 전에 재면
+        // 이전 높이 기준이라 간헐 실패 → 실측 높이와 --sheet-h 가 같아질 때까지 기다린 뒤 잰다 (앱 동작은 그대로)
+        await expect
+          .poll(() =>
+            page.evaluate(() => {
+              const panel = document.querySelector('[data-testid="detail-panel"]')!;
+              const v = getComputedStyle(document.documentElement).getPropertyValue('--sheet-h').trim();
+              return v === `${Math.ceil(panel.getBoundingClientRect().height)}px`;
+            }),
+          )
+          .toBe(true);
         // 요약 밖 섹션은 접힌 상태에서 렌더하지 않음
         await expect(p.locator('#dp-products-title')).toHaveCount(0);
         await expect(tid(page, 'detail-product-list')).toHaveCount(0);
