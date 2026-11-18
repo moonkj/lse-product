@@ -4,7 +4,8 @@
  *
  * - validateDraft(현재 데이터) = 오류 0 (DI 테스트와 같은 공용 검사)
  * - 노드 추가·이동·모선 길이 변경·삭제·연결 추가/삭제 뒤 검사 결과 (규칙 ID 까지)
- * - 계통 검수 상태 syncReview: 편집하면 pending 자동 전환, 되돌리면 원본 review 복원
+ * - 계통 검수 상태 syncReview: 계통 구조(노드·연결선) 편집하면 pending 자동 전환(기존 note 보존 + 이전 검수 정보),
+ *   기기 정보만 바뀌면 유지, 되돌리면 원본 review 복원 (v0.8 개선 R5)
  * - 패널 구성품(sourced): 공급 방식이 panel-sourced 가 아니면 DI-27b 오류 (폼의 강제 고정은 E2E-ADM-4)
  */
 import { readFileSync } from 'node:fs';
@@ -32,6 +33,7 @@ import {
   toJsonText,
   type Draft,
 } from '../../../src/lib/admin/draft';
+import { changesMarkdown } from '../../../src/lib/admin/diff';
 import { coverageIssues, validateDraft, type Issue } from '../../../src/lib/admin/integrity';
 import type { EquipmentType } from '../../../src/lib/schema';
 
@@ -199,30 +201,111 @@ describe('UT-12 편집 연산 → 검사 결과', () => {
   });
 });
 
-describe('UT-12 계통 검수 상태 syncReview (개선 R4 M4)', () => {
-  it('편집하면 pending + changedAt 오늘 + 안내 문구, 키 순서 width·height·review·…', () => {
+describe('UT-12 계통 검수 상태 syncReview (개선 R4 M4 · v0.8 개선 R5 규칙)', () => {
+  // 기대 문구는 구현(pendingReviewNote)을 호출하지 않고 계약대로 직접 적는다 (자기 확인 방지)
+  const STAMP = (d: string) => `${d} ${ADMIN_REVIEW_NOTE}`;
+  const approved = { status: 'approved' as const, reviewedBy: '설계팀', reviewedAt: '2026-11-10', note: '기존 검수 메모' };
+  const withReview = (review: Draft['diagram']['review']): Draft => {
     const b = base();
-    const moved = moveNode(b, 'bus-380', node(b, 'bus-380').x, node(b, 'bus-380').y + 10).draft;
+    b.diagram.review = review;
+    return b;
+  };
+  /** bus-380 을 원본 위치 기준 dy 만큼 옮긴 초안 (이동 거부되면 즉시 실패 — 거부된 이동이 "변경 없음"으로 통과하지 않게) */
+  const BUS0 = node(base(), 'bus-380');
+  const moveBus = (d: Draft, dy = 10) => {
+    const r = moveNode(d, 'bus-380', BUS0.x, BUS0.y + dy);
+    expect(r.error, `bus-380 dy=${dy} 이동 거부`).toBeUndefined();
+    return r.draft;
+  };
+
+  it('편집하면 pending + changedAt 오늘 + 안내 문구, 키 순서 width·height·review·…', () => {
+    const b = withReview({ status: 'pending', changedAt: '2026-11-01' });
+    const moved = moveBus(b);
     expect(topologyChanged(b, moved)).toBe(true);
     const s = syncReview(b, moved, TODAY);
-    expect(s.diagram.review).toEqual({ status: 'pending', changedAt: TODAY, note: ADMIN_REVIEW_NOTE });
+    expect(s.diagram.review).toEqual({ status: 'pending', changedAt: TODAY, note: STAMP(TODAY) });
     expect(Object.keys(s.diagram).slice(0, 3)).toEqual(['width', 'height', 'review']);
     expect(errors(s)).toEqual([]);
   });
 
-  it('approved 원본도 편집하면 pending (재검수 필요)', () => {
+  it('v0.8 approved 원본에서 노드 이동 → pending, 기존 note 보존 + "(이전 검수: 검수자 검수일)" 덧붙임', () => {
+    const b = withReview(approved);
+    const s = syncReview(b, moveBus(b), '2026-11-19');
+    expect(s.diagram.review).toEqual({
+      status: 'pending',
+      changedAt: '2026-11-19',
+      note: `기존 검수 메모 → ${STAMP('2026-11-19')} (이전 검수: 설계팀 2026-11-10)`,
+    });
+    expect(s.diagram.review!.note!.startsWith('기존 검수 메모')).toBe(true);
+    expect(errors(s)).toEqual([]);
+  });
+
+  it('v0.8 현재 데이터(approved·note 있음)에서 이동해도 원본 note·검수자 정보가 문구 안에 남는다', () => {
     const b = base();
-    b.diagram.review = { status: 'approved', reviewedBy: '설계팀', reviewedAt: '2026-11-18' };
-    const moved = moveNode(b, 'bus-380', node(b, 'bus-380').x, node(b, 'bus-380').y + 10).draft;
-    expect(syncReview(b, moved, '2026-11-19').diagram.review).toEqual({ status: 'pending', changedAt: '2026-11-19', note: ADMIN_REVIEW_NOTE });
+    const orig = b.diagram.review!;
+    const s = syncReview(b, moveBus(b), TODAY);
+    expect(s.diagram.review!.status).toBe('pending');
+    if (orig.note) expect(s.diagram.review!.note).toContain(orig.note);
+    expect(s.diagram.review!.note).toContain(STAMP(TODAY));
+    if (orig.status === 'approved') expect(s.diagram.review!.note).toContain(`(이전 검수: ${orig.reviewedBy} ${orig.reviewedAt})`);
+  });
+
+  it('v0.8 같은 날 두 번 편집해도 재검수 문구가 중복되지 않음 (저장된 pending 원본을 다시 편집해도)', () => {
+    const b = withReview(approved);
+    const once = syncReview(b, moveBus(b), TODAY);
+    const twice = syncReview(b, moveBus(once, 5), TODAY);
+    expect(topologyChanged(b, twice)).toBe(true);
+    expect(twice.diagram.review).toEqual(once.diagram.review);
+    // 첫 편집 결과를 내보내 원본으로 삼은 뒤 같은 날 다시 편집
+    const saved: Draft = { ...once, diagram: JSON.parse(JSON.stringify(once.diagram)) };
+    const againDraft = moveBus(saved, 5);
+    expect(topologyChanged(saved, againDraft)).toBe(true);
+    const again = syncReview(saved, againDraft, TODAY);
+    const note = again.diagram.review!.note!;
+    expect(note.split(STAMP(TODAY)).length - 1).toBe(1);
+    expect(note.split('이전 검수').length - 1).toBe(1);
+    // 다른 날 편집하면 그날 문구가 한 번 더 붙는다 (이력)
+    const nextDay = syncReview(saved, againDraft, '2026-11-20');
+    expect(nextDay.diagram.review!.note).toContain(STAMP('2026-11-20'));
+    expect(nextDay.diagram.review!.note).toContain(STAMP(TODAY));
+  });
+
+  it('v0.8 기기 설명만 변경 → topologyChanged=false, approved 그대로 (같은 객체)', () => {
+    const b = withReview(approved);
+    const acb = b.equipmentTypes.find((e) => e.id === 'acb')!;
+    const edited = upsertEquipment(b, { ...acb, description: `${acb.description} (수정)` }, undefined);
+    expect(edited.equipmentTypes.find((e) => e.id === 'acb')!.description).toContain('(수정)');
+    expect(topologyChanged(b, edited)).toBe(false);
+    const s = syncReview(b, edited, TODAY);
+    expect(s).toBe(edited);
+    expect(s.diagram.review).toEqual(approved);
+  });
+
+  it('v0.8 변경 요약 "계통 검수 상태" 줄: 구조 변경 → 재검수 전환 + note, 기기만 변경 → 유지', () => {
+    const b = withReview(approved);
+    const moved = syncReview(b, moveBus(b), TODAY);
+    const line1 = changesMarkdown(b, moved).split('\n').find((l) => l.includes('계통 검수 상태'))!;
+    expect(line1).toContain('승인');
+    expect(line1).toContain('검수 대기(pending)');
+    expect(line1).toContain('재검수 전환');
+    expect(line1).toContain('이전 검수: 설계팀 2026-11-10');
+    const acb = b.equipmentTypes.find((e) => e.id === 'acb')!;
+    const eqOnly = syncReview(b, upsertEquipment(b, { ...acb, description: '바뀐 설명' }, undefined), TODAY);
+    const line2 = changesMarkdown(b, eqOnly).split('\n').find((l) => l.includes('계통 검수 상태'))!;
+    expect(line2).toContain('유지');
+    expect(line2).toContain('승인');
+    expect(line2).not.toContain('pending');
   });
 
   it('되돌려 원본과 같아지면 원본 review 복원 (approved 포함), 사진만 바뀐 경우는 그대로', () => {
-    const b = base();
-    b.diagram.review = { status: 'approved', reviewedBy: '설계팀', reviewedAt: '2026-11-18' };
-    const edited = syncReview(b, moveNode(b, 'bus-380', node(b, 'bus-380').x, node(b, 'bus-380').y + 10).draft, TODAY);
-    const undone = syncReview(b, { ...b, diagram: { ...b.diagram, review: edited.diagram.review } }, TODAY);
-    expect(undone.diagram.review).toEqual(b.diagram.review);
+    const b = withReview(approved);
+    const edited = syncReview(b, moveBus(b), TODAY);
+    expect(edited.diagram.review!.status).toBe('pending');
+    // 이동을 되돌림 (노드·연결선 = 원본, review 는 편집 중 pending 상태)
+    const back = moveNode(edited, 'bus-380', node(b, 'bus-380').x, node(b, 'bus-380').y).draft;
+    expect(topologyChanged(b, back)).toBe(false);
+    const undone = syncReview(b, back, TODAY);
+    expect(undone.diagram.review).toEqual(approved);
     // 사진만 변경
     const photo = { ...b, images: { ...b.images } };
     delete photo.images[Object.keys(photo.images)[0]];

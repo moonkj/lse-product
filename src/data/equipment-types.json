@@ -16,15 +16,23 @@
     "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -110,15 +118,23 @@
     "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -138,15 +154,23 @@
     "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -165,15 +189,23 @@
     "affiliateName": "LS전선",
     "gapAssessment": {
       "supplyMode": "affiliate",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -226,15 +258,23 @@
     "gapNote": "자사 디지털 보호계전기(GIPAM 등)는 배전·수전급 중심 — 송전급 라인업 확인 필요",
     "gapAssessment": {
       "supplyMode": "in-house",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -332,15 +372,23 @@
     "affiliateName": "LS전선",
     "gapAssessment": {
       "supplyMode": "affiliate",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -359,15 +407,23 @@
     "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -403,15 +459,23 @@
     "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -471,15 +535,23 @@
     "gapNote": "수배전반 구성품으로 타사 제품을 넣어 공급하는 경우가 많음 — 실제 조달 방식은 사업부 확인 필요",
     "gapAssessment": {
       "supplyMode": "panel-sourced",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -514,15 +586,23 @@
     "gapNote": "수배전반 구성품으로 타사 제품을 넣어 공급하는 경우가 많음 — 실제 조달 방식은 사업부 확인 필요",
     "gapAssessment": {
       "supplyMode": "panel-sourced",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -590,15 +670,23 @@
     "gapNote": "수배전반 구성품으로 타사 제품을 넣어 공급하는 경우가 많음 — 실제 조달 방식은 사업부 확인 필요",
     "gapAssessment": {
       "supplyMode": "panel-sourced",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -803,15 +891,23 @@
     "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -847,15 +943,23 @@
     "gapNote": "APS 제품 보유 — 범용 UPS 라인업과의 관계 확인 필요",
     "gapAssessment": {
       "supplyMode": "in-house",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -874,15 +978,23 @@
     "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -901,15 +1013,23 @@
     "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -944,15 +1064,23 @@
     "gapNote": "분전반용 차단기는 공급 — 분전반 함체 완제품 보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {
@@ -1135,15 +1263,23 @@
     "gapNote": "서보·리니어·DD 모터는 보유, 범용 유도전동기는 미보유 — 확인 필요",
     "gapAssessment": {
       "supplyMode": "in-house",
-      "basis": "homepage-menu",
-      "confidence": "candidate",
+      "basis": "bu-confirmed",
+      "confidence": "confirmed",
       "evidence": [
         {
           "type": "url",
           "ref": "https://www.ls-electric.com/ko/product/",
           "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+        },
+        {
+          "type": "meeting",
+          "ref": "2026-11-18 사용자 확정 지시",
+          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
         }
-      ]
+      ],
+      "verifiedBy": "제품맵 운영팀",
+      "verifiedAt": "2026-11-18",
+      "reviewDue": "2027-05-18"
     }
   },
   {

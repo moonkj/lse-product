@@ -511,16 +511,35 @@ export const ADMIN_REVIEW_NOTE = '관리자 편집 — 설계팀 재검수 필�
 
 const sameJson = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
-/** 노드·연결선·기기 정보가 원본과 다른지 (사진만 바뀐 경우는 제외) */
+/**
+ * 계통 구조(노드·연결선)가 원본과 다른지 — 개선 R5: 재검수 전환 범위를 계통 구조로 한정.
+ * 노드 추가·삭제·이동·종류·라벨·모선 길이, 연결선 추가·삭제·종류·label·경로 변경만 해당.
+ * 기기 정보(설명·학습 포인트·커버리지·제품 연결·공백 판정 등)나 사진만 바뀐 경우는 false.
+ */
 export const topologyChanged = (base: Draft, draft: Draft) =>
-  !sameJson(base.equipmentTypes, draft.equipmentTypes) || !sameJson(base.diagram.nodes, draft.diagram.nodes) || !sameJson(base.diagram.edges, draft.diagram.edges);
+  !sameJson(base.diagram.nodes, draft.diagram.nodes) || !sameJson(base.diagram.edges, draft.diagram.edges);
 
 /**
- * 관리자 편집이 있으면 diagram.review = { status: 'pending', changedAt: 오늘(KST), note } (approved 였어도 — 재검수 필요),
- * 편집이 없으면(되돌리기로 원본과 같아짐) 원본 review 그대로. 키 순서는 원본 diagram.json 과 같게(width, height, review, …).
+ * 재검수 전환 시 note — 기존 note 를 보존하고 "→ {오늘} 관리자 편집 — 설계팀 재검수 필요 (이전 검수: {검수자} {검수일})" 를 덧붙인다.
+ * 같은 날짜 문구가 이미 있으면 다시 붙이지 않음. 이전 검수 정보는 스키마 변경 없이 문구 안에만 남긴다.
+ */
+export function pendingReviewNote(prev: Diagram['review'], today: string): string {
+  const stamp = `${today} ${ADMIN_REVIEW_NOTE}`;
+  const old = prev?.note?.trim();
+  if (old?.includes(stamp)) return old;
+  const by = prev?.status === 'approved' ? [prev.reviewedBy, prev.reviewedAt].filter(Boolean).join(' ') : '';
+  const add = `${stamp}${by ? ` (이전 검수: ${by})` : ''}`;
+  return old ? `${old} → ${add}` : add;
+}
+
+/**
+ * 계통 구조 편집이 있으면 diagram.review = { status: 'pending', changedAt: 오늘(KST), note: 기존 note + 재검수 문구 } (approved 였어도 — 재검수 필요),
+ * 편집이 없거나 기기 정보만 바뀌었으면(되돌리기로 계통이 원본과 같아진 경우 포함) 원본 review 그대로. 키 순서는 원본 diagram.json 과 같게(width, height, review, …).
  */
 export function syncReview(base: Draft, draft: Draft, today: string): Draft {
-  const want: Diagram['review'] = topologyChanged(base, draft) ? { status: 'pending', changedAt: today, note: ADMIN_REVIEW_NOTE } : base.diagram.review;
+  const want: Diagram['review'] = topologyChanged(base, draft)
+    ? { status: 'pending', changedAt: today, note: pendingReviewNote(base.diagram.review, today) }
+    : base.diagram.review;
   if (sameJson(draft.diagram.review, want)) return draft;
   const { width, height, review: _old, ...rest } = draft.diagram;
   const diagram = (want ? { width, height, review: want, ...rest } : { width, height, ...rest }) as Diagram;

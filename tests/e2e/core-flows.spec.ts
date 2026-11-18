@@ -39,7 +39,7 @@ interface Eq {
   productIds?: string[];
   gapNote?: string;
   affiliateName?: string;
-  gapAssessment?: { supplyMode: string; basis: string; confidence: 'candidate' | 'confirmed' };
+  gapAssessment?: { supplyMode: string; basis: string; confidence: 'candidate' | 'confirmed'; reviewDue?: string };
 }
 /** v0.6 R3: kind 생략 = equipment (ref=true 는 참조 타일), bus·endpoint 는 equipmentTypeId 없음 */
 interface DNode {
@@ -78,6 +78,19 @@ const refNodes = diagramRaw.nodes.filter((n) => (n.kind ?? 'equipment') === 'equ
 const busNodes = diagramRaw.nodes.filter((n) => n.kind === 'bus');
 const endpointNodes = diagramRaw.nodes.filter((n) => n.kind === 'endpoint');
 const products = load<Prod[]>('products.json');
+/**
+ * v0.8 (개선 R5): 데이터 확정 상태에 따라 기대값을 계산 (고정 'candidate'·'pending' 가정 제거).
+ * 화면 확신도 규칙(test-plan §7 / labels.gapConfidence 와 같은 계약, 앱 코드 import 없이 독립 구현):
+ *   공백류(미보유·일부·계열사·패널 구성품)만 대상 · 근거 없음/후보/재확인 기한(KST) 지남 → candidate · 그 외 confirmed · 보유·해당 없음 → undefined
+ */
+const ASSESSED: Coverage[] = ['missing', 'partial', 'affiliate', 'sourced'];
+const todayKst = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+const expectedConfidence = (e: Eq): 'candidate' | 'confirmed' | undefined => {
+  if (!ASSESSED.includes(e.coverage)) return undefined;
+  const g = e.gapAssessment;
+  if (!g || g.confidence !== 'confirmed' || (g.reviewDue && g.reviewDue < todayKst())) return 'candidate';
+  return 'confirmed';
+};
 const categories = load<{ code: string; productIds: string[] }[]>('categories.json');
 const docsJson = load<{ products: Record<string, ProductDocs> }>('docs.json');
 /** 교육 콘텐츠 (src/content/learn.json) — 단계별 핵심 기기 */
@@ -729,10 +742,13 @@ test.describe('E2E-6 계통도 개선 R3', () => {
     expect(dash).not.toMatch(/^(none)?$/);
   });
 
-  test('계통 검수 대기 배지(diagram-review-badge)가 보인다 (review.status=pending)', async ({ page }) => {
-    test.skip(diagramRaw.review?.status !== 'pending', 'review.status 가 pending 아님');
+  test('v0.8 계통 검수 배지: review.status=pending 이면 보이고, approved 면 없다 (데이터 기준)', async ({ page }) => {
+    const status = diagramRaw.review?.status;
+    test.skip(!status, 'diagram.review 없음 (DI-43b 경고)');
     await gotoHome(page);
-    await expect(tid(page, 'diagram-review-badge')).toBeVisible();
+    await expect(tid(page, 'diagram')).toBeVisible();
+    if (status === 'pending') await expect(tid(page, 'diagram-review-badge')).toBeVisible();
+    else await expect(tid(page, 'diagram-review-badge')).toHaveCount(0);
   });
 
   test('범례: sourced(패널 구성품) 항목 + 개수 합 = 74종(참조 타일 제외), 미보유·패널 구성품 개수 = 데이터', async ({ page }) => {
@@ -747,17 +763,19 @@ test.describe('E2E-6 계통도 개선 R3', () => {
     expect(await legendCount(page, 'sourced')).toBe(count('sourced')); // 현재 3
   });
 
-  test('공백 후보 타일: gapAssessment.confidence=candidate 인 공백류 기기 노드에 data-confidence="candidate" (점선 표시)', async ({ page }) => {
-    const cand = diagram.nodes.filter((n) => {
-      const e = eqById.get(n.equipmentTypeId);
-      return e && ['missing', 'partial', 'affiliate', 'sourced'].includes(e.coverage) && e.gapAssessment?.confidence === 'candidate';
-    });
-    test.skip(cand.length === 0, '공백 후보 기기 없음');
+  test('v0.8 공백 확신도 타일: 공백류 기기 노드 data-confidence = 데이터 판정(확정 → confirmed, 후보·기한 지남 → candidate), 보유 → 속성 없음', async ({ page }) => {
+    const assessed = diagram.nodes
+      .map((n) => ({ node: n, eq: eqById.get(n.equipmentTypeId) }))
+      .filter((x): x is { node: typeof x.node; eq: Eq } => !!x.eq && expectedConfidence(x.eq) !== undefined);
+    test.skip(assessed.length === 0, '공백류 기기 노드 없음');
     await page.goto('./#/?mode=gap');
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
-    for (const n of cand) await expect(diagramNode(page, n.id)).toHaveAttribute('data-confidence', 'candidate');
+    for (const { node, eq } of assessed) await expect(diagramNode(page, node.id), eq.id).toHaveAttribute('data-confidence', expectedConfidence(eq)!);
+    // 보유 기기는 판정이 candidate 로 남아 있어도(예: GIS·승압 TR 정격 확인) 테두리 규칙 대상 아님
+    const ownedWithGa = nodeWith('owned', (e) => !!e.gapAssessment);
+    if (ownedWithGa) await expect(diagramNode(page, ownedWithGa.node.id)).not.toHaveAttribute('data-confidence', /.+/);
     const ownedPlain = nodeWith('owned', (e) => !e.gapAssessment);
-    if (ownedPlain) await expect(diagramNode(page, ownedPlain.node.id)).not.toHaveAttribute('data-confidence', 'candidate');
+    if (ownedPlain) await expect(diagramNode(page, ownedPlain.node.id)).not.toHaveAttribute('data-confidence', /.+/);
   });
 
   test('CT/PT(패널 구성품) 선택 → 패널에 "공백 판정" 섹션 (근거·확신도)', async ({ page }) => {
@@ -769,7 +787,11 @@ test.describe('E2E-6 계통도 개선 R3', () => {
     const section = tid(page, 'detail-gap-assessment');
     await expect(section).toBeVisible();
     await expect(section).toContainText('공백 판정');
-    await expect(section).toContainText('후보'); // confidence=candidate (홈페이지 메뉴 기준)
+    // v0.8: 데이터 판정 기준 — 확정이면 '확정', 후보·재확인 기한 지남이면 '후보'
+    const conf = expectedConfidence(eqById.get(t!.node.equipmentTypeId)!)!;
+    await expect(tid(page, 'detail-gap-confidence')).toHaveAttribute('data-confidence', conf);
+    await expect(section).toContainText(conf === 'confirmed' ? '확정' : '후보');
+    await expect(section).not.toContainText(conf === 'confirmed' ? '공백 후보' : '공백 확정');
   });
   // ── v0.7 (개선 R4) ──
   test('v0.7 R4 참조 타일 패널: detail-meta = "참조 타일", detail-ref-origin = 원래 위치(계층·분류), "원래 위치로 이동" → 원래 기기 노드', async ({ page }) => {

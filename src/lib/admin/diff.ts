@@ -1,6 +1,6 @@
 /** 원본 대비 초안 변경 내역 + 커밋 메시지용 요약 markdown */
 import { edgeKind } from '../diagram/geometry';
-import { nodeName, type Draft } from './draft';
+import { nodeName, topologyChanged, type Draft } from './draft';
 
 export type ChangeKind = 'added' | 'modified' | 'deleted';
 export type ChangeEntity = 'equipment' | 'node' | 'edge' | 'image';
@@ -146,10 +146,19 @@ type Review = Draft['diagram']['review'];
 const reviewText = (r: Review) =>
   r ? `${r.status === 'approved' ? '승인' : '검수 대기(pending)'}${r.changedAt ? ` · 변경일 ${r.changedAt}` : ''}${r.reviewedBy ? ` · 검수 ${r.reviewedBy}` : ''}` : '없음';
 
-/** 계통 검수 상태 변화 (관리자 편집 → pending 자동 갱신, 개선 R4 M4) */
+/**
+ * 계통 검수 상태 줄 (개선 R4 M4 → R5: 재검수 전환 범위를 계통 구조로 한정)
+ * - 노드·연결선 변경 → "재검수 전환" + 사유
+ * - 기기 정보·사진만 변경 → "유지" + 사유
+ */
 function reviewLines(base: Draft, draft: Draft): string[] {
   const b = base.diagram.review;
   const d = draft.diagram.review;
-  if (same(b, d)) return [];
-  return [`계통 검수 상태: ${reviewText(b)} → ${reviewText(d)}${d?.note ? ` — ${d.note}` : ''}`];
+  const structural = topologyChanged(base, draft);
+  if (!same(b, d) || structural) {
+    const why = structural ? '재검수 전환 — 계통 구조(노드·연결선) 변경' : '검수 상태 변경';
+    return [`계통 검수 상태: ${reviewText(b)} → ${reviewText(d)} (${why})${d?.note ? ` — ${d.note}` : ''}`];
+  }
+  if (same(base, draft)) return [];
+  return [`계통 검수 상태: 유지 (${reviewText(d)}) — 기기 정보·사진만 변경, 계통 구조(노드·연결선) 변경 없음`];
 }

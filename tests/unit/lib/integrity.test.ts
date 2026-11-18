@@ -10,6 +10,9 @@
  * 합성 계통도 (1200 × 2100, 밴드 L1~L7 각 300px):
  *   n1..n7 (기기 e1..e7, x=300, y=150+300i) 세로 직선 사슬 e01..e06
  *   L6 모선 bus6 (700,1560) 길이 400 (x 500~900) → n8(600,1700)·n9(800,1700) 수직 연결 (points)
+ *
+ * v0.8 (개선 R5 권장 R2): 분기별 위반 6개(DI-35 타일·DI-39 중심 거리·DI-40 끝점/참조·DI-43 노드 2개·DI-44a 모선·DI-44b 끝 점) 추가.
+ *   "모든 규칙 검증됨" 메타 테스트는 실제 실행된 위반 케이스가 보고한 규칙 ID(verify) 를 모아 RULES 와 대조한다.
  */
 import { describe, it, expect } from 'vitest';
 import { RULES, checkDataset, checkEquipment, Collector, type CheckResult, type DatasetInput } from '../../../src/lib/integrity';
@@ -97,6 +100,15 @@ function check(mutate: (f: Fixture) => void = () => {}): CheckResult {
   return r;
 }
 const errRules = (r: CheckResult) => [...new Set(r.errors.map((i) => i.rule))].sort();
+/**
+ * v0.8 (개선 R5 권장 R2): 위반 케이스가 "기대한 규칙 ID 를 실제로 보고했을 때만" 여기 기록 → 메타 테스트가 RULES 와 대조.
+ * 손으로 쓴 ID 목록이 아니므로 시나리오를 지우거나 규칙이 조용히 안 돌면 메타 테스트가 실패한다.
+ */
+const verified = { error: new Set<string>(), warning: new Set<string>() };
+function verify(r: CheckResult, level: 'error' | 'warning', ...rules: string[]) {
+  const got = new Set((level === 'error' ? r.errors : r.warnings).map((i) => i.rule));
+  for (const id of rules) if (got.has(id)) verified[level].add(id);
+}
 const warnRules = (r: CheckResult) => [...new Set(r.warnings.map((i) => i.rule))].sort();
 const node = (f: Fixture, id: string) => f.diagram.nodes.find((n) => n.id === id)!;
 const edge = (f: Fixture, id: string) => f.diagram.edges.find((e) => e.id === id)!;
@@ -108,6 +120,7 @@ describe('UT-10 공용 무결성 검사 — 기준 데이터', () => {
     const r = check();
     expect(r.errors).toEqual([]);
     expect(warnRules(r)).toEqual(['DI-29']);
+    verify(r, 'warning', 'DI-29');
   });
 
   it('최상위 형태가 틀려도 예외 없이 DI-00 오류 (객체 아님·배열 아님)', () => {
@@ -139,6 +152,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     expect(errRules(r)).toEqual(['DI-46']);
     expect(r.errors[0].message).toContain('수직');
     expect(r.errors[0].refs).toMatchObject({ edgeId: 'e08', nodeId: 'bus6' });
+    verify(r, 'error', 'DI-46');
   });
   it('DI-46 모선 범위 밖 점에서 출발 / points 없음', () => {
     const out = check((f) => {
@@ -151,6 +165,8 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     });
     expect(errRules(none)).toEqual(['DI-46']);
     expect(none.errors[0].message).toContain('points');
+    verify(out, 'error', 'DI-46');
+    verify(none, 'error', 'DI-46');
   });
   it('DI-39 모선이 기기 타일과 겹침', () => {
     const r = check((f) => {
@@ -161,6 +177,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
       );
     });
     expect(r.errors.filter((i) => i.rule === 'DI-39').map((i) => i.message).join('\n')).toContain('노드 겹침');
+    verify(r, 'error', 'DI-39');
   });
   it('DI-40 모선 연결선 1개', () => {
     const r = check((f) => {
@@ -170,6 +187,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     expect(errRules(r)).toEqual(['DI-40']);
     expect(r.errors.map((i) => i.refs.nodeId)).toEqual(['bus6']);
     expect(r.errors[0].message).toContain('2개 이상');
+    verify(r, 'error', 'DI-40');
   });
   it('DI-43 참조 타일 라벨 없음 (라벨 있으면 통과)', () => {
     const addRef = (label?: string) => (f: Fixture) => {
@@ -180,6 +198,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     const r = check(addRef());
     expect(errRules(r)).toEqual(['DI-43']);
     expect(r.errors[0].refs.nodeId).toBe('n1-ref');
+    verify(r, 'error', 'DI-43');
   });
   it('DI-43c 택1 연결선 단독 그룹 / 라벨 없음 (2개 그룹은 통과)', () => {
     expect(
@@ -194,6 +213,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     const nolabel = check((f) => Object.assign(edge(f, 'e07'), { kind: 'alt' }));
     expect(errRules(nolabel)).toEqual(['DI-43c']);
     expect(nolabel.errors[0].message).toContain('라벨');
+    verify(single, 'error', 'DI-43c');
   });
   it('DI-27b sourced 인데 공급 방식 unknown / DI-27e 없는 날짜 / DI-27f http 근거', () => {
     const r = check((f) => {
@@ -211,6 +231,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     });
     expect(errRules(r)).toEqual(['DI-27b', 'DI-27e', 'DI-27f']);
     expect(r.errors.every((i) => i.refs.equipmentId === 'e8' && i.refs.field === 'gapAssessment')).toBe(true);
+    verify(r, 'error', 'DI-27b', 'DI-27e', 'DI-27f');
     const ok = check((f) =>
       Object.assign(equip(f, 'e8'), { coverage: 'sourced', gapNote: 'x', gapAssessment: { supplyMode: 'panel-sourced', basis: 'homepage-menu', confidence: 'candidate' } }),
     );
@@ -225,6 +246,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     });
     expect(errRules(r)).toEqual(['DI-45a']);
     expect(r.errors[0].message).toMatch(/e11.*e12/);
+    verify(r, 'error', 'DI-45a');
   });
   it('DI-45a 신호선 교차는 오류 아님', () => {
     const r = check((f) => {
@@ -242,6 +264,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     expect(errRules(r)).toEqual(['DI-44a']);
     expect(r.errors[0].refs.edgeId).toBe('e03');
     expect(warnRules(r)).toContain('DI-40');
+    verify(r, 'error', 'DI-44a');
   });
 });
 
@@ -332,11 +355,84 @@ describe('UT-10 규칙별 위반 → 해당 ID (HARD)', () => {
   it.each(cases)('%s 위반 데이터 → 그 규칙 ID 로 오류', (rule, mutate) => {
     const r = check(mutate);
     expect(errRules(r), JSON.stringify(r.errors.map((i) => `${i.rule} ${i.message}`))).toContain(rule);
+    verify(r, 'error', rule);
+  });
+});
+
+describe('UT-10 v0.8 분기별 위반 (권장 R2 — 규칙 안의 다른 분기)', () => {
+  const msgs = (r: CheckResult, rule: string) => r.errors.filter((i) => i.rule === rule).map((i) => i.message);
+
+  it('DI-35 기기 타일이 자기 계층 밴드 밖 (모선 width 분기와 별개)', () => {
+    // e8 을 L7 기기로 바꿈 → n8(600,1700)은 L6 밴드(1500~1800) 안 = L7 밴드 밖. bus6(L6)→n8(L7)은 인접 계층이라 DI-42 아님
+    const r = check((f) => (equip(f, 'e8').layer = 'L7'));
+    expect(errRules(r)).toEqual(['DI-35']);
+    expect(r.errors[0].refs.nodeId).toBe('n8');
+    expect(r.errors[0].message).toContain('L7');
+    verify(r, 'error', 'DI-35');
   });
 
-  it('HARD 규칙(DI-00 제외 error·both)이 모두 위 표 또는 시나리오로 한 번 이상 검증됨', () => {
-    const covered = new Set([...cases.map(([id]) => id), 'DI-27b', 'DI-27e', 'DI-27f', 'DI-43c', 'DI-44a', 'DI-45a', 'DI-46']);
-    expect(RULES.filter((r) => r.severity !== 'warning' && !covered.has(r.id)).map((r) => r.id)).toEqual([]);
+  it('DI-39 노드 중심 거리 24px 미만 (겹침 없이 — 모선 두 개가 위아래 20px)', () => {
+    // 모선 반높이 4 → 세로 간격 20 - 8 = 12 > 0 이라 "겹침" 분기는 안 탐. 중심 거리 20 < 24 만 걸림
+    const r = check((f) => {
+      f.diagram.nodes.push({ id: 'bus6b', kind: 'bus', label: '보조 모선', layer: 'L6', x: 700, y: 1540, width: 400 });
+      f.diagram.edges.push(
+        { id: 'e40', from: 'bus6b', to: 'n6', points: [{ x: 600, y: 1540 }, { x: 600, y: 1520 }, { x: 300, y: 1520 }, { x: 300, y: 1508 }] },
+        { id: 'e41', from: 'bus6b', to: 'n5', points: [{ x: 520, y: 1540 }, { x: 520, y: 1350 }, { x: 360, y: 1350 }] },
+      );
+    });
+    const m = msgs(r, 'DI-39');
+    expect(m.some((x) => x.includes('중심 거리 24px 미만'))).toBe(true);
+    expect(m.some((x) => x.includes('노드 겹침'))).toBe(false);
+    verify(r, 'error', 'DI-39');
+  });
+
+  it('DI-40 끝점·참조 타일에 연결선 0 (기기 노드 분기와 별개)', () => {
+    const r = check((f) => {
+      f.diagram.nodes.push(
+        { id: 'ep1', kind: 'endpoint', label: '외부 계통', layer: 'L1', x: 900, y: 150 },
+        { id: 'n1-ref', equipmentTypeId: 'e1', ref: true, label: '참조', x: 900, y: 450 },
+      );
+    });
+    expect(errRules(r)).toEqual(['DI-40']);
+    expect(r.errors.map((i) => i.refs.nodeId).sort()).toEqual(['ep1', 'n1-ref']);
+    expect(r.errors.every((i) => i.message.includes('연결선이 하나도 없습니다'))).toBe(true);
+    verify(r, 'error', 'DI-40');
+  });
+
+  it('DI-43 같은 기기의 (참조 아닌) 기기 노드 2개 (배치 안 됨 분기와 별개)', () => {
+    const r = check((f) => {
+      f.diagram.nodes.push({ id: 'n1b', equipmentTypeId: 'e1', x: 900, y: 150 });
+      f.diagram.edges.push({ id: 'e42', from: 'n1b', to: 'n2', points: [{ x: 900, y: 208 }, { x: 900, y: 450 }, { x: 360, y: 450 }] });
+    });
+    const m = msgs(r, 'DI-43');
+    expect(m).toHaveLength(1);
+    expect(m[0]).toContain('기기 노드가 2개');
+    expect(r.errors.find((i) => i.rule === 'DI-43')!.refs).toMatchObject({ equipmentId: 'e1', nodeId: 'n1b' });
+    verify(r, 'error', 'DI-43');
+  });
+
+  it('DI-44a 연결선이 모선을 지나감 (모선 여유 분기)', () => {
+    // L5 새 기기 n10(700,1350) → n8(600,1700): x=700 세로선이 bus6(y=1560, x 500~900)을 관통
+    const r = check((f) => {
+      f.equipmentTypes.push(eq('e10', 'L5'));
+      f.diagram.nodes.push({ id: 'n10', equipmentTypeId: 'e10', x: 700, y: 1350 });
+      f.diagram.edges.push({ id: 'e43', from: 'n10', to: 'n8', points: [{ x: 700, y: 1408 }, { x: 700, y: 1600 }, { x: 600, y: 1600 }, { x: 600, y: 1642 }] });
+    });
+    const hit = r.errors.filter((i) => i.rule === 'DI-44a');
+    expect(hit.map((i) => i.refs.edgeId)).toEqual(['e43']);
+    expect(hit[0].message).toContain('380V 모선');
+    verify(r, 'error', 'DI-44a');
+  });
+
+  it('DI-44b 끝 점이 도착 노드 가장자리 밖 (직교 경로 — 사선 분기와 별개)', () => {
+    // n2 위 가장자리 y = 450 - 58 = 392. 끝 점 380 → 12px 모자람
+    const r = check((f) => (edge(f, 'e01').points = [{ x: 300, y: 208 }, { x: 300, y: 380 }]));
+    const m = msgs(r, 'DI-44b');
+    expect(m).toHaveLength(1);
+    expect(m[0]).toContain('끝 점이');
+    expect(m.some((x) => x.includes('사선'))).toBe(false);
+    expect(r.errors.find((i) => i.rule === 'DI-44b')!.refs).toMatchObject({ edgeId: 'e01', nodeId: 'n2' });
+    verify(r, 'error', 'DI-44b');
   });
 });
 
@@ -365,6 +461,7 @@ describe('UT-10 규칙별 위반 → 해당 ID (SOFT 경고, 오류 아님)', ()
     const r = check(mutate);
     expect(r.errors.map((i) => `${i.rule} ${i.message}`)).toEqual([]);
     expect(warnRules(r)).toContain(rule);
+    verify(r, 'warning', rule);
   });
 
   it('DI-40 (SOFT) R-05 목록 밖 연결선 없는 system 기기', () => {
@@ -374,11 +471,7 @@ describe('UT-10 규칙별 위반 → 해당 ID (SOFT 경고, 오류 아님)', ()
     });
     expect(r.errors).toEqual([]);
     expect(warnRules(r)).toContain('DI-40');
-  });
-
-  it('SOFT 규칙이 모두 위 표로 한 번 이상 검증됨 (DI-29 는 기준 데이터)', () => {
-    const covered = new Set([...cases.map(([id]) => id), 'DI-29', 'DI-40']);
-    expect(RULES.filter((r) => r.severity !== 'error' && !covered.has(r.id)).map((r) => r.id)).toEqual([]);
+    verify(r, 'warning', 'DI-40');
   });
 });
 
@@ -424,5 +517,15 @@ describe('UT-10 RULES 표 ↔ 실제 보고 등급', () => {
     }
     expect(seen.length).toBeGreaterThan(50);
     expect(bad).toEqual([]);
+  });
+
+  it('v0.8 메타: HARD 규칙(error·both)이 모두 실제 위반 케이스에서 그 ID 의 error 로 보고됨 (손 목록 아님)', () => {
+    const missing = RULES.filter((r) => r.severity !== 'warning' && !verified.error.has(r.id)).map((r) => r.id);
+    expect(missing).toEqual([]);
+  });
+
+  it('v0.8 메타: SOFT 규칙(warning·both)이 모두 실제 위반 케이스에서 그 ID 의 warning 으로 보고됨', () => {
+    const missing = RULES.filter((r) => r.severity !== 'error' && !verified.warning.has(r.id)).map((r) => r.id);
+    expect(missing).toEqual([]);
   });
 });
