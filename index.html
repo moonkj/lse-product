@@ -12,9 +12,30 @@
         if (localStorage.getItem('lse-theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
       } catch (e) {}
     </script>
+    <!-- 첫 화면(스플래시): 그리기 전에 정한다. 이 탭에서 이미 봤거나, #/경로 바로가기 링크이거나, 자동화 테스트(webdriver)면 건너뜀 -->
+    <script>
+      (function () {
+        var r = document.documentElement;
+        try {
+          var h = location.hash;
+          if (navigator.webdriver || (h && h !== '#' && h !== '#/') || sessionStorage.getItem('lse-splash-seen')) { r.classList.add('no-splash'); return; }
+          sessionStorage.setItem('lse-splash-seen', '1');
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="/splash.css" />
   </head>
   <body>
+    <input type="checkbox" id="splash-skip" class="splash-skip" tabindex="-1" aria-hidden="true" />
+    <div id="splash" class="splash" aria-hidden="true">
+      <div class="sp-panel sp-top"></div><div class="sp-panel sp-bot"></div>
+      <div class="sp-hline"></div>
+      <div class="sp-center"><div class="sp-stage"><span class="sp-pill"><img src="/brand/ls-electric-logo-md.png" alt="" width="262" height="94" /><span class="sp-front"></span><svg class="sp-svg" viewBox="0 0 316 130" width="316" height="130" focusable="false"><rect class="sp-line" x="4" y="4" width="308" height="122" rx="14" pathLength="100"></rect><rect class="sp-spark" x="4" y="4" width="308" height="122" rx="14" pathLength="100"></rect></svg></span></div><div class="sp-sub">전력계통 제품맵</div></div>
+      <div class="sp-hint">화면을 누르면 바로 넘어가요</div>
+      <label for="splash-skip" class="sp-skip"></label>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script src="/splash.js" defer></script>
   </body>
 </html>

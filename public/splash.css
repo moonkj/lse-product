@@ -1,0 +1,69 @@
+/* 첫 화면(스플래시) — lse-market-news 첫 화면과 같은 연출 "전류 → 열리기" 3.5초.
+   CSS만으로 재생되고 마지막에 visibility:hidden으로 스스로 사라진다. 탭마다 1회, 바로가기 링크(#/경로)·자동화 테스트는 건너뜀.
+   색은 이 파일 안의 변수만 쓴다(앱 토큰과 분리 — 앱 CSS가 로드되기 전에 그려지므로). */
+.splash{--surface:#fff;--brand:#00337F;--brand-2:#0068B7;--on-brand:#fff;--on-brand-2:#C7D6EC;--on-brand-3:#B5C8E4;
+  --sp-line:#8CC4F0;--sp-spark:#fff;--sp-line-fade:rgba(140,196,240,0);--sp-line-glow:rgba(140,196,240,.8);--sp-front-glow:rgba(0,104,183,.45)}
+[data-theme="dark"] .splash{--surface:#171B22;--brand:#0B2A5E;--brand-2:#3B82F6}
+.splash-skip{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;margin:0}
+.splash{position:fixed;inset:0;z-index:2000;overflow:hidden;color:var(--on-brand)}
+.splash-skip:checked ~ .splash{display:none !important}
+.no-splash .splash,.splash-done .splash{display:none !important}
+.sp-skip{position:absolute;inset:0;z-index:5;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sp-hint{position:absolute;left:0;right:0;bottom:max(24px,env(safe-area-inset-bottom));text-align:center;font-size:.8125rem;color:var(--on-brand-3);z-index:4}
+.sp-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:3}
+.sp-stage{position:relative}
+.sp-pill{position:relative;display:inline-flex;align-items:center;justify-content:center;border-radius:14px;padding:14px 24px}
+.sp-pill::before{content:"";position:absolute;inset:0;border-radius:14px;background:var(--surface)}
+.sp-pill img{position:relative;display:block;height:94px;width:auto}
+.sp-sub{font-size:1rem;letter-spacing:.5px;color:var(--on-brand-2);font-weight:600}
+@media (max-width:460px){.sp-stage{transform:scale(.78)}.sp-sub{font-size:.9375rem}}
+
+.sp-panel{position:absolute;left:0;right:0;height:50.5%;background:var(--brand);z-index:1}
+.sp-top{top:0}.sp-bot{bottom:0}
+.sp-hline{position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;z-index:2;transform:scaleX(0);opacity:0;
+  background:linear-gradient(90deg,var(--sp-line-fade),var(--sp-line) 15%,var(--sp-spark) 50%,var(--sp-line) 85%,var(--sp-line-fade));box-shadow:0 0 8px var(--sp-line-glow)}
+.sp-svg{position:absolute;left:-4px;top:-4px;width:316px;height:130px;overflow:visible;pointer-events:none;opacity:0}
+.sp-svg rect{fill:none;stroke-linecap:round}
+.sp-line{stroke:var(--sp-line);stroke-width:2.5;stroke-dasharray:100 100;stroke-dashoffset:0}
+.sp-spark{stroke:var(--sp-spark);stroke-width:4.5;stroke-dasharray:2.5 97.5;stroke-dashoffset:-97.5}
+.sp-front{position:absolute;top:14px;bottom:14px;left:24px;right:24px;pointer-events:none;opacity:0}
+.sp-front::before{content:"";position:absolute;top:-6px;bottom:-6px;left:-1px;width:3px;border-radius:3px;background:var(--brand-2);box-shadow:0 0 10px 3px var(--sp-front-glow)}
+
+/* 3.5초 타임라인 (2026-11-09 사용자: 너무 빠름 → 2.2초에서 늘림): 테두리에 전류가 돎 → 배지가 차오름 → 로고가 왼쪽부터 드러남 → 가로선 → 위·아래로 열림 → 사라짐 */
+.splash{animation:sp-hide 3500ms linear both}
+.sp-svg{animation:sp-svg 3500ms linear both}
+.sp-line{animation:sp-line-k 3500ms linear both}
+.sp-spark{animation:sp-spark-k 3500ms linear both}
+.sp-pill::before{animation:sp-fill 3500ms linear both}
+.sp-pill img{animation:sp-wipe 3500ms linear both}
+.sp-front{animation:sp-front-k 3500ms linear both}
+.sp-sub{animation:sp-sub-k 3500ms linear both}
+.sp-hline{animation:sp-hline-k 3500ms linear both}
+.sp-center{animation:sp-center-k 3500ms linear both}
+.sp-hint{animation:sp-hint-k 3500ms linear both}
+.sp-top{animation:sp-top-k 3500ms linear both}
+.sp-bot{animation:sp-bot-k 3500ms linear both}
+
+@keyframes sp-hide{0%{visibility:visible}100%{visibility:hidden}}
+@keyframes sp-svg{0%{opacity:1}45.455%{opacity:1}56.818%{opacity:0}100%{opacity:0}}
+@keyframes sp-line-k{0%{stroke-dashoffset:100}6.818%{stroke-dashoffset:100;animation-timing-function:cubic-bezier(.45,.05,.55,.95)}38.636%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+@keyframes sp-spark-k{0%{stroke-dashoffset:2.5}6.818%{stroke-dashoffset:2.5;animation-timing-function:cubic-bezier(.45,.05,.55,.95)}38.636%{stroke-dashoffset:-97.5}100%{stroke-dashoffset:-97.5}}
+@keyframes sp-fill{0%{opacity:0}34.091%{opacity:0;animation-timing-function:ease-out}43.182%{opacity:1}100%{opacity:1}}
+@keyframes sp-wipe{0%{clip-path:inset(0 100% 0 0)}38.636%{clip-path:inset(0 100% 0 0);animation-timing-function:cubic-bezier(.3,.6,.2,1)}56.818%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 0 0 0)}}
+@keyframes sp-front-k{0%{opacity:0;transform:translateX(0)}38.182%{opacity:0;transform:translateX(0)}38.636%{opacity:1;transform:translateX(0);animation-timing-function:cubic-bezier(.3,.6,.2,1)}56.818%{opacity:1;transform:translateX(100%)}60%{opacity:0;transform:translateX(100%)}100%{opacity:0;transform:translateX(100%)}}
+@keyframes sp-sub-k{0%{opacity:0}54.545%{opacity:0;animation-timing-function:ease-out}65.909%{opacity:1}100%{opacity:1}}
+@keyframes sp-hline-k{0%{opacity:0;transform:scaleX(.12)}52.273%{opacity:0;transform:scaleX(.12)}54.545%{opacity:1;transform:scaleX(.12);animation-timing-function:cubic-bezier(.5,0,.2,1)}70.455%{opacity:1;transform:scaleX(1)}79.545%{opacity:0;transform:scaleX(1)}100%{opacity:0;transform:scaleX(1)}}
+@keyframes sp-center-k{0%{opacity:1}70.455%{opacity:1;animation-timing-function:ease-in}81.818%{opacity:0}100%{opacity:0}}
+@keyframes sp-hint-k{0%{opacity:1}70.455%{opacity:1}77.273%{opacity:0}100%{opacity:0}}
+@keyframes sp-top-k{0%{transform:translateY(0)}70.455%{transform:translateY(0);animation-timing-function:cubic-bezier(.7,0,.2,1)}95.455%{transform:translateY(-100%)}100%{transform:translateY(-100%)}}
+@keyframes sp-bot-k{0%{transform:translateY(0)}70.455%{transform:translateY(0);animation-timing-function:cubic-bezier(.7,0,.2,1)}95.455%{transform:translateY(100%)}100%{transform:translateY(100%)}}
+
+/* 동작 줄이기: 움직임·페이드 없이 정지 로고만 0.7초 보이고 사라진다 */
+@media (prefers-reduced-motion: reduce){
+  .sp-svg,.sp-line,.sp-spark,.sp-pill::before,.sp-pill img,.sp-front,.sp-sub,.sp-hline,.sp-center,.sp-hint,.sp-top,.sp-bot{animation:none !important}
+  .splash{animation:sp-rm-hide 1ms linear .7s both !important}
+}
+@keyframes sp-rm-hide{from{visibility:visible}to{visibility:hidden}}
+
+/* 인쇄에는 나오지 않는다 */
+@media print{.splash,.splash-skip{display:none !important}}

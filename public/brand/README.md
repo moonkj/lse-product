@@ -5,3 +5,4 @@
 - ls-electric-logo-gray.png: 회색 로고 177×28 투명 (원본 logo3.png, 다크 테마)
 - ../favicon.ico: 공식 파비콘 (48·32px)
 - 로고는 변형(색 변경·비율 왜곡) 없이 사용
+- ls-electric-logo-md.png: 컬러 로고 600×215 투명 — 첫 화면(스플래시)용, lse-market-news 저장소의 같은 로고 재사용
