@@ -5,9 +5,10 @@ import { docsByProductId, useData } from '../data/load';
 import ExternalLink from '../components/common/ExternalLink';
 import CompareToggle from '../components/compare/CompareToggle';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
-import ProductSpecs from '../components/pages/ProductSpecs';
+import ProductSpecs, { SPECS_VARIANTS_ANCHOR } from '../components/pages/ProductSpecs';
+import { useSpecs } from '../components/compare/useSpecs';
+import { hasVariants } from '../lib/pages/compare';
 import {
-  DOC_SOURCE_LABELS,
   diagramHref,
   equipmentForProduct,
   fileBadge,
@@ -86,10 +87,8 @@ export default function ProductPage() {
               </span>
             )}
             <span className="pg-badge">{product.business === 'power' ? '전력 사업' : '자동화 사업'}</span>
-            <span className="pg-badge">
-              자료 {docs.length}건{entry ? ` · ${DOC_SOURCE_LABELS[entry.source]}` : ''}
-            </span>
           </div>
+          <JumpChips productId={product.id} docs={docs} />
 
           {eq && <RoleBox eq={eq} />}
 
@@ -143,6 +142,55 @@ export default function ProductPage() {
   );
 }
 
+/** 자료 묶음 앵커 id (자료 바로가기 칩 → 해당 그룹) */
+const docGroupAnchor = (type: DocRef['type']) => `docs-${type}`;
+
+/** 해시 라우터라 href="#..." 를 쓰면 경로가 바뀜 → 버튼으로 그 섹션까지 스크롤 + 포커스 */
+function jumpTo(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView?.({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+  el.focus({ preventScroll: true });
+}
+
+/**
+ * 자료 바로가기 칩 (UX 토론 C5) — 기존 "자료 N건" 칩 자리. [옵션별 사양][카탈로그 n][매뉴얼 n],
+ * 해당 자료가 없으면 그 칩은 뺀다. 섹션 순서는 그대로 두고 앵커 이동만 (I7 합의).
+ */
+function JumpChips({ productId, docs }: { productId: string; docs: DocRef[] }) {
+  const specs = useSpecs('product');
+  const showVariants = specs.status === 'ready' && hasVariants(specs.map.get(productId));
+  const catalog = docs.filter((d) => d.type === 'catalog').length;
+  const manual = docs.filter((d) => d.type === 'manual').length;
+  if (!showVariants && catalog === 0 && manual === 0) return null;
+  return (
+    <ul className="pg-jumps" aria-label="자료 바로가기" data-testid="product-jump-chips">
+      {showVariants && (
+        <li>
+          <button type="button" className="pg-jump" data-testid="jump-specs" onClick={() => jumpTo(SPECS_VARIANTS_ANCHOR)}>
+            옵션별 사양
+          </button>
+        </li>
+      )}
+      {catalog > 0 && (
+        <li>
+          <button type="button" className="pg-jump" data-testid="jump-catalog" onClick={() => jumpTo(docGroupAnchor('catalog'))}>
+            카탈로그 <b>{catalog}</b>
+          </button>
+        </li>
+      )}
+      {manual > 0 && (
+        <li>
+          <button type="button" className="pg-jump" data-testid="jump-manual" onClick={() => jumpTo(docGroupAnchor('manual'))}>
+            매뉴얼 <b>{manual}</b>
+          </button>
+        </li>
+      )}
+    </ul>
+  );
+}
+
 function RoleBox({ eq }: { eq: EquipmentType }) {
   return (
     <div className="pg-role">
@@ -181,7 +229,7 @@ function DocGroups({ docs, entry, product }: { docs: DocRef[]; entry?: ProductDo
         </div>
       ) : (
         groupDocs(docs).map(([type, list]) => (
-          <div key={type} className="pd-group">
+          <div key={type} className="pd-group" id={docGroupAnchor(type)} tabIndex={-1}>
             <h3 className="pd-group__label">
               {DOC_TYPE_LABELS[type]} {list.length}
             </h3>

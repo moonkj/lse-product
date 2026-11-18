@@ -201,3 +201,19 @@
   .cmp-table th,
   .cmp-table td { padding: 8px; }
 }
+
+/* 링크 복사 (UX 토론 C6) — 복사가 막히면 주소 입력창(선택된 상태)으로 대체 */
+.cmp-copy { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.cmp-copy__btn { color: var(--color-link); }
+.cmp-copy__input {
+  width: min(360px, 100%);
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--fs-sm);
+}
+.cmp-copy__input:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }

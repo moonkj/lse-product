@@ -346,3 +346,44 @@ export function linkedEquipment(eqId: string, dir: 'in' | 'out'): LinkedItem[] {
   // 전력선 먼저, 신호선 뒤
   return out.map((x, i) => ({ x, i })).sort((a, b) => (a.x.kind === 'signal' ? 1 : 0) - (b.x.kind === 'signal' ? 1 : 0) || a.i - b.i).map((v) => v.x);
 }
+
+// ───────────── 화면용 사양 메모 (UX 토론 B8) ─────────────
+
+/** 화면에 보이면 안 되는 작업 메모 표지 — 데이터(specs.json note)는 그대로 두고 화면에서만 뺀다 */
+const DEV_MEMO = /HTTP|Range|docs\.json|\.json\b|이전 값은|검수 필요|받지 않(음|아)|draft/i;
+
+/**
+ * 사양 메모(note)에서 작업 메모를 걸러 낸다.
+ *  - 괄호 안이 작업 메모면 괄호째 삭제: "(HTTP Range로 … 추출)"
+ *  - 문장(마침표·" — " 단위)이 작업 메모면 그 문장 삭제: "이전 값은 … 였음", "— 검수 필요"
+ * 남는 글이 없으면 undefined (메모 줄 자체를 숨김).
+ */
+export function publicNote(note: string | undefined): string | undefined {
+  if (!note) return undefined;
+  const noParens = note.replace(/\s*\(([^()]*)\)/g, (m, inner: string) => (DEV_MEMO.test(inner) ? '' : m));
+  const kept = noParens
+    .split(/(?<=\.)\s+/)
+    .map((sentence) =>
+      sentence
+        .split(/\s+—\s+/)
+        .filter((part) => !DEV_MEMO.test(part))
+        .join(' — '),
+    )
+    .filter((s) => s.trim() && !/^[.\s]+$/.test(s));
+  const text = kept.join(' ').replace(/\s+([.,])/g, '$1').trim();
+  return text || undefined;
+}
+
+// ───────────── 차이만 보기 주소 저장 (UX 토론 C6) ─────────────
+
+export const DIFF_PARAM = 'diff';
+
+/** 주소 검색 문자열에서 diff 만 켜고 끈다 — ids 등 나머지는 손대지 않음 (쉼표·옵션 구분자 표기 유지) */
+export function withDiffParam(search: string, on: boolean): string {
+  const rest = search
+    .replace(/^\?/, '')
+    .split('&')
+    .filter((kv) => kv && !kv.startsWith(`${DIFF_PARAM}=`) && kv !== DIFF_PARAM);
+  if (on) rest.push(`${DIFF_PARAM}=1`);
+  return rest.length ? `?${rest.join('&')}` : '';
+}

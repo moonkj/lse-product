@@ -1,12 +1,12 @@
-import { Fragment, useEffect, useState, type ReactNode } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { DOC_TYPE_LABELS, type EquipmentType, type Product, type ProductSpecs, type SpecVariant } from '../lib/schema';
 import { getData, useData, type SpecsMap } from '../data/load';
 import { SPECS_ERROR_TEXT, useSpecs, type SpecsState } from '../components/compare/useSpecs';
 import CoverageBadge from '../components/common/CoverageBadge';
 import ExternalLink from '../components/common/ExternalLink';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
-import { CATEGORY_LABELS, CONFIDENCE_LABELS, COVERAGE_LABELS, gapConfidence, pageTitle } from '../lib/labels';
+import { CATEGORY_LABELS, COVERAGE_LABELS, confidenceLabel, gapConfidence, pageTitle } from '../lib/labels';
 import { layerTitle } from '../lib/diagram/model';
 import { equipmentForProduct, productsForEquipment } from '../lib/pages/catalog';
 import {
@@ -18,6 +18,9 @@ import {
   orderSpecKeys,
   pageHref,
   parseCompareParams,
+  publicNote,
+  withDiffParam,
+  DIFF_PARAM,
   productDocs,
   representativeDoc,
   specLabel,
@@ -35,7 +38,8 @@ import {
   type LinkedItem,
   type SpecEntry,
 } from '../lib/pages/compare';
-import { compareHref, compareIdInData, useCompareStore, type CompareKind } from '../store/useCompareStore';
+import { COMPARE_MAX, compareHref, compareIdInData, useCompareStore, type CompareKind } from '../store/useCompareStore';
+import { announce } from '../lib/announce';
 import './pages.css';
 import './ComparePage.css';
 
@@ -112,9 +116,7 @@ function specsPendingRow(state: SpecsState, label: string, n: number): Row | und
     cells: Array.from({ length: n }, () => ({
       text: '',
       node: loading ? (
-        <span className="cmp-muted" role="status">
-          사양 불러오는 중…
-        </span>
+        <span className="cmp-muted">사양 불러오는 중…</span>
       ) : (
         <span className="cmp-muted">{SPECS_ERROR_TEXT}</span>
       ),
@@ -209,7 +211,7 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
               <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_LABELS[eq.coverage]} />
               {conf && (
                 <span className={`cmp-badge cmp-badge--${conf}`} data-confidence={conf}>
-                  {CONFIDENCE_LABELS[conf]}
+                  {confidenceLabel(eq.coverage, conf)}
                 </span>
               )}
             </div>
@@ -415,7 +417,7 @@ function productSections(cols: ProductCol[], specsState: SpecsState): { sections
           node: (
             <span>
               <Link to={`/equipment/${main.id}`}>{main.abbr ? `${main.name} (${main.abbr})` : main.name}</Link>
-              {e.length > 1 && <span className="cmp-muted"> 외 {e.length - 1}개 기기</span>}
+              {e.length > 1 && <span className="cmp-muted"> 외 기기 {e.length - 1}종</span>}
             </span>
           ),
         };
@@ -538,14 +540,14 @@ function productSections(cols: ProductCol[], specsState: SpecsState): { sections
                     {v.label} 옵션 표 · p.{v.page} ↗
                   </ExternalLink>
                 )}
-                {v?.note && <span className="cmp-muted">{v.note}</span>}
+                {publicNote(v?.note) && <span className="cmp-muted">{publicNote(v?.note)}</span>}
                 {s.reviewed ? (
                   <span className="cmp-badge cmp-badge--ok">검수 완료</span>
                 ) : (
                   <UnreviewedBadge />
                 )}
                 <span className="cmp-muted">추출일 {s.extractedAt}</span>
-                {s.note && <span className="cmp-muted">{s.note}</span>}
+                {publicNote(s.note) && <span className="cmp-muted">{publicNote(s.note)}</span>}
               </>
             ) : (
               <span className="cmp-muted">사양 미수집</span>
@@ -645,6 +647,7 @@ function EmptyState({ type }: { type: CompareKind | null }) {
 export default function ComparePage() {
   const data = useData();
   const [params] = useSearchParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const specsState = useSpecs();
   const removeStored = useCompareStore((s) => s.remove);
@@ -652,11 +655,10 @@ export default function ComparePage() {
   const storedProduct = useCompareStore((s) => s.product);
   const parsed = parseCompareParams(params);
   const { type, ids, missing, overflow } = parsed;
-  // "차이만 보기"는 지금 비교(type+ids)에만 적용 — 다른 비교로 옮기면 꺼진 상태로 (같은 라우트라 컴포넌트가 유지됨, L7)
-  const viewKey = `${type}:${ids.join(',')}`;
-  const [diffState, setDiffState] = useState({ key: viewKey, on: false });
-  const diffOnly = diffState.key === viewKey && diffState.on;
-  const setDiffOnly = (f: (v: boolean) => boolean) => setDiffState({ key: viewKey, on: f(diffOnly) });
+  // "차이만 보기"는 주소(diff=1)에 저장 (UX 토론 C6) — 공유 링크로 들어오면 그 값을 따르고,
+  // 다른 비교로 옮기면(비교 바·다른 링크 = diff 없는 주소) 꺼진다. 같은 비교 안의 열 빼기·옵션 바꾸기는 유지 (L7)
+  const diffOnly = params.get(DIFF_PARAM) === '1';
+  const setDiffOnly = (on: boolean) => navigate({ search: withDiffParam(location.search, on) }, { replace: true });
 
   useEffect(() => {
     document.title = pageTitle(type ? `${KIND_LABEL[type]} 비교` : '비교');
@@ -687,10 +689,8 @@ export default function ComparePage() {
 
   const go = (nextIds: string[]) => {
     if (!type) return;
-    // 같은 비교를 이어 가는 것 — 차이만 보기 상태 유지
-    setDiffState({ key: `${type}:${nextIds.join(',')}`, on: diffOnly });
-    // 주소는 compareHref 형식(쉼표·옵션 구분자 그대로)으로 (L4)
-    navigate(compareHref(type, nextIds), { replace: true });
+    // 같은 비교를 이어 가는 것 — 차이만 보기 상태 유지. 주소는 compareHref 형식(쉼표·옵션 구분자 그대로)으로 (L4)
+    navigate(compareHref(type, nextIds) + (diffOnly ? `&${DIFF_PARAM}=1` : ''), { replace: true });
   };
 
   /** 열 옵션 바꾸기 — variantId '' = 시리즈 전체 */
@@ -704,6 +704,8 @@ export default function ComparePage() {
     const rawId = productCols.find((c) => c.colId === id)?.rawId ?? id;
     const nextIds = effectiveIds.filter((x) => x !== id);
     go(nextIds);
+    const name = columns.find((c) => c.id === id)?.name ?? id;
+    announce(`비교에서 ${name} 뺌 (${nextIds.length}/${COMPARE_MAX})`);
     // 내 담기 목록과 같은 비교일 때만 목록에서도 뺀다 — 공유받은 링크에서 열을 빼도 내 목록은 그대로 (L3)
     const stored = type === 'equipment' ? storedEquipment : storedProduct;
     const same = stored.length === ids.length && ids.every((x) => stored.includes(x));
@@ -754,10 +756,20 @@ export default function ComparePage() {
   const shownSections = sections
     .map((s) => ({ ...s, rows: diffOnly ? s.rows.filter((r) => r.keep || !sameAll(r)) : s.rows }))
     .filter((s) => s.rows.length > 0);
-  const hiddenCount = sections.reduce((n, s) => n + s.rows.length, 0) - shownSections.reduce((n, s) => n + s.rows.length, 0);
+  // 차이만 보기를 켜면 숨겨질 행 수 (켜기 전에도 계산 — 누르는 순간 안내하려고)
+  const sameCount = sections.reduce((n, s) => n + s.rows.filter((r) => !r.keep && sameAll(r)).length, 0);
+  const hiddenCount = diffOnly ? sameCount : 0;
+  const diffText = (n: number) => (n > 0 ? `값이 모두 같은 ${n}개 행을 숨겼습니다.` : '모든 행의 값이 서로 다릅니다.');
+  const toggleDiff = () => {
+    setDiffOnly(!diffOnly);
+    announce(diffOnly ? '모든 행을 표시합니다' : `차이만 보기 — ${diffText(sameCount)}`);
+  };
+  const noticeText = notices.join(' ');
   const title = type ? `${KIND_LABEL[type]} 비교` : '비교';
 
   return (
+    <>
+    <NoticeAnnouncer text={noticeText} />
     <div className="pg pg--wide cmp" data-testid="compare-page">
       <nav aria-label="경로">
         <ol className="pg-crumbs">
@@ -771,21 +783,23 @@ export default function ComparePage() {
       <header className="cmp-head">
         <div>
           <h1 className="cmp-title">{title}</h1>
-          {columns.length >= 2 && (
+          {columns.length >= 2 && type && (
             <p className="pg-muted">
-              {columns.length}개 {type ? KIND_LABEL[type] : ''} · 이 화면 주소를 복사하면 같은 비교를 공유할 수 있습니다.
+              {KIND_LABEL[type]} {columns.length}
+              {type === 'equipment' ? '종' : '개'} · 링크를 복사해 보내면 같은 비교 화면이 열립니다.
             </p>
           )}
         </div>
         {columns.length >= 2 && (
           <div className="cmp-tools">
             {anyUnreviewed && <UnreviewedBadge />}
+            <CopyLinkButton url={shareUrl(location.pathname, location.search)} />
             <button
               type="button"
               className="cmp-diff"
               aria-pressed={diffOnly}
               data-testid="compare-diff-only"
-              onClick={() => setDiffOnly((v) => !v)}
+              onClick={toggleDiff}
             >
               <span aria-hidden="true" className="cmp-diff__box">
                 {diffOnly ? '✓' : ''}
@@ -797,8 +811,8 @@ export default function ComparePage() {
       </header>
 
       {notices.length > 0 && (
-        // role=status 는 감싸는 div 에 — ul 에 두면 li 의 부모가 list 가 아니게 됨 (axe listitem, L6)
-        <div role="status" data-testid="compare-notice">
+        // 스크린리더 안내는 앱 공용 live region(announce)으로 — 화면 목록은 그대로 (B10)
+        <div data-testid="compare-notice">
           <ul className="cmp-notices">
             {notices.map((n) => (
               <li key={n}>{n}</li>
@@ -812,8 +826,8 @@ export default function ComparePage() {
       ) : (
         <>
           {diffOnly && (
-            <p className="pg-muted" role="status">
-              {hiddenCount > 0 ? `값이 모두 같은 ${hiddenCount}개 행을 숨겼습니다.` : '모든 행의 값이 서로 다릅니다.'}
+            <p className="pg-muted" data-testid="compare-diff-summary">
+              {diffText(hiddenCount)}
             </p>
           )}
           <div className="cmp-scroll" role="region" aria-labelledby="cmp-caption" tabIndex={0}>
@@ -884,5 +898,70 @@ export default function ComparePage() {
         </>
       )}
     </div>
+    </>
   );
 }
+
+/** 공유 주소 — 해시 라우터 주소(현재 문서 주소 + #경로?검색) */
+function shareUrl(pathname: string, search: string): string {
+  const { origin, pathname: docPath } = window.location;
+  return `${origin}${docPath}#${pathname}${search}`;
+}
+
+/** 안내 목록이 바뀌면 공용 live region 으로 한 번 읽어 줌 */
+function NoticeAnnouncer({ text }: { text: string }) {
+  useEffect(() => {
+    if (text) announce(text);
+  }, [text]);
+  return null;
+}
+
+/**
+ * "링크 복사" (UX 토론 C6) — navigator.clipboard 가 없거나 거절되면 주소를 선택된 입력창으로 보여 준다(직접 복사).
+ * 복사되면 announce('링크를 복사했습니다') + 버튼 글자 잠시 "복사됨 ✓".
+ */
+function CopyLinkButton({ url }: { url: string }) {
+  const [copied, setCopied] = useState(false);
+  const [fallback, setFallback] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => {
+    if (fallback) inputRef.current?.select();
+  }, [fallback, url]);
+  const copy = async () => {
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('clipboard unavailable');
+      await navigator.clipboard.writeText(url);
+      setFallback(false);
+      setCopied(true);
+      announce('링크를 복사했습니다');
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+      setFallback(true);
+      announce('자동 복사가 안 됩니다 — 입력창의 주소를 직접 복사하세요');
+    }
+  };
+  return (
+    <span className="cmp-copy">
+      <button type="button" className="cmp-diff cmp-copy__btn" data-testid="compare-copy-link" onClick={copy}>
+        {copied ? '링크 복사됨 ✓' : '링크 복사'}
+      </button>
+      {fallback && (
+        <input
+          ref={inputRef}
+          className="cmp-copy__input"
+          data-testid="compare-copy-fallback"
+          type="text"
+          readOnly
+          value={url}
+          aria-label="공유 링크 — 선택된 주소를 직접 복사하세요"
+          onFocus={(e) => e.currentTarget.select()}
+        />
+      )}
+    </span>
+  );
+}
+

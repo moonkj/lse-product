@@ -47,3 +47,11 @@
 .eqp-product-item { position: relative; }
 .eqp-product-item > .eqp-product { padding-right: 52px; }
 .eqp-product__compare { position: absolute; top: 8px; right: 8px; z-index: 1; }
+
+/* B1 (UX 토론): 제품 페이지와 같은 이유 — visually-hidden 절대배치가 문서 높이를 늘리지 않게 */
+.pg[data-testid='equipment-page'] { position: relative; }
+
+/* 터치 대상 44px (모바일·터치) */
+@media (max-width: 900px), (pointer: coarse) {
+  .eqp-product-item > .eqp-product { padding-right: 60px; }
+}

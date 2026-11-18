@@ -163,3 +163,11 @@
 - 결과: docs/personas-ux/DEBATE.md, debate.html (round1/, round2/, ROUND2.md).
 - 합의 버그 B1~B10(문서 넘침·위치 동기화·포커스·뒤로가기·형식명 검색·문구/표시 불일치·Gap 대비·오프라인 안내) → U1로 진행 가능.
 - 화면 변경 C1~C6(압축 화면+발표 보기, 운영 정보 접기, Gap 회색 채움+안내 링크, 시작 카드, 자료 칩, 링크 복사) → 사용자 확인 대기.
+
+## 2026-11-18 · UX 라운드 U 구현 (T1-A/B/C 병렬)
+- 사용자 승인: C1 압축 화면+발표 보기, C4 시작 카드, C5 자료 바로가기 칩, C6 비교 링크 복사 + 버그 B1~B10. 보류: C2 운영 정보 접기, C3 Gap 회색 채움.
+- T1-A 계통도: B2 선택 시 이동·확대·현재 계층 고정, B3 viewport.ts(덮개 실측·insets), B4 패널 h2 포커스/Esc 복귀/Home·End, B5 선택 history push+상태 복원, B7 패널 구성품 "구성품 판정·판정 확정/후보", B9 흐림은 사진·배경만(글자 대비 ≥5.3:1), 터치 44px, 사이드 패널 모드.
+- T1-B 제품·비교·검색: B1 visually-hidden 기준 position:relative(1,168px 넘침 해소), B6 search.ts 형식명·옵션 색인(specs 지연 로딩 유지), C5 바로가기 칩, C6 링크 복사·diff=1, B10 한글 네트워크 오류·다시 시도, publicNote.
+- T1-C 레이아웃: C1 data-density compact(높이 ≤600 자동·발표 보기 lse-present-v1), 사이드바 계통도 화면 한정, C4 StartCard, LiveRegion+announce, 라우트 h1 포커스, 용어집 +4(40), L7 '분전반 및 부하'.
+- 리더 통합: .app-main position:relative, catalog/Gap/Compare 판정 표기 confidenceLabel.
+- 검증: typecheck(src·tests)·build 통과, unit 465/465, E2E(dist) 112 통과·1 skip. 첫 화면 index gzip 80.40kB.

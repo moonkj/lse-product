@@ -333,7 +333,7 @@ export const LAYER_LABELS: Record<Layer, string> = {
   L4: '수전설비',
   L5: '변압',
   L6: '저압 배전',
-  L7: '분전반 및 하단',
+  L7: '분전반 및 부하',
   REN: '신재생·저장 연계',
   MON: '감시·제어',
 };

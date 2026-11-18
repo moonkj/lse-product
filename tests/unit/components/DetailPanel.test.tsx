@@ -4,8 +4,8 @@
  * 대상 기기는 실제 데이터에서 조건으로 고른다 (id 하드코딩 금지 — 없으면 skip).
  */
 import { describe, it, expect, afterEach } from 'vitest';
-import { render, screen, cleanup, within } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen, cleanup, within, act, fireEvent } from '@testing-library/react';
+import { MemoryRouter, useLocation, useNavigate, type NavigateFunction } from 'react-router-dom';
 import DetailPanel from '../../../src/components/panel/DetailPanel';
 import { getData, resolveCategories, resolveProducts } from '../../../src/data/load';
 import { getDiagramModel } from '../../../src/lib/diagram/model';
@@ -69,5 +69,57 @@ describe('CT-04 DetailPanel', () => {
     renderAt('__no_such_node__');
     expect(screen.queryByTestId('detail-panel')).toBeNull();
     expect(screen.getByRole('complementary')).toHaveTextContent('상세 정보');
+  });
+});
+
+// ── UX 라운드 U (B4·B5·B7·B8) ──
+const probe: { nav?: NavigateFunction; search?: string } = {};
+function Probe() {
+  probe.nav = useNavigate();
+  probe.search = useLocation().search;
+  return null;
+}
+function renderWithProbe(nodeId: string) {
+  return render(
+    <MemoryRouter initialEntries={[`/?node=${nodeId}`]}>
+      <DetailPanel />
+      <Probe />
+    </MemoryRouter>,
+  );
+}
+const withNeighbor = model.nodes.find((n) => (model.neighbors.get(n.id) ?? []).length > 0);
+const sourcedWithGa = model.nodes.find((n) => n.coverage === 'sourced' && n.eq.gapAssessment);
+
+describe('UX 라운드 U — DetailPanel', () => {
+  it.skipIf(!withProducts)('B4 패널 제목 h2 는 tabIndex=-1 (선택 시 포커스 대상)', () => {
+    renderAt(withProducts!.id);
+    const h2 = screen.getByTestId('detail-title');
+    expect(h2.tagName).toBe('H2');
+    expect(h2).toHaveAttribute('tabindex', '-1');
+  });
+
+  it.skipIf(!withNeighbor)('B5 연결 기기 칩 → 기록에 push, 뒤로가기 → 이전 기기 / B4 포커스는 새 기기 패널 제목', () => {
+    const n = withNeighbor!;
+    const next = model.neighbors.get(n.id)![0].node;
+    renderWithProbe(n.id);
+    fireEvent.click(screen.getByTestId(`neighbor-chip-${next.id}`));
+    expect(probe.search).toContain(`node=${next.id}`);
+    expect(screen.getByTestId('detail-title')).toHaveTextContent(next.eq.name);
+    expect(document.activeElement).toBe(screen.getByTestId('detail-title'));
+    act(() => probe.nav!(-1));
+    expect(probe.search).toContain(`node=${n.id}`);
+    expect(screen.getByTestId('detail-title')).toHaveTextContent(n.eq.name);
+  });
+
+  it.skipIf(!sourcedWithGa)('B7 패널 구성품 → 판정 섹션·확신도에 "공백" 단어 없음', () => {
+    renderAt(sourcedWithGa!.id);
+    const section = screen.getByTestId('detail-gap-assessment');
+    expect(within(section).getByTestId('detail-gap-confidence').textContent).toMatch(/^판정 (확정|후보)$/);
+    expect(section.querySelector('h3')!.textContent).not.toMatch(/공백/);
+  });
+
+  it.skipIf(!withProducts)('B8 제품 수 단위 = "N개"', () => {
+    renderAt(withProducts!.id);
+    expect(screen.getByText(/^자사 제품 · \d+개$/)).toBeInTheDocument();
   });
 });

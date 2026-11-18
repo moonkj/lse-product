@@ -359,5 +359,17 @@ export function layerAt(model: DiagramModel, x: number, y: number): Layer | null
   return bandLayerAt(model.layerRect, x, y);
 }
 
+/**
+ * 계층 긴 이름 — diagram.json 의 계층 이름(계통도 밴드·내비 aria 와 같은 출처, 예: "분전반 및 부하")을 쓰고,
+ * 없으면 schema LAYER_LABELS (UX 토론 B8: 화면마다 L7 이름이 달랐음)
+ */
+function layerLabel(l: Layer): string {
+  try {
+    return getData().diagram.layers.find((x) => x.id === l)?.label ?? LAYER_LABELS[l];
+  } catch {
+    return LAYER_LABELS[l];
+  }
+}
+
 /** "L4 수전설비" / "감시·제어" */
-export const layerTitle = (l: Layer) => (isMainLayer(l) ? `${l} ${LAYER_LABELS[l]}` : LAYER_LABELS[l]);
+export const layerTitle = (l: Layer) => (isMainLayer(l) ? `${l} ${layerLabel(l)}` : layerLabel(l));

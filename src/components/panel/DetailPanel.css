@@ -448,3 +448,27 @@
 .dp-product-row { display: flex; align-items: stretch; gap: 6px; }
 .dp-product-row > .dp-product { flex: 1 1 auto; min-width: 0; }
 .dp-product-row > .cmp-toggle--icon { height: auto; min-height: 36px; }
+
+/* 터치 대상 44×44 (모바일·터치 기기): 칩 모양은 그대로, 보이지 않는 히트 영역(::before)으로 확보.
+   줄 간격을 넓혀 위아래 칩의 히트 영역이 겹치지 않게 한다. */
+@media (pointer: coarse), (max-width: 900px) {
+  .dp-chips {
+    row-gap: 14px;
+  }
+
+  .dp-chip,
+  .dp-gapchip {
+    position: relative;
+  }
+
+  .dp-chip::before,
+  .dp-gapchip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}

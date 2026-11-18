@@ -4,7 +4,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { buildGapCsv, CATEGORY_LABELS } from '../../../src/lib/pages/catalog';
-import { CONFIDENCE_LABELS } from '../../../src/lib/labels';
+import { CONFIDENCE_LABELS, SOURCED_CONFIDENCE_LABELS } from '../../../src/lib/labels';
 import { COVERAGE_LABELS, LAYER_LABELS, type EquipmentType } from '../../../src/lib/schema';
 
 const eq = (over: Partial<EquipmentType>): EquipmentType => ({
@@ -72,7 +72,8 @@ describe('UT-01 buildGapCsv', () => {
     expect(rows.slice(1).map((r) => [r[3], r[9]])).toEqual([
       ['a', CONFIDENCE_LABELS.confirmed],
       ['b', CONFIDENCE_LABELS.candidate],
-      ['c', CONFIDENCE_LABELS.candidate],
+      // 패널 구성품은 공백이 아니므로 '판정 후보' (UX B7 — 배지·패널과 일치)
+      ['c', SOURCED_CONFIDENCE_LABELS.candidate],
       ['d', ''],
       ['e', ''],
     ]);

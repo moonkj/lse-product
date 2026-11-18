@@ -31,3 +31,23 @@
   color: var(--color-text-muted);
   font-size: var(--fs-sm);
 }
+
+/* 오프라인·청크 실패 안내 (UX 토론 B10) — [다시 시도] 버튼 */
+.root-error__lead { font-size: var(--fs-md); }
+.root-error__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.root-error__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-link);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.root-error__btn--primary { border-color: var(--color-brand); background: var(--color-brand); color: var(--color-on-brand); font-weight: var(--fw-bold); }
+.root-error__btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }

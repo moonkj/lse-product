@@ -138,7 +138,7 @@ export default function LearnPage() {
             })}
           </dl>
         </section>
-        <p className="pg-muted lp-review">콘텐츠 상태: {content.reviewStatus}</p>
+        {/* 콘텐츠 검수 상태(content.reviewStatus)는 개발·검수용 메모라 화면에 보이지 않는다 (B8) — 데이터는 유지 */}
       </div>
     </div>
   );

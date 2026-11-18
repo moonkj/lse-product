@@ -27,7 +27,7 @@
 .ps-values { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
 
 /* 옵션이 많으면 가로 스크롤 — 첫 열(사양 이름) 고정 */
-.ps-scroll { overflow-x: auto; max-width: 100%; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.ps-scroll { position: relative; overflow-x: auto; max-width: 100%; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
 .ps-scroll:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .ps-table { border-collapse: separate; border-spacing: 0; min-width: 100%; font-size: var(--fs-sm); }
 .ps-table th,
@@ -54,3 +54,17 @@
 .ps-vhead__note { margin-top: 2px; font-size: var(--fs-xs); font-weight: var(--fw-regular); color: var(--color-text-muted); }
 .ps-vhead__toggle { margin-top: 6px; white-space: nowrap; }
 .ps-foot { margin: 0; font-size: var(--fs-xs); }
+
+/* 검색에서 고른 옵션 열 강조 (?opt=, UX 토론 B6) — 색만이 아니라 "검색한 옵션" 글자 + 테두리로도 구분 */
+.ps-table .ps-col--hit { background: var(--cov-partial-bg); box-shadow: inset 2px 0 0 var(--color-brand), inset -2px 0 0 var(--color-brand); }
+.ps-table thead .ps-col--hit { background: var(--cov-partial-bg); }
+.ps-vhead__hit { margin-top: 2px; font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--cov-partial-text); }
+.ps-block[id] { scroll-margin-top: var(--space-4); }
+.ps-block[id]:focus { outline: none; }
+
+/* 터치 대상 44px (모바일·터치) — 카탈로그 쪽 링크·출처 링크 */
+@media (max-width: 900px), (pointer: coarse) {
+  .ps-page,
+  .ps-source { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+  .ps-vhead .ps-page { display: flex; }
+}

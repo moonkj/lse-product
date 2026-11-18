@@ -28,22 +28,58 @@ export function useSelectedNodeId(): string | null {
   return getDiagramModel().nodeById.has(id) ? id : null;
 }
 
-/** 노드 선택/해제 — URL 의 node 만 바꾸고 mode 는 유지 (히스토리는 replace) */
+/**
+ * 노드 선택/해제 — URL 의 node 만 바꾸고 mode 는 유지.
+ * 브라우저 기록에 남긴다(push, UX 토론 B5) → 연결 기기를 따라간 뒤 뒤로가기 = 이전 기기.
+ * 이미 같은 값이면 기록을 늘리지 않는다.
+ */
 export function useSelectNode() {
-  const [, setParams] = useSearchParams();
-  const ref = useRef(setParams);
-  ref.current = setParams;
-  return useCallback((id: string | null) => {
-    ref.current(
+  const [params, setParams] = useSearchParams();
+  const ref = useRef({ setParams, current: params.get('node') });
+  ref.current = { setParams, current: params.get('node') };
+  return useCallback((id: string | null, opts?: { replace?: boolean }) => {
+    if ((ref.current.current ?? null) === id) return;
+    ref.current.setParams(
       (prev) => {
         const next = new URLSearchParams(prev);
         if (id) next.set('node', id);
         else next.delete('node');
         return next;
       },
-      { replace: true },
+      { replace: !!opts?.replace },
     );
   }, []);
+}
+
+/** 기록 항목(history state)에 남기는 상세 패널 상태 — 뒤로가기 시 모바일 시트 펼침 복원 */
+export interface PanelHistoryState {
+  sheet?: 'expanded';
+}
+
+// ── 선택 → 상세 패널 제목으로 포커스 (UX 토론 B4) ──
+let panelFocusPending = false;
+
+/** 다음에 상세 패널이 새 기기로 그려지면 제목(h2)으로 포커스를 옮기도록 예약 */
+export function requestPanelFocus() {
+  panelFocusPending = true;
+}
+
+/** 예약된 포커스 요청을 꺼낸다 (한 번만 true) */
+export function takePanelFocusRequest(): boolean {
+  const v = panelFocusPending;
+  panelFocusPending = false;
+  return v;
+}
+
+export const PANEL_TITLE_ID = 'detail-panel-title';
+
+/** 상세 패널 제목(h2, tabIndex=-1)으로 포커스 */
+export function focusPanelTitle(): boolean {
+  panelFocusPending = false;
+  const el = document.getElementById(PANEL_TITLE_ID);
+  if (!el || !el.hasAttribute('tabindex')) return false;
+  el.focus({ preventScroll: true });
+  return document.activeElement === el;
 }
 
 /** 보기 모드 전환 — 항상 계통도(/)로, 선택 노드는 유지 */

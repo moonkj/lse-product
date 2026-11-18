@@ -1,0 +1,5 @@
+/* 검색 결과 "옵션" 종류 표시 (UX 토론 B6 — 명판 형식명·옵션명 검색) */
+.search__kind--option {
+  background: var(--cov-partial-bg);
+  color: var(--cov-partial-text);
+}

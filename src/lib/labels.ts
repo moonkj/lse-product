@@ -117,6 +117,22 @@ export function gapConfidence(eq: Pick<EquipmentType, 'coverage' | 'gapAssessmen
   return 'confirmed' as const;
 }
 
+/**
+ * 판정 확신도 표기 (UX 토론 B7). 패널 구성품(sourced)은 공백이 아니므로 "공백" 없이 "판정 확정/후보" —
+ * 배지 "패널 구성품"·Gap 모드 "보통"과 맞춘다. 그 밖의 공백류는 CONFIDENCE_LABELS("공백 확정/후보").
+ */
+export const SOURCED_CONFIDENCE_LABELS: Record<GapAssessment['confidence'], string> = {
+  candidate: '판정 후보',
+  confirmed: '판정 확정',
+};
+
+export function confidenceLabel(coverage: Coverage, conf: GapAssessment['confidence']): string {
+  return coverage === 'sourced' ? SOURCED_CONFIDENCE_LABELS[conf] : CONFIDENCE_LABELS[conf];
+}
+
+/** 상세 패널 판정 섹션 제목 — 패널 구성품은 "구성품 판정"(공백 아님), 그 밖의 공백류는 "공백 판정" */
+export const assessmentTitle = (coverage: Coverage) => (coverage === 'sourced' ? '구성품 판정' : '공백 판정');
+
 /** 주 계층(L1~L7) 여부 — 감시·신재생(MON/REN) 제외 */
 export const isMainLayer = (l: Layer | string): l is Exclude<Layer, 'MON' | 'REN'> => /^L[1-7]$/.test(l);
 

@@ -1,8 +1,9 @@
 import type { EquipmentType } from '../../lib/schema';
 import {
-  CONFIDENCE_LABELS,
   GAP_BASIS_LABELS,
   SUPPLY_MODE_LABELS,
+  assessmentTitle,
+  confidenceLabel,
   gapConfidence,
   isReviewOverdue,
 } from '../../lib/labels';
@@ -24,12 +25,12 @@ export default function GapAssessmentSection({ eq }: { eq: EquipmentType }) {
   return (
     <section className="dp-section dp-gapassess" aria-labelledby="dp-gapassess-title" data-testid="detail-gap-assessment">
       <h3 id="dp-gapassess-title" className="dp-label">
-        {conf ? '공백 판정' : '정격 확인'}
+        {conf ? assessmentTitle(eq.coverage) : '정격 확인'}
       </h3>
       <div className="dp-gapassess__badges">
         {conf ? (
           <span className={`dp-conf dp-conf--${conf}`} data-testid="detail-gap-confidence" data-confidence={conf}>
-            {CONFIDENCE_LABELS[conf]}
+            {confidenceLabel(eq.coverage, conf)}
           </span>
         ) : (
           <span className="dp-conf dp-conf--rating" data-testid="detail-rating-check">

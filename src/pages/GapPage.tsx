@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LAYER_LABELS, type Coverage, type EquipmentCategory, type Layer } from '../lib/schema';
 import { useData } from '../data/load';
+import { announce } from '../lib/announce';
 import CoverageBadge from '../components/common/CoverageBadge';
 import {
   CATEGORY_LABELS,
@@ -10,7 +11,7 @@ import {
   COVERAGE_LABELS,
   COVERAGE_ORDER,
   COVERAGE_SHORT_LABELS,
-  CONFIDENCE_LABELS,
+  confidenceLabel,
   GAP_LIST_COVERAGES,
   gapConfidence,
   isMainLayer,
@@ -73,6 +74,17 @@ export default function GapPage() {
   const scopeCounts = countCoverage(scope);
   const chipCoverages = cell ? COVERAGE_ORDER.filter((c) => scopeCounts[c] > 0) : GAP_LIST_COVERAGES;
   const visible = status === 'all' ? scope : scope.filter((e) => e.coverage === status);
+  const listTitle = cell ? `${cell.layer} · ${CATEGORY_LABELS[cell.category]} 기기` : '공백 목록';
+
+  // 필터·칸 선택 결과를 스크린리더에 알림 (B10 — 앱 공용 live region). 첫 화면은 알리지 않음
+  const filterKey = `${status}|${cell?.layer ?? ''}|${cell?.category ?? ''}`;
+  const lastKey = useRef(filterKey);
+  useEffect(() => {
+    if (lastKey.current === filterKey) return;
+    lastKey.current = filterKey;
+    const filter = status === 'all' ? '' : ` · ${FILTER_LABELS[status]}`;
+    announce(`${listTitle}${filter} — ${visible.length}종`);
+  }, [filterKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectCell = (sel: CellSel) => {
     const same = cell && cell.layer === sel.layer && cell.category === sel.category;
@@ -213,8 +225,7 @@ export default function GapPage() {
       <section className="pg-card gp-card" aria-labelledby="list-h" ref={listRef}>
         <div className="gp-card__head">
           <h2 id="list-h">
-            {cell ? `${cell.layer} · ${CATEGORY_LABELS[cell.category]} 기기` : '공백 목록'}{' '}
-            <span className="pg-count">· {visible.length}</span>
+            {listTitle} <span className="pg-count">· {visible.length}종</span>
           </h2>
           {cell && (
             <button type="button" className="gp-filter gp-filter--clear" onClick={clearCell}>
@@ -280,7 +291,7 @@ export default function GapPage() {
                             className={`gp-conf gp-conf--${gapConfidence(eq)}`}
                             data-testid={`gap-confidence-${eq.id}`}
                           >
-                            {CONFIDENCE_LABELS[gapConfidence(eq)!].replace('공백 ', '')}
+                            {confidenceLabel(eq.coverage, gapConfidence(eq)!).replace('공백 ', '')}
                           </span>
                         )}
                       </td>

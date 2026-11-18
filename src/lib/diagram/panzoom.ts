@@ -42,6 +42,8 @@ export class PanZoom {
   private pinch: { dist: number; scale: number; mx: number; my: number } | null = null;
   private ro?: ResizeObserver;
   private lastSize = { w: 0, h: 0 };
+  /** 오른쪽·아래 덮개(비교 바·하단 시트 등) 몫의 추가 스크롤 여백 — 끝자락 타일도 덮개 위로 올릴 수 있게 */
+  private inset = { r: 0, b: 0 };
   private readonly cleanups: (() => void)[] = [];
 
   constructor(
@@ -110,10 +112,10 @@ export class PanZoom {
     this.scale = this.clamp(s);
     const cw = this.opts.width * this.scale;
     const ch = this.opts.height * this.scale;
-    const sw = Math.max(this.vw, cw + 2 * this.pad);
-    const sh = Math.max(this.vh, ch + 2 * this.pad);
-    this.ox = (sw - cw) / 2;
-    this.oy = (sh - ch) / 2;
+    const sw = Math.max(this.vw, cw + 2 * this.pad + this.inset.r);
+    const sh = Math.max(this.vh, ch + 2 * this.pad + this.inset.b);
+    this.ox = (sw - this.inset.r - cw) / 2;
+    this.oy = (sh - this.inset.b - ch) / 2;
     this.sizer.style.width = `${sw}px`;
     this.sizer.style.height = `${sh}px`;
     this.inner.style.transform = `translate(${this.ox}px, ${this.oy}px) scale(${this.scale})`;
@@ -164,11 +166,43 @@ export class PanZoom {
     this.opts.onView(this.view());
   }
 
-  /** diagram 좌표 (x, y) 를 viewport 안의 화면 지점 (px, py) 에 */
-  placeAt(x: number, y: number, px: number, py: number) {
+  /** diagram 좌표 (x, y) 를 viewport 안의 화면 지점 (px, py) 에 (s 를 주면 그 배율로) */
+  placeAt(x: number, y: number, px: number, py: number, s?: number) {
+    if (s !== undefined) this.apply(s);
     this.vp.scrollLeft = this.ox + x * this.scale - px;
     this.vp.scrollTop = this.oy + y * this.scale - py;
     this.opts.onView(this.view());
+  }
+
+  /** 오른쪽·아래 덮개 크기(화면 px)만큼 스크롤 여백을 더한다. 지금 보이는 위치는 유지 */
+  setInsets(r: number, b: number) {
+    r = Math.max(0, Math.round(r));
+    b = Math.max(0, Math.round(b));
+    if (r === this.inset.r && b === this.inset.b) return;
+    const v = this.view();
+    this.inset = { r, b };
+    this.apply(this.scale);
+    this.vp.scrollLeft = this.ox + v.x * this.scale;
+    this.vp.scrollTop = this.oy + v.y * this.scale;
+  }
+
+  /** 저장해 둔 보기(view())를 그대로 복원 — 뒤로가기 시 위치 복원용 */
+  restore(v: ViewInfo) {
+    this.apply(v.scale);
+    this.vp.scrollLeft = this.ox + v.x * this.scale;
+    this.vp.scrollTop = this.oy + v.y * this.scale;
+    this.opts.onView(this.view());
+  }
+
+  /** diagram 영역을 viewport 기준 화면 좌표(px, 클라이언트 영역 왼쪽 위 = 0)로 */
+  toScreen(r: Rect): Rect {
+    const s = this.scale;
+    return {
+      x: this.ox + r.x * s - this.vp.scrollLeft,
+      y: this.oy + r.y * s - this.vp.scrollTop,
+      w: r.w * s,
+      h: r.h * s,
+    };
   }
 
   /** 영역이 화면에 꽉 차게 (maxScale 이하) */

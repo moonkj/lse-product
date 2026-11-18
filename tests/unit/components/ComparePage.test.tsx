@@ -35,6 +35,7 @@ vi.mock('../../../src/data/load', async (importOriginal) => {
 import ComparePage from '../../../src/pages/ComparePage';
 import { useCompareStore } from '../../../src/store/useCompareStore';
 import { URL1, URL2 } from '../lib/compare-fixture';
+import { subscribeAnnounce } from '../../../src/lib/announce';
 
 let consoleError: { mock: { calls: unknown[][] }; mockRestore: () => void };
 beforeEach(() => {
@@ -305,5 +306,71 @@ describe('CT-07 제품 비교 (/compare?type=product)', () => {
     const links = within(empty).getAllByRole('link').map((a) => a.getAttribute('href'));
     expect(links).toContain('/compare?type=product&ids=P90001,P90002');
     expect(links.some((h) => h?.includes('type=equipment'))).toBe(false);
+  });
+});
+
+describe('C6 링크 복사 + 차이만 보기 주소 저장 (UX 토론)', () => {
+  let said: string[] = [];
+  let unsub = () => {};
+  beforeEach(() => {
+    said = [];
+    unsub = subscribeAnnounce((m) => said.push(m));
+  });
+  afterEach(() => {
+    unsub();
+    vi.unstubAllGlobals();
+  });
+
+  it('차이만 보기를 켜면 주소에 diff=1, 끄면 빠짐 (ids 표기 그대로) + 안내', () => {
+    renderAt('type=equipment&ids=eq-a,eq-b');
+    fireEvent.click(screen.getByTestId('compare-diff-only'));
+    expect(lastSearch).toBe('?type=equipment&ids=eq-a,eq-b&diff=1');
+    expect(screen.getByTestId('compare-diff-only')).toHaveAttribute('aria-pressed', 'true');
+    expect(said.at(-1)).toMatch(/^차이만 보기 — /);
+    fireEvent.click(screen.getByTestId('compare-diff-only'));
+    expect(lastSearch).toBe('?type=equipment&ids=eq-a,eq-b');
+    expect(said.at(-1)).toBe('모든 행을 표시합니다');
+  });
+
+  it('공유 링크(diff=1)로 들어오면 켜진 상태, 열 빼기에서도 diff=1 유지', () => {
+    renderAt('type=equipment&ids=eq-a,eq-b,eq-c&diff=1');
+    expect(screen.getByTestId('compare-diff-only')).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('compare-diff-summary')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('compare-remove-eq-c'));
+    expect(lastSearch).toBe('?type=equipment&ids=eq-a,eq-b&diff=1');
+    expect(said.some((m) => /^비교에서 .+ 뺌 \(2\/4\)$/.test(m))).toBe(true);
+  });
+
+  it('diff 없는 주소 = 꺼짐 (다른 비교로 옮기면 초기화)', () => {
+    renderAt('type=equipment&ids=eq-a,eq-b');
+    expect(screen.getByTestId('compare-diff-only')).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('링크 복사 성공 → clipboard 에 해시 주소, announce("링크를 복사했습니다")', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
+    renderAt('type=equipment&ids=eq-a,eq-b&diff=1');
+    fireEvent.click(screen.getByTestId('compare-copy-link'));
+    expect(await screen.findByText('링크 복사됨 ✓')).toBeInTheDocument();
+    expect(writeText).toHaveBeenCalledWith(expect.stringMatching(/#\/compare\?type=equipment&ids=eq-a,eq-b&diff=1$/));
+    expect(said).toContain('링크를 복사했습니다');
+    expect(screen.queryByTestId('compare-copy-fallback')).toBeNull();
+  });
+
+  it('clipboard 실패 → 주소가 담긴 선택 가능한 입력창으로 대체', async () => {
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText: vi.fn().mockRejectedValue(new Error('denied')) } });
+    renderAt('type=equipment&ids=eq-a,eq-b');
+    fireEvent.click(screen.getByTestId('compare-copy-link'));
+    const input = (await screen.findByTestId('compare-copy-fallback')) as HTMLInputElement;
+    expect(input.readOnly).toBe(true);
+    expect(input.value).toMatch(/#\/compare\?type=equipment&ids=eq-a,eq-b$/);
+    expect(said).not.toContain('링크를 복사했습니다');
+  });
+
+  it('clipboard 자체가 없어도 입력창으로 대체', async () => {
+    vi.stubGlobal('navigator', { ...navigator, clipboard: undefined });
+    renderAt('type=equipment&ids=eq-a,eq-b');
+    fireEvent.click(screen.getByTestId('compare-copy-link'));
+    expect(await screen.findByTestId('compare-copy-fallback')).toBeInTheDocument();
   });
 });

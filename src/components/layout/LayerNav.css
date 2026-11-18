@@ -1,0 +1,26 @@
+/*
+ * 계층 바로가기 터치 대상 44×44 (UX 토론 — 터치 대상). 기본 모양은 AppLayout.css.
+ * 모바일 칩(≤900px): 칩 모양은 그대로, 보이지 않는 히트 영역(::before)으로 확보 (내비 위아래 여백 8px 안).
+ * 넓은 터치 기기(태블릿 사이드바): 줄 높이를 44px 로.
+ */
+@media (pointer: coarse) and (min-width: 901px) {
+  .layer-nav__btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 900px) {
+  .layer-nav__btn {
+    position: relative;
+  }
+
+  .layer-nav__btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}

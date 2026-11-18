@@ -6,6 +6,7 @@ import type { ViewMode } from '../../lib/diagram/url';
 import type { Diagram } from '../../lib/schema';
 import { getData } from '../../data/load';
 import { gapConfidence } from '../../lib/labels';
+import { announce } from '../../lib/announce';
 
 interface Props {
   mode: ViewMode;
@@ -55,7 +56,8 @@ function ZoomControls({ total }: { total: number }) {
         >
           −
         </button>
-        <span className="dtool__pct" aria-live="polite" aria-label={`현재 배율 ${pct}%`}>
+        {/* 배율은 화면 표시만 — 팬·줌마다 읽히던 live 안내는 없앰 (B10: 안내는 앱 공용 announce 하나로) */}
+        <span className="dtool__pct" data-testid="zoom-pct">
           {pct}%
         </span>
         <button
@@ -90,14 +92,16 @@ function CopyLink() {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
+      announce('링크를 복사했습니다');
       setTimeout(() => setCopied(false), 1600);
     } catch {
       setCopied(false);
+      announce('링크를 복사하지 못했습니다');
     }
   };
   return (
     <button type="button" className="dtool__btn" onClick={copy}>
-      <span aria-live="polite">{copied ? '링크 복사됨 ✓' : '링크 복사 · ?mode=gap'}</span>
+      {copied ? '링크 복사됨 ✓' : '링크 복사'}
     </button>
   );
 }

@@ -68,3 +68,37 @@
 }
 .pd-remain__text { flex: 1 1 240px; color: var(--color-text-muted); }
 .pd-remain__link { font-weight: var(--fw-bold); white-space: nowrap; }
+
+/* B1 (UX 토론): 페이지를 절대배치 기준으로 — 링크 안 visually-hidden("새 탭에서 열림") 등이
+   스크롤 영역(.app-main) 밖 문서 기준으로 배치돼 문서를 늘리던 문제(휠 시 헤더 사라짐) 방지 */
+.pg[data-testid='product-page'] { position: relative; }
+
+/* 자료 바로가기 칩 (UX 토론 C5) — 기존 "자료 N건" 칩 자리, 누르면 해당 섹션으로 이동 */
+.pg-jumps { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.pg-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-2);
+  color: var(--color-link);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.pg-jump:hover { border-color: var(--color-brand); }
+.pg-jump b { color: var(--color-text); }
+.pd-group[id] { scroll-margin-top: var(--space-4); }
+.pd-group[id]:focus { outline: none; }
+
+/* 터치 대상 44px (모바일·터치) */
+@media (max-width: 900px), (pointer: coarse) {
+  .pg-jump { min-height: 44px; padding: 0 16px; }
+  .pd-remain__link { display: inline-flex; align-items: center; min-height: 44px; }
+}
+@media (max-width: 900px), (pointer: coarse) {
+  .pg-split__side .pg-chip { display: inline-flex; align-items: center; min-height: 44px; }
+}

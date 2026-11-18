@@ -11,6 +11,8 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}/`,
     trace: 'on-first-retry',
+    // 첫 방문 시작 카드(C4)는 닫힌 상태를 기본값으로 — 카드 자체는 start-card.spec.ts 가 빈 저장소로 검사
+    storageState: 'tests/e2e/storage-state.json',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {

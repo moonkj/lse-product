@@ -95,6 +95,11 @@
   .gp-title { font-size: 24px; }
   .gp-stat { flex: 1 1 40%; }
   .gp-csv { margin-left: 0; }
+  /* 터치 대상 44px */
+  .gp-filter,
+  .gp-csv,
+  .gp-back { min-height: 44px; }
+  .gp-back { display: inline-flex; align-items: center; }
 }
 
 /* 가로 스크롤 시 계층 열 고정 */

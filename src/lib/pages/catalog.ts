@@ -12,7 +12,7 @@ import {
   type Layer,
   type Product,
 } from '../schema';
-import { CATEGORY_LABELS, CATEGORY_ORDER, CONFIDENCE_LABELS, COVERAGE_ORDER, gapConfidence } from '../labels';
+import { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER, confidenceLabel, gapConfidence } from '../labels';
 import { edgeKind, isBus, type EdgeKind } from '../diagram/geometry';
 import { hopsAcrossBus } from '../diagram/topology';
 
@@ -197,7 +197,7 @@ export function buildGapCsv(list: EquipmentType[], coverageLabel: (c: Coverage) 
     CATEGORY_LABELS[eq.category],
     eq.affiliateName ?? '',
     eq.gapNote ?? '',
-    ((c) => (c ? CONFIDENCE_LABELS[c] : ''))(gapConfidence(eq)),
+    ((c) => (c ? confidenceLabel(eq.coverage, c) : ''))(gapConfidence(eq)),
   ]);
   return '﻿' + [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
 }

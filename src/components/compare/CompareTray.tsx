@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { peekSpecs, useData } from '../../data/load';
 import { COMPARE_MAX, compareHref, compareIdInData, splitCompareId, useCompareStore, type CompareKind } from '../../store/useCompareStore';
+import { announce } from '../../lib/announce';
 import './Compare.css';
 
 const KIND_LABEL: Record<CompareKind, string> = { equipment: '기기', product: '제품' };
@@ -114,7 +115,10 @@ export default function CompareTray() {
               type="button"
               className="cmp-tray__remove"
               aria-label={`${it.name} 비교에서 빼기`}
-              onClick={() => remove(active, it.id)}
+              onClick={() => {
+                remove(active, it.id);
+                announce(`비교에서 ${it.name} 뺌 (${useCompareStore.getState()[active].length}/${COMPARE_MAX})`);
+              }}
             >
               ×
             </button>
@@ -122,7 +126,10 @@ export default function CompareTray() {
         ))}
       </ul>
       <div className="cmp-tray__actions">
-        <button type="button" className="cmp-tray__clear" data-testid="compare-clear" onClick={() => clear(active)}>
+        <button type="button" className="cmp-tray__clear" data-testid="compare-clear" onClick={() => {
+            clear(active);
+            announce(`${KIND_LABEL[active]} 비교 목록을 비웠습니다`);
+          }}>
           모두 비우기
         </button>
         {ready ? (

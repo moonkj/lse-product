@@ -341,13 +341,44 @@
   z-index: 2;
 }
 
-/* Gap 모드: 보유·해당없음 흐리게, 미보유·일부 보유 배경색 + 외곽 글로우 */
+/*
+ * Gap 모드: 보유·해당없음 흐리게, 미보유·일부 보유 배경색 + 외곽 글로우.
+ * 흐림(B9): 타일 전체 opacity(글자 대비 1.9:1) 대신 사진·심볼·배지·배경·테두리만 흐리게 하고
+ * 글자는 muted 색(밴드 배경 대비 4.5:1 이상)으로 둔다 → 흐린 겉모양은 그대로, 글자는 읽힘.
+ */
 .dnode[data-dimmed='true'] {
+  opacity: 1; /* 참조 타일(0.5)도 같은 규칙으로 */
+  background: color-mix(in srgb, var(--node-bg) 40%, transparent);
+  border-color: color-mix(in srgb, var(--node-border, var(--color-border)) 35%, transparent);
+  color: var(--color-text-muted);
+}
+
+.dnode[data-dimmed='true'] .dnode__caption {
+  color: var(--color-text-muted);
+}
+
+.dnode[data-dimmed='true'] .dnode__img,
+.dnode[data-dimmed='true'] .dnode__symbol {
   opacity: 0.3;
+}
+
+.dnode[data-dimmed='true'] .dnode__badge {
+  opacity: 0.45;
 }
 
 .dnode[data-dimmed='true'].is-selected,
 .dnode[data-dimmed='true']:focus-visible {
+  background: var(--node-selected-bg);
+  border-color: var(--node-border, var(--color-border));
+  color: var(--color-text);
+}
+
+.dnode[data-dimmed='true']:focus-visible:not(.is-selected) {
+  background: var(--node-bg);
+}
+
+.dnode[data-dimmed='true'].is-selected :is(.dnode__img, .dnode__symbol, .dnode__badge),
+.dnode[data-dimmed='true']:focus-visible :is(.dnode__img, .dnode__symbol, .dnode__badge) {
   opacity: 1;
 }
 
@@ -539,6 +570,22 @@
   fill: var(--color-selected);
   fill-opacity: 0.08;
   stroke: var(--color-selected);
+}
+
+/* 터치 대상 44×44 (모바일·터치 기기) */
+@media (pointer: coarse), (max-width: 900px) {
+  .dtool__zbtn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .dtool__pct {
+    line-height: 44px;
+  }
+
+  .dtool__btn {
+    height: 44px;
+  }
 }
 
 @media (max-width: 900px) {

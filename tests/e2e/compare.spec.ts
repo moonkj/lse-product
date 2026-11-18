@@ -163,7 +163,8 @@ test.describe('E2E-7 비교 기능', () => {
     expect(await rows(page).count()).toBeLessThan(before);
 
     await tid(page, `compare-remove-${b.eq.id}`).click();
-    await expect(page).toHaveURL(new RegExp(`ids=${a.eq.id}$`));
+    // 차이만 보기는 주소(diff=1)에 저장되고 같은 비교의 열 빼기에서 유지 (UX 토론 C6)
+    await expect(page).toHaveURL(new RegExp(`ids=${a.eq.id}&diff=1$`));
     await expect(tid(page, 'compare-empty')).toBeVisible();
     await expect(tid(page, 'compare-table')).toHaveCount(0);
   });

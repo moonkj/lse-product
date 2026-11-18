@@ -1,17 +1,22 @@
 import { useId, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Fuse from 'fuse.js';
-import { getData } from '../../data/load';
+import { getData, loadSpecs, peekSpecs, type SpecsMap } from '../../data/load';
 import { COVERAGE_LABELS } from '../../lib/labels';
 import { getDiagramModel, layerTitle, type NodeItem } from '../../lib/diagram/model';
 import { homeSearchWithNode, type FocusState } from '../../lib/diagram/url';
-import { productsForEquipment } from '../../lib/pages/catalog';
+import { equipmentForProduct, productsForEquipment } from '../../lib/pages/catalog';
+import { buildOptionIndex, optionHref, productNameExact, searchOptions, OPTION_SCORE, type OptionDoc } from '../../lib/search';
 import { useAppStore } from '../../store/useAppStore';
+import './SearchBox.css';
 
 type Result = { score: number } & (
   | { kind: 'equipment'; key: string; node: NodeItem }
   | { kind: 'product'; key: string; id: string; name: string; path: string }
+  | { kind: 'option'; key: string; doc: OptionDoc }
 );
+
+const KIND_ORDER: Record<Result['kind'], number> = { equipment: 0, product: 1, option: 2 };
 
 const MAX_EACH = 6;
 const MAX_TOTAL = 10;
@@ -60,8 +65,53 @@ function useIndexes() {
       includeScore: true,
       minMatchCharLength: 2,
     });
-    return { eq, products };
+    const nodeByEq = new Map(model.nodes.map((n) => [n.eq.id, n] as const));
+    return { eq, products, nodeByEq };
   }, []);
+}
+
+/**
+ * 옵션 색인 (B6) — specs.json 은 지연 로딩: 검색창 포커스·입력 때 불러오고, 도착하면 색인을 만든다.
+ * 실패해도 기존 기기·제품 검색은 그대로 (조용히 콘솔에만 기록).
+ */
+function useOptionIndex() {
+  const [specs, setSpecs] = useState<SpecsMap | undefined>(peekSpecs);
+  const ensure = () => {
+    if (specs) return;
+    loadSpecs().then(setSpecs, (e: unknown) => console.error('[search] specs.json', e));
+  };
+  const index = useMemo(() => {
+    if (!specs) return [];
+    const byId = getData().productById;
+    return buildOptionIndex(specs, (id) => byId.get(id)?.name);
+  }, [specs]);
+  return { index, ensure };
+}
+
+/** 정확 일치로 볼 점수 상한 — 이 무리는 맨 위에 두고, 기기 1줄은 그 바로 뒤에 보장 */
+const EXACT_MAX_SCORE = 0.05;
+
+/**
+ * 기기 결과 1줄 보장 (UX 토론 B6 절충) — 정확 일치 무리 바로 뒤에 기기 1줄이 오게 한다.
+ * 기기 검색 결과가 없으면 맨 위 제품·옵션이 속한 기기를 대신 보여 준다 (예: TS250 → MCCB).
+ */
+function withEquipmentRow(merged: Result[], eqs: Result[], nodeByEq: Map<string, NodeItem>): Result[] {
+  const firstEq = merged.findIndex((r) => r.kind === 'equipment');
+  let eqRow: Result | undefined = firstEq >= 0 ? merged[firstEq] : undefined;
+  if (!eqRow && eqs.length === 0) {
+    const top = merged.find((r) => r.kind !== 'equipment');
+    const productId = top?.kind === 'option' ? top.doc.productId : top?.kind === 'product' ? top.id : undefined;
+    const eq = productId ? equipmentForProduct(productId)[0] : undefined;
+    const node = eq ? nodeByEq.get(eq.id) : undefined;
+    if (node) eqRow = { kind: 'equipment', key: `e-${node.id}`, node, score: 1 };
+  }
+  if (!eqRow) return merged;
+  const exactCount = merged.findIndex((r) => r.score > EXACT_MAX_SCORE);
+  // 맨 위(Enter 대상)는 점수 1위 그대로 두고, 정확 일치 무리(없으면 1위) 바로 뒤
+  const slot = Math.min(Math.max(1, exactCount < 0 ? merged.length : exactCount), MAX_TOTAL - 1);
+  if (firstEq >= 0 && firstEq <= slot) return merged;
+  const rest = merged.filter((r) => r !== eqRow);
+  return [...rest.slice(0, slot), eqRow, ...rest.slice(slot)];
 }
 
 /** IME(한글) 조합 중인 키 입력인지 — 조합 중 Enter 는 글자 확정용이므로 무시 */
@@ -76,6 +126,7 @@ export default function SearchBox() {
   const navigate = useNavigate();
   const location = useLocation();
   const idx = useIndexes();
+  const opt = useOptionIndex();
   const listId = useId();
 
   const q = query.trim();
@@ -92,13 +143,19 @@ export default function SearchBox() {
       id: r.item.id,
       name: r.item.name,
       path: r.item.categoryPath.join(' › '),
-      score: r.score ?? 1,
+      // 제품명의 모델 토큰이 정확히 같으면 정확 일치로 올림 (예: "GIPAM 1000" → GIPAM1000)
+      score: productNameExact(r.item.name, q) ? OPTION_SCORE.exact : (r.score ?? 1),
     }));
-    // 기기·제품을 점수 하나로 합쳐 정렬 (같은 점수면 기기 먼저) → Enter = 가장 잘 맞는 결과
-    return [...eqs, ...prods]
-      .sort((a, b) => a.score - b.score || (a.kind === b.kind ? 0 : a.kind === 'equipment' ? -1 : 1))
-      .slice(0, MAX_TOTAL);
-  }, [q, idx]);
+    const opts: Result[] = searchOptions(opt.index, q, MAX_EACH).map((h) => ({
+      kind: 'option',
+      key: `o-${h.doc.productId}-${h.doc.variantId}`,
+      doc: h.doc,
+      score: h.score,
+    }));
+    // 기기·제품·옵션을 점수 하나로 합쳐 정렬 (같은 점수면 기기 → 제품 → 옵션) → Enter = 가장 잘 맞는 결과
+    const merged = [...eqs, ...prods, ...opts].sort((a, b) => a.score - b.score || KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
+    return withEquipmentRow(merged, eqs, idx.nodeByEq).slice(0, MAX_TOTAL);
+  }, [q, idx, opt.index]);
 
   const showPopup = open && q.length > 0;
   const optionId = (i: number) => `${listId}-opt-${i}`;
@@ -111,6 +168,8 @@ export default function SearchBox() {
       // 포커스는 계통도가 화면 전환을 마친 뒤 DiagramCanvas 가 옮긴다 (다른 화면에서 온 경우 rAF 로는 아직 노드가 없음)
       const state: FocusState = { focusNode: r.node.id };
       navigate({ pathname: '/', search: homeSearchWithNode(location.search, r.node.id, onHome) }, { state });
+    } else if (r.kind === 'option') {
+      navigate(optionHref(r.doc.productId, r.doc.variantId));
     } else {
       navigate(`/product/${r.id}`);
     }
@@ -161,8 +220,12 @@ export default function SearchBox() {
           setQuery(e.target.value);
           setActive(0);
           setOpen(true);
+          opt.ensure();
         }}
-        onFocus={() => setOpen(true)}
+        onFocus={() => {
+          setOpen(true);
+          opt.ensure();
+        }}
         onBlur={() => setOpen(false)}
         onKeyDown={onKeyDown}
       />
@@ -178,7 +241,13 @@ export default function SearchBox() {
                     role="option"
                     aria-selected={i === active}
                     className={`search__opt${i === active ? ' is-active' : ''}`}
-                    data-testid={r.kind === 'equipment' ? `search-result-equipment-${r.node.eq.id}` : `search-result-product-${r.id}`}
+                    data-testid={
+                      r.kind === 'equipment'
+                        ? `search-result-equipment-${r.node.eq.id}`
+                        : r.kind === 'option'
+                          ? `search-result-option-${r.doc.productId}-${r.doc.variantId}`
+                          : `search-result-product-${r.id}`
+                    }
                     onMouseDown={(e) => e.preventDefault()}
                     onMouseEnter={() => setActive(i)}
                     onClick={() => choose(r)}
@@ -190,6 +259,18 @@ export default function SearchBox() {
                           <strong>{r.node.eq.abbr ? `${r.node.eq.abbr} · ` : ''}{r.node.eq.name}</strong>
                           <span className="search__sub">
                             {layerTitle(r.node.layer)} · {COVERAGE_LABELS[r.node.coverage]}
+                          </span>
+                        </span>
+                      </>
+                    ) : r.kind === 'option' ? (
+                      <>
+                        <span className="search__kind search__kind--option">옵션</span>
+                        <span className="search__main">
+                          <strong>
+                            {r.doc.productName} · {r.doc.label}
+                          </strong>
+                          <span className="search__sub">
+                            {r.doc.axis ? `${r.doc.axis} 옵션 · ` : ''}정격 열 강조
                           </span>
                         </span>
                       </>

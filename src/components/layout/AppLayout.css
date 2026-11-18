@@ -1,19 +1,19 @@
+/* 앱 셸 grid — 열·줄·영역은 AppLayout(shellGrid)이 화면·밀도에 맞춰 CSS 변수로 넘긴다 (C1 압축 화면 규칙) */
 .app-shell {
   display: grid;
-  grid-template-columns: var(--nav-w) minmax(0, 1fr) var(--panel-w);
-  grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas:
-    'header header header'
-    'nav main panel';
+  grid-template-columns: var(--shell-cols, var(--nav-w) minmax(0, 1fr) var(--panel-w));
+  grid-template-rows: var(--shell-rows, auto minmax(0, 1fr));
+  grid-template-areas: var(--shell-areas, 'header header header' 'nav main panel');
   height: 100%;
 }
 
-/* 상세 패널이 없는 화면(/gap, /learn, 404) */
-.app-shell--no-panel {
-  grid-template-columns: var(--nav-w) minmax(0, 1fr);
-  grid-template-areas:
-    'header header'
-    'nav main';
+/* 사이드바·패널 열이 없을 때 — 비교 바 등 위치 계산이 0 을 쓰도록 */
+.app-shell--no-navside {
+  --nav-w: 0px;
+}
+
+.app-shell--no-panelcol {
+  --panel-w: 0px;
 }
 
 /* 본문 바로가기 — 포커스 시에만 보임 */
@@ -454,6 +454,8 @@
 .app-main {
   grid-area: main;
   overflow: auto;
+  /* visually-hidden(absolute) 요소의 기준을 스크롤 영역 안으로 — 문서 넘침 방지 (UX B1) */
+  position: relative;
 }
 
 .app-shell--home .app-main {
@@ -492,17 +494,6 @@
 
 /* 모바일(≤900px): 헤더 → 계층 칩(가로 스크롤) → 계통도/본문, 상세는 하단 시트(DetailPanel.css) */
 @media (max-width: 900px) {
-  .app-shell,
-  .app-shell--no-panel {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto minmax(0, 1fr);
-    grid-template-areas:
-      'header'
-      'nav'
-      'main';
-    height: 100%;
-  }
-
   .app-header {
     gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
@@ -524,66 +515,354 @@
   .mode-toggle {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    width: 100%;
+    /* 발표 보기 버튼(44px) 자리만 남기고 둘째 줄 전체 */
+    flex: 1 1 calc(100% - 52px);
     margin-left: 0;
     order: 3;
   }
 
-  .layer-nav {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--space-2);
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: var(--space-2) var(--space-4);
-    border-right: 0;
-    border-bottom: 1px solid var(--color-border);
+  /* 터치 대상 44px (헤더 버튼) */
+  .mode-toggle__btn,
+  .present-toggle {
+    min-height: 44px;
   }
 
-  .nav-block--desktop,
-  .layer-nav .nav-section-title,
-  .layer-nav__note,
-  .layer-nav__count {
-    display: none;
+  .present-toggle {
+    order: 4;
+    min-width: 44px;
+    padding: 0 var(--space-2);
   }
 
-  .layer-nav__list {
-    flex-direction: row;
-    gap: 6px;
-  }
-
-  .layer-nav__btn {
-    padding: 4px 10px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-pill);
+  .present-toggle__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
     white-space: nowrap;
-    font-size: 13px;
   }
+}
 
-  .layer-nav__btn.is-current {
-    border-color: var(--color-selected);
-  }
-
-  /* 칩에는 L1~L7 코드만, 신재생·감시는 짧은 이름 */
-  .layer-nav__code + .layer-nav__label {
-    display: none;
-  }
-
-  .layer-nav__btn.is-current .layer-nav__code + .layer-nav__label {
-    display: inline;
-  }
-
-  .gap-table-link {
-    flex: none;
-    margin: 0;
-    padding: 4px 10px;
-    border-radius: var(--radius-pill);
-    font-size: 13px;
+/* 좁은 세로 화면: 제목 글자는 숨겨(스크린리더는 읽음) 로고·검색을 한 줄에 → 헤더 3줄 → 2줄 */
+@media (max-width: 480px) {
+  .app-header__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
     white-space: nowrap;
+  }
+}
+
+/* 계층 칩 한 줄 (모바일·압축 화면): 칩 가로 스크롤, 범례·개수 숨김 */
+.app-shell--navrow .layer-nav {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: var(--space-1) var(--space-4);
+  border-right: 0;
+  border-bottom: 1px solid var(--color-border);
+  scrollbar-width: thin;
+}
+
+.app-shell--navrow .nav-block--desktop,
+.app-shell--navrow .layer-nav .nav-section-title,
+.app-shell--navrow .layer-nav__note,
+.app-shell--navrow .layer-nav__count {
+  display: none;
+}
+
+.app-shell--navrow .layer-nav__list {
+  flex-direction: row;
+  gap: 6px;
+}
+
+.app-shell--navrow .layer-nav__btn {
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.app-shell--navrow .layer-nav__btn.is-current {
+  border-color: var(--color-selected);
+}
+
+/* 칩에는 L1~L7 코드만, 신재생·감시는 짧은 이름 */
+.app-shell--navrow .layer-nav__code + .layer-nav__label {
+  display: none;
+}
+
+.app-shell--navrow .layer-nav__btn.is-current .layer-nav__code + .layer-nav__label {
+  display: inline;
+}
+
+.app-shell--navrow .gap-table-link {
+  flex: none;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* 모바일 터치 대상 44px (계층 칩·공백 표 링크) */
+@media (max-width: 900px), (pointer: coarse) {
+  .app-shell--navrow .layer-nav__btn,
+  .app-shell--navrow .gap-table-link {
+    min-height: 44px;
+  }
+}
+
+/* ── 압축 화면 (C1): 창 높이 ≤600px · 200% 확대 · 모바일 가로 · 발표 보기 ── */
+/* 헤더 한 줄 — 고정 헤더는 유지하되 낮게 (스크롤 숨김은 하지 않음: 포커스 가림) */
+.app-shell--compact .app-header {
+  flex-wrap: nowrap;
+  gap: var(--space-2) var(--space-3);
+  min-height: 0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.app-shell--compact .app-header__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.app-shell--compact .app-header__search {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+
+.app-shell--compact .mode-toggle {
+  display: inline-flex;
+  flex: none;
+  width: auto;
+  order: 0;
+  margin-left: auto;
+}
+
+.app-shell--compact .mode-toggle__btn {
+  padding: 0 var(--space-3);
+}
+
+.app-shell--compact .present-toggle {
+  order: 0;
+}
+
+/* 빈 상세 패널은 접는다 — 기기를 고르면 열이 다시 생김 */
+.app-shell--compact .detail-panel--empty {
+  display: none;
+}
+
+/* 모바일 가로(압축 + ≤900px): 하단 시트 대신 오른쪽 사이드 패널 — 컨테이너 위치만 바꾸고 내용·순서는 그대로 */
+@media (max-width: 900px) {
+  .app-shell--compact .detail-panel.detail-panel--sheet,
+  .app-shell--compact .detail-panel.detail-panel--sheet.is-expanded {
+    top: var(--app-header-h, 52px);
+    left: auto;
+    right: 0;
+    bottom: 0;
+    width: min(380px, 46vw);
+    max-height: none;
+    border-left: 1px solid var(--color-border);
+    border-radius: 0;
+    box-shadow: -6px 0 20px rgb(0 0 0 / 0.14);
+  }
+
+  .app-shell--compact .detail-panel--sheet .dp-handle {
+    display: none;
   }
 }
 
 .app-main__loading {
   padding: var(--space-6);
   color: var(--color-text-muted);
+}
+
+/* 발표 보기 토글 (헤더) */
+.present-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.present-toggle:hover {
+  background: var(--color-surface-2);
+}
+
+.present-toggle[aria-pressed='true'] {
+  border-color: var(--color-link);
+  background: var(--node-selected-bg);
+  color: var(--color-link);
+  font-weight: var(--fw-bold);
+}
+
+.present-toggle__icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* 라우트 이동 시 프로그램으로 포커스한 제목: 마우스 사용자에게는 테두리 숨김 */
+.app-main h1[tabindex='-1']:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── 첫 방문 시작 카드 (C4): 계통도 위 줄 — 덮지 않음, 비모달 ── */
+.start-card {
+  grid-area: notice;
+  container-type: inline-size;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  min-width: 0;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  background: var(--node-selected-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.start-card__title {
+  flex: none;
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+}
+
+.start-card__list {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.start-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-link);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.start-card__link:hover {
+  background: var(--color-surface-2);
+}
+
+.start-card__sub {
+  color: var(--color-text-muted);
+  font-weight: var(--fw-regular);
+}
+
+.start-card__close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  margin-left: auto;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.start-card__close:hover {
+  background: var(--color-surface-2);
+}
+
+/* 가운데 열이 좁으면(사이드바+패널 사이 1024 등) 설명 글자는 숨기고 한 줄 유지 */
+@container (max-width: 700px) {
+  .start-card__sub {
+    display: none;
+  }
+}
+
+/* 모바일·압축: 1줄 배너 (가로 스크롤, 설명 글자 숨김) */
+@media (max-width: 900px) {
+  .start-card {
+    padding: 0 0 0 var(--space-4);
+  }
+
+  .start-card__list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .start-card__sub {
+    display: none;
+  }
+
+  .start-card__link {
+    min-height: 44px;
+    padding: 0 var(--space-2);
+    border: 0;
+    background: transparent;
+    font-weight: var(--fw-bold);
+    text-decoration: underline;
+  }
+
+  .start-card__close {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* 좁은 폰: 링크 3개가 한 줄에 다 보이도록 제목 글자는 숨김(스크린리더는 읽음) */
+@media (max-width: 480px) {
+  .start-card__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+.app-shell--compact .start-card {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.app-shell--compact .start-card__list {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.app-shell--compact .start-card__sub {
+  display: none;
 }

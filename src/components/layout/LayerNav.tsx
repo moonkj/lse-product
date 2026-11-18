@@ -1,10 +1,12 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import type { Layer } from '../../lib/schema';
-import { getDiagramModel } from '../../lib/diagram/model';
+import { getDiagramModel, layerTitle } from '../../lib/diagram/model';
+import { announce } from '../../lib/announce';
 import { getDiagramController, useView } from '../../lib/diagram/view';
 import { useViewMode } from '../../lib/diagram/url';
 import type { JumpState } from '../diagram/DiagramCanvas';
 import CoverageLegend from './CoverageLegend';
+import './LayerNav.css';
 
 /** 내비 짧은 이름 (디자인: "L1 초고압 765/345kV", "신재생·저장") */
 const SHORT: Partial<Record<Layer, string>> = {
@@ -30,6 +32,7 @@ export default function LayerNav() {
 
   const jump = (layer: Layer) => {
     const c = getDiagramController();
+    announce(`${layerTitle(layer)} 보기`);
     if (onHome && c) c.jumpToLayer(layer);
     // 계통도가 아직 마운트되지 않았으므로 도착한 쪽(DiagramCanvas)이 마운트 시 이동
     else navigate('/', { state: { jumpTo: layer } satisfies JumpState });

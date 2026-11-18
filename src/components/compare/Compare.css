@@ -177,3 +177,13 @@
 /* 전환 버튼의 "/4": 눌린(브랜드 배경) 상태에서는 흐린 글자 대신 버튼 글자색 그대로 (대비) */
 .cmp-tray__kind .cmp-tray__count { font-weight: var(--fw-regular); }
 .cmp-tray__kind[aria-pressed='true'] .cmp-tray__count { color: inherit; }
+
+/* 터치 대상 44px (UX 토론 U1 — 모바일·터치 화면). 데스크톱 마우스 화면은 그대로 */
+@media (max-width: 900px), (pointer: coarse) {
+  .cmp-toggle--icon { width: 44px; height: 44px; }
+  .cmp-toggle--sm { min-height: 44px; }
+  .cmp-tray__kind,
+  .cmp-tray__clear,
+  .cmp-tray__go { min-height: 44px; }
+  .cmp-tray__remove { width: 44px; height: 44px; }
+}

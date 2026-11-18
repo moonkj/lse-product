@@ -44,3 +44,9 @@
   color: var(--color-text-muted);
   font-size: var(--fs-xs);
 }
+
+/* 터치 대상 44px (UX 토론 U1 — 모바일·터치, 시트 안 PDF 링크 높이 22px 문제) */
+@media (max-width: 900px), (pointer: coarse) {
+  .docs-list__link { align-items: center; min-height: 44px; }
+  .docs-list__deeplink a { display: inline-flex; align-items: center; min-height: 44px; }
+}

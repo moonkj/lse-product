@@ -1,6 +1,7 @@
 import './Compare.css';
 import { COMPARE_MAX, compareIdInData, useCompareStore, type CompareKind } from '../../store/useCompareStore';
 import { useData } from '../../data/load';
+import { announce } from '../../lib/announce';
 
 interface Props {
   kind: CompareKind;
@@ -29,7 +30,7 @@ export default function CompareToggle({ kind, id, name, variant = 'full', classN
     list.length < COMPARE_MAX ? list.length : list.filter((x) => compareIdInData(kind, x, data)).length;
   const full = !pressed && validCount >= COMPARE_MAX;
   const what = kind === 'equipment' ? '기기' : '제품';
-  const title = full ? `${what} 비교 목록이 가득 찼습니다 (최대 ${COMPARE_MAX}개)` : pressed ? '비교 목록에서 빼기' : '비교 목록에 담기';
+  const title = full ? `${what} 비교 목록이 가득 찼습니다 (최대 ${COMPARE_MAX}${kind === 'equipment' ? '종' : '개'})` : pressed ? '비교 목록에서 빼기' : '비교 목록에 담기';
   return (
     <button
       type="button"
@@ -39,7 +40,13 @@ export default function CompareToggle({ kind, id, name, variant = 'full', classN
       disabled={full}
       title={title}
       data-testid={`compare-toggle-${id}`}
-      onClick={() => toggle(kind, id)}
+      onClick={() => {
+        const r = toggle(kind, id);
+        const n = useCompareStore.getState()[kind].length;
+        if (r === 'added') announce(`비교에 ${name} 담음 (${n}/${COMPARE_MAX})`);
+        else if (r === 'removed') announce(`비교에서 ${name} 뺌 (${n}/${COMPARE_MAX})`);
+        else announce(title);
+      }}
     >
       <span aria-hidden="true" className="cmp-toggle__icon">
         {pressed ? '✓' : '＋'}
