@@ -7,8 +7,10 @@ import {
   EquipmentImagesSchema,
   EquipmentTypesSchema,
   LAYER_LABELS,
+  LAYERS,
   type EquipmentImage,
   type EquipmentType,
+  type Layer,
 } from '../../lib/schema';
 import { getDiagramModel, type DiagramModel } from '../../lib/diagram/model';
 import type { ViewMode } from '../../lib/diagram/url';
@@ -16,6 +18,12 @@ import { pageTitle } from '../../lib/labels';
 import {
   addEdge,
   addNode,
+  addSpecialNode,
+  shapeOf,
+  specPlacement,
+  updateNode,
+  type EdgeKind,
+  type SpecialNodeSpec,
   deleteEdge,
   deleteEquipment,
   deleteNode,
@@ -31,7 +39,7 @@ import {
 import { changesMarkdown, computeChanges } from '../../lib/admin/diff';
 import { koIssue, validateDraft, type Issue } from '../../lib/admin/integrity';
 import { useAdminStore } from '../../lib/admin/store';
-import AdminCanvas, { type CanvasHandle, type Tool } from './AdminCanvas';
+import AdminCanvas, { type CanvasHandle, type PlaceTarget, type Tool } from './AdminCanvas';
 import EquipmentForm from './EquipmentForm';
 import { ChangesPanel, CheckPanel, EquipmentList, SelectionPanel, equipmentLabel } from './AdminPanels';
 import './AdminPage.css';
@@ -39,6 +47,8 @@ import './AdminPage.css';
 type Selection = { type: 'node' | 'edge'; id: string } | null;
 type LeftView = { kind: 'list' } | { kind: 'new' } | { kind: 'edit'; id: string };
 type RightTab = 'selection' | 'changes' | 'check';
+type PlaceKind = 'equipment' | 'ref' | 'bus' | 'endpoint';
+const PLACE_KIND_LABELS: Record<PlaceKind, string> = { equipment: '기기', ref: '참조 타일', bus: '모선', endpoint: '끝점' };
 
 /** 초안으로 계통도 모델 만들기 — 일반 화면과 같은 getDiagramModel 사용, 사진은 초안의 equipment-images 기준 */
 function buildModel(data: AppData, draft: Draft): DiagramModel {
@@ -51,13 +61,11 @@ function buildModel(data: AppData, draft: Draft): DiagramModel {
   };
   const m = getDiagramModel(appData);
   const base = import.meta.env.BASE_URL;
-  return {
-    ...m,
-    nodes: m.nodes.map((n) => {
-      const img = draft.images[n.eq.id];
-      return { ...n, imageUrl: img ? `${base}${img.thumb}` : undefined };
-    }),
+  const withImage = (n: DiagramModel['nodes'][number]) => {
+    const img = draft.images[n.eq.id];
+    return { ...n, imageUrl: img ? `${base}${img.thumb}` : undefined };
   };
+  return { ...m, nodes: m.nodes.map(withImage), refs: m.refs.map(withImage) };
 }
 
 function download(name: string, text: string, type = 'application/json') {
@@ -89,8 +97,13 @@ export default function AdminPage() {
   const [tool, setTool] = useState<Tool>('select');
   const [placeEquipmentId, setPlaceEquipmentId] = useState<string>();
   const [connectFrom, setConnectFrom] = useState<string>();
-  const [edgeKind, setEdgeKind] = useState<'power' | 'signal'>('power');
+  const [edgeKind, setEdgeKind] = useState<EdgeKind>('power');
   const [edgeVoltage, setEdgeVoltage] = useState('');
+  const [edgeLabel, setEdgeLabel] = useState('');
+  const [placeKind, setPlaceKind] = useState<PlaceKind>('equipment');
+  const [placeLabel, setPlaceLabel] = useState('');
+  const [placeLayer, setPlaceLayer] = useState<Layer>('L6');
+  const [placeWidth, setPlaceWidth] = useState(400);
   const [selection, setSelection] = useState<Selection>(null);
   const [left, setLeft] = useState<LeftView>({ kind: 'list' });
   const [tab, setTab] = useState<RightTab>('selection');
@@ -170,7 +183,7 @@ export default function AdminPage() {
       return;
     }
     // 배치 모드의 노드 클릭은 캔버스가 배치 시도로 처리
-    if (tool === 'place' && placeEquipmentId) return;
+    if (tool === 'place' && placeTarget) return;
     if (tool === 'connect') {
       if (!connectFrom) {
         setConnectFrom(id);
@@ -182,7 +195,7 @@ export default function AdminPage() {
         info('연결을 취소했습니다');
         return;
       }
-      const r = addEdge(draft, connectFrom, id, edgeKind, edgeVoltage);
+      const r = addEdge(draft, connectFrom, id, edgeKind, edgeVoltage, edgeLabel);
       if (apply(r, `연결선 ${r.createdId} 추가: ${nodeName(draft, connectFrom)} → ${nodeName(draft, id)}`)) {
         setSelection({ type: 'edge', id: r.createdId! });
         setTab('selection');
@@ -194,7 +207,37 @@ export default function AdminPage() {
     setTab('selection');
   };
 
+  /** 배치할 노드 명세 (기기 외) */
+  const specialSpec: SpecialNodeSpec | undefined =
+    placeKind === 'ref'
+      ? placeEquipmentId
+        ? { kind: 'ref', equipmentId: placeEquipmentId, label: placeLabel }
+        : undefined
+      : placeKind === 'bus'
+        ? { kind: 'bus', label: placeLabel, layer: placeLayer, width: placeWidth }
+        : placeKind === 'endpoint'
+          ? { kind: 'endpoint', label: placeLabel, layer: placeLayer }
+          : undefined;
+  const placeEqForTarget = draft.equipmentTypes.find((e) => e.id === placeEquipmentId);
+  const placeTarget: PlaceTarget | undefined =
+    placeKind === 'equipment'
+      ? placeEqForTarget && { layer: placeEqForTarget.layer, shape: shapeOf('equipment'), title: placeEqForTarget.abbr ?? placeEqForTarget.name }
+      : specialSpec && {
+          ...specPlacement(specialSpec),
+          title: `${PLACE_KIND_LABELS[placeKind]}${placeLabel.trim() ? ` · ${placeLabel.trim()}` : ''}`,
+        };
+
   const onPlace = (x: number, y: number) => {
+    if (placeKind !== 'equipment') {
+      if (!specialSpec) return;
+      const r = addSpecialNode(draft, specialSpec, x, y);
+      if (apply(r, `${nodeName(r.draft, r.createdId ?? '')}을(를) (${x}, ${y})에 배치했습니다`)) {
+        setSelection({ type: 'node', id: r.createdId! });
+        setTool('select');
+        setTab('selection');
+      }
+      return;
+    }
     if (!placeEquipmentId) return;
     const r = addNode(draft, placeEquipmentId, x, y);
     if (apply(r, `${nodeName(r.draft, r.createdId ?? '')} 노드를 (${x}, ${y})에 배치했습니다`)) {
@@ -205,11 +248,12 @@ export default function AdminPage() {
   };
 
   const autoPlace = () => {
-    const eq = draft.equipmentTypes.find((e) => e.id === placeEquipmentId);
-    if (!eq) return;
-    const p = findFreeSpot(draft, eq.layer);
+    if (!placeTarget) return;
+    // 참조 타일은 밴드 제한이 없으므로 "표시 계층" 밴드에서 빈 자리를 찾는다
+    const layer = placeTarget.layer ?? placeLayer;
+    const p = findFreeSpot(draft, layer, placeTarget.shape);
     if (!p) {
-      fail(`${eq.layer} 밴드에 빈 자리가 없습니다`);
+      fail(`${layer} 밴드에 빈 자리가 없습니다`);
       return;
     }
     onPlace(p.x, p.y);
@@ -225,6 +269,7 @@ export default function AdminPage() {
     const eq = eqObj ?? draft.equipmentTypes.find((e) => e.id === id);
     if (!eq) return;
     setPreview(false);
+    setPlaceKind('equipment');
     setPlaceEquipmentId(id);
     setTool('place');
     setConnectFrom(undefined);
@@ -344,9 +389,8 @@ export default function AdminPage() {
     () => [...new Set(draft.diagram.edges.map((e) => e.voltage).filter((v): v is string => !!v))].sort(),
     [draft],
   );
-  const placeEq = draft.equipmentTypes.find((e) => e.id === placeEquipmentId);
   const editingEq = left.kind === 'edit' ? draft.equipmentTypes.find((e) => e.id === left.id) : undefined;
-  const previewEq = previewNode ? model.nodes.find((n) => n.id === previewNode)?.eq : undefined;
+  const previewEq = previewNode ? model.nodeById.get(previewNode)?.eq : undefined;
 
   return (
     <div className={`admin${preview ? ' admin--preview' : ''}`} data-testid="admin-page">
@@ -422,7 +466,7 @@ export default function AdminPage() {
             {left.kind === 'list' ? (
               <EquipmentList
                 draft={draft}
-                placeEquipmentId={tool === 'place' ? placeEquipmentId : undefined}
+                placeEquipmentId={tool === 'place' && placeKind === 'equipment' ? placeEquipmentId : undefined}
                 onAdd={() => setLeft({ kind: 'new' })}
                 onEdit={(id) => setLeft({ kind: 'edit', id })}
                 onPlace={(id) => startPlace(id)}
@@ -502,21 +546,77 @@ export default function AdminPage() {
               {tool === 'place' && (
                 <>
                   <label className="admin__inline">
-                    기기
-                    <select value={placeEquipmentId ?? ''} onChange={(e) => setPlaceEquipmentId(e.target.value || undefined)} data-testid="admin-place-equipment">
-                      <option value="">— 고르세요 —</option>
-                      {draft.equipmentTypes.map((e) => (
-                        <option key={e.id} value={e.id}>
-                          {e.layer} · {equipmentLabel(e)}
+                    종류
+                    <select value={placeKind} onChange={(e) => setPlaceKind(e.target.value as PlaceKind)} data-testid="admin-place-kind">
+                      {(Object.keys(PLACE_KIND_LABELS) as PlaceKind[]).map((k) => (
+                        <option key={k} value={k}>
+                          {PLACE_KIND_LABELS[k]}
                         </option>
                       ))}
                     </select>
                   </label>
-                  <button type="button" className="abtn abtn--sm" onClick={autoPlace} disabled={!placeEq} data-testid="admin-auto-place">
+                  {(placeKind === 'equipment' || placeKind === 'ref') && (
+                    <label className="admin__inline">
+                      기기
+                      <select value={placeEquipmentId ?? ''} onChange={(e) => setPlaceEquipmentId(e.target.value || undefined)} data-testid="admin-place-equipment">
+                        <option value="">— 고르세요 —</option>
+                        {draft.equipmentTypes.map((e) => (
+                          <option key={e.id} value={e.id}>
+                            {e.layer} · {equipmentLabel(e)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+                  {placeKind !== 'equipment' && (
+                    <>
+                      <label className="admin__inline">
+                        라벨
+                        <input
+                          value={placeLabel}
+                          onChange={(e) => setPlaceLabel(e.target.value)}
+                          placeholder={placeKind === 'bus' ? '예: 380V 모선' : placeKind === 'ref' ? '예: 345/154kV' : '예: 비상 부하'}
+                          size={12}
+                          data-testid="admin-place-label"
+                        />
+                      </label>
+                      <label className="admin__inline">
+                        {placeKind === 'ref' ? '자동 배치 계층' : '계층'}
+                        <select value={placeLayer} onChange={(e) => setPlaceLayer(e.target.value as Layer)} data-testid="admin-place-layer">
+                          {LAYERS.map((l) => (
+                            <option key={l} value={l}>
+                              {l} {LAYER_LABELS[l]}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </>
+                  )}
+                  {placeKind === 'bus' && (
+                    <label className="admin__inline">
+                      길이
+                      <input
+                        type="number"
+                        min={60}
+                        step={10}
+                        value={placeWidth}
+                        onChange={(e) => setPlaceWidth(Number(e.target.value))}
+                        size={5}
+                        data-testid="admin-place-width"
+                      />
+                    </label>
+                  )}
+                  <button type="button" className="abtn abtn--sm" onClick={autoPlace} disabled={!placeTarget} data-testid="admin-auto-place">
                     빈 자리에 자동 배치
                   </button>
                   <span className="admin__hint">
-                    {placeEq ? `${placeEq.layer} ${LAYER_LABELS[placeEq.layer]} 밴드 안을 클릭` : '배치할 기기를 고르세요'}
+                    {!placeTarget
+                      ? placeKind === 'equipment' || placeKind === 'ref'
+                        ? '배치할 기기를 고르세요'
+                        : '라벨을 입력하세요'
+                      : placeTarget.layer
+                        ? `${placeTarget.layer} ${LAYER_LABELS[placeTarget.layer]} 밴드 안을 클릭`
+                        : '참조 타일 — 계통도 아무 곳이나 클릭 (같은 기기가 다시 나오는 자리)'}
                   </span>
                 </>
               )}
@@ -524,10 +624,21 @@ export default function AdminPage() {
                 <>
                   <label className="admin__inline">
                     종류
-                    <select value={edgeKind} onChange={(e) => setEdgeKind(e.target.value as 'power' | 'signal')} data-testid="admin-edge-kind">
+                    <select value={edgeKind} onChange={(e) => setEdgeKind(e.target.value as EdgeKind)} data-testid="admin-edge-kind">
                       <option value="power">전력선</option>
                       <option value="signal">신호선</option>
+                      <option value="alt">택1 연결</option>
                     </select>
+                  </label>
+                  <label className="admin__inline">
+                    설명 라벨
+                    <input
+                      value={edgeLabel}
+                      onChange={(e) => setEdgeLabel(e.target.value)}
+                      placeholder={edgeKind === 'alt' ? '택1 그룹 이름' : '없음'}
+                      size={12}
+                      data-testid="admin-edge-label"
+                    />
                   </label>
                   <label className="admin__inline">
                     전압 라벨
@@ -560,7 +671,7 @@ export default function AdminPage() {
             readOnly={preview}
             viewMode={preview ? previewMode : 'product'}
             tool={tool}
-            placeEquipmentId={placeEquipmentId}
+            place={placeTarget}
             selectedNodeId={preview ? previewNode : selection?.type === 'node' ? selection.id : undefined}
             selectedEdgeId={!preview && selection?.type === 'edge' ? selection.id : undefined}
             connectFromId={tool === 'connect' ? connectFrom : undefined}
@@ -651,6 +762,7 @@ export default function AdminPage() {
                     info(`연결선 ${id} 를 삭제했습니다`);
                   }}
                   onUpdateEdge={(id, patch) => commit(updateEdge(draft, id, patch))}
+                  onUpdateNode={(id, patch) => apply(updateNode(draft, id, patch))}
                 />
               )}
               {tab === 'changes' && (

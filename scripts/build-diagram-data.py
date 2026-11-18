@@ -15,20 +15,20 @@ OUT = ROOT / "src" / "data"
 MAIN_W, SIDE_X, W = 1200, 1220, 1600
 LAYERS = [
     {"id": "L1", "label": "초고압 발전·송전", "voltage": "765/345kV", "y": 0, "height": 300},
-    {"id": "L2", "label": "송변전", "voltage": "154kV", "y": 300, "height": 300},
+    {"id": "L2", "label": "송변전", "voltage": "345/154kV", "y": 300, "height": 300},
     {"id": "L3", "label": "특고압 배전", "voltage": "22.9kV", "y": 600, "height": 300},
-    {"id": "L4", "label": "수전설비", "voltage": "22.9kV", "y": 900, "height": 300},
-    {"id": "L5", "label": "변압", "voltage": "22.9kV→380/220V", "y": 1200, "height": 300},
-    {"id": "L6", "label": "저압 배전", "voltage": "380/220V", "y": 1500, "height": 300},
-    {"id": "L7", "label": "분전반 및 부하", "voltage": "380/220V 분기", "y": 1800, "height": 360},
+    {"id": "L4", "label": "수전설비", "voltage": "22.9kV · 6.6kV", "y": 900, "height": 480},
+    {"id": "L5", "label": "변압", "voltage": "22.9kV→380/220V", "y": 1380, "height": 300},
+    {"id": "L6", "label": "저압 배전", "voltage": "380/220V", "y": 1680, "height": 300},
+    {"id": "L7", "label": "분전반 및 부하", "voltage": "380/220V 분기", "y": 1980, "height": 360},
 ]
 for l in LAYERS:
     l.update(x=0, width=MAIN_W)
 LAYERS += [
     {"id": "MON", "label": "감시·제어", "voltage": "통신", "x": SIDE_X, "width": W - SIDE_X, "y": 0, "height": 900},
-    {"id": "REN", "label": "신재생·저장 연계", "voltage": "계층별 연계", "x": SIDE_X, "width": W - SIDE_X, "y": 900, "height": 1260},
+    {"id": "REN", "label": "신재생·저장 연계", "voltage": "계층별 연계", "x": SIDE_X, "width": W - SIDE_X, "y": 900, "height": 1440},
 ]
-H = 2160
+H = 2340
 
 # ---------------------------------------------------------------- equipment types
 # (id, name, abbr, layer, voltage, category, coverage, codes, productIds, extra, description, learnPoints)
@@ -292,37 +292,70 @@ EQUIPMENT = [
        learn=["검침 인력과 오류를 줄임"]),
 ]
 
+# ---------------------------------------------------------------- equipment 보정 (개선 R3, 페르소나 토론 반영)
+EQ_BY_ID = {e["id"]: e for e in EQUIPMENT}
+
+# 승압 변압기 약어 중복(MTR) 해소
+EQ_BY_ID["step-up-tr"]["abbr"] = "GSU"
+
+# 수배전반에 타사 제품을 넣어 공급하는 구성품 → 'sourced' (패널 구성품·타사 조달). 최종 분류는 사업부 확인
+for _id in ("la", "mof", "ct-pt"):
+    EQ_BY_ID[_id]["coverage"] = "sourced"
+    EQ_BY_ID[_id]["gapNote"] = "수배전반 구성품으로 타사 제품을 넣어 공급하는 경우가 많음 — 실제 조달 방식은 사업부 확인 필요"
+
+HOMEPAGE = "https://www.ls-electric.com/ko/product/"
+SUPPLY = {"missing": "unknown", "partial": "in-house", "affiliate": "affiliate", "sourced": "panel-sourced"}
+for e in EQUIPMENT:
+    if e["coverage"] in SUPPLY:
+        e["gapAssessment"] = {
+            "supplyMode": SUPPLY[e["coverage"]],
+            "basis": "homepage-menu",
+            "confidence": "candidate",
+            "evidence": [{"type": "url", "ref": HOMEPAGE, "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"}],
+        }
+
+# 보유지만 정격(최고 전압) 범위 확인이 필요한 기기 — 연구소 지적
+for _id in ("step-up-tr", "ehv-gis"):
+    EQ_BY_ID[_id]["gapAssessment"] = {
+        "supplyMode": "in-house",
+        "basis": "homepage-menu",
+        "confidence": "candidate",
+        "evidence": [{"type": "url", "ref": HOMEPAGE, "note": "제품 메뉴에 있으나 최고 전압 등급은 확인 필요"}],
+        "ratingScope": {"required": "345/765kV", "offered": "확인 필요"},
+    }
+
 # ---------------------------------------------------------------- nodes
+# 기준 좌표(배율 적용 전). 일반 기기 노드: (기기 id, x, y)
 N = {
     # L1
     "n-gen": ("generator", 100, 150), "n-step-up": ("step-up-tr", 260, 150), "n-ehv-gis": ("ehv-gis", 430, 150),
     "n-la-ehv": ("la-ehv", 430, 50), "n-ct-ehv": ("ct-pt-ehv", 430, 250), "n-relay-tx": ("relay-tx", 260, 250),
     "n-tline": ("transmission-line", 620, 150), "n-hvdc": ("hvdc", 820, 100), "n-facts": ("facts", 820, 210),
     # L2
-    "n-substation": ("substation", 180, 450), "n-gis154": ("gis-154", 620, 380), "n-main-tr": ("main-tr", 620, 510),
-    "n-sas": ("sas", 860, 450),
+    "n-substation": ("substation", 180, 450), "n-gis154": ("gis-154", 620, 430), "n-main-tr": ("main-tr", 620, 520),
+    "n-sas": ("sas", 860, 430),
     # L3
     "n-fcl": ("fcl", 620, 670), "n-dline": ("dist-line", 620, 790), "n-recloser": ("recloser", 800, 790),
     "n-auto-sw": ("auto-switch", 980, 790), "n-pole-tr": ("pole-tr", 1120, 790),
-    # L4
-    "n-mv-swgr": ("mv-swgr", 180, 1050), "n-lbs": ("lbs", 620, 935), "n-la": ("la", 470, 935),
-    "n-alts": ("alts", 800, 935), "n-mof": ("mof", 620, 1020), "n-meter": ("meter", 470, 1020),
-    "n-vcb": ("vcb", 620, 1105), "n-ct-pt": ("ct-pt", 470, 1105), "n-relay": ("protection-relay", 330, 1105),
-    "n-pf": ("pf", 800, 1105), "n-vc": ("vc-vi", 960, 1105), "n-mv-drive": ("mv-drive", 1110, 1105),
+    # L4 (22.9kV 수전 → 22.9kV 모선 → 피더, 6.6kV 고압 전동기 계통)
+    "n-mv-swgr": ("mv-swgr", 180, 1050), "n-la": ("la", 470, 935), "n-lbs": ("lbs", 620, 935),
+    "n-alts": ("alts", 800, 935), "n-meter": ("meter", 470, 1020), "n-mof": ("mof", 620, 1020),
+    "n-relay": ("protection-relay", 330, 1105), "n-ct-pt": ("ct-pt", 470, 1105), "n-vcb": ("vcb", 620, 1105),
+    "n-pf": ("pf", 800, 1230), "n-vc": ("vc-vi", 900, 1320), "n-mv-drive": ("mv-drive", 1150, 1320),
     # L5
-    "n-cast-tr": ("cast-tr", 620, 1350), "n-oil-tr": ("oil-tr", 800, 1350),
-    # L6
-    "n-lv-swgr": ("lv-swgr", 180, 1650), "n-acb": ("acb", 620, 1550), "n-pmeter": ("power-meter", 460, 1550),
-    "n-mccb": ("mccb", 460, 1650), "n-busway": ("busway", 800, 1650), "n-spd": ("spd", 800, 1550),
-    "n-cap": ("capacitor", 960, 1550), "n-sag": ("sag-protector", 960, 1650), "n-aps": ("aps", 1110, 1650),
-    "n-mcc": ("mcc", 620, 1745), "n-ats": ("lv-ats", 960, 1745), "n-egen": ("emergency-gen", 1110, 1745),
+    "n-cast-tr": ("cast-tr", 620, 1530), "n-oil-tr": ("oil-tr", 800, 1530),
+    # L6 (ACB → 380V 모선 → 피더 / 유입TR 2차는 별도 ACB → 버스웨이 계통)
+    "n-lv-swgr": ("lv-swgr", 180, 1830), "n-pmeter": ("power-meter", 460, 1730), "n-acb": ("acb", 620, 1730),
+    "n-mccb": ("mccb", 360, 1840), "n-mcc": ("mcc", 470, 1840), "n-spd": ("spd", 580, 1840),
+    "n-cap": ("capacitor", 690, 1840), "n-busway": ("busway", 1040, 1840), "n-sag": ("sag-protector", 1150, 1840),
+    "n-aps": ("aps", 1150, 1930), "n-ats": ("lv-ats", 800, 1930), "n-egen": ("emergency-gen", 920, 1930),
     # L7
-    "n-panel": ("panelboard", 300, 1850), "n-elcb": ("elcb", 180, 1960), "n-mcb": ("mcb-rcbo", 300, 1960),
-    "n-bmccb": ("branch-mccb", 420, 1960), "n-light": ("lighting-outlet", 240, 2080), "n-evc": ("ev-charger", 420, 2080),
-    "n-mms": ("mms", 580, 1850), "n-ms": ("ms", 580, 1960), "n-empr": ("empr", 700, 1960),
-    "n-drive": ("lv-drive", 820, 1960), "n-soft": ("soft-starter", 940, 1960), "n-servo": ("servo", 1080, 1960),
-    "n-motor": ("motor", 700, 2085), "n-plc": ("plc", 880, 2085), "n-hmi": ("hmi", 1000, 2085),
-    "n-dmc": ("dmc", 1110, 1850), "n-smart": ("smart-device", 100, 2080),
+    "n-panel": ("panelboard", 300, 2030), "n-elcb": ("elcb", 180, 2140), "n-mcb": ("mcb-rcbo", 300, 2140),
+    "n-bmccb": ("branch-mccb", 420, 2140), "n-light": ("lighting-outlet", 240, 2260), "n-evc": ("ev-charger", 420, 2260),
+    "n-mms": ("mms", 580, 2030), "n-ms": ("ms", 580, 2140), "n-empr": ("empr", 700, 2140),
+    "n-drive": ("lv-drive", 820, 2140), "n-soft": ("soft-starter", 940, 2140), "n-servo": ("servo", 1080, 2140),
+    "n-motor": ("motor", 700, 2265), "n-plc": ("plc", 880, 2265), "n-hmi": ("hmi", 1000, 2265),
+    "n-dmc": ("dmc", 1110, 2030), "n-smart": ("smart-device", 100, 2260),
     # MON
     "n-scada": ("scada", 1320, 150), "n-ems": ("ems", 1500, 150), "n-dms": ("dms", 1320, 400),
     "n-xems": ("xems", 1500, 400), "n-care": ("care", 1320, 650), "n-amrs": ("amrs", 1500, 650),
@@ -331,108 +364,171 @@ N = {
     "n-ess": ("ess", 1500, 1160), "n-microgrid": ("microgrid", 1410, 1340),
     "n-modular": ("modular-substation", 1320, 1550), "n-railway": ("railway", 1500, 1550),
 }
+# 참조 타일: 같은 기기 종류가 계통에 다시 나오는 자리 (흐리게 표시, 74종 집계·검색 제외). (기기 id, x, y, 라벨)
+REFS = {
+    "n-tr-345": ("main-tr", 620, 340, "345/154kV"),
+    "n-tr-66": ("cast-tr", 1000, 1230, "22.9/6.6kV"),
+    "n-acb-2": ("acb", 1040, 1730, "TR2 2차 주차단기"),
+}
+# 모선: 굵은 선 (중심 x, y, 길이, 라벨, 계층) — 길이는 기준 좌표
+BUSES = {
+    "bus-229": (810, 1165, 380, "22.9kV 모선", "L4"),
+    "bus-380": (600, 1780, 480, "380V 모선", "L6"),
+}
+# 끝점 라벨: 기기가 아닌 부하 표시 (x, y, 라벨, 계층)
+ENDPOINTS = {
+    "ep-mv-motor": (1025, 1320, "고압 전동기", "L4"),
+    "ep-emergency": (690, 1930, "비상 부하 (소방·승강기)", "L6"),
+    "ep-pcs-out": (1320, 1250, "→ 380V 모선 연계", "REN"),
+    "ep-pcs-in": (840, 1730, "← 신재생 PCS 연계", "L6"),
+}
 
-P, S = "power", "signal"
+P, S, A = "power", "signal", "alt"
+ALT_INLET = "인입 개폐: 1회선 LBS/ASS 또는 2회선 ALTS 택1"
+ALT_MV = "고압 전동기 기동 택1: VC 직입 / 고압 인버터"
+ALT_LV = "기동 방식 택1: 직입 MS / 소프트스타터 / 인버터"
+# (from, to, kind, voltage, label)
 E = [
-    # 본선: 발전 → 송전 → 변전 → 배전 → 수전 → 변압 → 저압 → 분전
-    ("n-gen", "n-step-up", P, "발전전압"), ("n-step-up", "n-ehv-gis", P, "345kV"), ("n-ehv-gis", "n-tline", P, "345kV"),
-    ("n-ehv-gis", "n-la-ehv", P, None), ("n-ehv-gis", "n-ct-ehv", P, None), ("n-ct-ehv", "n-relay-tx", S, None),
-    ("n-tline", "n-hvdc", P, None), ("n-tline", "n-facts", P, None),
-    ("n-tline", "n-gis154", P, "154kV"), ("n-gis154", "n-main-tr", P, "154kV"), ("n-gis154", "n-sas", S, None),
-    ("n-main-tr", "n-fcl", P, "22.9kV"), ("n-fcl", "n-dline", P, "22.9kV"),
-    ("n-dline", "n-recloser", P, "22.9kV"), ("n-recloser", "n-auto-sw", P, "22.9kV"), ("n-auto-sw", "n-pole-tr", P, "22.9kV"),
-    ("n-dline", "n-lbs", P, "22.9kV"), ("n-lbs", "n-la", P, None), ("n-auto-sw", "n-alts", P, "22.9kV 예비"),
-    ("n-alts", "n-mof", P, None), ("n-lbs", "n-mof", P, None), ("n-mof", "n-meter", S, None),
-    ("n-mof", "n-vcb", P, None), ("n-vcb", "n-ct-pt", P, None), ("n-ct-pt", "n-relay", S, None), ("n-relay", "n-vcb", S, "트립"),
-    ("n-vcb", "n-pf", P, None), ("n-vcb", "n-vc", P, None), ("n-vc", "n-mv-drive", P, "6.6kV"),
-    ("n-vcb", "n-cast-tr", P, "22.9kV"), ("n-pf", "n-oil-tr", P, "22.9kV"),
-    ("n-cast-tr", "n-acb", P, "380V"), ("n-oil-tr", "n-busway", P, "380V"),
-    ("n-acb", "n-pmeter", S, None), ("n-acb", "n-mccb", P, None), ("n-acb", "n-busway", P, None),
-    ("n-acb", "n-spd", P, None), ("n-acb", "n-cap", P, None), ("n-busway", "n-sag", P, None), ("n-sag", "n-aps", P, None),
-    ("n-acb", "n-mcc", P, None), ("n-busway", "n-ats", P, None), ("n-egen", "n-ats", P, "비상"),
-    ("n-mccb", "n-panel", P, "380/220V"), ("n-panel", "n-elcb", P, None), ("n-panel", "n-mcb", P, None),
-    ("n-panel", "n-bmccb", P, None), ("n-elcb", "n-light", P, "220V"), ("n-mcb", "n-light", P, "220V"),
-    ("n-bmccb", "n-evc", P, None), ("n-panel", "n-smart", S, None),
-    ("n-mcc", "n-mms", P, None), ("n-mms", "n-ms", P, None), ("n-ms", "n-motor", P, None), ("n-empr", "n-ms", S, None),
-    ("n-mcc", "n-drive", P, None), ("n-drive", "n-motor", P, None), ("n-mcc", "n-soft", P, None), ("n-soft", "n-motor", P, None),
-    ("n-busway", "n-servo", P, None), ("n-mcc", "n-dmc", S, None),
-    ("n-plc", "n-drive", S, None), ("n-plc", "n-servo", S, None), ("n-hmi", "n-plc", S, None),
+    # L1 발전·송전
+    ("n-gen", "n-step-up", P, "발전전압", None), ("n-step-up", "n-ehv-gis", P, "345kV", None), ("n-ehv-gis", "n-tline", P, "345kV", None),
+    ("n-ehv-gis", "n-la-ehv", P, None, None), ("n-ehv-gis", "n-ct-ehv", P, None, None), ("n-ct-ehv", "n-relay-tx", S, None, None),
+    ("n-tline", "n-hvdc", P, None, None), ("n-tline", "n-facts", P, None, None),
+    # L2 송변전: 345/154kV 변압 → 154kV GIS → 154/22.9kV 주변압기
+    ("n-tline", "n-tr-345", P, "345kV", None), ("n-tr-345", "n-gis154", P, "154kV", None),
+    ("n-gis154", "n-main-tr", P, "154kV", None), ("n-gis154", "n-sas", S, None, None),
+    # L3 배전
+    ("n-main-tr", "n-fcl", P, "22.9kV", None), ("n-fcl", "n-dline", P, "22.9kV", None),
+    ("n-dline", "n-recloser", P, "22.9kV", None), ("n-recloser", "n-auto-sw", P, "22.9kV", None), ("n-auto-sw", "n-pole-tr", P, "22.9kV", None),
+    # L4 수전: 상용 인입 → (LBS/ASS 또는 ALTS 택1) → MOF → VCB → 22.9kV 모선
+    ("n-dline", "n-lbs", P, "22.9kV 상용", None), ("n-lbs", "n-la", P, None, None),
+    ("n-dline", "n-alts", P, "22.9kV 상용", None), ("n-auto-sw", "n-alts", P, "예비 회선(별도 피더)", None),
+    ("n-lbs", "n-mof", A, None, ALT_INLET), ("n-alts", "n-mof", A, None, ALT_INLET),
+    ("n-mof", "n-meter", S, None, None), ("n-mof", "n-vcb", P, None, None),
+    ("n-vcb", "n-ct-pt", S, None, "계측"), ("n-ct-pt", "n-relay", S, None, None), ("n-relay", "n-vcb", S, "트립", None),
+    ("n-vcb", "bus-229", P, None, None),
+    ("bus-229", "n-cast-tr", P, "22.9kV", "CB형 피더 (피더마다 VCB+CT+OCR ×n)"),
+    ("bus-229", "n-pf", P, None, "PF형 피더 (LBS+PF, 소용량 TR)"), ("n-pf", "n-oil-tr", P, "22.9kV", None),
+    ("bus-229", "n-tr-66", P, None, "고압 전동기용 피더"),
+    ("n-tr-66", "n-vc", A, "6.6kV", ALT_MV), ("n-tr-66", "n-mv-drive", A, "6.6kV", ALT_MV),
+    ("n-vc", "ep-mv-motor", P, None, None), ("n-mv-drive", "ep-mv-motor", P, None, None),
+    # L5 → L6
+    ("n-cast-tr", "n-acb", P, "380V", None), ("n-acb", "bus-380", P, None, None), ("n-acb", "n-pmeter", S, None, None),
+    ("bus-380", "n-mccb", P, None, None), ("bus-380", "n-mcc", P, None, None), ("bus-380", "n-spd", P, None, None),
+    ("bus-380", "n-cap", P, None, None), ("bus-380", "n-ats", P, "상용", None),
+    ("n-oil-tr", "n-acb-2", P, "380V", None), ("n-acb-2", "n-busway", P, None, None),
+    ("n-busway", "n-sag", P, None, None), ("n-sag", "n-aps", P, None, None),
+    ("n-egen", "n-ats", P, "비상", None), ("n-ats", "ep-emergency", P, None, None),
+    # L7
+    ("n-mccb", "n-panel", P, "380/220V", None), ("n-panel", "n-elcb", P, None, None), ("n-panel", "n-mcb", P, None, None),
+    ("n-panel", "n-bmccb", P, None, None), ("n-elcb", "n-light", P, "220V", None), ("n-mcb", "n-light", P, "220V", None),
+    ("n-bmccb", "n-evc", P, None, None), ("n-panel", "n-smart", S, None, None),
+    ("n-mcc", "n-mms", P, None, None), ("n-mms", "n-ms", P, None, None), ("n-ms", "n-motor", A, None, ALT_LV),
+    ("n-empr", "n-ms", S, None, None),
+    ("n-mcc", "n-drive", P, None, None), ("n-drive", "n-motor", A, None, ALT_LV),
+    ("n-mcc", "n-soft", P, None, None), ("n-soft", "n-motor", A, None, ALT_LV),
+    ("n-busway", "n-servo", P, None, None), ("n-mcc", "n-dmc", S, None, None),
+    ("n-plc", "n-drive", S, None, None), ("n-plc", "n-servo", S, None, None), ("n-hmi", "n-plc", S, None, None),
     # 신재생 연계
-    ("n-pv", "n-dc", P, "DC"), ("n-dc", "n-pcs", P, "DC"), ("n-ess", "n-pcs", P, "DC"), ("n-pcs", "n-acb", P, "380V 연계"),
-    ("n-microgrid", "n-pcs", S, None),
+    ("n-pv", "n-dc", P, "DC", None), ("n-dc", "n-pcs", P, "DC", None), ("n-ess", "n-pcs", P, "DC", None),
+    ("n-pcs", "ep-pcs-out", P, "380V", None), ("ep-pcs-in", "bus-380", P, None, None), ("n-microgrid", "n-pcs", S, None, None),
     # 감시
-    ("n-scada", "n-sas", S, None), ("n-dms", "n-auto-sw", S, None), ("n-dms", "n-recloser", S, None),
-    ("n-amrs", "n-meter", S, None), ("n-scada", "n-relay", S, None), ("n-xems", "n-pmeter", S, None),
-    ("n-care", "n-cast-tr", S, None), ("n-ems", "n-microgrid", S, None),
+    ("n-scada", "n-sas", S, None, None), ("n-dms", "n-auto-sw", S, None, None), ("n-dms", "n-recloser", S, None, None),
+    ("n-amrs", "n-meter", S, None, None), ("n-scada", "n-relay", S, None, None), ("n-xems", "n-pmeter", S, None, None),
+    ("n-care", "n-cast-tr", S, None, None), ("n-ems", "n-microgrid", S, None, None),
 ]
 
+REVIEW = {
+    "status": "pending",
+    "changedAt": "2026-11-18",
+    "note": "계통 연결 정정(변압기 2곳 추가, 22.9kV·380V 모선, 택1 연결, 참조 타일, 비상 부하) — 페르소나 토론 반영, 설계팀 검수 대기",
+}
 
 # 사진 타일(120×116) 배치를 위한 배율. 위 좌표는 기준 좌표이고 출력 시 배율을 곱한다.
 SX, SY = 1.45, 1.8
 TILE_W, TILE_H, MIN_GAP = 120, 116, 30
-
-
-HW, HH = TILE_W // 2, TILE_H // 2
+EP_W, EP_H = 120, 44
+BUS_HH = 4
 CLEAR = 10  # 선과 타일 사이 최소 여유(px)
 
 
-def default_route(pa, pb):
-    """src/lib/diagram/model.ts route() 와 같은 규칙 (모선 제외). 점 목록 반환."""
-    (ax, ay), (bx, by) = pa, pb
-    dx, dy = bx - ax, by - ay
-    if abs(dy) >= TILE_H + 20:
+class Box:
+    """노드 경계: 중심(x, y)과 반폭·반높이. kind = equipment | ref | bus | endpoint"""
+    def __init__(self, nid, kind, x, y, hw, hh):
+        self.id, self.kind, self.x, self.y, self.hw, self.hh = nid, kind, x, y, hw, hh
+
+
+def default_route(a, b):
+    """src/lib/diagram/model.ts route() 와 같은 규칙 + 모선 끝점. 점 목록, 모선 범위 밖이면 None."""
+    if a.kind == "bus" or b.kind == "bus":
+        bus, o = (a, b) if a.kind == "bus" else (b, a)
+        if not (bus.x - bus.hw <= o.x <= bus.x + bus.hw):
+            return None
+        oy = o.y - o.hh if o.y > bus.y else o.y + o.hh
+        pts = [(o.x, bus.y), (o.x, oy)]
+        return pts if a.kind == "bus" else pts[::-1]
+    dx, dy = b.x - a.x, b.y - a.y
+    if abs(dy) >= a.hh + b.hh + 20:
         s = 1 if dy > 0 else -1
-        y1, y2 = ay + s * HH, by - s * HH
+        y1, y2 = a.y + s * a.hh, b.y - s * b.hh
         if abs(dx) < 4:
-            return [(ax, y1), (ax, y2)]
+            return [(a.x, y1), (a.x, y2)]
         my = round((y1 + y2) / 2)
-        return [(ax, y1), (ax, my), (bx, my), (bx, y2)]
+        return [(a.x, y1), (a.x, my), (b.x, my), (b.x, y2)]
     s = 1 if dx >= 0 else -1
-    x1, x2 = ax + s * HW, bx - s * HW
+    x1, x2 = a.x + s * a.hw, b.x - s * b.hw
     if abs(dy) < 4:
-        return [(x1, ay), (x2, ay)]
+        return [(x1, a.y), (x2, a.y)]
     mx = round((x1 + x2) / 2)
-    return [(x1, ay), (mx, ay), (mx, by), (x2, by)]
+    return [(x1, a.y), (mx, a.y), (mx, b.y), (x2, b.y)]
 
 
-def path_hits_tiles(pts, pos, ends):
-    """선분이 양 끝 기기 외의 타일(여유 CLEAR 포함)을 지나가는지"""
+def path_hits(pts, boxes, ends):
+    """선분이 양 끝 외의 노드(타일·끝점·모선, 여유 CLEAR 포함)를 지나가는지"""
     for (x1, y1), (x2, y2) in zip(pts, pts[1:]):
         lo_x, hi_x, lo_y, hi_y = min(x1, x2), max(x1, x2), min(y1, y2), max(y1, y2)
-        for nid, (cx, cy) in pos.items():
-            if nid in ends:
+        for bx in boxes.values():
+            if bx.id in ends:
                 continue
-            if lo_x < cx + HW + CLEAR and hi_x > cx - HW - CLEAR and lo_y < cy + HH + CLEAR and hi_y > cy - HH - CLEAR:
+            c = CLEAR if bx.kind != "bus" else 2
+            if lo_x < bx.x + bx.hw + c and hi_x > bx.x - bx.hw - c and lo_y < bx.y + bx.hh + c and hi_y > bx.y - bx.hh - c:
                 return True
     return False
 
 
-def astar_route(pos, a, b, width, height):
-    """직교 가시성 그래프 + A*(꺾임 벌점)로 타일을 피하는 경로. 후보 좌표 = 타일 중심선과 타일 바깥 여유선.
-    양 끝은 타일 가장자리로 자른다."""
+def astar_route(boxes, a, b):
+    """직교 가시성 그래프 + A*(꺾임 벌점)로 노드를 피하는 경로. 모선 끝점은 모선 위의 가장 가까운 끝."""
     import heapq
-    off = HW + CLEAR + 8, HH + CLEAR + 8
-    xs = sorted({x for (cx, _) in pos.values() for x in (cx, cx - off[0], cx + off[0])})
-    ys = sorted({y for (_, cy) in pos.values() for y in (cy, cy - off[1], cy + off[1])})
+    A_, B_ = boxes[a], boxes[b]
+    xs, ys = set(), set()
+    for bx in boxes.values():
+        for x in (bx.x, bx.x - bx.hw - CLEAR - 8, bx.x + bx.hw + CLEAR + 8):
+            xs.add(x)
+        for y in (bx.y, bx.y - bx.hh - CLEAR - 8, bx.y + bx.hh + CLEAR + 8):
+            ys.add(y)
+
+    def anchor(bx, other):
+        if bx.kind == "bus":
+            return (bx.x + bx.hw if other.x > bx.x else bx.x - bx.hw, bx.y)
+        return (bx.x, bx.y)
+    start, goal = anchor(A_, B_), anchor(B_, A_)
+    xs |= {start[0], goal[0]}
+    ys |= {start[1], goal[1]}
     ends = (a, b)
 
     def inside(x, y):
-        for nid, (cx, cy) in pos.items():
-            if nid in ends:
+        for bx in boxes.values():
+            if bx.id in ends:
                 continue
-            if abs(x - cx) < HW + CLEAR and abs(y - cy) < HH + CLEAR:
+            c = CLEAR if bx.kind != "bus" else 2
+            if abs(x - bx.x) < bx.hw + c and abs(y - bx.y) < bx.hh + c:
                 return True
         return False
-
-    pts = {(x, y) for x in xs for y in ys if not inside(x, y)}
-    pts |= {pos[a], pos[b]}
+    pts = {(x, y) for x in xs for y in ys if not inside(x, y)} | {start, goal}
     by_x, by_y = {}, {}
     for x, y in pts:
         by_x.setdefault(x, []).append(y)
         by_y.setdefault(y, []).append(x)
-    for v in by_x.values():
-        v.sort()
-    for v in by_y.values():
+    for v in list(by_x.values()) + list(by_y.values()):
         v.sort()
 
     def neighbors(p):
@@ -445,10 +541,8 @@ def astar_route(pos, a, b, width, height):
             yield q, 1
 
     TURN = 400
-    start, goal = pos[a], pos[b]
     openq = [(0, 0, start, -1)]
-    best, came = {(start, -1): 0}, {}
-    found = None
+    best, came, found = {(start, -1): 0}, {}, None
     while openq:
         _, g, cur, d = heapq.heappop(openq)
         if cur == goal:
@@ -457,7 +551,7 @@ def astar_route(pos, a, b, width, height):
         if best.get((cur, d), 1 << 60) < g:
             continue
         for q, nd in neighbors(cur):
-            if path_hits_tiles([cur, q], pos, ends):
+            if path_hits([cur, q], boxes, ends):
                 continue
             ng = g + abs(q[0] - cur[0]) + abs(q[1] - cur[1]) + (TURN if d not in (-1, nd) else 0)
             if ng < best.get((q, nd), 1 << 60):
@@ -477,13 +571,15 @@ def astar_route(pos, a, b, width, height):
             corners.append(q)
     corners.append(path[-1])
 
-    def clip(center, nxt):
-        cx, cy = center
-        if nxt[0] == cx:
-            return (cx, cy + (HH if nxt[1] > cy else -HH))
-        return (cx + (HW if nxt[0] > cx else -HW), cy)
-    corners[0] = clip(corners[0], corners[1])
-    corners[-1] = clip(corners[-1], corners[-2])
+    def clip(bx, nxt):
+        if nxt[0] == bx.x:
+            return (bx.x, bx.y + (bx.hh if nxt[1] > bx.y else -bx.hh))
+        return (bx.x + (bx.hw if nxt[0] > bx.x else -bx.hw), bx.y)
+    # 모선 끝은 이미 모선 위의 점이므로 자르지 않음
+    if A_.kind != "bus":
+        corners[0] = clip(A_, corners[1])
+    if B_.kind != "bus":
+        corners[-1] = clip(B_, corners[-2])
     return corners
 
 
@@ -492,41 +588,66 @@ def main():
     assert len(ids) == len(EQUIPMENT), "duplicate equipment id"
     layer_of = {e["id"]: e["layer"] for e in EQUIPMENT}
     band = {l["id"]: l for l in LAYERS}
-    nodes = []
+
+    def in_band(layer, x, y):
+        b = band[layer]
+        return b["x"] <= x <= b["x"] + b["width"] and b["y"] <= y <= b["y"] + b["height"]
+
+    nodes, boxes = [], {}
     for nid, (eid, x, y) in N.items():
         assert eid in ids, f"{nid}: unknown equipment {eid}"
-        b = band[layer_of[eid]]
-        assert b["x"] <= x <= b["x"] + b["width"] and b["y"] <= y <= b["y"] + b["height"], f"{nid} outside {b['id']}"
+        assert in_band(layer_of[eid], x, y), f"{nid} outside {layer_of[eid]}"
         nodes.append({"id": nid, "equipmentTypeId": eid, "x": round(x * SX), "y": round(y * SY)})
-    for a in nodes:
-        for b in nodes:
-            if a["id"] < b["id"] and abs(a["x"] - b["x"]) < TILE_W + MIN_GAP and abs(a["y"] - b["y"]) < TILE_H + MIN_GAP:
-                raise AssertionError(f"tiles overlap: {a['id']} {b['id']}")
-    used = {n["equipmentTypeId"] for n in nodes}
+    for nid, (eid, x, y, label) in REFS.items():
+        assert eid in ids
+        nodes.append({"id": nid, "equipmentTypeId": eid, "ref": True, "label": label, "x": round(x * SX), "y": round(y * SY)})
+    for nid, (x, y, length, label, layer) in BUSES.items():
+        assert in_band(layer, x, y), f"{nid} outside {layer}"
+        nodes.append({"id": nid, "kind": "bus", "label": label, "layer": layer, "x": round(x * SX), "y": round(y * SY), "width": round(length * SX / 2) * 2})  # 짝수로 맞춰 모선 끝 좌표를 정수로
+    for nid, (x, y, label, layer) in ENDPOINTS.items():
+        assert in_band(layer, x, y), f"{nid} outside {layer}"
+        nodes.append({"id": nid, "kind": "endpoint", "label": label, "layer": layer, "x": round(x * SX), "y": round(y * SY)})
+    for n in nodes:
+        k = n.get("kind", "ref" if n.get("ref") else "equipment")
+        if k == "bus":
+            boxes[n["id"]] = Box(n["id"], k, n["x"], n["y"], n["width"] // 2, BUS_HH)
+        elif k == "endpoint":
+            boxes[n["id"]] = Box(n["id"], k, n["x"], n["y"], EP_W // 2, EP_H // 2)
+        else:
+            boxes[n["id"]] = Box(n["id"], k, n["x"], n["y"], TILE_W // 2, TILE_H // 2)
+    tiles = [b for b in boxes.values() if b.kind != "bus"]
+    for i, a in enumerate(tiles):
+        for b in tiles[i + 1:]:
+            if abs(a.x - b.x) < a.hw + b.hw + MIN_GAP and abs(a.y - b.y) < a.hh + b.hh + MIN_GAP:
+                raise AssertionError(f"tiles overlap: {a.id} {b.id}")
+    used = {n["equipmentTypeId"] for n in nodes if "equipmentTypeId" in n and not n.get("ref")}
     assert used == ids, f"equipment without node: {ids - used}"
-    edges = []
-    pos = {n["id"]: (n["x"], n["y"]) for n in nodes}
-    rerouted = 0
-    for i, (a, b, kind, v) in enumerate(E, 1):
-        assert a in N and b in N, f"edge {a}->{b}"
+
+    edges, rerouted = [], 0
+    for i, (a, b, kind, v, label) in enumerate(E, 1):
+        assert a in boxes and b in boxes, f"edge {a}->{b}"
         edge = {"id": f"e{i:03d}", "from": a, "to": b, "kind": kind}
         if v:
             edge["voltage"] = v
-        # 기본 직교 경로(앱의 route()와 동일)가 다른 타일을 지나가면 우회 경로를 계산해 points로 저장
-        if path_hits_tiles(default_route(pos[a], pos[b]), pos, (a, b)):
-            pts = astar_route(pos, a, b, round(W * SX), round(H * SY))
-            assert not path_hits_tiles(pts, pos, (a, b)), f"no clear route for {edge['id']}"
-            edge["points"] = [{"x": x, "y": y} for x, y in pts]
+        if label:
+            edge["label"] = label
+        pts = default_route(boxes[a], boxes[b])
+        if pts is None or path_hits(pts, boxes, (a, b)):
+            pts = astar_route(boxes, a, b)
+            assert not path_hits(pts, boxes, (a, b)), f"no clear route for {edge['id']}"
             rerouted += 1
+        # 모선 연결과 우회 경로는 항상 points 로 저장 (렌더러는 points 가 있으면 그대로 그림)
+        if boxes[a].kind == "bus" or boxes[b].kind == "bus" or pts != default_route(boxes[a], boxes[b]):
+            edge["points"] = [{"x": x, "y": y} for x, y in pts]
         edges.append(edge)
     print(f"rerouted edges: {rerouted}")
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "equipment-types.json").write_text(json.dumps(EQUIPMENT, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     layers = [dict(l, x=round(l["x"] * SX), width=round(l["width"] * SX), y=round(l["y"] * SY), height=round(l["height"] * SY)) for l in LAYERS]
-    diagram = {"width": round(W * SX), "height": round(H * SY), "layers": layers, "nodes": nodes, "edges": edges}
+    diagram = {"width": round(W * SX), "height": round(H * SY), "review": REVIEW, "layers": layers, "nodes": nodes, "edges": edges}
     (OUT / "diagram.json").write_text(json.dumps(diagram, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     from collections import Counter
-    print(f"equipment {len(EQUIPMENT)}, nodes {len(nodes)}, edges {len(edges)}")
+    print(f"equipment {len(EQUIPMENT)}, nodes {len(nodes)} (refs {len(REFS)}, buses {len(BUSES)}, endpoints {len(ENDPOINTS)}), edges {len(edges)}")
     print(Counter(e["coverage"] for e in EQUIPMENT))
 
 

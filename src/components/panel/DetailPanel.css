@@ -255,7 +255,9 @@
 .dp-chip--owned { --chip-border: var(--cov-owned); }
 .dp-chip--partial { --chip-border: var(--cov-partial); }
 .dp-chip--affiliate { --chip-border: var(--cov-affiliate); }
-.dp-chip--missing { --chip-border: var(--cov-missing); border-style: dashed; }
+.dp-chip--sourced { --chip-border: var(--cov-sourced); }
+.dp-chip--missing { --chip-border: var(--cov-missing); }
+.dp-chip[data-confidence='candidate'] { border-style: dashed; }
 .dp-chip--na { --chip-border: var(--cov-na); }
 
 .dp-chip__kind {
@@ -352,4 +354,91 @@
 .detail-panel--sheet .dp-close {
   width: 44px;
   height: 44px;
+}
+
+/* ── 참조 타일 안내 (개선 R3) ── */
+.dp-refnote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  padding: 8px 12px;
+  border: 1px dotted var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  font-size: 13px;
+}
+
+.dp-refnote__go {
+  margin-left: auto;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-link);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* ── 공백 판정 (개선 R3) ── */
+.dp-gapassess__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.dp-conf {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1.5px solid var(--color-text-muted);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  color: var(--color-text);
+}
+
+.dp-conf--candidate { border-style: dashed; }
+.dp-conf--confirmed { border-color: var(--color-text); }
+.dp-conf--rating { border-style: dashed; border-color: var(--cov-partial); color: var(--cov-partial-text); }
+.dp-conf--overdue { border-color: var(--cov-missing); color: var(--cov-missing-text); }
+
+.dp-gapassess__hint {
+  margin: 0 0 6px;
+  font-size: 12px;
+}
+
+.dp-gapassess__list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 12px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.dp-gapassess__list dt {
+  color: var(--color-text-muted);
+}
+
+.dp-gapassess__list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.dp-gapassess__overdue {
+  color: var(--cov-missing-text);
+  font-weight: var(--fw-bold);
+}
+
+.dp-gapassess__evidence {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+.dp-endpoints {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
 }

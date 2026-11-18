@@ -5,7 +5,8 @@ import { PanZoom } from '../../lib/diagram/panzoom';
 import type { ViewMode } from '../../lib/diagram/url';
 import { Bands, Edges } from '../../components/diagram/DiagramCanvas';
 import DiagramNode from '../../components/diagram/DiagramNode';
-import { GRID, TILE_H, TILE_W, checkPlacement, snap, type Draft } from '../../lib/admin/draft';
+import { AltBadges, BusNodes, EndpointNodes } from '../../components/diagram/DiagramExtras';
+import { GRID, checkPlacement, layerOfNode, shapeOfNode, snap, type Draft, type NodeShape } from '../../lib/admin/draft';
 import '../../components/diagram/DiagramCanvas.css';
 
 export type Tool = 'select' | 'place' | 'connect';
@@ -23,8 +24,8 @@ interface Props {
   readOnly: boolean;
   viewMode: ViewMode;
   tool: Tool;
-  /** 배치 모드에서 놓을 기기 */
-  placeEquipmentId?: string;
+  /** 배치 모드에서 놓을 노드 (기기·참조 타일·모선·끝점) — layer=null 이면 밴드 검사 없음(참조 타일) */
+  place?: PlaceTarget;
   selectedNodeId?: string;
   selectedEdgeId?: string;
   connectFromId?: string;
@@ -34,6 +35,12 @@ interface Props {
   onPlace: (x: number, y: number) => void;
   /** 이동 확정 (검증은 부모가 다시 함) */
   onMove: (id: string, x: number, y: number) => void;
+}
+
+export interface PlaceTarget {
+  layer: Layer | null;
+  shape: NodeShape;
+  title: string;
 }
 
 interface Ghost {
@@ -62,7 +69,7 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
     readOnly,
     viewMode,
     tool,
-    placeEquipmentId,
+    place,
     selectedNodeId,
     selectedEdgeId,
     connectFromId,
@@ -169,8 +176,9 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
       const y = snap(d.oy + my / s);
       const p = live.current;
       const node = p.draft.diagram.nodes.find((n) => n.id === d.id);
-      const layer = node && p.draft.equipmentTypes.find((q) => q.id === node.equipmentTypeId)?.layer;
-      const reason = layer ? checkPlacement(p.draft, layer, x, y, d.id) : '기기를 찾을 수 없습니다';
+      const layer = node ? layerOfNode(p.draft, node) : undefined;
+      const reason =
+        node && layer !== undefined ? checkPlacement(p.draft, layer, x, y, d.id, shapeOfNode(node)) : '노드의 계층을 찾을 수 없습니다';
       setDrag((prev) => (prev && prev.x === x && prev.y === y && prev.id === d.id ? prev : { id: d.id, x, y, reason }));
     };
     const up = (e: PointerEvent) => {
@@ -202,30 +210,35 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
 
   // ── 배치 미리보기 ──
   const [ghost, setGhost] = useState<Ghost | null>(null);
-  const placeEq = placeEquipmentId ? draft.equipmentTypes.find((e) => e.id === placeEquipmentId) : undefined;
-  const placing = !readOnly && tool === 'place' && !!placeEq;
+  const placing = !readOnly && tool === 'place' && !!place;
   useEffect(() => {
     if (!placing) setGhost(null);
   }, [placing]);
 
   const onPointerMoveInner = (e: React.PointerEvent) => {
-    if (!placing || !placeEq) return;
+    if (!placing || !place) return;
     const { x, y } = toDiagram(e.clientX, e.clientY);
     const sx = snap(x);
     const sy = snap(y);
     if (ghost && ghost.x === sx && ghost.y === sy) return;
-    setGhost({ x: sx, y: sy, reason: checkPlacement(draft, placeEq.layer, sx, sy) });
+    setGhost({ x: sx, y: sy, reason: checkPlacement(draft, place.layer, sx, sy, undefined, place.shape) });
   };
 
   const onClickInner = (e: React.MouseEvent) => {
     if (readOnly) return;
     // 배치 모드: 노드 위를 눌러도 그 자리로 배치 시도 → 겹침 사유 안내
-    if (!placing && (e.target as Element).closest('[data-node-id],[data-edge-hit]')) return;
     if (placing) {
       const { x, y } = toDiagram(e.clientX, e.clientY);
       onPlace(snap(x), snap(y));
       return;
     }
+    // 모선·끝점은 DiagramNode 가 아니므로 여기서 선택 처리
+    const special = (e.target as Element).closest<HTMLElement>('.dbusnode[data-node-id],.dendpoint[data-node-id]');
+    if (special) {
+      if (!suppressClick.current) live.current.onNodeClick(special.dataset.nodeId!);
+      return;
+    }
+    if ((e.target as Element).closest('[data-node-id],[data-edge-hit]')) return;
     onBackgroundClick();
   };
 
@@ -255,10 +268,25 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
     if (n) onMove(n.id, snap(n.x + d[0]), snap(n.y + d[1]));
   };
 
-  const nodes: NodeItem[] = useMemo(
-    () => (drag ? model.nodes.map((n) => (n.id === drag.id ? { ...n, x: drag.x, y: drag.y } : n)) : model.nodes),
-    [model, drag],
-  );
+  // 드래그 중인 노드는 미리보기 위치로 (기기·참조 타일·모선·끝점 공통)
+  const moved = useCallback(<T extends { id: string; x: number; y: number }>(list: readonly T[]): T[] =>
+    drag ? list.map((n) => (n.id === drag.id ? { ...n, x: drag.x, y: drag.y } : n)) : [...list],
+  [drag]);
+  const nodes: NodeItem[] = useMemo(() => moved([...model.nodes, ...model.refs]), [model, moved]);
+  const busNodes = useMemo(() => moved(model.busNodes), [model, moved]);
+  const endpoints = useMemo(() => moved(model.endpoints), [model, moved]);
+  const selectedSpecial = useMemo(() => {
+    const id = selectedNodeId ?? connectFromId;
+    const b = busNodes.find((x) => x.id === id);
+    if (b) return { x: b.x - b.width / 2, y: b.y - 6, w: b.width, h: 12 };
+    const p = endpoints.find((x) => x.id === id);
+    return p ? { x: p.x - 60, y: p.y - 22, w: 120, h: 44 } : null;
+  }, [busNodes, endpoints, selectedNodeId, connectFromId]);
+  const dragShape = useMemo(() => {
+    if (!drag) return null;
+    const n = draft.diagram.nodes.find((x) => x.id === drag.id);
+    return n ? shapeOfNode(n) : null;
+  }, [drag, draft]);
 
   const selectedEdges = useMemo<ReadonlySet<string>>(() => {
     const s = new Set<string>();
@@ -268,6 +296,7 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
   }, [model, selectedNodeId, selectedEdgeId]);
 
   const frame = drag ?? (placing ? ghost : null);
+  const frameShape: NodeShape = (drag ? dragShape : place?.shape) ?? { kind: 'equipment', hw: 60, hh: 58 };
 
   return (
     <div className={`admin-canvas diagram diagram--${viewMode} admin-canvas--${readOnly ? 'preview' : tool}`}>
@@ -327,6 +356,15 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
                   ))}
                 </svg>
               )}
+              <BusNodes buses={busNodes} />
+              <EndpointNodes endpoints={endpoints} />
+              {selectedSpecial && (
+                <div
+                  className="admin-selbox"
+                  style={{ left: selectedSpecial.x - 4, top: selectedSpecial.y - 4, width: selectedSpecial.w + 8, height: selectedSpecial.h + 8 }}
+                  aria-hidden="true"
+                />
+              )}
               {nodes.map((n) => (
                 <DiagramNode
                   key={n.id}
@@ -336,15 +374,21 @@ const AdminCanvas = forwardRef<CanvasHandle, Props>(function AdminCanvas(props, 
                   onActivate={onActivate}
                 />
               ))}
+              <AltBadges badges={model.altBadges} activeEdges={selectedEdges} />
               {frame && (
                 <div
-                  className={`admin-ghost${frame.reason ? ' is-invalid' : ' is-valid'}`}
-                  style={{ left: frame.x - TILE_W / 2, top: frame.y - TILE_H / 2, width: TILE_W, height: TILE_H }}
+                  className={`admin-ghost${frame.reason ? ' is-invalid' : ' is-valid'}${frameShape.kind === 'bus' ? ' admin-ghost--bus' : ''}`}
+                  style={{
+                    left: frame.x - frameShape.hw,
+                    top: frame.y - frameShape.hh,
+                    width: frameShape.hw * 2,
+                    height: frameShape.hh * 2,
+                  }}
                   data-testid="admin-ghost"
                   data-valid={frame.reason ? 'false' : 'true'}
                   aria-hidden="true"
                 >
-                  {!drag && placeEq && <span className="admin-ghost__title">{placeEq.abbr ?? placeEq.name}</span>}
+                  {!drag && place && <span className="admin-ghost__title">{place.title}</span>}
                   <span className="admin-ghost__reason">{frame.reason ?? `(${frame.x}, ${frame.y})`}</span>
                 </div>
               )}

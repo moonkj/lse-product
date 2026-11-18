@@ -109,6 +109,13 @@
   stroke-dasharray: 4 4;
 }
 
+.dedge--alt {
+  stroke: var(--color-line-alt);
+  stroke-width: 2px;
+  stroke-dasharray: 8 5;
+  stroke-linecap: butt;
+}
+
 .dbus {
   stroke: var(--color-line-bus);
   stroke-width: 4px;
@@ -130,8 +137,79 @@
 }
 
 .diagram--gap .dedge:not(.is-selected):not(.dedge--far),
-.diagram--gap .dbus {
+.diagram--gap .dbus,
+.diagram--gap .dbusnode,
+.diagram--gap .dendpoint,
+.diagram--gap .dalt:not(.is-open) {
   opacity: 0.3;
+}
+
+/* ── 모선 노드 (데이터 모선, 굵은 가로선 4px + 라벨) ─────────────────────────────── */
+.dbusnode {
+  position: absolute;
+  height: 4px;
+  background: var(--color-line-bus);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.dbusnode__label {
+  position: absolute;
+  bottom: 7px;
+  left: 0;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: var(--band-label-bg, transparent);
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  line-height: 16px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* ── 끝점 라벨 (기기 아님 — 점선 상자, 클릭 불가) ─────────────────────────────── */
+.dendpoint {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 2px 6px;
+  border: 1.5px dashed var(--color-text-muted);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── 택1 배지 ─────────────────────────────── */
+.dalt {
+  position: absolute;
+  z-index: 1;
+  max-width: 220px;
+  padding: 1px 6px;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--color-line-alt);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-line-alt-text);
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  line-height: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: help;
+}
+
+.dalt.is-open {
+  z-index: 3;
+  white-space: normal;
+  width: max-content;
+  max-width: 240px;
+  box-shadow: var(--shadow-md);
 }
 
 /* ── 노드 (사진 타일 120×116) ─────────────────────────────── */
@@ -167,7 +245,29 @@
 .dnode--owned { --node-border: var(--cov-owned); }
 .dnode--partial { --node-border: var(--cov-partial); }
 .dnode--affiliate { --node-border: var(--cov-affiliate); }
-.dnode--missing { --node-border: var(--cov-missing); border-style: dashed; }
+.dnode--sourced { --node-border: var(--cov-sourced); }
+.dnode--missing { --node-border: var(--cov-missing); }
+
+/* 공백 판정 확신도 (개선 R3): 공백류 테두리 — 후보 = 점선, 확정 = 실선. 색은 커버리지 색 */
+.dnode[data-confidence='candidate'] { border-style: dashed; }
+.dnode[data-confidence='confirmed'] { border-style: solid; }
+
+/* 참조 타일: 같은 기기가 계통에 다시 나오는 자리 — 흐리게 */
+.dnode--ref {
+  opacity: 0.5;
+  border-style: dotted;
+}
+
+.dnode--ref:hover,
+.dnode--ref.is-selected,
+.dnode--ref:focus-visible {
+  opacity: 0.9;
+}
+
+.dnode--ref .dnode__caption {
+  font-weight: var(--fw-bold);
+  color: var(--color-text);
+}
 .dnode--na { --node-border: var(--cov-na); }
 
 .dnode__img {
@@ -253,7 +353,6 @@
 
 .dnode[data-emphasized='true'].dnode--missing {
   background: var(--cov-missing-bg);
-  border-style: solid;
   box-shadow: 0 0 0 5px var(--gap-glow-missing);
 }
 
@@ -267,6 +366,21 @@
 }
 
 /* ── 툴바 ─────────────────────────────── */
+.dtool__review {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1px dashed var(--cov-partial);
+  border-radius: var(--radius-pill);
+  background: var(--cov-partial-bg);
+  color: var(--cov-partial-text);
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  cursor: help;
+}
+
 .dtool {
   flex: none;
   display: flex;

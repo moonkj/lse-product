@@ -52,7 +52,8 @@ function getDerived(data: AppData = getData()): Derived {
   }
   const nodeByEquipmentId = new Map<string, DiagramNode>();
   for (const n of data.diagram.nodes) {
-    if (!nodeByEquipmentId.has(n.equipmentTypeId)) nodeByEquipmentId.set(n.equipmentTypeId, n);
+    // 참조 타일(ref)은 같은 기기의 재등장 — 대표 노드는 원래 타일
+    if (n.equipmentTypeId && !n.ref && !nodeByEquipmentId.has(n.equipmentTypeId)) nodeByEquipmentId.set(n.equipmentTypeId, n);
   }
   derived = {
     equipmentByProductId,
@@ -64,7 +65,7 @@ function getDerived(data: AppData = getData()): Derived {
   return derived;
 }
 
-const PRIMARY_COVERAGE_RANK: Record<Coverage, number> = { owned: 0, partial: 1, affiliate: 2, missing: 3, na: 4 };
+const PRIMARY_COVERAGE_RANK: Record<Coverage, number> = { owned: 0, partial: 1, affiliate: 2, sourced: 3, missing: 4, na: 5 };
 
 /**
  * 제품이 매핑된 기기들. 첫 번째 = 대표 기기:
@@ -94,7 +95,7 @@ export interface ChainLink {
   node: DiagramNode;
   eq: EquipmentType;
   /** 이 노드와 다음 노드를 잇는 선의 종류 (마지막 노드는 undefined) */
-  edgeToNext?: 'power' | 'signal';
+  edgeToNext?: 'power' | 'signal' | 'alt';
 }
 
 /**
@@ -105,25 +106,25 @@ export function neighborChain(nodeId: string): ChainLink[] {
   const data = getData();
   const { nodeById } = getDerived(data);
   const self = nodeById.get(nodeId);
-  if (!self) return [];
-  const selfEq = data.equipmentTypeById.get(self.equipmentTypeId);
-  const layerOf = (n: DiagramNode) => data.equipmentTypeById.get(n.equipmentTypeId)?.layer;
-  const pick = (edges: DiagramEdge[], otherEnd: (e: DiagramEdge) => string) => {
-    const cands = edges
-      .map((e) => ({ e, n: nodeById.get(otherEnd(e)) }))
-      .filter((c): c is { e: DiagramEdge; n: DiagramNode } => c.n !== undefined);
-    return cands.find((c) => layerOf(c.n) === selfEq?.layer) ?? cands[0];
+  if (!self?.equipmentTypeId) return [];
+  const eqOf = (n: DiagramNode) => (n.equipmentTypeId ? data.equipmentTypeById.get(n.equipmentTypeId) : undefined);
+  const selfEq = eqOf(self);
+  const isBus = (id: string) => nodeById.get(id)?.kind === 'bus';
+  const incoming = (id: string) => data.diagram.edges.filter((e) => e.to === id);
+  const outgoing = (id: string) => data.diagram.edges.filter((e) => e.from === id);
+  /** 모선은 건너뛰고 모선 너머 기기로, 끝점(기기 아님)은 제외 */
+  const expand = (edges: DiagramEdge[], otherEnd: (e: DiagramEdge) => string, across: (id: string) => DiagramEdge[]) =>
+    edges.flatMap((e) => (isBus(otherEnd(e)) ? across(otherEnd(e)).map((e2) => ({ e, id: otherEnd(e2) })) : [{ e, id: otherEnd(e) }]));
+  const pick = (cands0: { e: DiagramEdge; id: string }[]) => {
+    const cands = cands0
+      .map((c) => ({ e: c.e, n: nodeById.get(c.id) }))
+      .filter((c): c is { e: DiagramEdge; n: DiagramNode } => c.n !== undefined && c.n.id !== nodeId && eqOf(c.n) !== undefined);
+    return cands.find((c) => eqOf(c.n)?.layer === selfEq?.layer) ?? cands[0];
   };
-  const prev = pick(
-    data.diagram.edges.filter((e) => e.to === nodeId),
-    (e) => e.from,
-  );
-  const next = pick(
-    data.diagram.edges.filter((e) => e.from === nodeId),
-    (e) => e.to,
-  );
+  const prev = pick(expand(incoming(nodeId), (e) => e.from, incoming));
+  const next = pick(expand(outgoing(nodeId), (e) => e.to, outgoing));
   const toLink = (n: DiagramNode, edgeToNext?: DiagramEdge): ChainLink | undefined => {
-    const eq = data.equipmentTypeById.get(n.equipmentTypeId);
+    const eq = eqOf(n);
     return eq ? { node: n, eq, edgeToNext: edgeToNext ? (edgeToNext.kind ?? 'power') : undefined } : undefined;
   };
   return [
@@ -137,7 +138,7 @@ export function neighborChain(nodeId: string): ChainLink[] {
 
 export type CoverageCounts = Record<Coverage, number>;
 
-export const emptyCounts = (): CoverageCounts => ({ owned: 0, partial: 0, affiliate: 0, missing: 0, na: 0 });
+export const emptyCounts = (): CoverageCounts => ({ owned: 0, partial: 0, affiliate: 0, sourced: 0, missing: 0, na: 0 });
 
 export function countCoverage(list: EquipmentType[]): CoverageCounts {
   const c = emptyCounts();

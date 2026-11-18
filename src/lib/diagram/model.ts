@@ -5,8 +5,9 @@ import { isGapCoverage, isMainLayer } from '../labels';
 /** 노드 사진 타일 크기 (diagram.json 좌표 = 타일 중심, 리더가 이 크기 기준으로 겹침 없음 보장) */
 export const TILE_W = 120;
 export const TILE_H = 116;
-const HW = TILE_W / 2;
-const HH = TILE_H / 2;
+/** 끝점 라벨 상자 크기 (scripts/build-diagram-data.py EP_W/EP_H) */
+export const ENDPOINT_W = 120;
+export const ENDPOINT_H = 44;
 
 export interface NodeItem {
   id: string;
@@ -21,17 +22,53 @@ export interface NodeItem {
   subtitle?: string;
   /** 타일용 160px 썸네일 (없으면 단선결선도 심볼) */
   imageUrl?: string;
+  /** 참조 타일 (같은 기기가 계통에 다시 나오는 자리 — 흐리게, 집계·검색 제외) */
+  ref?: boolean;
+  /** 참조 타일 라벨 (예 "345/154kV") */
+  refLabel?: string;
+}
+
+/** 모선 (굵은 가로선) — 중심 x, 길이 width */
+export interface BusNodeItem {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  label: string;
+  layer: Layer;
+}
+
+/** 끝점 라벨 (기기가 아닌 끝: 고압 전동기, 비상 부하, 연계 표시) */
+export interface EndpointItem {
+  id: string;
+  x: number;
+  y: number;
+  label: string;
+  layer: Layer;
+}
+
+/** 택1 배지 — 같은 label 의 alt 연결선 묶음마다 첫 번째 선 옆에 1개 */
+export interface AltBadge {
+  id: string;
+  x: number;
+  y: number;
+  label: string;
+  edgeIds: string[];
 }
 
 export interface EdgeItem {
   id: string;
   from: string;
   to: string;
-  kind: 'power' | 'signal';
+  kind: EdgeKind;
   d: string;
+  /** 연결선 설명 (택1 그룹 이름 등) */
+  label?: string;
   /** 오른쪽 열(감시·신재생)과 왼쪽 계층을 잇는 긴 선 — 평소엔 옅게 */
   far: boolean;
 }
+
+export type EdgeKind = 'power' | 'signal' | 'alt';
 
 export interface BusItem {
   id: string;
@@ -49,7 +86,17 @@ export interface Neighbor {
   node: NodeItem;
   /** 상대 위치 화살표 ↑ ↓ ← → */
   arrow: string;
-  kind: 'power' | 'signal';
+  kind: EdgeKind;
+  /** 모선을 거쳐 연결된 경우 모선 라벨 */
+  via?: string;
+}
+
+/** 연결된 끝점 라벨 (기기가 아님 — 칩 대신 텍스트로 표시) */
+export interface EndpointNeighbor {
+  id: string;
+  label: string;
+  arrow: string;
+  kind: EdgeKind;
 }
 
 export interface DiagramModel {
@@ -57,13 +104,23 @@ export interface DiagramModel {
   height: number;
   layers: DiagramLayer[];
   layerRect: Map<Layer, { x: number; y: number; w: number; h: number }>;
+  /** 기기 타일 (참조 타일 제외 — 기기 종류마다 1개, 집계·검색·범례 기준) */
   nodes: NodeItem[];
+  /** 참조 타일 */
+  refs: NodeItem[];
+  /** 기기 + 참조 타일 (선택 가능한 노드) */
   nodeById: Map<string, NodeItem>;
   edges: EdgeItem[];
+  /** 자동 모선 (한 기기에서 3갈래 이상 내려가는 전력선 묶음) */
   buses: BusItem[];
+  /** 데이터 모선 노드 */
+  busNodes: BusNodeItem[];
+  endpoints: EndpointItem[];
+  altBadges: AltBadge[];
   /** nodeId → 연결 엣지 id */
   edgesByNode: Map<string, string[]>;
   neighbors: Map<string, Neighbor[]>;
+  endpointNeighbors: Map<string, EndpointNeighbor[]>;
   layerStats: Map<Layer, LayerStat>;
   coverageCounts: Record<Coverage, number>;
 }
@@ -71,32 +128,67 @@ export interface DiagramModel {
 const isSideLayer = (l: Layer) => l === 'MON' || l === 'REN';
 const isGap = isGapCoverage;
 
-/** 직교 경로 (타일 가장자리에서 출발 → 꺾어서 → 타일 가장자리 도착) */
-function route(ax: number, ay: number, bx: number, by: number, busY?: number): string {
-  const dx = bx - ax;
-  const dy = by - ay;
-  if (Math.abs(dy) >= TILE_H + 20) {
+interface Box {
+  x: number;
+  y: number;
+  hw: number;
+  hh: number;
+}
+
+/**
+ * 직교 경로 (노드 가장자리에서 출발 → 꺾어서 → 가장자리 도착). 노드 크기별 반폭·반높이 사용
+ * (scripts/build-diagram-data.py default_route 와 같은 규칙, 모선 연결은 데이터에 points 가 있음)
+ */
+function route(a: Box, b: Box): Pt[] {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  if (Math.abs(dy) >= a.hh + b.hh + 20) {
     const s = Math.sign(dy);
-    const y1 = ay + s * HH;
-    const y2 = by - s * HH;
-    if (Math.abs(dx) < 4) return `M${ax} ${y1}V${y2}`;
-    const my = busY ?? Math.round((y1 + y2) / 2);
-    return `M${ax} ${y1}V${my}H${bx}V${y2}`;
+    const y1 = a.y + s * a.hh;
+    const y2 = b.y - s * b.hh;
+    if (Math.abs(dx) < 4) return [{ x: a.x, y: y1 }, { x: a.x, y: y2 }];
+    const my = pyRound((y1 + y2) / 2);
+    return [{ x: a.x, y: y1 }, { x: a.x, y: my }, { x: b.x, y: my }, { x: b.x, y: y2 }];
   }
   const s = Math.sign(dx) || 1;
-  const x1 = ax + s * HW;
-  const x2 = bx - s * HW;
-  if (Math.abs(dy) < 4) return `M${x1} ${ay}H${x2}`;
-  const mx = Math.round((x1 + x2) / 2);
-  return `M${x1} ${ay}H${mx}V${by}H${x2}`;
+  const x1 = a.x + s * a.hw;
+  const x2 = b.x - s * b.hw;
+  if (Math.abs(dy) < 4) return [{ x: x1, y: a.y }, { x: x2, y: a.y }];
+  const mx = pyRound((x1 + x2) / 2);
+  return [{ x: x1, y: a.y }, { x: mx, y: a.y }, { x: mx, y: b.y }, { x: x2, y: b.y }];
+}
+
+type Pt = { x: number; y: number };
+
+/** Python round() 와 같은 은행원 반올림 (.5 → 짝수) — 생성기·router.ts 와 같은 중간점 */
+function pyRound(v: number): number {
+  const f = Math.floor(v);
+  const d = v - f;
+  if (d > 0.5) return f + 1;
+  if (d < 0.5) return f;
+  return f % 2 === 0 ? f : f + 1;
+}
+
+/** 가장 긴 선분의 가운데 (택1 배지 위치) */
+function longestMid(pts: Pt[]): Pt {
+  let best = { x: pts[0].x, y: pts[0].y };
+  let len = -1;
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const l = Math.abs(pts[i + 1].x - pts[i].x) + Math.abs(pts[i + 1].y - pts[i].y);
+    if (l > len) {
+      len = l;
+      best = { x: (pts[i].x + pts[i + 1].x) / 2, y: (pts[i].y + pts[i + 1].y) / 2 };
+    }
+  }
+  return best;
 }
 
 /** 데이터가 지정한 우회 경로(타일 가장자리 → … → 타일 가장자리, 직교)를 그대로 잇는다 */
-function polyline(points: { x: number; y: number }[]): string {
+function polyline(points: readonly Pt[]): string {
   return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`).join('');
 }
 
-function arrowOf(from: NodeItem, to: NodeItem): string {
+function arrowOf(from: Pt, to: Pt): string {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   if (Math.abs(dy) >= Math.abs(dx) * 0.6) return dy < 0 ? '↑' : '↓';
@@ -110,76 +202,119 @@ export function getDiagramModel(data: AppData = getData()): DiagramModel {
   const { diagram, equipmentTypeById } = data;
 
   const nodes: NodeItem[] = [];
+  const refs: NodeItem[] = [];
+  const busNodes: BusNodeItem[] = [];
+  const endpoints: EndpointItem[] = [];
+  const boxes = new Map<string, Box & { layer: Layer; kind: 'tile' | 'bus' | 'endpoint' }>();
   for (const n of diagram.nodes) {
-    const eq = equipmentTypeById.get(n.equipmentTypeId);
+    const kind = n.kind ?? 'equipment';
+    if (kind === 'bus') {
+      if (!n.layer || !n.width) continue;
+      busNodes.push({ id: n.id, x: n.x, y: n.y, width: n.width, label: n.label ?? '', layer: n.layer });
+      boxes.set(n.id, { x: n.x, y: n.y, hw: n.width / 2, hh: 4, layer: n.layer, kind: 'bus' });
+      continue;
+    }
+    if (kind === 'endpoint') {
+      if (!n.layer) continue;
+      endpoints.push({ id: n.id, x: n.x, y: n.y, label: n.label ?? '', layer: n.layer });
+      boxes.set(n.id, { x: n.x, y: n.y, hw: ENDPOINT_W / 2, hh: ENDPOINT_H / 2, layer: n.layer, kind: 'endpoint' });
+      continue;
+    }
+    const eq = n.equipmentTypeId ? equipmentTypeById.get(n.equipmentTypeId) : undefined;
     if (!eq) continue;
-    const name = n.label ?? eq.name;
-    nodes.push({
+    const item: NodeItem = {
       id: n.id,
       x: n.x,
       y: n.y,
       eq,
       coverage: eq.coverage,
       layer: eq.layer,
-      title: eq.abbr ?? name,
-      subtitle: eq.abbr ? name : undefined,
+      title: eq.abbr ?? eq.name,
+      subtitle: n.ref ? n.label : eq.abbr ? (n.label ?? eq.name) : undefined,
       imageUrl: equipmentThumbUrl(eq.id),
-    });
+    };
+    if (n.ref) {
+      item.ref = true;
+      item.refLabel = n.label;
+      refs.push(item);
+    } else nodes.push(item);
+    boxes.set(n.id, { x: n.x, y: n.y, hw: TILE_W / 2, hh: TILE_H / 2, layer: eq.layer, kind: 'tile' });
   }
-  const nodeById = new Map(nodes.map((n) => [n.id, n]));
+  const nodeById = new Map([...nodes, ...refs].map((n) => [n.id, n]));
+  const busById = new Map(busNodes.map((b) => [b.id, b]));
+  const endpointById = new Map(endpoints.map((p) => [p.id, p]));
 
-  const valid = diagram.edges.filter((e) => nodeById.has(e.from) && nodeById.has(e.to));
-  const kindOf = (e: DiagramEdge) => e.kind ?? 'power';
+  const valid = diagram.edges.filter((e) => boxes.has(e.from) && boxes.has(e.to));
+  const kindOf = (e: DiagramEdge): EdgeKind => e.kind ?? 'power';
 
-  // 모선: 한 기기에서 아래로 3개 이상 전력선이 갈라지면 같은 높이에서 가로 모선(4px)으로 묶는다
-  const busYByEdge = new Map<string, number>();
+  // 자동 모선(3갈래 이상 묶음)은 개선 R3에서 제거 — 모선은 데이터(kind: 'bus')로 그린다.
+  // (자동 모선의 가로선이 380V 모선→ATS 선과 교차하던 문제, 생성기 기본 경로와 같게 그림)
   const buses: BusItem[] = [];
-  const downGroups = new Map<string, DiagramEdge[]>();
-  for (const e of valid) {
-    // 우회 경로(points)가 지정된 엣지는 모선으로 묶지 않는다 — 데이터 경로를 그대로 그림
-    if (kindOf(e) !== 'power' || e.points) continue;
-    const a = nodeById.get(e.from)!;
-    const b = nodeById.get(e.to)!;
-    if (b.y - a.y >= TILE_H + 20) {
-      const g = downGroups.get(e.from) ?? [];
-      g.push(e);
-      downGroups.set(e.from, g);
-    }
-  }
-  for (const [fromId, group] of downGroups) {
-    if (group.length < 3) continue;
-    const a = nodeById.get(fromId)!;
-    const tops = group.map((e) => nodeById.get(e.to)!.y - HH);
-    const y1 = a.y + HH;
-    const busY = Math.round(y1 + Math.min(30, (Math.min(...tops) - y1) / 2));
-    const xs = [a.x, ...group.map((e) => nodeById.get(e.to)!.x)];
-    buses.push({ id: `bus-${fromId}`, d: `M${Math.min(...xs)} ${busY}H${Math.max(...xs)}` });
-    for (const e of group) busYByEdge.set(e.id, busY);
-  }
 
+  const ptsById = new Map<string, Pt[]>();
   const edges: EdgeItem[] = valid.map((e) => {
-    const a = nodeById.get(e.from)!;
-    const b = nodeById.get(e.to)!;
+    const a = boxes.get(e.from)!;
+    const b = boxes.get(e.to)!;
     const far = isSideLayer(a.layer) !== isSideLayer(b.layer);
-    const d = e.points ? polyline(e.points) : route(a.x, a.y, b.x, b.y, busYByEdge.get(e.id));
-    return { id: e.id, from: e.from, to: e.to, kind: kindOf(e), d, far };
+    const pts = e.points ?? route(a, b);
+    ptsById.set(e.id, pts);
+    return { id: e.id, from: e.from, to: e.to, kind: kindOf(e), d: polyline(pts), label: e.label, far };
   });
 
-  const edgesByNode = new Map<string, string[]>();
-  const neighbors = new Map<string, Neighbor[]>();
+  // 택1 배지: 같은 label 의 alt 선 묶음마다 첫 번째 선의 가장 긴 선분 가운데
+  const altBadges: AltBadge[] = [];
   for (const e of edges) {
-    for (const [self, other] of [
-      [e.from, e.to],
-      [e.to, e.from],
-    ] as const) {
-      edgesByNode.set(self, [...(edgesByNode.get(self) ?? []), e.id]);
-      const list = neighbors.get(self) ?? [];
-      const o = nodeById.get(other)!;
-      if (!list.some((x) => x.node.id === other)) {
-        list.push({ node: o, arrow: arrowOf(nodeById.get(self)!, o), kind: e.kind });
-      }
-      neighbors.set(self, list);
+    if (e.kind !== 'alt') continue;
+    const label = e.label ?? '택1';
+    const g = altBadges.find((b) => b.label === label);
+    if (g) {
+      g.edgeIds.push(e.id);
+      continue;
     }
+    const m = longestMid(ptsById.get(e.id)!);
+    altBadges.push({ id: `alt-${e.id}`, x: Math.round(m.x), y: Math.round(m.y), label, edgeIds: [e.id] });
+  }
+
+  const edgesByNode = new Map<string, string[]>();
+  const add = <T,>(map: Map<string, T[]>, k: string, v: T) => map.set(k, [...(map.get(k) ?? []), v]);
+  for (const e of edges) {
+    add(edgesByNode, e.from, e.id);
+    add(edgesByNode, e.to, e.id);
+  }
+
+  // 연결 기기: 모선은 건너뛰고 모선 너머 기기를 이웃으로, 끝점은 라벨로
+  const neighbors = new Map<string, Neighbor[]>();
+  const endpointNeighbors = new Map<string, EndpointNeighbor[]>();
+  const otherEnds = (selfId: string) =>
+    edges.flatMap((e) => (e.from === selfId ? [{ id: e.to, e }] : e.to === selfId ? [{ id: e.from, e }] : []));
+  for (const self of nodeById.values()) {
+    const list: Neighbor[] = [];
+    const eps: EndpointNeighbor[] = [];
+    const push = (o: NodeItem, kind: EdgeKind, via?: string) => {
+      if (o.id !== self.id && !list.some((x) => x.node.id === o.id)) list.push({ node: o, arrow: arrowOf(self, o), kind, via });
+    };
+    for (const { id, e } of otherEnds(self.id)) {
+      const o = nodeById.get(id);
+      if (o) {
+        push(o, e.kind);
+        continue;
+      }
+      const bus = busById.get(id);
+      if (bus) {
+        for (const { id: id2, e: e2 } of otherEnds(bus.id)) {
+          const o2 = nodeById.get(id2);
+          if (o2) push(o2, e2.kind === 'signal' || e.kind === 'signal' ? 'signal' : e2.kind === 'alt' ? 'alt' : e.kind, bus.label);
+          const ep2 = endpointById.get(id2);
+          if (ep2 && !eps.some((x) => x.id === ep2.id))
+            eps.push({ id: ep2.id, label: ep2.label, arrow: arrowOf(self, ep2), kind: e2.kind });
+        }
+        continue;
+      }
+      const ep = endpointById.get(id);
+      if (ep && !eps.some((x) => x.id === ep.id)) eps.push({ id: ep.id, label: ep.label, arrow: arrowOf(self, ep), kind: e.kind });
+    }
+    if (list.length) neighbors.set(self.id, list);
+    if (eps.length) endpointNeighbors.set(self.id, eps);
   }
 
   const layerRect = new Map(
@@ -204,11 +339,16 @@ export function getDiagramModel(data: AppData = getData()): DiagramModel {
     layers: diagram.layers,
     layerRect,
     nodes,
+    refs,
     nodeById,
     edges,
     buses,
+    busNodes,
+    endpoints,
+    altBadges,
     edgesByNode,
     neighbors,
+    endpointNeighbors,
     layerStats,
     coverageCounts,
   };

@@ -15,7 +15,7 @@ import {
   nodeForEquipment,
   productsForEquipment,
 } from '../lib/pages/catalog';
-import { pageTitle } from '../lib/labels';
+import { gapConfidence, pageTitle } from '../lib/labels';
 import NotFoundPage from './NotFoundPage';
 import './pages.css';
 import './ProductPage.css';
@@ -218,6 +218,8 @@ function DocGroups({ docs, entry, product }: { docs: DocRef[]; entry?: ProductDo
   );
 }
 
+const EDGE_KIND_NAME = { power: '전력선', signal: '신호선', alt: '택1 연결' } as const;
+
 function PositionCard({ nodeId, eq }: { nodeId: string; eq: EquipmentType }) {
   const chain = neighborChain(nodeId);
   if (chain.length === 0) return null;
@@ -238,6 +240,7 @@ function PositionCard({ nodeId, eq }: { nodeId: string; eq: EquipmentType }) {
                   to={self ? diagramHref(l.node.id) : `/equipment/${l.eq.id}`}
                   className={`pg-chain__node pg-chain__node--${l.eq.coverage}${self ? ' pg-chain__node--self' : ''}`}
                   aria-current={self ? 'true' : undefined}
+                  data-confidence={gapConfidence(l.eq)}
                   title={l.eq.name}
                 >
                   <EquipmentVisual eq={l.eq} thumb />
@@ -245,8 +248,8 @@ function PositionCard({ nodeId, eq }: { nodeId: string; eq: EquipmentType }) {
                 </Link>
               </li>
               {i < chain.length - 1 && (
-                <li className="pg-chain__arrow" aria-label={l.edgeToNext === 'signal' ? '신호선' : '전력선'}>
-                  <span aria-hidden="true">{l.edgeToNext === 'signal' ? '┄▶' : '━▶'}</span>
+                <li className="pg-chain__arrow" aria-label={EDGE_KIND_NAME[l.edgeToNext ?? 'power']}>
+                  <span aria-hidden="true">{l.edgeToNext === 'power' || !l.edgeToNext ? '━▶' : '┄▶'}</span>
                 </li>
               )}
             </Fragment>
@@ -256,9 +259,9 @@ function PositionCard({ nodeId, eq }: { nodeId: string; eq: EquipmentType }) {
       <p className="pg-muted">
         {prev || next ? (
           <>
-            {prev && `앞: ${prev.eq.name} (${prev.edgeToNext === 'signal' ? '신호선' : '전력선'})`}
+            {prev && `앞: ${prev.eq.name} (${EDGE_KIND_NAME[prev.edgeToNext ?? 'power']})`}
             {prev && next && ' · '}
-            {next && `뒤: ${next.eq.name} (${chain[selfIdx].edgeToNext === 'signal' ? '신호선' : '전력선'})`}
+            {next && `뒤: ${next.eq.name} (${EDGE_KIND_NAME[chain[selfIdx].edgeToNext ?? 'power']})`}
           </>
         ) : (
           '계통도에서 연결선 없이 묶음으로 표시되는 설비입니다.'

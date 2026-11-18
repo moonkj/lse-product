@@ -93,7 +93,7 @@ export function computeChanges(base: Draft, draft: Draft): Change[] {
   const dE = new Map(draft.diagram.edges.map((e) => [e.id, e]));
   const edgeText = (d: Draft, id: string) => {
     const e = (d === base ? bE : dE).get(id)!;
-    const kind = (e.kind ?? 'power') === 'power' ? '전력' : '신호';
+    const kind = { power: '전력', signal: '신호', alt: '택1' }[e.kind ?? 'power'];
     return `${id} ${nodeName(d, e.from)} → ${nodeName(d, e.to)} (${kind}${e.voltage ? ` · ${e.voltage}` : ''})`;
   };
   for (const [id, e] of dE) {

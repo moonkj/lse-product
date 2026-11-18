@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Coverage, Product } from '../../lib/schema';
 import { docsByProductId } from '../../data/load';
-import { CATEGORY_LABELS, COVERAGE_LABELS, isGapCoverage } from '../../lib/labels';
+import { CATEGORY_LABELS, COVERAGE_LABELS, gapConfidence, isGapCoverage } from '../../lib/labels';
 import { getDiagramModel, layerTitle } from '../../lib/diagram/model';
 import { productsForEquipment } from '../../lib/pages/catalog';
 import { MOBILE_QUERY, focusNode, useMediaQuery, useSelectNode, useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
 import CoverageBadge from '../common/CoverageBadge';
 import DocsList from '../common/DocsList';
 import EmptyProducts from '../common/EmptyProducts';
+import GapAssessmentSection from './GapAssessmentSection';
 import GapSections from './GapSections';
 import NeighborChips from './NeighborChips';
 import PanelHero from './PanelHero';
@@ -17,8 +18,8 @@ import './DetailPanel.css';
 const MAX_PRODUCTS = 8;
 
 /** 패널 헤더 커버리지 문구 */
-function pillText(coverage: Coverage, productCount: number): string {
-  if (coverage === 'missing') return '미보유 · 공백 후보';
+function pillText(coverage: Coverage, productCount: number, confirmed: boolean): string {
+  if (coverage === 'missing') return confirmed ? '미보유 · 공백 확정' : '미보유 · 공백 후보';
   const base = COVERAGE_LABELS[coverage];
   return productCount > 0 && (coverage === 'owned' || coverage === 'partial') ? `${base} · 제품 ${productCount}종` : base;
 }
@@ -85,6 +86,7 @@ export default function DetailPanel() {
   }
 
   const { eq } = node;
+  const mainNodeId = node.ref ? getDiagramModel().nodes.find((n) => n.eq.id === eq.id)?.id : undefined;
   const products = productsForEquipment(eq.id);
   const rep = representative(products);
   const gapView = mode === 'gap' && isGapCoverage(eq.coverage);
@@ -116,7 +118,7 @@ export default function DetailPanel() {
           <CoverageBadge
             coverage={eq.coverage}
             variant="pill"
-            label={pillText(eq.coverage, products.length)}
+            label={pillText(eq.coverage, products.length, gapConfidence(eq) === 'confirmed')}
             testId="detail-coverage-badge"
           />
         </div>
@@ -126,6 +128,20 @@ export default function DetailPanel() {
       </div>
 
       {!compact && <PanelHero eq={eq} compact={false} />}
+
+      {node.ref && (
+        <div className="dp-refnote" data-testid="detail-ref-note" role="note">
+          <span>
+            <b>참조 타일</b>
+            {node.refLabel ? ` · ${node.refLabel}` : ''} — 같은 기기가 계통에 다시 나오는 자리입니다.
+          </span>
+          {mainNodeId && (
+            <button type="button" className="dp-refnote__go" data-testid="detail-ref-go" onClick={() => selectFromPanel(mainNodeId)}>
+              원래 위치로 이동 →
+            </button>
+          )}
+        </div>
+      )}
 
       <p className="dp-desc">{eq.description}</p>
 
@@ -141,6 +157,8 @@ export default function DetailPanel() {
           <span data-testid="detail-gap-note">{eq.gapNote}</span>
         </div>
       )}
+
+      <GapAssessmentSection eq={eq} />
 
       {gapView && <GapSections node={node} onSelect={selectFromPanel} />}
 

@@ -393,6 +393,30 @@
 .line-legend__swatch--power { border-top: 2px solid var(--color-line-power); }
 .line-legend__swatch--signal { border-top: 2px dashed var(--color-line-signal); }
 .line-legend__swatch--bus { border-top: 4px solid var(--color-line-bus); }
+.line-legend__swatch--alt { border-top: 2px dashed var(--color-line-alt); }
+.line-legend__swatch--ref { height: 12px; border: 2px dotted var(--color-text-muted); border-radius: 3px; opacity: 0.6; }
+
+.legend__conf {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: var(--space-2) 0 0;
+  padding: 0 var(--space-2);
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+.legend__conf-box {
+  width: 18px;
+  height: 12px;
+  border: 2px solid var(--color-text-muted);
+  border-radius: 3px;
+}
+
+.legend__conf-box--candidate { border-style: dashed; }
+.legend__conf-box + .legend__conf-box,
+.legend__conf-box--confirmed { margin-left: 6px; }
 
 .gap-table-link {
   display: flex;

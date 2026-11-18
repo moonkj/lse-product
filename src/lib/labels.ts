@@ -2,7 +2,7 @@
  * 화면 공통 라벨·커버리지 규칙 — 단일 출처 (리뷰 M2·R2·R3).
  * 계통도·상세 패널·기기/제품/공백 표/교육 화면은 모두 여기서 import 한다.
  */
-import { COVERAGE_LABELS, type Coverage, type EquipmentCategory, type Layer } from './schema';
+import { ASSESSED_COVERAGES, COVERAGE_LABELS, type Coverage, type EquipmentCategory, type EquipmentType, type GapAssessment, type Layer } from './schema';
 
 export { COVERAGE_LABELS };
 
@@ -34,13 +34,14 @@ export const CATEGORY_ORDER: EquipmentCategory[] = [
 ];
 
 /** 공백 표·칩 표시 순서 */
-export const COVERAGE_ORDER: Coverage[] = ['owned', 'partial', 'affiliate', 'missing', 'na'];
+export const COVERAGE_ORDER: Coverage[] = ['owned', 'partial', 'affiliate', 'sourced', 'missing', 'na'];
 
 /** 색약 대응: 색과 함께 모양이 다른 아이콘을 병행 */
 export const COVERAGE_ICONS: Record<Coverage, string> = {
   owned: '✓',
   partial: '◐',
   affiliate: '◆',
+  sourced: '⊡',
   missing: '✕',
   na: '–',
 };
@@ -50,6 +51,7 @@ export const COVERAGE_SHORT_LABELS: Record<Coverage, string> = {
   owned: '보유',
   partial: '일부',
   affiliate: '계열사',
+  sourced: '패널 구성품',
   missing: '미보유',
   na: '해당 없음',
 };
@@ -63,14 +65,57 @@ export const COVERAGE_SHORT_LABELS: Record<Coverage, string> = {
 export const EMPHASIZED_COVERAGES: readonly Coverage[] = ['missing', 'partial'];
 export const isGapCoverage = (c: Coverage) => EMPHASIZED_COVERAGES.includes(c);
 
-/** Gap 모드에서 흐리게 표시하는 상태 (보유·해당 없음). 계열사 보유는 보통 */
+/** Gap 모드에서 흐리게 표시하는 상태 (보유·해당 없음). 계열사 보유·패널 구성품은 보통 */
 export const DIMMED_COVERAGES: readonly Coverage[] = ['owned', 'na'];
 export const isDimmedCoverage = (c: Coverage) => DIMMED_COVERAGES.includes(c);
 
 /**
- * 공백 표 "공백 목록" 범위 = 강조 대상 + 계열사 보유 (자사 제품이 없는 기기 전체 — 검토 대상).
+ * 공백 표 "공백 목록" 범위 = 강조 대상 + 계열사 보유 + 패널 구성품 (자사 제품이 없는 기기 전체 — 검토 대상).
  */
-export const GAP_LIST_COVERAGES: Coverage[] = ['missing', 'partial', 'affiliate'];
+export const GAP_LIST_COVERAGES: Coverage[] = ['missing', 'partial', 'affiliate', 'sourced'];
+
+// ───────────── 공백 판정 근거 (개선 R3) ─────────────
+
+export const GAP_BASIS_LABELS: Record<GapAssessment['basis'], string> = {
+  'homepage-menu': '홈페이지 제품 메뉴',
+  catalog: '카탈로그',
+  'bu-confirmed': '사업부 확인',
+  'rnd-confirmed': '연구소 확인',
+};
+
+export const SUPPLY_MODE_LABELS: Record<GapAssessment['supplyMode'], string> = {
+  'in-house': '자사 공급',
+  affiliate: '계열사 공급',
+  'panel-sourced': '수배전반 구성품(타사 조달)',
+  'not-offered': '공급하지 않음',
+  unknown: '확인 필요',
+};
+
+export const CONFIDENCE_LABELS: Record<GapAssessment['confidence'], string> = {
+  candidate: '공백 후보',
+  confirmed: '공백 확정',
+};
+
+/** 오늘 날짜 YYYY-MM-DD (로컬) */
+export function todayIso(now = new Date()): string {
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+}
+
+/** 재확인 기한이 지났는지 */
+export const isReviewOverdue = (g: GapAssessment | undefined, today = todayIso()) => !!g?.reviewDue && g.reviewDue < today;
+
+/**
+ * 화면에 쓰는 확신도: 판정 근거가 필요한 상태(미보유·일부·계열사·패널 구성품)만 대상.
+ * confirmed 라도 재확인 기한이 지나면 후보로 취급. 근거가 없으면 후보.
+ * 그 밖의 상태(보유·해당 없음)는 undefined — 테두리 규칙 적용 안 함.
+ */
+export function gapConfidence(eq: Pick<EquipmentType, 'coverage' | 'gapAssessment'>, today = todayIso()) {
+  if (!ASSESSED_COVERAGES.includes(eq.coverage)) return undefined;
+  const g = eq.gapAssessment;
+  if (!g || g.confidence !== 'confirmed' || isReviewOverdue(g, today)) return 'candidate' as const;
+  return 'confirmed' as const;
+}
 
 /** 주 계층(L1~L7) 여부 — 감시·신재생(MON/REN) 제외 */
 export const isMainLayer = (l: Layer | string): l is Exclude<Layer, 'MON' | 'REN'> => /^L[1-7]$/.test(l);

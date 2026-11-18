@@ -454,6 +454,7 @@
 .alist__cov--owned { background: var(--cov-owned); }
 .alist__cov--partial { background: var(--cov-partial); }
 .alist__cov--affiliate { background: var(--cov-affiliate); }
+.alist__cov--sourced { background: var(--cov-sourced); }
 .alist__cov--missing { background: var(--cov-missing); }
 .alist__cov--na { background: var(--cov-na); }
 
@@ -885,4 +886,85 @@
     border-left: 0;
     border-top: 1px solid var(--color-border);
   }
+}
+
+/* ── 모선·끝점 (개선 R3): 편집 화면에서는 선택·드래그 가능 ── */
+.admin-canvas--select .dbusnode,
+.admin-canvas--select .dendpoint,
+.admin-canvas--connect .dbusnode,
+.admin-canvas--connect .dendpoint {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.admin-canvas--select .dbusnode,
+.admin-canvas--select .dendpoint {
+  cursor: move;
+}
+
+/* 모선은 4px 라 잡기 어려우므로 위아래로 넓은 투명 히트 영역 */
+.admin-canvas .dbusnode::after {
+  content: '';
+  position: absolute;
+  inset: -8px 0;
+}
+
+.admin-selbox {
+  position: absolute;
+  z-index: 2;
+  border: 3px solid var(--color-selected);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.admin-ghost--bus {
+  min-height: 8px;
+  overflow: visible;
+}
+
+.admin-ghost--bus .admin-ghost__title,
+.admin-ghost--bus .admin-ghost__reason {
+  position: relative;
+  top: 10px;
+  white-space: nowrap;
+}
+
+/* ── 공백 판정 근거 편집 (개선 R3) ── */
+.aform__gap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.aform__gap legend {
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+}
+
+.aform__label {
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+}
+
+.aform__evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aform__evidence .aform__row {
+  align-items: center;
+}
+
+.aform__evidence input {
+  min-width: 0;
+  flex: 1;
 }

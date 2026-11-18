@@ -5,40 +5,33 @@ import { pageTitle } from '../lib/labels';
 import { getLearnContent } from '../content/learnSchema';
 import Lesson from './learn/Lesson';
 import Overview from './learn/Overview';
-import ProgressCard from './learn/ProgressCard';
-import QuizCard from './learn/QuizCard';
-import TourSummary from './learn/TourSummary';
-import { useLearnProgress } from './learn/useLearnProgress';
 import './pages.css';
 import './LearnPage.css';
 
-/** tour = 단계 진행 중 / overview = 투어 끝내기 후 개요 / summary = 투어 완료 요약 */
-type View = 'tour' | 'overview' | 'summary';
+/** tour = 단계 진행 중 / overview = 투어 끝내기 후 개요 */
+type View = 'tour' | 'overview';
 
 /**
- * 교육 투어 (/learn?step=L1~L7). 단계 본문·퀴즈·진도·개요·완료 요약은 ./learn/ 하위 컴포넌트.
+ * 교육 투어 (/learn?step=L1~L7) + 용어집.
+ * 퀴즈·학습 진도·투어 완료 요약은 (개선 R3) 사용자 결정으로 제거 — 저장하는 상태 없음.
  */
 export default function LearnPage() {
   const content = getLearnContent();
   const { steps } = content;
   const data = useData();
   const [params, setParams] = useSearchParams();
-  const { progress, markDone, setLastStep, answer, finishTour, quizStats } = useLearnProgress(steps);
 
   // 현재 단계는 로컬 상태가 원본(클릭 즉시 반영), URL ?step= 은 공유·새로고침용으로 뒤따라 갱신
   const paramStep = params.get('step');
   const paramIdx = steps.findIndex((s) => s.layer === paramStep);
-  const [stepIdx, setStepIdx] = useState(() => (paramIdx >= 0 ? paramIdx : progress.lastStep));
+  const [stepIdx, setStepIdx] = useState(() => (paramIdx >= 0 ? paramIdx : 0));
   const [view, setView] = useState<View>('tour');
   const touring = view === 'tour';
   const step = steps[stepIdx];
 
   useEffect(() => {
     // 다른 화면의 링크(/learn?step=L4)로 들어온 경우 등 외부에서 바뀐 URL 반영
-    if (paramIdx >= 0) {
-      setStepIdx(paramIdx);
-      setLastStep(paramIdx);
-    }
+    if (paramIdx >= 0) setStepIdx(paramIdx);
   }, [paramIdx]);
 
   useEffect(() => {
@@ -48,7 +41,6 @@ export default function LearnPage() {
 
   const glossaryRef = useRef<HTMLElement>(null);
   const lessonHeadingRef = useRef<HTMLHeadingElement>(null);
-  const summaryHeadingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     document.title = pageTitle('교육');
@@ -58,28 +50,14 @@ export default function LearnPage() {
     const clamped = Math.max(0, Math.min(steps.length - 1, idx));
     setStepIdx(clamped);
     setParams({ step: steps[clamped].layer }, { replace: true });
-    setLastStep(clamped);
     setView('tour');
     if (focus) requestAnimationFrame(() => lessonHeadingRef.current?.focus());
-  };
-
-  const next = () => {
-    markDone(step.layer);
-    goTo(stepIdx + 1);
-  };
-
-  const finish = () => {
-    finishTour(step.layer);
-    setView('summary');
-    requestAnimationFrame(() => summaryHeadingRef.current?.focus());
   };
 
   const showGlossary = () => {
     glossaryRef.current?.scrollIntoView({ block: 'start' });
     glossaryRef.current?.focus();
   };
-
-  const doneCount = progress.completed.length;
 
   return (
     <div className="lp" data-testid="learn-page">
@@ -88,9 +66,12 @@ export default function LearnPage() {
           <span className="lp-bar__title">{content.tourTitle}</span>
           {touring && (
             <span className="pg-muted">
-              {stepIdx + 1}단계 / {steps.length}단계 · 학습 완료 {doneCount}개 계층
+              {stepIdx + 1}단계 / {steps.length}단계
             </span>
           )}
+          <button type="button" className="lp-linkbtn" onClick={showGlossary}>
+            용어집 보기 →
+          </button>
           {touring ? (
             <button type="button" className="pg-btn pg-btn--sm lp-bar__action" data-testid="tour-close" onClick={() => setView('overview')}>
               투어 끝내기
@@ -103,17 +84,12 @@ export default function LearnPage() {
         </div>
         <ol className="lp-steps" aria-label="투어 단계">
           {steps.map((s, i) => {
-            const done = progress.completed.includes(s.layer);
             const current = touring && i === stepIdx;
             return (
-              <li key={s.layer} aria-current={current ? 'step' : undefined} className={`lp-steps__item${done ? ' is-done' : ''}${current ? ' is-current' : ''}`}>
+              <li key={s.layer} aria-current={current ? 'step' : undefined} className={`lp-steps__item${current ? ' is-current' : ''}`}>
                 <button type="button" className="lp-steps__btn" onClick={() => goTo(i)}>
                   <span className="lp-steps__track" aria-hidden="true" />
-                  <span className="lp-steps__label">
-                    {done && <span aria-hidden="true">✓ </span>}
-                    {s.shortLabel}
-                    {done && <span className="visually-hidden"> (완료)</span>}
-                  </span>
+                  <span className="lp-steps__label">{s.shortLabel}</span>
                 </button>
               </li>
             );
@@ -123,46 +99,18 @@ export default function LearnPage() {
 
       <div className="pg pg--wide lp-body">
         {touring ? (
-          <div className="pg-split">
-            <Lesson
-              step={step}
-              stepIdx={stepIdx}
-              steps={steps}
-              equipment={data.equipmentTypes}
-              headingRef={lessonHeadingRef}
-              voltage={data.diagram.layers.find((l) => l.id === step.layer)?.voltage}
-              onPrev={() => goTo(stepIdx - 1)}
-              onNext={next}
-              onFinish={finish}
-            />
-            <aside className="pg-split__side" aria-label="퀴즈와 학습 진도">
-              <QuizCard key={step.layer} step={step} answers={progress.answers} onAnswer={(q, choice) => answer(step, q, choice)} />
-              <ProgressCard
-                done={doneCount}
-                total={steps.length}
-                stats={quizStats}
-                onGlossary={showGlossary}
-                glossaryPreview={content.glossary.slice(0, 5).map((g) => g.term)}
-              />
-            </aside>
-          </div>
-        ) : view === 'summary' ? (
-          <TourSummary
+          <Lesson
+            step={step}
+            stepIdx={stepIdx}
             steps={steps}
-            completed={progress.completed}
-            stats={quizStats}
-            headingRef={summaryHeadingRef}
-            onRestart={() => goTo(0)}
+            equipment={data.equipmentTypes}
+            headingRef={lessonHeadingRef}
+            voltage={data.diagram.layers.find((l) => l.id === step.layer)?.voltage}
+            onPrev={() => goTo(stepIdx - 1)}
+            onNext={() => goTo(stepIdx + 1)}
           />
         ) : (
-          <Overview
-            steps={steps}
-            completed={progress.completed}
-            lastStep={progress.lastStep}
-            onStart={() => goTo(0)}
-            onResume={() => goTo(progress.lastStep)}
-            stats={quizStats}
-          />
+          <Overview steps={steps} onStart={() => goTo(0)} />
         )}
 
         <section className="pg-card lp-glossary" aria-labelledby="glossary-h" ref={glossaryRef} tabIndex={-1} id="glossary">

@@ -10,7 +10,9 @@ import {
   COVERAGE_LABELS,
   COVERAGE_ORDER,
   COVERAGE_SHORT_LABELS,
+  CONFIDENCE_LABELS,
   GAP_LIST_COVERAGES,
+  gapConfidence,
   isMainLayer,
   pageTitle,
 } from '../lib/labels';
@@ -34,7 +36,7 @@ interface CellSel {
 }
 
 /** 목록 정렬: 계층 순 → 미보유·일부·계열사·보유·해당없음 */
-const LIST_COVERAGE_RANK: Record<Coverage, number> = { missing: 0, partial: 1, affiliate: 2, owned: 3, na: 4 };
+const LIST_COVERAGE_RANK: Record<Coverage, number> = { missing: 0, partial: 1, affiliate: 2, sourced: 3, owned: 4, na: 5 };
 /** 필터 버튼 라벨: 정식 라벨에서 "미보유(공백)" 만 짧게 */
 const FILTER_LABELS: Record<Coverage, string> = { ...COVERAGE_LABELS, missing: COVERAGE_SHORT_LABELS.missing };
 
@@ -123,6 +125,10 @@ export default function GapPage() {
           <div className="gp-stat gp-stat--affiliate">
             <dt>계열사 보유</dt>
             <dd>{totals.affiliate}</dd>
+          </div>
+          <div className="gp-stat gp-stat--sourced" data-testid="gap-stat-sourced">
+            <dt>패널 구성품</dt>
+            <dd>{totals.sourced}</dd>
           </div>
         </dl>
       </div>
@@ -269,6 +275,14 @@ export default function GapPage() {
                     <tr key={eq.id} data-testid={`gap-item-${eq.id}`} data-coverage={eq.coverage}>
                       <td>
                         <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_SHORT_LABELS[eq.coverage]} />
+                        {gapConfidence(eq) && (
+                          <span
+                            className={`gp-conf gp-conf--${gapConfidence(eq)}`}
+                            data-testid={`gap-confidence-${eq.id}`}
+                          >
+                            {CONFIDENCE_LABELS[gapConfidence(eq)!].replace('공백 ', '')}
+                          </span>
+                        )}
                       </td>
                       <td>{eq.layer}</td>
                       <td>

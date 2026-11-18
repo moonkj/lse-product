@@ -4,16 +4,17 @@ import { getDiagramModel } from '../../lib/diagram/model';
 import type { ViewMode } from '../../lib/diagram/url';
 import CoverageBadge from '../common/CoverageBadge';
 
-const GAP_ORDER: Coverage[] = ['missing', 'partial', 'affiliate', 'owned', 'na'];
+const GAP_ORDER: Coverage[] = ['missing', 'partial', 'affiliate', 'sourced', 'owned', 'na'];
 const GAP_RULE: Record<Coverage, string> = {
   missing: '미보유 — 강조',
   partial: '일부 보유 — 강조',
   affiliate: '계열사 보유 — 보통',
+  sourced: '패널 구성품 — 보통',
   owned: '보유 — 흐리게',
   na: '해당 없음 — 흐리게',
 };
 
-/** 커버리지 막대 + 범례 5종(개수). Gap 모드에서는 "Gap 모드 표시 규칙" 으로 바뀐다 */
+/** 커버리지 막대 + 범례 6종(개수) + 공백 후보/확정 테두리 안내. Gap 모드에서는 "Gap 모드 표시 규칙" 으로 바뀐다 */
 export default function CoverageLegend({ mode = 'product' }: { mode?: ViewMode }) {
   const model = getDiagramModel();
   const counts = model.coverageCounts;
@@ -50,6 +51,10 @@ export default function CoverageLegend({ mode = 'product' }: { mode?: ViewMode }
           );
         })}
       </ul>
+      <p className="legend__conf" data-testid="legend-confidence">
+        <span className="legend__conf-box legend__conf-box--candidate" aria-hidden="true" /> 공백 후보
+        <span className="legend__conf-box legend__conf-box--confirmed" aria-hidden="true" /> 공백 확정
+      </p>
     </div>
   );
 }

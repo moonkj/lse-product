@@ -1,5 +1,5 @@
 /**
- * 컴포넌트 테스트 (CT-01) — CoverageBadge: 색약 대응 = 색(클래스) + 아이콘 + 텍스트 라벨 3중 표시
+ * 컴포넌트 테스트 (CT-01) — CoverageBadge (6상태, v0.6 R3): 색약 대응 = 색(클래스) + 아이콘 + 텍스트 라벨 3중 표시
  * docs/test-plan.md §3b
  */
 import { describe, it, expect, afterEach } from 'vitest';
@@ -10,10 +10,17 @@ import { COVERAGES, COVERAGE_LABELS } from '../../../src/lib/schema';
 afterEach(cleanup);
 
 describe('CT-01 CoverageBadge', () => {
-  it('5개 상태 아이콘이 서로 모두 다르다 (모양만으로 구분 가능)', () => {
-    expect(COVERAGES).toHaveLength(5);
-    expect(new Set(COVERAGES.map((c) => COVERAGE_ICONS[c])).size).toBe(5);
-    expect(new Set(COVERAGES.map((c) => COVERAGE_LABELS[c])).size).toBe(5);
+  it('6개 상태(개선 R3 sourced 추가) 아이콘·라벨이 서로 모두 다르다 (모양만으로 구분 가능)', () => {
+    expect(COVERAGES).toHaveLength(6);
+    expect(COVERAGES).toContain('sourced');
+    expect(COVERAGES.every((c) => !!COVERAGE_ICONS[c]?.trim()), '아이콘 없는 상태').toBe(true);
+    expect(new Set(COVERAGES.map((c) => COVERAGE_ICONS[c])).size).toBe(6);
+    expect(new Set(COVERAGES.map((c) => COVERAGE_LABELS[c])).size).toBe(6);
+  });
+
+  it('sourced 라벨은 "패널 구성품" 을 포함 (사용자 승인 용어)', () => {
+    render(<CoverageBadge coverage="sourced" testId="badge" />);
+    expect(screen.getByTestId('badge')).toHaveTextContent('패널 구성품');
   });
 
   it.each(COVERAGES)('%s: 색 클래스 + 아이콘 + 라벨 텍스트를 함께 렌더', (c) => {

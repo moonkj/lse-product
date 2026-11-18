@@ -1,4 +1,4 @@
-# 테스트 계획서 (v0.5)
+# 테스트 계획서 (v0.6)
 
 > 작성: Teammate 3 (테스트 작성자 + 최종 리뷰어) · 2026-11-18
 > 대상: 전력계통도 기반 제품 포트폴리오 & 신입 교육 포털 (PLAN.md v0.1)
@@ -9,6 +9,7 @@
 > v0.3 (11-18): docs.json 규칙 DI-60~68 추가, 컴포넌트 테스트 CT-01/02 추가, E2E 를 사용자 확정 UX(Gap=같은 계통도 `?mode=gap`, 공백 표 링크, `?node=` 복원)와 docs.json 기준 자료 링크로 갱신
 > v0.4 (11-18): Phase 2~5 구현(1ce6811) 기준. 리더 결정 반영 — E2E-1 투어 = `/learn` 페이지(승인 디자인 Learn, 계통도 밴드 하이라이트 없음), 공백 표 기본 필터 = "전체"(승인 디자인 GapTable). DI-70~79(learn.json)·DI-80~86(equipment-images.json) 추가, CT-03 DiagramNode·CT-04 DetailPanel·UT-01 CSV 추가, E2E Phase 2 게이트 제거. 코드 리뷰: `docs/reviews/phase2-code-review.md`
 > v0.5 (11-18, 개선 R2): DI-44 연결선 타일 관통 0건(+ points 직교·타일 가장자리) 추가, DI-80 thumb 필드 반영·DI-82b 썸네일 존재, UT-01 CSV 수식 주입 방지, UT-02 resolveProducts 하위 카테고리(M3), UT-03 사진 URL(타일=thumb/패널=원본). E2E: L7 `tour-finish` → 완료 요약, `gap-filter-all` 기본 선택, "iS7"+Enter 1순위, 한글 조합 중 Enter 무시, 타일 썸네일·패널 원본 경로
+> v0.6 (11-18, 개선 R3): 노드 종류(equipment·ref·bus·endpoint) 반영 — DI-30/33~36/39~43 갱신, DI-43b review·DI-43c 택1(alt) 추가, DI-44 종류별 크기·모선 얇은 장애물, **DI-45 전력선끼리 교차 0**, **DI-46 모선 연결 수직**. 공백 판정 근거 **DI-27a~h**(gapAssessment). 6번째 상태 sourced (DI-28·CT-01·범례). 퀴즈·진도·수료 제거 → DI-75·76(퀴즈) 삭제, DI-75 = 퀴즈 제거 확인, E2E `tour-finish`·완료 요약 테스트 삭제. CT-03 ref·candidate, E2E-6 (모선·끝점·참조 타일·alt·검수 배지·sourced 범례·공백 후보·공백 판정 섹션·범례 합 74)
 
 ---
 
@@ -41,7 +42,7 @@
 
 ---
 
-## 3. 데이터 무결성 규칙 (DI) — 총 74개 (HARD 63 · SOFT 11)
+## 3. 데이터 무결성 규칙 (DI) — 총 87개 (HARD 74 · SOFT 13, v0.6)
 
 > HARD = 위반 시 테스트 실패(빌드 차단 권장) · SOFT = `console.warn`만 출력
 > 구현: `tests/unit/data-integrity.test.ts` (테스트 이름 앞에 ID 표기). 실제 데이터(제품 199 · 카테고리 137 · 기기 74 · 노드 74 · 엣지 77)로 **사전 점검(Python 포팅) 결과 전부 통과** — 단 DI-40은 예외 규칙 확정 후 기준 (§3.4 참고).
@@ -92,27 +93,41 @@
 | DI-25 | partial → gapNote 권장 | SOFT |
 | DI-26 | partial → 연결 ≥ 1 | HARD |
 | DI-27 | owned 인데 연결 제품이 전부 단종(discontinued) → 경고 | SOFT |
-| DI-28 | coverage 값이 5종 enum 안 (스키마 이중 확인) | HARD |
+| DI-27a | (v0.6) missing·partial·affiliate·sourced → `gapAssessment` 필수 (현재 17건 + 보유 기기 정격 확인용 2건 = 19) | HARD |
+| DI-27b | (v0.6) sourced → `supplyMode=panel-sourced`. SOFT: affiliate→affiliate, missing→not-offered/unknown | HARD(+SOFT) |
+| DI-27c | (v0.6) `basis=homepage-menu` → `confidence=candidate` + 스키마가 homepage-menu+confirmed 를 **거부** | HARD |
+| DI-27d | (v0.6) `confidence=confirmed` → verifiedBy·verifiedAt 필수 + 스키마가 둘 중 하나 없으면 거부 | HARD |
+| DI-27e | (v0.6) verifiedAt·reviewDue 는 실제 달력 날짜 YYYY-MM-DD (2026-02-30 금지) | HARD |
+| DI-27f | (v0.6) evidence `type=url` → ref 는 https 절대 URL | HARD |
+| DI-27g | (v0.6) sourced 인데 gapNote 없음 / confirmed 인데 reviewDue 지남 → 경고 | SOFT |
+| DI-27h | (v0.6) verifiedBy 는 부서명(부·팀·소·실·센터·사업·그룹 포함, 이메일 금지) | SOFT |
+| DI-28 | coverage 값이 6종 enum 안 (v0.6 sourced 추가, 스키마 이중 확인) + 분포 console.info | HARD |
 | DI-29 | product-mapping.md 공백 후보 11종이 기기 목록에 "자리"로 존재 | SOFT |
 
 ### 3.5 계통도 구조
+> v0.6 노드 종류: `kind` 생략·`equipment` = 기기 사진 타일(120×116, `equipmentTypeId` 필수), 그중 `ref:true` = **참조 타일**(같은 기기 재등장, 74종 집계·밴드 검사 제외) / `bus` = 모선(width×8, label·layer) / `endpoint` = 끝점 라벨(120×44, label·layer). 소속 계층: 기기 = 기기 layer, 모선·끝점 = node.layer. 현재 노드 83 = 기기 74 + ref 3 + bus 2 + endpoint 4, 연결선 86 (power 57 · signal 22 · alt 7).
+
 | ID | 규칙 | 등급 |
 |---|---|---|
-| DI-30 | 모든 node.equipmentTypeId 존재 | HARD |
+| DI-30 | 기기 노드의 equipmentTypeId 존재 / 모선·끝점은 label·layer 필수, equipmentTypeId·ref 금지 / 모선 width>0 + 스키마 자기검증 | HARD |
 | DI-31 | 모든 edge.from / edge.to 가 존재하는 node | HARD |
 | DI-32 | self-loop 없음, 같은 노드쌍 중복 edge 없음(방향 무시) | HARD |
-| DI-33 | L1~L7 + 노드가 사용하는 모든 layer(REN·MON 포함)에 밴드 정의 | HARD |
-| DI-34 | L1~L7 각 계층에 노드 ≥ 1 | HARD |
-| DI-35 | node 좌표가 **자기 기기 layer 밴드 사각형** `[x, x+width]×[y, y+height]` 안 (x/width 생략 시 0/diagram.width — REN·MON 오른쪽 열 대응) | HARD |
-| DI-36 | node 좌표가 캔버스 `[0,width]×[0,height]` 안 | HARD |
+| DI-33 | L1~L7 + 노드가 사용하는 모든 layer(모선·끝점 포함)에 밴드 정의 + 계약 밖 layer 없음 | HARD |
+| DI-34 | L1~L7 각 계층에 기기 노드(ref 제외) ≥ 1 | HARD |
+| DI-35 | 노드 중심이 소속 계층 밴드 안 (**ref 제외**), 모선은 양 끝 x 도 밴드 안 | HARD |
+| DI-36 | 노드 박스(종류별 크기)가 캔버스 안 | HARD |
 | DI-37 | 밴드: 크기 > 0, 캔버스 안, **x·y 모두 겹칠 때만** 겹침으로 판정 → 겹침 없음 | HARD |
 | DI-38 | L1→L7 밴드가 위에서 아래 순서 (투어 방향) | HARD |
-| DI-39 | 노드 간 최소 거리 24px (겹쳐서 클릭 불가 방지) | HARD |
-| DI-40 | 고립 노드 없음 (edge ≥ 1). 예외: MON 감시 노드, `category=system` 일괄/패키지 노드 | HARD |
+| DI-39 | 노드 박스끼리 겹침 없음 (종류별 크기, 모선 포함) + 중심 거리 ≥ 24px. SOFT: 타일·끝점 간격 30px 미만 | HARD(+SOFT) |
+| DI-40 | 고립 노드 없음: 기기 edge ≥ 1 (예외: MON, `category=system`) / **끝점·참조 타일은 예외 없음** / 모선은 edge ≥ 2 | HARD |
 | DI-41 | L1 노드에서 L7 노드까지 경로 존재 (전원→부하 흐름 단절 없음) | HARD |
-| DI-42 | edge 는 같은/인접 L 계층만 연결 (L2→L6 건너뛰기 금지, REN·MON 예외) | HARD |
-| DI-43 | 모든 equipmentType 이 계통도에 노드로 1회 이상 등장 (리더 공지 반영) | HARD |
-| DI-44 | (v0.5) 연결선 타일 관통 0건: edge.points 가 있으면 그 폴리라인, 없으면 `model.ts route()` 기본 직교 경로로 각 선분이 양 끝 기기 외 타일(120×116, 판정 여유 1px)을 지나가지 않음. 모선 그룹(한 기기에서 아래로 전력선 3개 이상)은 points 없으면 제외. points: 연속한 두 점 x 또는 y 동일(직교), 첫/끝 점은 from/to 타일 가장자리 위(±1px). 판정 함수 자기검증 포함. 같은 로직: `scripts/build-diagram-data.py` default_route/path_hits_tiles | HARD |
+| DI-42 | edge 는 같은/인접 L 계층만 연결 (모선·끝점은 node.layer, REN·MON 예외) | HARD |
+| DI-43 | 모든 equipmentType 이 **ref 제외 기기 노드로 정확히 1회** (기기 노드 수 = 74) + ref 는 label 필수 | HARD |
+| DI-43b | (v0.6) review.status ∈ pending/approved, approved → reviewedBy·reviewedAt. review 없음은 SOFT | HARD |
+| DI-43c | (v0.6) alt(택1) 연결선은 label 필수, 같은 label 그룹 ≥ 2개 | HARD |
+| DI-44 | (v0.6) 연결선 노드 관통 0건: points 우선, 없으면 기본 직교 경로(Python `default_route` 와 같은 규칙, **종류별 반높이**). 장애물 = 양 끝 외 모든 노드 — 타일·ref·끝점(판정 여유 1px 안쪽), **모선은 높이 8 + 여유 2px**. points 는 직교, 첫/끝 점은 노드 가장자리(종류별 크기, 모선 쪽은 DI-46). 판정 함수 자기검증(타일·모선·끝점 경로) | HARD |
+| DI-45 | (v0.6) **전력선(power·alt)끼리 교차 0건**: 공통 끝 노드가 없는 두 전력선의 선분이 직교 교차(서로의 내부에서 만남)하거나 같은 선 위에서 양의 길이로 겹치지 않음. 신호선 포함 교차는 개수만 console.info (현재 25건 — T3 판정은 같은 선 위 겹침 포함이라 생성기 집계 23과 다름). 판정 함수 자기검증(십자·T·겹침·이어짐·평행) | HARD |
+| DI-46 | (v0.6) 모선 연결선은 points 필수, 모선 쪽 끝점이 모선 위(y=bus.y, x∈[x−w/2, x+w/2]), 첫 선분이 수직 | HARD |
 
 > DI-40 메모: 현재 고립 노드 5개(n-substation, n-mv-swgr, n-lv-swgr, n-modular, n-railway)는 모두 category=system이라 예외로 처리. **리더 확인 필요** — "일괄 공급" 노드를 선으로 잇지 않는 것이 의도인지, 신입에게 "어디에 붙는지" 안 보이는 문제는 없는지.
 
@@ -144,16 +159,15 @@
 
 | ID | 규칙 | 등급 |
 |---|---|---|
-| DI-70 | learn.json 존재 + `LearnContentSchema` 통과. 스키마가 단계 순서 뒤바뀜·6단계·answerIndex 범위 밖·reviewStatus 누락을 **거부**하는지 확인 (느슨해지는 회귀 방지) | HARD |
+| DI-70 | learn.json 존재 + `LearnContentSchema` 통과. 스키마가 단계 순서 뒤바뀜·6단계·reviewStatus 누락을 **거부**하는지 확인 (v0.6: answerIndex 검사 삭제) | HARD |
 | DI-71 | 단계 layer 가 정확히 L1→L7 순서, 중복·누락 없음 | HARD |
 | DI-72 | 핵심 기기(keyEquipmentIds) 가 equipment-types.json 에 존재 + 단계 안 중복 없음 | HARD |
 | DI-73 | 핵심 기기는 그 단계 계층의 기기 (L3 단계에 L5 기기 금지) | HARD |
 | DI-74 | 용어집 equipmentId 가 equipment-types.json 에 존재 + 용어(term) 중복 없음 | HARD |
-| DI-75 | 퀴즈 sourceEquipmentIds 가 equipment-types.json 에 존재 (검토자가 출처 추적) | HARD |
-| DI-76 | answerIndex 가 options 범위 안 + 보기 중복 없음 + quiz.id 전역 중복 없음 (진도 저장 키 = quiz.id) | HARD |
+| DI-75 | (v0.6) 퀴즈 제거 확인: learn.json 단계에 `quizzes` 키 없음 (구 DI-75 퀴즈 출처·DI-76 answerIndex 는 **삭제**, 사용자 결정 PLAN 9항) | HARD |
 | DI-77 | reviewStatus 필드 존재·공백 아님 | HARD |
 | DI-78 | reviewStatus 가 draft → 경고 (현재 1건: "draft — 교육 담당자 검토 필요") | SOFT |
-| DI-79 | 공개 사이트 — 대외비 키워드·이메일·전화번호 패턴 (intro·퀴즈·용어집) | SOFT |
+| DI-79 | 공개 사이트 — 대외비 키워드·이메일·전화번호 패턴 (제목·intro·용어집) | SOFT |
 
 ### 3.9 기기 사진 equipment-images.json (v0.4)
 > 계약: `EquipmentImagesSchema` (`src/lib/schema.ts`). 키 = equipmentType.id, `file` = `public/` 기준 상대 경로 (`images/equipment/<id>.(png|jpg|webp)`).
@@ -174,9 +188,9 @@
 ## 3b. 컴포넌트 테스트 (CT, Vitest + Testing Library + jsdom, v0.3)
 | ID | 대상 | 검증 | 테스트 수 |
 |---|---|---|---|
-| CT-01 | `common/CoverageBadge` | 5상태 아이콘·라벨이 서로 다름 / 상태별 색 클래스(`cov-badge--{c}`) + `coverage-icon-{c}` 아이콘(aria-hidden) + 라벨 텍스트 동시 렌더 / `showLabel=false` 여도 visually-hidden 라벨 유지 | 11 |
+| CT-01 | `common/CoverageBadge` | (v0.6) **6상태**(sourced 추가) 아이콘·라벨이 서로 다름 + sourced 라벨 "패널 구성품" / 상태별 색 클래스(`cov-badge--{c}`) + `coverage-icon-{c}` 아이콘(aria-hidden) + 라벨 텍스트 동시 렌더 / `showLabel=false` 여도 visually-hidden 라벨 유지 | 14 |
 | CT-02 | `common/ExternalLink` | https → `<a target=_blank rel="noopener noreferrer">` + "새 탭" 안내 / http·javascript:·data:·상대경로·`//`·ftp·빈 문자열 → `<a>` 미생성(텍스트만) | 9 |
-| CT-03 | `diagram/DiagramNode` (v0.4) | 사진 있음 → `img.dnode__img`(data-src 지연 로딩, alt="") + 심볼 없음 / 사진 없음 → `svg.dnode__symbol`(aria-hidden) + `dnode--symbol`, 미보유 캡션 "자사 제품 없음" / 5상태: role=button·tabindex=0·`aria-label="{기기명}, {커버리지}"`·data-coverage·아이콘 / Gap 모드 R-08 강조·흐림 표 (제품 모드는 모두 false) / aria-pressed + 클릭·Enter·Space → onActivate(id) | 9 |
+| CT-03 | `diagram/DiagramNode` (v0.4) | 사진 있음 → `img.dnode__img`(data-src 지연 로딩, alt="") + 심볼 없음 / 사진 없음 → `svg.dnode__symbol`(aria-hidden) + `dnode--symbol`, 미보유 캡션 "자사 제품 없음" / 5상태: role=button·tabindex=0·`aria-label="{기기명}, {커버리지}"`·data-coverage·아이콘 / Gap 모드 R-08 강조·흐림 표 (제품 모드는 모두 false) / aria-pressed + 클릭·Enter·Space → onActivate(id) / (v0.6) Gap 모드 sourced = 보통, ref → `data-ref="true"`, `confidence` → `data-confidence="candidate|confirmed"` (NodeItem.ref·confidence 가정) | 12 |
 | CT-04 | `panel/DetailPanel` (v0.4) | MemoryRouter `/?node=` 진입. 제품 0개 보유 기기 → `detail-product-list` 없음, `detail-empty-products` 안에 카테고리 공식 페이지 링크(새 탭·noopener·카테고리명), "미보유" 문구 없음 / 미보유 기기 → "자사 제품 미보유(공백)" + gapNote, 링크 없음 / 제품 있는 기기 → 제품 카드 / 없는 id → 빈 안내 패널. 대상 기기는 실제 데이터에서 조건으로 선택(없으면 skip) | 4 |
 
 ### 3c. 단위 테스트 (UT, v0.4)
@@ -229,14 +243,15 @@
 
 | ID | 페르소나 | 흐름 | 검증 포인트 |
 |---|---|---|---|
-| E2E-1 | 신입 | 홈 → 교육 모드 → "투어 시작" 카드 → `/learn?step=L1` → 다음×6 → L7 핵심 기기 카드 클릭 / `/learn?step=L4` 딥링크·새로고침 / (v0.5) `/learn?step=L7` → `tour-finish` 클릭 | `tour-step[data-layer]` = L1…L7 정확히 순서대로, `?step=` 동기화, L7 에서 `tour-next` disabled + `tour-finish` 표시, 카드 → `#/?node=<nodeId>` + `aria-pressed` + 패널 제목·학습 포인트. 완료 요약 `tour-summary`(또는 `tour-complete`) 표시 + L1~L7 언급 |
+| E2E-1 | 신입 | 홈 → 교육 모드 → "투어 시작" 카드 → `/learn?step=L1` → 다음×6 → L7 핵심 기기 카드 클릭 / `/learn?step=L4` 딥링크·새로고침 / (v0.6) L1·L4·L7 에 퀴즈·완료·진도 없음 | `tour-step[data-layer]` = L1…L7 정확히 순서대로, `?step=` 동기화, L7 에서 `tour-next` disabled, 카드 → `#/?node=<nodeId>` + `aria-pressed` + 패널 제목·학습 포인트. v0.6: `tour-finish`·`tour-summary`·`tour-complete`·`tour-progress`·`learn-progress`·`quiz*` testid 0개 (v0.5 완료 요약 테스트 **삭제**) |
 | E2E-2 | 영업 | 검색에 약어 입력 → 기기 결과 선택 → 패널 → 제품 카드 → 제품 페이지 → 데이터시트/공식 페이지 / (v0.5) "iS7"+Enter / 한글 조합 중 Enter | 노드 선택 상태, 배지 owned, URL `#/product/:id`, 링크 새 탭+noopener+ls-electric.com, popup 이벤트. 자료가 없으면 "자료 준비 중". iS7 → 제품 P01188(이름 iS7) 또는 iS7 연결/인버터 기기가 1순위, GIS 아님. 조합 중(keydown isComposing=true, keyCode 229) Enter → URL·입력값 그대로, compositionend 후 Enter 는 정상 이동 |
-| E2E-3 | 기획 | Gap 버튼(같은 계통도, `?mode=gap`) → missing 강조/owned 흐림 → 공백 기기 클릭 → "공백 표 보기" 링크 → `/gap` | URL `mode=gap`·`gap-page` 미표시, 아이콘 병행, gapNote, 제품 목록 없음, 공백 건수 = 데이터 |
+| E2E-3 | 기획 | Gap 버튼(같은 계통도, `?mode=gap`) → missing 강조/owned 흐림 → 공백 기기 클릭 → "공백 표 보기" 링크 → `/gap` | URL `mode=gap`·`gap-page` 미표시, 아이콘 병행, gapNote, 제품 목록 없음, 공백 건수 = 데이터. v0.6: affiliate·**sourced = 보통**, 공백 표 "전체" = missing+partial+affiliate+**sourced** (현재 17) |
+| E2E-6 | 공통 (v0.6) | 계통도 개선 R3 | `diagram-bus-{id}` 2개·`diagram-endpoint-{id}` 4개 보임 / ref 노드 `data-ref="true"` 3개, 클릭 → 같은 기기 상세 / alt 엣지 `data-kind="alt"` 7개 + 점선 / `diagram-review-badge` 보임(review pending) / `legend-item-sourced` "패널 구성품" / 범례 개수 합 = 74(ref 제외), 미보유 = 9, 패널 구성품 = 3 (데이터 기준) / Gap 모드 공백 후보 노드 `data-confidence="candidate"` / CT/PT 선택 → `detail-gap-assessment` "공백 판정"·"후보" |
 | E2E-4 | 공통 | 딥링크·새로고침·뒤로가기·없는 id·자산 404, `?node=` 복원·갱신·제거, `?mode=gap&node=` 조합 | GitHub Pages 시나리오 (preview 빌드 기준) |
 | DOCS | 공통 | docs.json 기준: 항목 없음(R-04)·빈 항목(deepLink)·제품 페이지 전체 링크·상세 패널 popup·기기 페이지 | 건수 = docs.json, `data-doc-type`, 새 탭·noopener·허용 도메인. 외부 요청은 `context.route` 로 stub (네트워크 의존 없음) |
 | (게이트) | — | v0.4: Phase 2 게이트(`diagram` testid 없으면 전체 skip, `E2E_STRICT`) **제거** — 회귀가 skip 으로 숨지 않게 | |
-| SMOKE | 공통 | 홈 진입 | 헤더·범례 5종 표시, 런타임 오류 없음 (`smoke.spec.ts`, Phase 1부터 항상 통과해야 함) |
-| E2E-5 | 접근성 | 키보드 Enter/Esc·포커스 복귀, 건너뛰기 링크, 계층 점프, 범례 5종, 모바일 하단 시트, 라이트/다크 axe 대비 / (v0.5) 사진 경로 | 타일 img(data-src/src) = `images/equipment/thumb/<id>`, 패널 `.dp-hero img` = 원본 file (thumb 아님) |
+| SMOKE | 공통 | 홈 진입 | 헤더·범례 6종(v0.6) 표시, 런타임 오류 없음 (`smoke.spec.ts`, Phase 1부터 항상 통과해야 함) |
+| E2E-5 | 접근성 | 키보드 Enter/Esc·포커스 복귀, 건너뛰기 링크, 계층 점프, 범례 6종(v0.6), 모바일 하단 시트, 라이트/다크 axe 대비 / (v0.5) 사진 경로 | 타일 img(data-src/src) = `images/equipment/thumb/<id>`, 패널 `.dp-hero img` = 원본 file (thumb 아님) |
 
 ---
 
@@ -278,8 +293,11 @@
 | testid | 요소 | 추가 요구 속성 |
 |---|---|---|
 | `diagram` | SVG 루트(또는 래퍼) | `data-view-mode="product|gap|learn"` — R-09: `#/?mode=gap|learn` 쿼리와 동기화. 선택 노드는 `?node=<nodeId>` |
-| `diagram-edge-{edgeId}` | 연결선 | `data-kind="power|signal"` — R-07: power 굵은 실선, signal 가는 점선(stroke-dasharray) |
-| `diagram-node-{nodeId}` | 노드 `<g>` | `role=button`, `tabindex=0`, `aria-label="{기기명}, {커버리지 한글}"`, `aria-pressed`(선택), `data-coverage`, `data-dimmed`, `data-emphasized` (각 "true"/"false") |
+| `diagram-edge-{edgeId}` | 연결선 | `data-kind="power|signal|alt"` — R-07: power 굵은 실선, signal 가는 점선(stroke-dasharray). v0.6: alt(택1) = 점선 + label |
+| `diagram-bus-{nodeId}` | (v0.6) 모선 (예: `diagram-bus-bus-229`) | |
+| `diagram-endpoint-{nodeId}` | (v0.6) 끝점 라벨 (예: `diagram-endpoint-ep-mv-motor`) | 라벨 텍스트 표시 |
+| `diagram-review-badge` | (v0.6) 계통 검수 대기 배지 | review.status=pending 일 때 |
+| `diagram-node-{nodeId}` | 노드 `<g>` | `role=button`, `tabindex=0`, `aria-label="{기기명}, {커버리지 한글}"`, `aria-pressed`(선택), `data-coverage`, `data-dimmed`, `data-emphasized` (각 "true"/"false"). v0.6: 참조 타일 `data-ref="true"`, 공백 판정 `data-confidence="candidate|confirmed"` (candidate = 점선) |
 | `coverage-icon-{coverage}` | 노드·범례·배지 안 상태 아이콘 | |
 | `layer-band-{layerId}` | 계층 밴드 (L1~L7, REN, MON) | |
 | `layer-nav` | 좌측 계층 점프 내비 | |
@@ -299,6 +317,7 @@
 | `detail-empty-products` | "자사 제품 미보유(공백)" 빈 상태 | |
 | `detail-gap-note` | 공백/일부 메모 | |
 | `detail-affiliate-name` | 계열사명 | |
+| `detail-gap-assessment` | (v0.6) 패널 "공백 판정" 섹션 (근거·확신도·확인 부서) | gapAssessment 있는 기기만. 후보면 "후보" 문구 |
 | `equipment-page` / `equipment-title` | `/equipment/:id` 페이지·제목 | |
 | `product-page` | `/product/:id` 페이지 | |
 | `product-official-link` | 공식 제품 페이지 링크 | `target=_blank`, `rel="noopener noreferrer"` |
@@ -308,7 +327,7 @@
 | `gap-table-link` | 좌측 내비 아래 "공백 표 보기" 링크 (→ `#/gap`) | **v0.3 신규 요청** |
 | `gap-page` / `gap-matrix` / `gap-list` / `gap-item-{equipmentId}` | `/gap` 페이지 | |
 | `learn-page` | `/learn` 페이지 | |
-| `tour-start` / `tour-step` / `tour-next` / `tour-close` / `tour-finish` / `tour-summary` | 교육 투어 | `tour-step` 에 `data-layer`, 마지막 단계 `tour-next` disabled. v0.5: L7 에 `tour-finish` 버튼 → 완료 요약 `tour-summary`(L1~L7 정리). v0.4: `tour-start` 는 계통도 교육 모드 카드(→ `/learn?step=L1`)와 `/learn` 개요 화면 두 곳 |
+| `tour-start` / `tour-step` / `tour-next` / `tour-close` | 교육 투어 | `tour-step` 에 `data-layer`, 마지막 단계 `tour-next` disabled. v0.6: `tour-finish`·`tour-summary`·퀴즈·진도 **제거**(사용자 결정). v0.4: `tour-start` 는 계통도 교육 모드 카드(→ `/learn?step=L1`)와 `/learn` 개요 화면 두 곳 |
 | `gap-filter-{coverage}` | 공백 표 상태 필터 | `aria-pressed`. v0.4 요청: "전체" 버튼에도 `gap-filter-all` |
 | `learn-key-{equipmentId}` | **v0.4 요청**: /learn 핵심 기기 카드 링크 | 현재 E2E 는 `a[href$="node=<nodeId>"]` 로 대체 |
 
@@ -381,6 +400,20 @@
 | `npm run test` | **126 통과 / 0 실패** (파일 7) | DI 81 (DI-44 a/b/자기검증 3 · DI-82b 1 추가) · CT 33 · UT 12 (UT-01 5 · UT-02 4 · UT-03 3) |
 | `npm run typecheck:tests` | 통과 | |
 | `npm run test:e2e` (34건) | **31 통과 · 2 실패 · 1 skip** | 실패 2 = E2E-1 `tour-finish` 미구현 → **구현 대기(T1 R2)**. 통과: FT-26 `gap-filter-all`, iS7+Enter, IME Enter 무시, 타일 thumb·패널 원본. skip 1 = R-04(정상) |
+
+## 11c. 실행 결과 (2026-11-18, v0.6 — 개선 R3, T1 구현 진행 중 스냅샷)
+
+| 명령 | 결과 | 비고 |
+|---|---|---|
+| `npm run test` | **144 통과 / 1 실패** (파일 7) | DI 94 · CT 39 · UT 12. 실패 1 = DI-46 |
+| `npm run typecheck:tests` | tests/ 오류 0 | src/ 오류는 T1 진행 중 (구현 대기) |
+| `npm run test:e2e` (40건) | **39 통과 · 1 실패 · 1 skip** | T1 중간 빌드(`vite build` 로 별도 폴더에 빌드 → preview)로 실행. 실패 1 = `detail-gap-assessment` 미구현 → **구현 대기(T1)**. 모선·끝점·ref·alt·검수 배지·sourced 범례·범례 합 74·공백 후보 data-confidence 는 통과. 이후 T1 편집 중 빌드 실패로 재실행 불가 |
+
+### 11c.1 실패 분류
+| 테스트 | 분류 | 내용 |
+|---|---|---|
+| DI-46 | **실제 버그 (데이터·생성기, 리더)** | e033 `bus-229 → n-tr-66`: 모선 width 551(홀수) → 오른쪽 끝 x=1449.5, 참조 타일 n-tr-66 x=1450 이 모선 범위 밖 0.5px. 생성기 A* 가 모선 끝(1449)에서 1px 가로 꺾임 `(1449,2097)→(1450,2097)→(1450,2156)` 을 만듦. 수정안: 모선 길이를 n-tr-66 까지 덮도록(예: 기준 길이 382 → 짝수 width) 또는 Box hw 를 올림 처리 |
+| E2E-6 공백 판정 섹션 | 구현 대기 (T1) | 패널 `detail-gap-assessment` 섹션 없음 |
 
 ## 12. CI 의견 — deploy.yml 에 E2E 단계 (넣지 않음, 의견만)
 

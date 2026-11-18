@@ -35,8 +35,6 @@
 }
 .lp-steps__track { display: block; height: 6px; border-radius: 3px; background: var(--color-border); }
 .lp-steps__label { overflow-wrap: anywhere; }
-.lp-steps__item.is-done .lp-steps__track { background: var(--color-progress); }
-.lp-steps__item.is-done .lp-steps__btn { color: var(--color-progress); font-weight: var(--fw-bold); }
 .lp-steps__item.is-current .lp-steps__track { background: var(--color-brand); }
 .lp-steps__item.is-current .lp-steps__btn { color: var(--color-link); font-weight: var(--fw-bold); }
 
@@ -95,6 +93,7 @@
 .lp-gap__title { font-size: var(--fs-md) !important; color: var(--cov-missing-text); }
 .lp-gap__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; color: var(--color-text-soft); }
 .lp-gap__link { font-size: 13px; }
+.lp-sourced { margin: 0; font-size: 13px; color: var(--color-text-soft); }
 .lp-nogap {
   margin: 0;
   padding: 12px 16px;
@@ -105,39 +104,6 @@
 
 .lp-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2); }
 
-.lp-quiz__head { display: flex; justify-content: space-between; align-items: center; }
-.lp-quiz__set { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; padding: 0; border: 0; min-width: 0; }
-.lp-quiz__q { padding: 0; margin-bottom: var(--space-2); font-weight: var(--fw-medium); }
-.lp-opt {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 6px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-}
-.lp-opt:has(input:disabled) { cursor: default; }
-.lp-opt__text { flex: 1; }
-.lp-opt.is-correct { border: 2px solid var(--cov-owned); background: var(--cov-owned-bg); }
-.lp-opt.is-wrong { border: 2px solid var(--cov-missing); background: var(--cov-missing-bg); }
-.lp-opt__mark { font-weight: var(--fw-bold); white-space: nowrap; }
-.lp-opt__mark--ok { color: var(--cov-owned-text); }
-.lp-opt__mark--ng { color: var(--cov-missing-text); }
-.lp-quiz__explain {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  background: var(--color-bg);
-  font-size: 13px;
-  color: var(--color-text-soft);
-}
-.lp-quiz__nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
-.lp-quiz__next { margin-left: auto; }
-
-.lp-meter { height: 8px; border-radius: 4px; background: var(--color-surface-2); overflow: hidden; }
-.lp-meter__fill { height: 100%; background: var(--color-progress); }
 .lp-linkbtn {
   align-self: flex-start;
   padding: 0;
@@ -163,7 +129,6 @@
   font-size: 12px;
   font-weight: var(--fw-bold);
 }
-.lp-overview__list li.is-done .lp-overview__mark { background: var(--color-progress); color: var(--color-on-progress); }
 
 .lp-glossary:focus { outline: none; }
 .lp-glossary__list {
@@ -183,7 +148,4 @@
   .lp-lesson { padding: var(--space-4); }
   .lp-lesson__title { font-size: 22px; }
 }
-.lp-nav__end { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-
-/* 투어 완료 요약 */
-.lp-summary__score { font-size: var(--fs-lg, 1.125rem); font-weight: var(--fw-bold); margin: var(--space-2) 0; }
+.lp-bar__row .lp-linkbtn { align-self: center; }

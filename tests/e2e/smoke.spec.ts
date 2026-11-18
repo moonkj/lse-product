@@ -1,6 +1,6 @@
 /**
  * 스모크 테스트 — Phase 1 셸 단계에서도 통과해야 하는 최소 검증.
- * 앱이 정적 빌드(preview)에서 뜨고, 헤더와 커버리지 범례 5종이 보인다.
+ * 앱이 정적 빌드(preview)에서 뜨고, 헤더와 커버리지 범례 6종이 보인다 (v0.6 R3 sourced 추가).
  *
  * 셀렉터: 현재 셸에 data-testid 가 없으므로 ARIA 역할/이름을 사용한다.
  * Phase 2 에서 testid(`legend`, `legend-item-{coverage}`)가 생기면 core-flows.spec.ts 의
@@ -9,9 +9,9 @@
 import { test, expect } from '@playwright/test';
 
 /** src/lib/schema.ts COVERAGE_LABELS 와 동일 (앱 코드 import 없이 독립 유지) */
-const COVERAGE_LABELS = ['보유', '일부 보유', '계열사 보유', '미보유(공백)', '해당 없음'];
+const COVERAGE_LABELS = ['보유', '일부 보유', '계열사 보유', '패널 구성품(타사 조달)', '미보유(공백)', '해당 없음'];
 
-test('스모크: 앱이 뜨고 헤더와 범례 5종이 보인다 (런타임 오류 없음)', async ({ page }) => {
+test('스모크: 앱이 뜨고 헤더와 범례 6종(v0.6 R3)이 보인다 (런타임 오류 없음)', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
 

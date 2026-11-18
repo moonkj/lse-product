@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { COVERAGE_LABELS, LAYER_LABELS, type EquipmentType } from '../../lib/schema';
 import { COVERAGE_ICONS } from '../../lib/labels';
-import { nodeName, type Draft } from '../../lib/admin/draft';
+import { nodeKind, nodeName, type Draft, type EdgeKind } from '../../lib/admin/draft';
 import { ENTITY_LABELS, KIND_LABELS, type Change, type ChangeEntity } from '../../lib/admin/diff';
 import type { Issue } from '../../lib/admin/integrity';
 
@@ -24,7 +24,8 @@ export function EquipmentList({
   const [q, setQ] = useState('');
   const count = useMemo(() => {
     const m = new Map<string, number>();
-    for (const n of draft.diagram.nodes) m.set(n.equipmentTypeId, (m.get(n.equipmentTypeId) ?? 0) + 1);
+    // 기기 노드만 (참조 타일은 배치 수에 넣지 않음)
+    for (const n of draft.diagram.nodes) if (n.equipmentTypeId && !n.ref) m.set(n.equipmentTypeId, (m.get(n.equipmentTypeId) ?? 0) + 1);
     return m;
   }, [draft]);
   const list = useMemo(() => {
@@ -109,6 +110,7 @@ export function SelectionPanel({
   onSelectEdge,
   onDeleteEdge,
   onUpdateEdge,
+  onUpdateNode,
 }: {
   draft: Draft;
   selection: { type: 'node' | 'edge'; id: string } | null;
@@ -118,7 +120,8 @@ export function SelectionPanel({
   onMoveNode: (id: string, x: number, y: number) => void;
   onSelectEdge: (id: string) => void;
   onDeleteEdge: (id: string) => void;
-  onUpdateEdge: (id: string, patch: { kind?: 'power' | 'signal'; voltage?: string }) => void;
+  onUpdateEdge: (id: string, patch: { kind?: EdgeKind; voltage?: string; label?: string }) => void;
+  onUpdateNode: (id: string, patch: { label?: string; width?: number }) => void;
 }) {
   if (!selection) {
     return (
@@ -129,7 +132,7 @@ export function SelectionPanel({
             <strong>선택·이동</strong>: 노드를 끌어 옮김 (10px 그리드), 포커스 후 화살표 키
           </li>
           <li>
-            <strong>배치</strong>: 기기를 고르고 계층 밴드 안을 클릭
+            <strong>배치</strong>: 종류(기기·참조 타일·모선·끝점)를 고르고 계층 밴드 안을 클릭
           </li>
           <li>
             <strong>연결</strong>: 노드 A → 노드 B 순서로 클릭
@@ -144,17 +147,38 @@ export function SelectionPanel({
     if (!n) return <p className="asel">선택한 노드가 없습니다.</p>;
     const eq = draft.equipmentTypes.find((e) => e.id === n.equipmentTypeId);
     const edges = draft.diagram.edges.filter((e) => e.from === n.id || e.to === n.id);
+    const kind = nodeKind(n);
+    const kindText = kind === 'bus' ? '모선' : kind === 'endpoint' ? '끝점 (기기 아님)' : n.ref ? '참조 타일 (같은 기기 재등장)' : '기기';
     return (
       <div className="asel" data-testid="admin-selection">
         <h3 className="asel__title">{nodeName(draft, n.id)}</h3>
         <dl className="asel__meta">
           <dt>노드 id</dt>
           <dd>{n.id}</dd>
-          <dt>기기</dt>
-          <dd>
-            {eq ? `${eq.id} · ${eq.layer} ${LAYER_LABELS[eq.layer]} · ${COVERAGE_LABELS[eq.coverage]}` : `${n.equipmentTypeId} (없음)`}
-          </dd>
+          <dt>종류</dt>
+          <dd data-testid="admin-node-kind">{kindText}</dd>
+          {kind === 'equipment' ? (
+            <>
+              <dt>기기</dt>
+              <dd>
+                {eq ? `${eq.id} · ${eq.layer} ${LAYER_LABELS[eq.layer]} · ${COVERAGE_LABELS[eq.coverage]}` : `${n.equipmentTypeId ?? '-'} (없음)`}
+              </dd>
+            </>
+          ) : (
+            <>
+              <dt>계층</dt>
+              <dd>{n.layer ? `${n.layer} ${LAYER_LABELS[n.layer]}` : '-'}</dd>
+            </>
+          )}
         </dl>
+        {(kind !== 'equipment' || n.ref) && (
+          <NodeLabel
+            key={`${n.id}-${n.label ?? ''}-${n.width ?? ''}`}
+            label={n.label ?? ''}
+            width={kind === 'bus' ? n.width : undefined}
+            onApply={(patch) => onUpdateNode(n.id, patch)}
+          />
+        )}
         <NodePosition key={`${n.id}-${n.x}-${n.y}`} x={n.x} y={n.y} onApply={(x, y) => onMoveNode(n.id, x, y)} />
         <div className="asel__actions">
           {eq && (
@@ -176,7 +200,7 @@ export function SelectionPanel({
               <button type="button" className="asel__link" onClick={() => onSelectEdge(e.id)}>
                 {e.id} {nodeName(draft, e.from)} → {nodeName(draft, e.to)}
               </button>
-              <span className="asel__kind">{(e.kind ?? 'power') === 'power' ? '전력' : '신호'}</span>
+              <span className="asel__kind">{EDGE_KIND_SHORT[e.kind ?? 'power']}</span>
               <button type="button" className="abtn abtn--sm abtn--danger" onClick={() => onDeleteEdge(e.id)} aria-label={`연결선 ${e.id} 삭제`}>
                 삭제
               </button>
@@ -202,18 +226,80 @@ export function SelectionPanel({
         <select
           id="asel-kind"
           value={e.kind ?? 'power'}
-          onChange={(ev) => onUpdateEdge(e.id, { kind: ev.target.value as 'power' | 'signal' })}
+          onChange={(ev) => onUpdateEdge(e.id, { kind: ev.target.value as EdgeKind })}
+          data-testid="admin-edge-kind-edit"
         >
           <option value="power">전력선 (굵은 실선)</option>
           <option value="signal">신호선 (가는 점선)</option>
+          <option value="alt">택1 연결 (청록 점선 — 여러 기기 중 하나)</option>
         </select>
       </div>
       <EdgeVoltage key={`${e.id}-${e.voltage ?? ''}`} value={e.voltage ?? ''} onApply={(v) => onUpdateEdge(e.id, { voltage: v })} />
+      <EdgeLabel key={`${e.id}-label-${e.label ?? ''}`} value={e.label ?? ''} alt={e.kind === 'alt'} onApply={(v) => onUpdateEdge(e.id, { label: v })} />
       <div className="asel__actions">
         <button type="button" className="abtn abtn--danger" onClick={() => onDeleteEdge(e.id)} data-testid="admin-delete-edge">
           연결선 삭제
         </button>
       </div>
+    </div>
+  );
+}
+
+const EDGE_KIND_SHORT: Record<EdgeKind, string> = { power: '전력', signal: '신호', alt: '택1' };
+
+function NodeLabel({
+  label,
+  width,
+  onApply,
+}: {
+  label: string;
+  width?: number;
+  onApply: (patch: { label?: string; width?: number }) => void;
+}) {
+  const [l, setL] = useState(label);
+  const [w, setW] = useState(width !== undefined ? String(width) : '');
+  return (
+    <form
+      className="asel__pos"
+      onSubmit={(e) => {
+        e.preventDefault();
+        const patch: { label?: string; width?: number } = {};
+        if (l !== label) patch.label = l;
+        if (width !== undefined && Number(w) !== width) patch.width = Number(w);
+        if (Object.keys(patch).length) onApply(patch);
+      }}
+    >
+      <label>
+        라벨 <input value={l} onChange={(e) => setL(e.target.value)} data-testid="admin-node-label" />
+      </label>
+      {width !== undefined && (
+        <label>
+          길이 <input type="number" step={10} min={60} value={w} onChange={(e) => setW(e.target.value)} data-testid="admin-node-width" />
+        </label>
+      )}
+      <button type="submit" className="abtn abtn--sm">
+        적용
+      </button>
+    </form>
+  );
+}
+
+function EdgeLabel({ value, alt, onApply }: { value: string; alt: boolean; onApply: (v: string) => void }) {
+  const [v, setV] = useState(value);
+  return (
+    <div className="aform__field">
+      <label htmlFor="asel-label">설명 라벨{alt ? ' (택1 그룹 이름 — 같은 라벨끼리 한 묶음)' : ''}</label>
+      <input
+        id="asel-label"
+        value={v}
+        onChange={(e) => setV(e.target.value)}
+        onBlur={() => v !== value && onApply(v)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && v !== value) onApply(v);
+        }}
+        placeholder={alt ? '예: 기동 방식 택1: 직입 MS / 인버터' : '없으면 비움'}
+        data-testid="admin-edge-label-edit"
+      />
     </div>
   );
 }

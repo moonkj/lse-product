@@ -17,6 +17,7 @@ import {
 } from '../../lib/diagram/url';
 import { isMainLayer, pageTitle } from '../../lib/labels';
 import DiagramNode from './DiagramNode';
+import { AltBadges, BusNodes, EndpointNodes } from './DiagramExtras';
 import DiagramToolbar from './DiagramToolbar';
 import Minimap from './Minimap';
 import './DiagramCanvas.css';
@@ -93,7 +94,17 @@ export const Bands = memo(function Bands({ model, mode }: { model: DiagramModel;
   );
 });
 
-/** 메인 계통도: 레이어 밴드 + 엣지(SVG) + 사진 타일 노드(HTML), 줌/패닝, 선택, 보기 모드 */
+/** 계통도 viewport 중 모바일 하단 시트에 가리지 않은 위쪽 비율 (0.2~1) */
+function visibleFraction(vp: HTMLElement): number {
+  const sheet = document.querySelector<HTMLElement>('[data-variant="sheet"]');
+  if (!sheet) return 1;
+  const vr = vp.getBoundingClientRect();
+  if (vr.height <= 0) return 1;
+  const top = sheet.getBoundingClientRect().top;
+  return Math.min(1, Math.max(0.2, (top - vr.top) / vr.height));
+}
+
+/** 메인 계통도: 레이어 밴드 + 엣지(SVG) + 모선·끝점 + 사진 타일 노드(HTML, 참조 타일 포함) + 택1 배지, 줌/패닝, 선택, 보기 모드 */
 export default function DiagramCanvas() {
   const data = useData();
   const model = getDiagramModel(data);
@@ -131,8 +142,11 @@ export default function DiagramCanvas() {
       width: model.width,
       height: model.height,
       maxScale: 2,
-      onView: (v) =>
-        viewStore.set({ ...v, layer: layerAt(model, v.x + v.w / 2, v.y + v.h / 2), ready: true }),
+      onView: (v) => {
+        // 모바일 하단 시트가 가린 영역은 빼고 보이는 부분의 가운데로 현재 계층을 판정
+        const frac = visibleFraction(vp);
+        viewStore.set({ ...v, layer: layerAt(model, v.x + v.w / 2, v.y + (v.h * frac) / 2), ready: true });
+      },
     });
     pzRef.current = pz;
 
@@ -220,6 +234,18 @@ export default function DiagramCanvas() {
     if (!pz.isVisible(r)) pz.centerOn(r.x + r.w / 2, r.y + r.h / 2);
   }, [selectedId, nodeRect, isMobile]);
 
+  // 시트가 열리고 닫힐 때(뷰가 안 움직여도) 현재 계층을 다시 판정
+  useEffect(() => {
+    if (!isMobile) return;
+    const id = requestAnimationFrame(() => {
+      const vp = vpRef.current;
+      const v = viewStore.get();
+      if (!vp || !v.ready) return;
+      viewStore.set({ layer: layerAt(model, v.x + v.w / 2, v.y + (v.h * visibleFraction(vp)) / 2) });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [selectedId, isMobile, model]);
+
   const onActivate = useCallback((id: string) => selectNode(id), [selectNode]);
 
   const selectedEdges = useMemo<ReadonlySet<string>>(
@@ -237,7 +263,7 @@ export default function DiagramCanvas() {
       <h1 id="diagram-title" className="visually-hidden">
         전력계통 단선결선도 {mode === 'gap' ? '(Gap 보기)' : mode === 'learn' ? '(교육 보기)' : ''}
       </h1>
-      <DiagramToolbar mode={mode} total={model.nodes.length} />
+      <DiagramToolbar mode={mode} total={model.nodes.length} review={data.diagram.review} />
       <div className="diagram__stage">
         <div
           ref={vpRef}
@@ -251,9 +277,15 @@ export default function DiagramCanvas() {
             <div ref={innerRef} className="diagram__inner" style={{ width: model.width, height: model.height }}>
               <Bands model={model} mode={mode} />
               <Edges model={model} selectedEdges={selectedEdges} />
+              <BusNodes buses={model.busNodes} />
+              <EndpointNodes endpoints={model.endpoints} />
               {model.nodes.map((n) => (
                 <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} />
               ))}
+              {model.refs.map((n) => (
+                <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} />
+              ))}
+              <AltBadges badges={model.altBadges} activeEdges={selectedEdges} />
             </div>
           </div>
         </div>

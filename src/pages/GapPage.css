@@ -21,6 +21,9 @@
 .gp-stat--missing { background: var(--cov-missing-bg); color: var(--cov-missing-text); }
 .gp-stat--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
 .gp-stat--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
+.gp-stat--sourced { background: var(--cov-sourced-bg); color: var(--cov-sourced-text); }
+.gp-conf { display: inline-block; margin-left: 4px; padding: 0 5px; border: 1px dashed currentColor; border-radius: 4px; font-size: 11px; color: var(--color-text-muted); white-space: nowrap; }
+.gp-conf--confirmed { border-style: solid; color: var(--color-text); }
 
 .gp-card { padding: var(--space-4) var(--space-5); gap: var(--space-3); }
 .gp-card__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }

@@ -88,6 +88,14 @@ export default function LayerNav() {
               <span className="line-legend__swatch line-legend__swatch--bus" aria-hidden="true" />
               모선
             </li>
+            <li>
+              <span className="line-legend__swatch line-legend__swatch--alt" aria-hidden="true" />
+              택1 연결 (어느 하나)
+            </li>
+            <li>
+              <span className="line-legend__swatch line-legend__swatch--ref" aria-hidden="true" />
+              참조 타일 (같은 기기 재등장)
+            </li>
           </ul>
         )}
       </div>

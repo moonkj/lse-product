@@ -1,9 +1,11 @@
 /**
- * 연결선 우회 경로 계산 — scripts/build-diagram-data.py 의 default_route / path_hits_tiles / astar_route
+ * 연결선 우회 경로 계산 — scripts/build-diagram-data.py 의 default_route / path_hits / astar_route
  * TypeScript 포팅 (순수 함수, 같은 상수). 관리자 화면에서 노드를 옮기거나 연결선을 추가할 때 edge.points 를 다시 계산한다.
  *
+ * 개선 R3: 노드 종류별 크기(타일·참조 타일 120×116, 끝점 120×44, 모선 width×8), 모선 끝점(모선 위 수직 하강,
+ * 모선 범위 밖이면 A* 목표 = 가까운 모선 끝), 모선도 장애물(여유 2px).
+ *
  * 이 파일은 의존성 없이 자체 완결 (node 의 TS 실행으로 Python 결과와 대조 검증하기 위해 import 없음).
- * 상수는 src/lib/diagram/model.ts TILE_W/TILE_H 와 같아야 한다.
  */
 
 export interface Pt {
@@ -14,74 +16,130 @@ export interface Pt {
 /** 타일 크기 (model.ts 와 동일) */
 export const ROUTE_TILE_W = 120;
 export const ROUTE_TILE_H = 116;
-const HW = ROUTE_TILE_W / 2;
-const HH = ROUTE_TILE_H / 2;
-/** 선과 타일 사이 최소 여유(px) — Python CLEAR */
+/** 끝점 라벨 상자 (Python EP_W/EP_H) */
+export const ROUTE_EP_W = 120;
+export const ROUTE_EP_H = 44;
+/** 모선 반높이 (Python BUS_HH) */
+export const ROUTE_BUS_HH = 4;
+/** 선과 타일 사이 최소 여유(px) — Python CLEAR (모선은 2) */
 export const CLEAR = 10;
+const BUS_CLEAR = 2;
 /** 꺾임 벌점 — Python TURN */
 const TURN = 400;
 
-/** nodeId → 타일 중심 */
-export type PosMap = ReadonlyMap<string, Pt>;
+export type RouteBoxKind = 'equipment' | 'ref' | 'bus' | 'endpoint';
 
-/** model.ts route() 와 같은 규칙 (모선 제외). 점 목록 반환 */
-export function defaultRoute(pa: Pt, pb: Pt): Pt[] {
-  const { x: ax, y: ay } = pa;
-  const { x: bx, y: by } = pb;
-  const dx = bx - ax;
-  const dy = by - ay;
-  if (Math.abs(dy) >= ROUTE_TILE_H + 20) {
+/** 노드 경계: 중심(x, y)과 반폭·반높이 (Python Box) */
+export interface RouteBox {
+  id: string;
+  kind: RouteBoxKind;
+  x: number;
+  y: number;
+  hw: number;
+  hh: number;
+}
+
+/** nodeId → 경계 */
+export type BoxMap = ReadonlyMap<string, RouteBox>;
+
+/** diagram.json 노드 → 경계 (Python main() 의 boxes 생성과 같은 규칙) */
+export function boxOf(n: { id: string; kind?: string; ref?: boolean; x: number; y: number; width?: number }): RouteBox {
+  const kind: RouteBoxKind = n.kind === 'bus' ? 'bus' : n.kind === 'endpoint' ? 'endpoint' : n.ref ? 'ref' : 'equipment';
+  if (kind === 'bus') return { id: n.id, kind, x: n.x, y: n.y, hw: Math.floor((n.width ?? 0) / 2), hh: ROUTE_BUS_HH };
+  if (kind === 'endpoint') return { id: n.id, kind, x: n.x, y: n.y, hw: ROUTE_EP_W / 2, hh: ROUTE_EP_H / 2 };
+  return { id: n.id, kind, x: n.x, y: n.y, hw: ROUTE_TILE_W / 2, hh: ROUTE_TILE_H / 2 };
+}
+
+export function boxMapOf(
+  nodes: readonly { id: string; kind?: string; ref?: boolean; x: number; y: number; width?: number }[],
+): Map<string, RouteBox> {
+  return new Map(nodes.map((n) => [n.id, boxOf(n)]));
+}
+
+/** Python round() — 0.5 는 짝수 쪽으로 (banker's rounding) */
+export function pyRound(v: number): number {
+  const f = Math.floor(v);
+  const d = v - f;
+  if (d > 0.5) return f + 1;
+  if (d < 0.5) return f;
+  return f % 2 === 0 ? f : f + 1;
+}
+
+/**
+ * model.ts route() 와 같은 규칙 + 모선 끝점. 점 목록, 모선 범위 밖이면 null.
+ */
+export function defaultRoute(a: RouteBox, b: RouteBox): Pt[] | null {
+  if (a.kind === 'bus' || b.kind === 'bus') {
+    const [bus, o] = a.kind === 'bus' ? [a, b] : [b, a];
+    if (!(bus.x - bus.hw <= o.x && o.x <= bus.x + bus.hw)) return null;
+    const oy = o.y > bus.y ? o.y - o.hh : o.y + o.hh;
+    const pts = [
+      { x: o.x, y: bus.y },
+      { x: o.x, y: oy },
+    ];
+    return a.kind === 'bus' ? pts : pts.reverse();
+  }
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  if (Math.abs(dy) >= a.hh + b.hh + 20) {
     const s = dy > 0 ? 1 : -1;
-    const y1 = ay + s * HH;
-    const y2 = by - s * HH;
-    if (Math.abs(dx) < 4) return [{ x: ax, y: y1 }, { x: ax, y: y2 }];
-    const my = Math.round((y1 + y2) / 2);
+    const y1 = a.y + s * a.hh;
+    const y2 = b.y - s * b.hh;
+    if (Math.abs(dx) < 4) return [{ x: a.x, y: y1 }, { x: a.x, y: y2 }];
+    const my = pyRound((y1 + y2) / 2);
     return [
-      { x: ax, y: y1 },
-      { x: ax, y: my },
-      { x: bx, y: my },
-      { x: bx, y: y2 },
+      { x: a.x, y: y1 },
+      { x: a.x, y: my },
+      { x: b.x, y: my },
+      { x: b.x, y: y2 },
     ];
   }
   const s = dx >= 0 ? 1 : -1;
-  const x1 = ax + s * HW;
-  const x2 = bx - s * HW;
-  if (Math.abs(dy) < 4) return [{ x: x1, y: ay }, { x: x2, y: ay }];
-  const mx = Math.round((x1 + x2) / 2);
+  const x1 = a.x + s * a.hw;
+  const x2 = b.x - s * b.hw;
+  if (Math.abs(dy) < 4) return [{ x: x1, y: a.y }, { x: x2, y: a.y }];
+  const mx = pyRound((x1 + x2) / 2);
   return [
-    { x: x1, y: ay },
-    { x: mx, y: ay },
-    { x: mx, y: by },
-    { x: x2, y: by },
+    { x: x1, y: a.y },
+    { x: mx, y: a.y },
+    { x: mx, y: b.y },
+    { x: x2, y: b.y },
   ];
 }
 
-/** 선분들이 양 끝 기기(ends) 외의 타일(여유 clear 포함)을 지나가는지 */
-export function pathHitsTiles(pts: readonly Pt[], pos: PosMap, ends: readonly string[], clear = CLEAR): boolean {
+const clearOf = (bx: RouteBox) => (bx.kind === 'bus' ? BUS_CLEAR : CLEAR);
+
+function segHits(p: Pt, q: Pt, bx: RouteBox): boolean {
+  const c = clearOf(bx);
+  const loX = Math.min(p.x, q.x);
+  const hiX = Math.max(p.x, q.x);
+  const loY = Math.min(p.y, q.y);
+  const hiY = Math.max(p.y, q.y);
+  return loX < bx.x + bx.hw + c && hiX > bx.x - bx.hw - c && loY < bx.y + bx.hh + c && hiY > bx.y - bx.hh - c;
+}
+
+/** 선분이 양 끝(ends) 외의 노드(타일·끝점·모선, 여유 포함)를 지나가는지 — Python path_hits */
+export function pathHits(pts: readonly Pt[], boxes: BoxMap, ends: readonly string[]): boolean {
   for (let i = 0; i + 1 < pts.length; i++) {
-    const p = pts[i];
-    const q = pts[i + 1];
-    const loX = Math.min(p.x, q.x);
-    const hiX = Math.max(p.x, q.x);
-    const loY = Math.min(p.y, q.y);
-    const hiY = Math.max(p.y, q.y);
-    for (const [nid, c] of pos) {
-      if (ends.includes(nid)) continue;
-      if (loX < c.x + HW + clear && hiX > c.x - HW - clear && loY < c.y + HH + clear && hiY > c.y - HH - clear) {
-        return true;
-      }
+    for (const bx of boxes.values()) {
+      if (ends.includes(bx.id)) continue;
+      if (segHits(pts[i], pts[i + 1], bx)) return true;
     }
   }
   return false;
 }
 
-/** 경로가 지나가는 (양 끝 외) 타일 id 목록 — 검증 오류 메시지용 */
-export function tilesHitBy(pts: readonly Pt[], pos: PosMap, ends: readonly string[], clear = CLEAR): string[] {
+/** 경로가 지나가는 (양 끝 외) 노드 id 목록 — 검증 오류 메시지용 */
+export function nodesHitBy(pts: readonly Pt[], boxes: BoxMap, ends: readonly string[]): string[] {
   const hit: string[] = [];
-  for (const [nid] of pos) {
-    if (ends.includes(nid)) continue;
-    const single = new Map([[nid, pos.get(nid)!]]);
-    if (pathHitsTiles(pts, single, [], clear)) hit.push(nid);
+  for (const bx of boxes.values()) {
+    if (ends.includes(bx.id)) continue;
+    for (let i = 0; i + 1 < pts.length; i++) {
+      if (segHits(pts[i], pts[i + 1], bx)) {
+        hit.push(bx.id);
+        break;
+      }
+    }
   }
   return hit;
 }
@@ -138,26 +196,32 @@ const key = (x: number, y: number) => `${x},${y}`;
 const skey = (x: number, y: number, d: number) => `${x},${y},${d}`;
 
 /**
- * 직교 가시성 그래프 + A*(꺾임 벌점)로 타일을 피하는 경로. 후보 좌표 = 타일 중심선과 타일 바깥 여유선.
- * 양 끝은 타일 가장자리로 자른다. 경로가 없으면 null (Python 은 AssertionError).
+ * 직교 가시성 그래프 + A*(꺾임 벌점)로 노드를 피하는 경로. 후보 좌표 = 노드 중심선과 노드 바깥 여유선.
+ * 모선 끝은 모선 위의 가장 가까운 끝(자르지 않음), 그 밖의 끝은 노드 가장자리로 자른다.
+ * 경로가 없으면 null (Python 은 AssertionError).
  */
-export function astarRoute(pos: PosMap, a: string, b: string): Pt[] | null {
-  const start = pos.get(a);
-  const goal = pos.get(b);
-  if (!start || !goal) return null;
-  const offX = HW + CLEAR + 8;
-  const offY = HH + CLEAR + 8;
+export function astarRoute(boxes: BoxMap, a: string, b: string): Pt[] | null {
+  const A = boxes.get(a);
+  const B = boxes.get(b);
+  if (!A || !B) return null;
   const xsSet = new Set<number>();
   const ysSet = new Set<number>();
-  for (const c of pos.values()) {
-    xsSet.add(c.x).add(c.x - offX).add(c.x + offX);
-    ysSet.add(c.y).add(c.y - offY).add(c.y + offY);
+  for (const bx of boxes.values()) {
+    xsSet.add(bx.x).add(bx.x - bx.hw - CLEAR - 8).add(bx.x + bx.hw + CLEAR + 8);
+    ysSet.add(bx.y).add(bx.y - bx.hh - CLEAR - 8).add(bx.y + bx.hh + CLEAR + 8);
   }
+  const anchor = (bx: RouteBox, other: RouteBox): Pt =>
+    bx.kind === 'bus' ? { x: other.x > bx.x ? bx.x + bx.hw : bx.x - bx.hw, y: bx.y } : { x: bx.x, y: bx.y };
+  const start = anchor(A, B);
+  const goal = anchor(B, A);
+  xsSet.add(start.x).add(goal.x);
+  ysSet.add(start.y).add(goal.y);
   const ends = [a, b];
   const inside = (x: number, y: number) => {
-    for (const [nid, c] of pos) {
-      if (nid === a || nid === b) continue;
-      if (Math.abs(x - c.x) < HW + CLEAR && Math.abs(y - c.y) < HH + CLEAR) return true;
+    for (const bx of boxes.values()) {
+      if (bx.id === a || bx.id === b) continue;
+      const c = clearOf(bx);
+      if (Math.abs(x - bx.x) < bx.hw + c && Math.abs(y - bx.y) < bx.hh + c) return true;
     }
     return false;
   };
@@ -176,7 +240,6 @@ export function astarRoute(pos: PosMap, a: string, b: string): Pt[] | null {
   const num = (p: number, q: number) => p - q;
   for (const v of byX.values()) v.sort(num);
   for (const v of byY.values()) v.sort(num);
-  // 정렬된 열/행 안에서의 위치 (Python list.index 대체)
   const idxInCol = new Map<string, number>();
   const idxInRow = new Map<string, number>();
   for (const [x, col] of byX) col.forEach((y, i) => idxInCol.set(key(x, y), i));
@@ -208,7 +271,7 @@ export function astarRoute(pos: PosMap, a: string, b: string): Pt[] | null {
     }
     if ((best.get(skey(cx, cy, d)) ?? Infinity) < g) continue;
     for (const [qx, qy, nd] of neighbors(cx, cy)) {
-      if (pathHitsTiles([{ x: cx, y: cy }, { x: qx, y: qy }], pos, ends)) continue;
+      if (pathHits([{ x: cx, y: cy }, { x: qx, y: qy }], boxes, ends)) continue;
       const ng = g + Math.abs(qx - cx) + Math.abs(qy - cy) + (d !== -1 && d !== nd ? TURN : 0);
       const k = skey(qx, qy, nd);
       if (ng < (best.get(k) ?? Infinity)) {
@@ -240,29 +303,39 @@ export function astarRoute(pos: PosMap, a: string, b: string): Pt[] | null {
   corners.push(path[path.length - 1]);
   if (corners.length < 2) return null;
 
-  const clip = (center: Pt, nxt: Pt): Pt => {
-    if (nxt.x === center.x) return { x: center.x, y: center.y + (nxt.y > center.y ? HH : -HH) };
-    return { x: center.x + (nxt.x > center.x ? HW : -HW), y: center.y };
+  const clip = (bx: RouteBox, nxt: Pt): Pt => {
+    if (nxt.x === bx.x) return { x: bx.x, y: bx.y + (nxt.y > bx.y ? bx.hh : -bx.hh) };
+    return { x: bx.x + (nxt.x > bx.x ? bx.hw : -bx.hw), y: bx.y };
   };
-  corners[0] = clip(corners[0], corners[1]);
-  corners[corners.length - 1] = clip(corners[corners.length - 1], corners[corners.length - 2]);
+  // 모선 끝은 이미 모선 위의 점이므로 자르지 않음
+  if (A.kind !== 'bus') corners[0] = clip(A, corners[1]);
+  if (B.kind !== 'bus') corners[corners.length - 1] = clip(B, corners[corners.length - 2]);
   return corners;
 }
 
+const samePts = (p: readonly Pt[] | null, q: readonly Pt[] | null) =>
+  !!p && !!q && p.length === q.length && p.every((v, i) => v.x === q[i].x && v.y === q[i].y);
+
 export type RouteResult =
   | { ok: true; points?: Pt[] }
-  /** 우회 경로도 없음 (타일에 완전히 막힘) */
+  /** 우회 경로도 없음 (노드에 완전히 막힘) */
   | { ok: false };
 
 /**
- * 생성기 main() 과 같은 규칙: 기본 직교 경로가 다른 타일을 지나가면 A* 우회 경로(points), 아니면 points 없음.
+ * 생성기 main() 과 같은 규칙: 기본 경로가 없거나(모선 범위 밖) 다른 노드를 지나가면 A* 우회 경로.
+ * 모선 연결이거나 결과가 기본 경로와 다르면 points 를 돌려준다.
  */
-export function routeEdge(pos: PosMap, from: string, to: string): RouteResult {
-  const pa = pos.get(from);
-  const pb = pos.get(to);
-  if (!pa || !pb) return { ok: false };
-  if (!pathHitsTiles(defaultRoute(pa, pb), pos, [from, to])) return { ok: true };
-  const pts = astarRoute(pos, from, to);
-  if (!pts || pathHitsTiles(pts, pos, [from, to])) return { ok: false };
-  return { ok: true, points: pts };
+export function routeEdge(boxes: BoxMap, from: string, to: string): RouteResult {
+  const A = boxes.get(from);
+  const B = boxes.get(to);
+  if (!A || !B) return { ok: false };
+  const ends = [from, to];
+  const def = defaultRoute(A, B);
+  let pts = def;
+  if (!pts || pathHits(pts, boxes, ends)) {
+    pts = astarRoute(boxes, from, to);
+    if (!pts || pathHits(pts, boxes, ends)) return { ok: false };
+  }
+  if (A.kind === 'bus' || B.kind === 'bus' || !samePts(pts, def)) return { ok: true, points: pts };
+  return { ok: true };
 }

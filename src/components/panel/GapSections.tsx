@@ -27,7 +27,7 @@ export default function GapSections({ node, onSelect }: { node: NodeItem; onSele
                     <span>
                       <strong>{n.node.eq.name}</strong>
                       <span className="dp-muted">
-                        {n.kind === 'signal' ? '신호로 연결' : '같은 회로'}
+                        {n.kind === 'signal' ? '신호로 연결' : n.kind === 'alt' ? '택1 연결' : '같은 회로'}
                         {first ? ` · ${first.name}` : ''}
                       </span>
                     </span>
@@ -58,7 +58,7 @@ export default function GapSections({ node, onSelect }: { node: NodeItem; onSele
           ))}
         </div>
         <p className="dp-muted">
-          전체 {model.nodes.length}종 · 미보유 <b>{c.missing}</b> · 일부 보유 <b>{c.partial}</b> · 계열사 보유 <b>{c.affiliate}</b>
+          전체 {model.nodes.length}종 · 미보유 <b>{c.missing}</b> · 일부 보유 <b>{c.partial}</b> · 계열사 보유 <b>{c.affiliate}</b> · 패널 구성품 <b>{c.sourced}</b>
         </p>
         <Link to="/gap" className="dp-strong-link">
           공백 표에서 전체 보기 →

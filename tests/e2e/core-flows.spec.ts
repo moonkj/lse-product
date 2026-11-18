@@ -28,7 +28,7 @@ import AxeBuilder from '@axe-core/playwright';
 // ─────────────────────────────────────────────────────────────
 // 테스트 데이터 (JSON 직접 읽기 — 앱 코드 import 없이 독립적으로)
 // ─────────────────────────────────────────────────────────────
-type Coverage = 'owned' | 'partial' | 'affiliate' | 'missing' | 'na';
+type Coverage = 'owned' | 'partial' | 'affiliate' | 'sourced' | 'missing' | 'na';
 interface Eq {
   id: string;
   name: string;
@@ -39,10 +39,16 @@ interface Eq {
   productIds?: string[];
   gapNote?: string;
   affiliateName?: string;
+  gapAssessment?: { supplyMode: string; basis: string; confidence: 'candidate' | 'confirmed' };
 }
+/** v0.6 R3: kind 생략 = equipment (ref=true 는 참조 타일), bus·endpoint 는 equipmentTypeId 없음 */
 interface DNode {
   id: string;
-  equipmentTypeId: string;
+  kind?: 'equipment' | 'bus' | 'endpoint';
+  equipmentTypeId?: string;
+  ref?: boolean;
+  label?: string;
+  layer?: string;
 }
 interface Prod {
   id: string;
@@ -65,7 +71,12 @@ const dataPath = (f: string) => fileURLToPath(new URL(`../../src/data/${f}`, imp
 const load = <T>(f: string): T => JSON.parse(readFileSync(dataPath(f), 'utf8')) as T;
 
 const equipment = load<Eq[]>('equipment-types.json');
-const diagram = load<{ nodes: DNode[] }>('diagram.json');
+const diagramRaw = load<{ nodes: DNode[]; review?: { status: string } }>('diagram.json');
+/** 74종 기기 노드 (참조 타일·모선·끝점 제외) — 기존 테스트는 이것만 대상으로 한다 */
+const diagram = { nodes: diagramRaw.nodes.filter((n) => (n.kind ?? 'equipment') === 'equipment' && !n.ref) as (DNode & { equipmentTypeId: string })[] };
+const refNodes = diagramRaw.nodes.filter((n) => (n.kind ?? 'equipment') === 'equipment' && n.ref);
+const busNodes = diagramRaw.nodes.filter((n) => n.kind === 'bus');
+const endpointNodes = diagramRaw.nodes.filter((n) => n.kind === 'endpoint');
 const products = load<Prod[]>('products.json');
 const categories = load<{ code: string; productIds: string[] }[]>('categories.json');
 const docsJson = load<{ products: Record<string, ProductDocs> }>('docs.json');
@@ -90,7 +101,7 @@ function linkedProducts(e: Eq): string[] {
 }
 
 /** 해당 커버리지 기기를 가진 첫 노드 (없으면 테스트 skip) */
-function nodeWith(coverage: Coverage, extra: (e: Eq) => boolean = () => true): { node: DNode; eq: Eq } | undefined {
+function nodeWith(coverage: Coverage, extra: (e: Eq) => boolean = () => true): { node: DNode & { equipmentTypeId: string }; eq: Eq } | undefined {
   for (const node of diagram.nodes) {
     const eq = eqById.get(node.equipmentTypeId);
     if (eq && eq.coverage === coverage && extra(eq)) return { node, eq };
@@ -124,7 +135,8 @@ const nodeWithImage = (() => {
   }
   return undefined;
 })();
-const edges = load<{ edges: { id: string; kind?: 'power' | 'signal' }[] }>('diagram.json').edges;
+const edges = load<{ edges: { id: string; kind?: 'power' | 'signal' | 'alt'; label?: string }[] }>('diagram.json').edges;
+const altEdges = edges.filter((e) => e.kind === 'alt');
 const powerEdge = edges.find((e) => (e.kind ?? 'power') === 'power');
 const signalEdge = edges.find((e) => e.kind === 'signal');
 
@@ -181,9 +193,6 @@ test.describe('E2E-1 신입 학습 흐름', () => {
     expect(visited).toEqual(['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']); // 순서대로, 건너뛰기·역행 없음
     await expect(step).toHaveAttribute('data-layer', 'L7');
     await expect(tid(page, 'tour-next')).toBeDisabled();
-    // v0.5 R2: L7 에는 "다음" 대신 완료 버튼 (클릭 → 완료 요약은 아래 별도 테스트)
-    await expect(tid(page, 'tour-finish')).toBeVisible();
-    await expect(tid(page, 'tour-finish')).toBeEnabled();
 
     // L7 핵심 기기 카드 → 계통도에서 그 노드 선택 (/?node=)
     const keyId = learn.steps[6].keyEquipmentIds.find((id) => diagram.nodes.some((n) => n.equipmentTypeId === id));
@@ -197,16 +206,14 @@ test.describe('E2E-1 신입 학습 흐름', () => {
     await expect(tid(page, 'detail-learn-points').locator('li').first()).toBeVisible();
   });
 
-  test('v0.5 R2: L7 에서 tour-next 비활성 + tour-finish 클릭 → 완료 요약 표시 (M8)', async ({ page }) => {
-    await page.goto('./#/learn?step=L7');
-    await expect(tid(page, 'tour-step')).toHaveAttribute('data-layer', 'L7');
-    await expect(tid(page, 'tour-next')).toBeDisabled();
-    await tid(page, 'tour-finish').click();
-    // 완료 요약 testid: tour-summary (T1 구현 시 이름 확정 — tour-complete 도 허용)
-    const summary = page.getByTestId(/^tour-(summary|complete)$/);
-    await expect(summary).toBeVisible();
-    // 요약에 7개 계층(L1~L7)이 모두 언급된다
-    for (const l of ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']) await expect(summary).toContainText(l);
+  test('v0.6 R3: 퀴즈·진도·수료(투어 완료 요약) 제거 — L1~L7 어디에도 퀴즈·완료 버튼·진도 표시가 없다', async ({ page }) => {
+    // 사용자 결정(PLAN 9항): 계층 투어 학습 내용 + 용어집만 유지
+    const removed = page.getByTestId(/^(tour-finish|tour-summary|tour-complete|tour-progress|learn-progress|quiz(-.*)?)$/);
+    for (const l of ['L1', 'L4', 'L7']) {
+      await page.goto(`./#/learn?step=${l}`);
+      await expect(tid(page, 'tour-step')).toHaveAttribute('data-layer', l);
+      await expect(removed).toHaveCount(0);
+    }
   });
 
   test('/learn?step=L4 딥링크 → L4 단계로 열리고 새로고침해도 유지', async ({ page }) => {
@@ -341,10 +348,12 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     if (partial) await expect(diagramNode(page, partial.node.id)).toHaveAttribute('data-emphasized', 'true');
     const na = nodeWith('na');
     if (na) await expect(diagramNode(page, na.node.id)).toHaveAttribute('data-dimmed', 'true');
-    const aff = nodeWith('affiliate');
-    if (aff) {
-      await expect(diagramNode(page, aff.node.id)).toHaveAttribute('data-emphasized', 'false');
-      await expect(diagramNode(page, aff.node.id)).toHaveAttribute('data-dimmed', 'false');
+    // affiliate·sourced(패널 구성품, v0.6 R3) = 보통
+    for (const c of ['affiliate', 'sourced'] as const) {
+      const t = nodeWith(c);
+      if (!t) continue;
+      await expect(diagramNode(page, t.node.id)).toHaveAttribute('data-emphasized', 'false');
+      await expect(diagramNode(page, t.node.id)).toHaveAttribute('data-dimmed', 'false');
     }
 
     // 색약 대응: 색 외에 아이콘이 함께 렌더링
@@ -366,10 +375,11 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     await expect(tid(page, 'gap-page')).toBeVisible();
   });
 
-  test('/gap 공백 목록: 기본 필터 "전체" = 미보유+일부+계열사 건수, "미보유" 필터 = missing 건수 (FT-26)', async ({ page }) => {
+  test('/gap 공백 목록: 기본 필터 "전체" = 미보유+일부+계열사+패널 구성품 건수, "미보유" 필터 = missing 건수 (FT-26)', async ({ page }) => {
     // 리더 결정(v0.4): 승인 디자인(GapTable.dc.html) 대로 첫 화면 필터는 "전체"
+    // v0.6 R3: 공백류 = missing·partial·affiliate·sourced (gapAssessment 필수 범위와 같음)
     const count = (c: Coverage) => equipment.filter((e) => e.coverage === c).length;
-    const gapTotal = count('missing') + count('partial') + count('affiliate');
+    const gapTotal = count('missing') + count('partial') + count('affiliate') + count('sourced');
     await page.goto('./#/gap');
     await expect(tid(page, 'gap-page')).toBeVisible();
     await expect(tid(page, 'gap-matrix')).toBeVisible();
@@ -410,7 +420,7 @@ test.describe('E2E-3 기획 Gap 확인', () => {
 // ═════════════════════════════════════════════════════════════
 test.describe('E2E-4 해시 라우팅', () => {
   test('기기 딥링크를 새로고침해도 같은 화면 (GitHub Pages 404 회피)', async ({ page }) => {
-    const any = diagram.nodes[0] && eqById.get(diagram.nodes[0].equipmentTypeId);
+    const any = diagram.nodes[0] && eqById.get(diagram.nodes[0].equipmentTypeId!);
     test.skip(!any, '기기 데이터 없음');
     await page.goto(`./#/equipment/${any!.id}`);
     await expect(tid(page, 'equipment-page')).toBeVisible();
@@ -563,9 +573,9 @@ test.describe('E2E-5 접근성·반응형', () => {
     expect(heroSrc).not.toContain('/thumb/');
   });
 
-  test('범례에 5개 커버리지 상태가 색 + 아이콘으로 모두 표시', async ({ page }) => {
+  test('범례에 6개 커버리지 상태(v0.6 R3 sourced 포함)가 색 + 아이콘으로 모두 표시', async ({ page }) => {
     await gotoHome(page);
-    for (const c of ['owned', 'partial', 'affiliate', 'missing', 'na'] as const) {
+    for (const c of ['owned', 'partial', 'affiliate', 'sourced', 'missing', 'na'] as const) {
       const item = tid(page, `legend-item-${c}`);
       await expect(item).toBeVisible();
       await expect(item.getByTestId(`coverage-icon-${c}`)).toBeVisible();
@@ -669,5 +679,96 @@ test.describe('자료 링크 (docs.json)', () => {
     await expect(link).toHaveAttribute('target', '_blank');
     await expect(link).toHaveAttribute('rel', /noopener/);
     await expect(link).toHaveAttribute('href', ALLOWED_DOC_URL_RE);
+  });
+});
+
+// ═════════════════════════════════════════════════════════════
+// E2E-6 계통도 개선 R3 (v0.6): 모선·끝점·참조 타일·택1 연결·검수 배지·공백 후보·패널 구성품
+//   testid·속성 이름은 test-plan.md §7 (v0.6). T1 구현명과 다르면 여기만 고친다.
+// ═════════════════════════════════════════════════════════════
+const legendCount = async (page: Page, c: Coverage) => {
+  const text = (await tid(page, `legend-item-${c}`).textContent()) ?? '';
+  const m = text.match(/(\d+)\s*$/);
+  return m ? Number(m[1]) : Number.NaN;
+};
+
+test.describe('E2E-6 계통도 개선 R3', () => {
+  test('모선 2개(diagram-bus-{id}) · 끝점 4개(diagram-endpoint-{id}) 가 보인다', async ({ page }) => {
+    await gotoHome(page);
+    for (const b of busNodes) await expect(tid(page, `diagram-bus-${b.id}`)).toBeVisible();
+    for (const p of endpointNodes) {
+      const el = tid(page, `diagram-endpoint-${p.id}`);
+      await expect(el).toBeVisible();
+      await expect(el).toContainText(p.label!.replace(/[→←]/g, '').trim().split(' ')[0]);
+    }
+    await expect(page.getByTestId(/^diagram-bus-/)).toHaveCount(busNodes.length);
+    await expect(page.getByTestId(/^diagram-endpoint-/)).toHaveCount(endpointNodes.length);
+    expect([busNodes.length, endpointNodes.length]).toEqual([2, 4]); // 현재 데이터 (개선 R3)
+  });
+
+  test('참조 타일: data-ref="true" 3개, 클릭하면 같은 기기 상세가 열린다', async ({ page }) => {
+    test.skip(refNodes.length === 0, '참조 타일 없음');
+    await gotoHome(page);
+    await expect(tid(page, 'diagram').locator('[data-testid^="diagram-node-"][data-ref="true"]')).toHaveCount(refNodes.length);
+    const ref = refNodes[0];
+    const eq = eqById.get(ref.equipmentTypeId!)!;
+    const el = diagramNode(page, ref.id);
+    await expect(el).toHaveAttribute('data-ref', 'true');
+    await clickNode(page, ref.id, eq.layer);
+    await expect(panel(page)).toBeVisible();
+    await expect(tid(page, 'detail-title')).toContainText(eq.name);
+  });
+
+  test('택1 연결선: data-kind="alt" 가 데이터 개수만큼, 점선으로 그려진다', async ({ page }) => {
+    test.skip(altEdges.length === 0, 'alt 연결선 없음');
+    await gotoHome(page);
+    await expect(tid(page, 'diagram').locator('[data-testid^="diagram-edge-"][data-kind="alt"]')).toHaveCount(altEdges.length);
+    const el = tid(page, `diagram-edge-${altEdges[0].id}`);
+    await expect(el).toHaveAttribute('data-kind', 'alt');
+    const dash = await el.evaluate((n) => getComputedStyle(n as Element).strokeDasharray);
+    expect(dash).not.toMatch(/^(none)?$/);
+  });
+
+  test('계통 검수 대기 배지(diagram-review-badge)가 보인다 (review.status=pending)', async ({ page }) => {
+    test.skip(diagramRaw.review?.status !== 'pending', 'review.status 가 pending 아님');
+    await gotoHome(page);
+    await expect(tid(page, 'diagram-review-badge')).toBeVisible();
+  });
+
+  test('범례: sourced(패널 구성품) 항목 + 개수 합 = 74종(참조 타일 제외), 미보유·패널 구성품 개수 = 데이터', async ({ page }) => {
+    await gotoHome(page);
+    await expect(tid(page, 'legend-item-sourced')).toBeVisible();
+    await expect(tid(page, 'legend-item-sourced')).toContainText('패널 구성품');
+    const cs: Coverage[] = ['owned', 'partial', 'affiliate', 'sourced', 'missing', 'na'];
+    const counts = await Promise.all(cs.map((c) => legendCount(page, c)));
+    expect(counts.reduce((a, b) => a + b, 0)).toBe(equipment.length); // 74 (참조 타일을 세면 77)
+    const count = (c: Coverage) => equipment.filter((e) => e.coverage === c).length;
+    expect(await legendCount(page, 'missing')).toBe(count('missing')); // 현재 9
+    expect(await legendCount(page, 'sourced')).toBe(count('sourced')); // 현재 3
+  });
+
+  test('공백 후보 타일: gapAssessment.confidence=candidate 인 공백류 기기 노드에 data-confidence="candidate" (점선 표시)', async ({ page }) => {
+    const cand = diagram.nodes.filter((n) => {
+      const e = eqById.get(n.equipmentTypeId);
+      return e && ['missing', 'partial', 'affiliate', 'sourced'].includes(e.coverage) && e.gapAssessment?.confidence === 'candidate';
+    });
+    test.skip(cand.length === 0, '공백 후보 기기 없음');
+    await page.goto('./#/?mode=gap');
+    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
+    for (const n of cand) await expect(diagramNode(page, n.id)).toHaveAttribute('data-confidence', 'candidate');
+    const ownedPlain = nodeWith('owned', (e) => !e.gapAssessment);
+    if (ownedPlain) await expect(diagramNode(page, ownedPlain.node.id)).not.toHaveAttribute('data-confidence', 'candidate');
+  });
+
+  test('CT/PT(패널 구성품) 선택 → 패널에 "공백 판정" 섹션 (근거·확신도)', async ({ page }) => {
+    const t = nodeWith('sourced', (e) => e.id === 'ct-pt') ?? nodeWith('sourced');
+    test.skip(!t, 'sourced 기기 노드 없음');
+    await page.goto(`./#/?node=${t!.node.id}`);
+    await expect(panel(page)).toBeVisible();
+    await expect(tid(page, 'detail-coverage-badge')).toHaveAttribute('data-coverage', 'sourced');
+    const section = tid(page, 'detail-gap-assessment');
+    await expect(section).toBeVisible();
+    await expect(section).toContainText('공백 판정');
+    await expect(section).toContainText('후보'); // confidence=candidate (홈페이지 메뉴 기준)
   });
 });

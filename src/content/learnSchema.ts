@@ -4,23 +4,11 @@ import learnJson from './learn.json';
 
 /**
  * src/content/learn.json — 교육(/learn) 콘텐츠 계약. T1-B 소유.
+ * 퀴즈·학습 진도는 (개선 R3) 사용자 결정으로 제거 — 계층 투어 내용과 용어집만 둔다.
  * 사실관계는 equipment-types.json 의 description·learnPoints 범위 안에서만 쓴다 (교육 담당자 검토 전 draft).
  */
 export const TourLayerSchema = z.enum(['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']);
 export type TourLayer = z.infer<typeof TourLayerSchema>;
-
-export const QuizSchema = z
-  .object({
-    id: z.string().regex(/^[a-z0-9-]+$/),
-    question: z.string().min(1),
-    options: z.array(z.string().min(1)).min(2).max(5),
-    answerIndex: z.number().int().min(0),
-    explanation: z.string().min(1),
-    /** 근거가 된 기기 id (equipment-types.json) — 검토자가 출처를 따라갈 수 있게 */
-    sourceEquipmentIds: z.array(z.string()).min(1),
-  })
-  .refine((q) => q.answerIndex < q.options.length, { message: 'answerIndex 가 options 범위를 벗어났습니다' });
-export type Quiz = z.infer<typeof QuizSchema>;
 
 export const LearnStepSchema = z.object({
   layer: TourLayerSchema,
@@ -30,7 +18,6 @@ export const LearnStepSchema = z.object({
   intro: z.string().min(1),
   /** 핵심 기기 2~3개 (equipment-types.json id) */
   keyEquipmentIds: z.array(z.string()).min(1).max(3),
-  quizzes: z.array(QuizSchema).min(2).max(3),
 });
 export type LearnStep = z.infer<typeof LearnStepSchema>;
 

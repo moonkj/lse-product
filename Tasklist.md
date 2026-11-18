@@ -56,6 +56,7 @@
 - [x] (리더) 아키텍처 결정: 정적 사이트 → 브라우저 편집 + 초안 자동 저장(localStorage) + JSON 내보내기/가져오기. 앞으로 src/data/*.json 이 원본, Python 생성기는 시드용
 - [x] (T1) 편집 화면 /#/admin (React.lazy 별도 청크, 앱 레이아웃 밖 전체 화면, 상단 "보안 장치 아님" 안내) — 기기 추가·수정·삭제 폼(EquipmentTypeSchema + DI-20~26 즉시 검증, 한국어 오류, id 자동 제안·중복 검사, 카테고리·제품 검색 선택, 대표 사진 선택), 배치(밴드 클릭·자동 빈 자리, 10px 스냅, 밴드 이탈·타일 겹침 빨간 미리보기), 노드 드래그/화살표 이동, 연결선 추가(전력/신호·전압 라벨)·수정·삭제, 변경 내역·되돌리기 50단계·초안 초기화, 무결성 검사 후 내보내기(equipment-types/diagram/(equipment-images)/변경요약.md), JSON 가져오기(스키마 검증), 사용자 화면 미리보기(제품/Gap)
 - [x] (T1) 우회 경로 라우터 TS 포팅 src/lib/diagram/router.ts (default_route/path_hits_tiles/astar_route, 같은 상수·같은 힙 순서) — 현재 diagram.json 14개 points 100% 동일, 77/77 판정 일치
+- [x] (T1) (개선 R3) 계통 정정 표시(모선·끝점·참조 타일·택1 배지, 자동 모선 제거)·검수 대기 배지·공백 후보/확정(점선/실선, 패널 공백 판정 섹션)·sourced 6번째 상태(--cov-sourced ⊡)·교육 퀴즈/진도/수료 제거·모바일 계층 칩/미니 체인 수정·관리자 모드(라우터 Python 86/86 일치, 노드 종류·택1·gapAssessment 폼, 무결성: 전력선 교차 검사). typecheck·build 통과, unit 145/145, E2E 40 통과/1 skip
 - [ ] (T3) 관리자 모드 테스트 (router 단위 테스트·admin E2E) — testid: admin-page, admin-add-equipment, admin-equipment-form, admin-save, admin-place-mode, admin-connect-mode, admin-export, admin-import, admin-changes, admin-undo, admin-redo, admin-validation-errors (+ admin-select-mode, admin-auto-place, admin-check-run, admin-check-ok, admin-tab-*, admin-ghost[data-valid], admin-edge-hit-{edgeId}, admin-toast)
 - [ ] (리더) 일반 화면에 관리자 링크 노출 여부 결정 (현재 미노출 — /#/admin 직접 입력), README 데이터 수정 가이드 갱신
 - [ ] (2단계) GitHub API 직접 반영 — 원격 저장소 연결 후 (현재 버튼 자리만)

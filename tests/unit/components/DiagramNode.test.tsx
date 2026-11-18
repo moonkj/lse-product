@@ -1,5 +1,5 @@
 /**
- * 컴포넌트 테스트 (CT-03) — DiagramNode: 사진 타일 / 사진 없음 → 단선결선도 심볼, 접근성 이름, 상태 data-속성
+ * 컴포넌트 테스트 (CT-03) — DiagramNode (v0.6 R3: ref·candidate 추가): 사진 타일 / 사진 없음 → 단선결선도 심볼, 접근성 이름, 상태 data-속성
  * docs/test-plan.md §3b. 실제 데이터와 무관한 fixture 로 검증 (데이터 변경에 흔들리지 않게).
  */
 import { describe, it, expect, afterEach, vi } from 'vitest';
@@ -78,6 +78,7 @@ describe('CT-03 DiagramNode', () => {
       missing: ['true', 'false'],
       partial: ['true', 'false'],
       affiliate: ['false', 'false'],
+      sourced: ['false', 'false'], // 개선 R3: 패널 구성품은 계열사와 같이 "보통" (R-08 강조 기준 = 미보유·일부 보유 유지)
       owned: ['false', 'true'],
       na: ['false', 'true'],
     };
@@ -87,6 +88,42 @@ describe('CT-03 DiagramNode', () => {
       unmount();
       render(<DiagramNode item={makeItem(c)} mode="product" selected={false} onActivate={() => {}} />);
       expect([node().getAttribute('data-emphasized'), node().getAttribute('data-dimmed')], `${c} product`).toEqual(['false', 'false']);
+      cleanup();
+    }
+  });
+
+  // ── 개선 R3: 참조 타일·공백 후보 표시 ──
+  // T1 구현: NodeItem.ref / refLabel, 확신도는 eq.gapAssessment 에서 계산 (lib/labels gapConfidence)
+  it('R3 참조 타일(ref): data-ref="true" + 자리 라벨(refLabel) 표시, 클릭 가능, 일반 타일은 data-ref 없음', () => {
+    const onActivate = vi.fn();
+    const refItem: NodeItem = { ...makeItem('owned', { abbr: 'TR' }), ref: true, refLabel: '22.9/6.6kV' };
+    render(<DiagramNode item={refItem} mode="product" selected={false} onActivate={onActivate} />);
+    expect(node()).toHaveAttribute('data-ref', 'true');
+    expect(node()).toHaveTextContent('22.9/6.6kV');
+    expect(node().getAttribute('aria-label')).toContain('테스트 차단기'); // 같은 기기임을 읽어 줌
+    fireEvent.click(node());
+    expect(onActivate).toHaveBeenCalledWith('n-test'); // → 그 기기 상세
+    cleanup();
+    render(<DiagramNode item={makeItem('owned')} mode="product" selected={false} onActivate={() => {}} />);
+    expect(node()).not.toHaveAttribute('data-ref', 'true');
+  });
+
+  it('R3 공백 확신도: 공백류 + 후보/근거 없음 → candidate, 확정 → confirmed, 재확인 기한 지난 확정 → candidate, 보유 → 속성 없음', () => {
+    const withGa = (coverage: Coverage, ga?: EquipmentType['gapAssessment']): NodeItem => {
+      const it = makeItem(coverage);
+      return { ...it, eq: { ...it.eq, gapAssessment: ga } };
+    };
+    const confirmed = { supplyMode: 'not-offered', basis: 'bu-confirmed', confidence: 'confirmed', verifiedBy: '배전기기사업부', verifiedAt: '2026-11-01' } as const;
+    const cases: [NodeItem, string | null][] = [
+      [withGa('missing', { supplyMode: 'unknown', basis: 'homepage-menu', confidence: 'candidate' }), 'candidate'],
+      [withGa('sourced'), 'candidate'], // 근거 없음 = 후보로 취급
+      [withGa('missing', confirmed), 'confirmed'],
+      [withGa('missing', { ...confirmed, reviewDue: '2000-01-01' }), 'candidate'],
+      [withGa('owned'), null],
+    ];
+    for (const [item, want] of cases) {
+      render(<DiagramNode item={item} mode="gap" selected={false} onActivate={() => {}} />);
+      expect(node().getAttribute('data-confidence'), `${item.coverage} ${JSON.stringify(item.eq.gapAssessment)}`).toBe(want);
       cleanup();
     }
   });
