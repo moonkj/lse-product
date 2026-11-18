@@ -74,7 +74,7 @@ export const OverviewSourceSchema = z.object({
   page: z.number().int().positive().optional(),
 });
 export const OverviewPointSchema = z.object({
-  /** 항목 라벨 — 역할·동작 원리·선정 포인트·LS ELECTRIC 제품·패널 구성 */
+  /** 항목 라벨 — 역할·동작 원리·선정 포인트·제품 설명·패널 구성 */
   label: z.string().min(1),
   text: z.string().min(1),
 });

@@ -145,8 +145,8 @@ describe('기기 상세 설명 overview (DI-OV)', () => {
     }
     expect(bad).toEqual([]);
   });
-  it('DI-OV3 자사 제품이 없는 기기(coverage missing)에는 "LS ELECTRIC 제품" 항목이 없다', () => {
-    const bad = equipment.filter((e) => e.coverage === 'missing' && e.overview?.points.some((p) => p.label === 'LS ELECTRIC 제품')).map((e) => e.id);
+  it('DI-OV3 자사 제품이 없는 기기(coverage missing)에는 "제품 설명" 항목이 없다', () => {
+    const bad = equipment.filter((e) => e.coverage === 'missing' && e.overview?.points.some((p) => p.label === '제품 설명')).map((e) => e.id);
     expect(bad).toEqual([]);
   });
 });

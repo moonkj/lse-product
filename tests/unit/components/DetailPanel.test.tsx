@@ -142,9 +142,9 @@ describe('상세 설명 overview — DetailPanel', () => {
     expect(desc).not.toHaveTextContent(/근거:|일반 기술 설명/);
   });
 
-  it.skipIf(!missingOvNode)('자사 제품이 없는 기기(missing)에는 "LS ELECTRIC 제품" 항목이 없다', () => {
+  it.skipIf(!missingOvNode)('자사 제품이 없는 기기(missing)에는 "제품 설명" 항목이 없다', () => {
     renderAt(missingOvNode!.id);
     const dl = within(screen.getByTestId('detail-desc')).getByTestId('overview-points');
-    expect([...dl.querySelectorAll('dt')].map((d) => d.textContent)).not.toContain('LS ELECTRIC 제품');
+    expect([...dl.querySelectorAll('dt')].map((d) => d.textContent)).not.toContain('제품 설명');
   });
 });

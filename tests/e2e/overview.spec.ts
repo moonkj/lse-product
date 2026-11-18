@@ -74,12 +74,12 @@ test.describe('상세 설명 overview', () => {
     await expect(p.getByTestId('overview-sources')).toHaveCount(0);
   });
 
-  test('자사 제품이 없는 기기(missing)에는 "LS ELECTRIC 제품" 항목이 없다', async ({ page }) => {
+  test('자사 제품이 없는 기기(missing)에는 "제품 설명" 항목이 없다', async ({ page }) => {
     test.skip(!missingNode, 'missing 기기 없음');
     await page.goto(`./#/?node=${missingNode!.id}`);
     const dl = tid(page, 'detail-panel').getByTestId('overview-points');
     await expect(dl).toBeVisible();
-    await expect(dl.locator('dt', { hasText: 'LS ELECTRIC 제품' })).toHaveCount(0);
+    await expect(dl.locator('dt', { hasText: '제품 설명' })).toHaveCount(0);
   });
 
   test('기기 상세: 계통에서 하는 일 = 요약 + 항목', async ({ page }) => {
