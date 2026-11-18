@@ -126,6 +126,29 @@ describe('DI-00 데이터 파일 존재 및 Zod 스키마 통과', () => {
   });
 });
 
+// 기기 상세 설명 overview (DI-OV1~3) — 2026-11-18 설명 전수 재정리: 요약 + 항목(라벨·본문). basis·sources 는 추적용(화면 미표시)
+describe('기기 상세 설명 overview (DI-OV)', () => {
+  it('DI-OV1 모든 기기에 overview 가 있다', () => {
+    expect(equipment.filter((e) => !e.overview).map((e) => e.id)).toEqual([]);
+  });
+  it('DI-OV2 summary 30~120자, points 1~5개 (라벨·본문 공백 아님)', () => {
+    const bad: string[] = [];
+    for (const e of equipment) {
+      const o = e.overview;
+      if (!o) continue;
+      const n = o.summary.trim().length;
+      if (n < 30 || n > 120) bad.push(`${e.id}: summary ${n}자`);
+      if (o.points.length < 1 || o.points.length > 5) bad.push(`${e.id}: points ${o.points.length}개`);
+      for (const p of o.points) if (!p.label.trim() || !p.text.trim()) bad.push(`${e.id}: 빈 항목`);
+    }
+    expect(bad).toEqual([]);
+  });
+  it('DI-OV3 자사 제품이 없는 기기(coverage missing)에는 "LS ELECTRIC 제품" 항목이 없다', () => {
+    const bad = equipment.filter((e) => e.coverage === 'missing' && e.overview?.points.some((p) => p.label === 'LS ELECTRIC 제품')).map((e) => e.id);
+    expect(bad).toEqual([]);
+  });
+});
+
 // ─────────────────────────────────────────────────────────────
 // 공용 검사 checkDataset — RULES 표의 규칙마다 하나씩 (HARD = 오류 0건, SOFT = 경고만)
 // ─────────────────────────────────────────────────────────────

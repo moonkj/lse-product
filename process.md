@@ -201,3 +201,5 @@
 - lv-ats: 자료실 근거(LV CTTS 카탈로그·ATS with ACB CAD)로 missing(확정)→owned, 사유 audit 6장. MV CTTS→alts.
 - aps: AAA010006 = Arc Protection System → '아크 보호 시스템'(L4, protection) 정정, 노드 이동. UPS 기기는 미생성(사용자 결정 필요).
 - 펼친 시트 카드 가림 수정(CSS). 검증: unit 505, E2E 139, axe target-size 0.
+- 설명 v2: 75종 "요약 + 역할·동작 원리·선정 포인트·LS ELECTRIC 제품" 구조(overview {summary, points, basis, sources}), 화면 근거 줄 전면 제거(사용자 요청), 비교 '설명' 요약+더 보기, 라벨 열 108px. 연결 기기 칩 aria-label 수정(axe 12→0). DI-OV1~3 추가.
+- 검증: unit 508, E2E 140. ⚠ 간헐 실패 관찰: unit 1건(전체 실행 중 1회, 재실행 통과 — 이전 admin-specs 저장본 손상 케이스와 동일 추정), E2E ux-diagram 접힌 시트 390 1건·core-flows 키보드 Esc 1건(재실행 통과) → T2 플래키 조사 필요.

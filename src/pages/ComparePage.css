@@ -225,3 +225,6 @@
   font-size: var(--fs-sm);
 }
 .cmp-copy__input:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+/* 설명 행 — 펼친 항목 목록은 표 칸이 좁아 라벨 아래로 본문을 쌓는다 */
+.cmp-table .ov-points { margin-top: var(--space-2); }
+.cmp-table .ov-point { grid-template-columns: minmax(0, 1fr); row-gap: 2px; }

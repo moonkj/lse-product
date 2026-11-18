@@ -1,69 +1,31 @@
-import { Fragment } from 'react';
-import type { EquipmentType } from '../../lib/schema';
-import { groupOverviewSources, OVERVIEW_SOURCE_LIMIT, overviewText } from '../../lib/overview';
-import { pageHref } from '../../lib/pages/compare';
-import ExternalLink from './ExternalLink';
+import type { EquipmentType, OverviewPoint } from '../../lib/schema';
+import { overviewParts } from '../../lib/overview';
 import './EquipmentOverview.css';
 
-/**
- * 근거 한 줄 — catalog: "근거: [Susol VCB] 카탈로그 p.2·5 ↗" (같은 URL 은 쪽을 묶고 각 쪽은 url#page=N 새 탭),
- * general: "일반 기술 설명". 출처 묶음은 최대 3개, 나머지는 "외 N건".
- */
-export function OverviewSources({ eq, testId = 'overview-sources' }: { eq: EquipmentType; testId?: string }) {
-  const ov = eq.overview;
-  if (!ov) return null;
-  if (ov.basis === 'general' || ov.sources.length === 0) {
-    return (
-      <p className="ov-src" data-testid={testId} data-basis="general">
-        일반 기술 설명
-      </p>
-    );
-  }
-  const groups = groupOverviewSources(ov.sources);
-  const shown = groups.slice(0, OVERVIEW_SOURCE_LIMIT);
-  const rest = groups.length - shown.length;
+/** 항목 목록 — 라벨(dt) + 본문(dd). 비교 화면 "더 보기" 도 이 목록을 쓴다 */
+export function OverviewPoints({ points, id }: { points: OverviewPoint[]; id?: string }) {
+  if (points.length === 0) return null;
   return (
-    <p className="ov-src" data-testid={testId} data-basis="catalog">
-      근거:{' '}
-      {shown.map((g, gi) => (
-        <Fragment key={g.url}>
-          {gi > 0 && ', '}
-          {g.pages.length === 0 ? (
-            <ExternalLink href={g.url} className="ov-src__link">
-              {g.title}
-              <span aria-hidden="true"> ↗</span>
-            </ExternalLink>
-          ) : (
-            <span className="ov-src__item">
-              {g.title} p.
-              {g.pages.map((p, pi) => (
-                <Fragment key={p}>
-                  {pi > 0 && '·'}
-                  <ExternalLink href={pageHref(g.url, p)} className="ov-src__link" title={`${g.title} ${p}쪽`}>
-                    <span className="visually-hidden">{g.title} </span>
-                    {p}
-                    <span className="visually-hidden">쪽</span>
-                  </ExternalLink>
-                </Fragment>
-              ))}
-              <span aria-hidden="true"> ↗</span>
-            </span>
-          )}
-        </Fragment>
+    <dl className="ov-points" id={id} data-testid="overview-points">
+      {points.map((p, i) => (
+        <div className="ov-point" key={i}>
+          <dt className="ov-point__label">{p.label}</dt>
+          <dd className="ov-point__text">{p.text}</dd>
+        </div>
       ))}
-      {rest > 0 && ` 외 ${rest}건`}
-    </p>
+    </dl>
   );
 }
 
-/** 계통에서 하는 일 — 상세 설명 문단 + 근거 줄 (overview 가 없으면 description 한 줄만) */
+/** 계통에서 하는 일 — 요약 문단 + 항목 목록 (overview 가 없으면 description 한 줄만) */
 export default function EquipmentOverview({ eq, className = '', testId }: { eq: EquipmentType; className?: string; testId?: string }) {
+  const { summary, points } = overviewParts(eq);
   return (
-    <>
-      <p className={`ov-text ${className}`.trim()} data-testid={testId} data-overview={eq.overview ? 'true' : 'false'}>
-        {overviewText(eq)}
+    <div className={`ov ${className}`.trim()} data-testid={testId} data-overview={eq.overview ? 'true' : 'false'}>
+      <p className="ov-summary" data-testid="overview-summary">
+        {summary}
       </p>
-      <OverviewSources eq={eq} />
-    </>
+      <OverviewPoints points={points} />
+    </div>
   );
 }

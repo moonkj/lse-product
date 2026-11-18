@@ -22,6 +22,8 @@ export default function NeighborChips({ node, onSelect }: { node: NodeItem; onSe
           {list.map((n) => {
             const name = n.node.eq.abbr ?? n.node.eq.name;
             const refText = n.node.ref ? ` (참조${n.node.refLabel ? ` · ${n.node.refLabel}` : ''})` : '';
+            // 접근 이름은 화면 글자(약어·참조·연결 종류)로 시작 — label-content-name-mismatch 방지, 약어면 기기명을 덧붙인다
+            const visible = `${name}${refText}${KIND_SUFFIX[n.kind]}`;
             return (
               <button
                 key={n.node.id}
@@ -31,7 +33,7 @@ export default function NeighborChips({ node, onSelect }: { node: NodeItem; onSe
                 data-testid={`neighbor-chip-${n.node.id}`}
                 onClick={() => onSelect(n.node.id)}
                 title={n.via ? `${n.via} 경유${n.sibling ? ' · 같은 모선에서 갈라진 회로' : ''}` : undefined}
-                aria-label={`${n.node.eq.name}${refText}, ${COVERAGE_LABELS[n.node.coverage]}${n.via ? `, ${n.via} 경유` : ''} — 선택`}
+                aria-label={`${visible}${name !== n.node.eq.name ? ` ${n.node.eq.name}` : ''}, ${COVERAGE_LABELS[n.node.coverage]}${n.via ? `, ${n.via} 경유` : ''} — 선택`}
               >
                 {n.arrow && <span aria-hidden="true">{n.arrow} </span>}
                 {name}

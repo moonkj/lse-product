@@ -73,8 +73,18 @@ export const OverviewSourceSchema = z.object({
   url: httpsUrl,
   page: z.number().int().positive().optional(),
 });
-export const EquipmentOverviewSchema = z.object({
+export const OverviewPointSchema = z.object({
+  /** 항목 라벨 — 역할·동작 원리·선정 포인트·LS ELECTRIC 제품·패널 구성 */
+  label: z.string().min(1),
   text: z.string().min(1),
+});
+export type OverviewPoint = z.infer<typeof OverviewPointSchema>;
+export const EquipmentOverviewSchema = z.object({
+  /** 요약 한두 문장 */
+  summary: z.string().min(1),
+  /** 항목별 설명 (라벨 + 본문) */
+  points: z.array(OverviewPointSchema).min(1),
+  /** basis·sources 는 데이터 추적용 — 화면에는 쓰지 않는다 */
   /** catalog = 카탈로그·데이터시트·공식 제품 페이지 근거, general = 일반 기술 설명(자사 자료 없음) */
   basis: z.enum(['catalog', 'general']),
   sources: z.array(OverviewSourceSchema),

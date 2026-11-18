@@ -1,14 +1,15 @@
-import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { DOC_TYPE_LABELS, type EquipmentType, type Product, type ProductSpecs, type SpecVariant } from '../lib/schema';
 import { getData, useData, type SpecsMap } from '../data/load';
 import { SPECS_ERROR_TEXT, useSpecs, type SpecsState } from '../components/compare/useSpecs';
 import CoverageBadge from '../components/common/CoverageBadge';
 import ExternalLink from '../components/common/ExternalLink';
+import { OverviewPoints } from '../components/common/EquipmentOverview';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import { CATEGORY_LABELS, COVERAGE_LABELS, confidenceLabel, gapConfidence, pageTitle } from '../lib/labels';
 import { layerTitle } from '../lib/diagram/model';
-import { overviewText } from '../lib/overview';
+import { overviewParts, overviewText } from '../lib/overview';
 import { equipmentForProduct, productsForEquipment } from '../lib/pages/catalog';
 import {
   MAIN_DOC_TYPES,
@@ -104,9 +105,11 @@ function FoldList({ items }: { items: { key: string; node: ReactNode }[] }) {
   );
 }
 
-/** 긴 설명 4줄 clamp — 실제로 넘칠 때만 "더 보기" 토글 */
-function ClampText({ text }: { text: string }) {
+/** 설명 — 요약(4줄 clamp)을 기본으로, "더 보기" 를 누르면 항목(points)을 펼친다. 항목이 없으면 넘칠 때만 토글 */
+function OverviewClamp({ eq }: { eq: EquipmentType }) {
   const ref = useRef<HTMLParagraphElement>(null);
+  const listId = useId();
+  const { summary, points } = overviewParts(eq);
   const [open, setOpen] = useState(false);
   const [overflow, setOverflow] = useState(false);
   useEffect(() => {
@@ -118,14 +121,22 @@ function ClampText({ text }: { text: string }) {
     const ro = new ResizeObserver(check);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [text, open]);
+  }, [summary, open]);
   return (
     <>
       <p ref={ref} className={`cmp-text${open ? '' : ' cmp-text--clamp'}`} data-testid="compare-desc-text">
-        {text}
+        {summary}
       </p>
-      {(overflow || open) && (
-        <button type="button" className="cmp-more" aria-expanded={open} data-testid="compare-desc-more" onClick={() => setOpen((v) => !v)}>
+      {open && <OverviewPoints points={points} id={listId} />}
+      {(points.length > 0 || overflow || open) && (
+        <button
+          type="button"
+          className="cmp-more"
+          aria-expanded={open}
+          aria-controls={open && points.length > 0 ? listId : undefined}
+          data-testid="compare-desc-more"
+          onClick={() => setOpen((v) => !v)}
+        >
           {open ? '접기' : '더 보기'}
         </button>
       )}
@@ -271,11 +282,8 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
     {
       key: 'description',
       label: '설명',
-      // 상세 설명(overview) — 열이 길어지지 않게 4줄 clamp + 더 보기. 차이 비교 키는 본문 전체
-      cells: list.map((eq) => {
-        const t = overviewText(eq);
-        return { text: t, node: <ClampText text={t} /> };
-      }),
+      // 상세 설명(overview) — 요약 기본 + 더 보기로 항목 펼침. 차이 비교 키는 요약 + 항목 전체
+      cells: list.map((eq) => ({ text: overviewText(eq), node: <OverviewClamp eq={eq} /> })),
     },
     {
       key: 'upstream',

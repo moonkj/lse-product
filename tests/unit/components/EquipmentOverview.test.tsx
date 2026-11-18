@@ -1,5 +1,5 @@
 /**
- * EquipmentOverview 근거 줄 — 같은 URL 쪽 묶음, 최대 3묶음 + "외 N건", overview 없으면 description
+ * EquipmentOverview — 요약 문단 + 항목(dt 라벨 · dd 본문), 근거 줄 없음, overview 없으면 description 한 줄
  */
 import { describe, it, expect, afterEach } from 'vitest';
 import { render, screen, cleanup, within } from '@testing-library/react';
@@ -11,28 +11,51 @@ afterEach(cleanup);
 
 const base = getData().equipmentTypes[0];
 const mk = (overview?: EquipmentType['overview']): EquipmentType => ({ ...base, description: '한 줄 요약', overview });
-const U = (n: number) => `https://www.ls-electric.com/doc${n}.pdf`;
 
 describe('EquipmentOverview', () => {
-  it('같은 URL 쪽은 "p.2·5" 로 묶고 각 쪽은 #page=N 링크', () => {
-    render(<EquipmentOverview eq={mk({ text: '본문', basis: 'catalog', sources: [{ title: '[Susol VCB] 카탈로그', url: U(1), page: 5 }, { title: '[Susol VCB] 카탈로그', url: U(1), page: 2 }] })} />);
-    const src = screen.getByTestId('overview-sources');
-    expect(src.textContent).toMatch(/근거: \[Susol VCB\] 카탈로그 p\.\[Susol VCB\] 카탈로그 2쪽 \(새 탭에서 열림\)·/);
-    const hrefs = within(src).getAllByRole('link').map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual([`${U(1)}#page=2`, `${U(1)}#page=5`]);
+  it('요약 문단을 먼저, 그 아래 항목 라벨(dt)·본문(dd)', () => {
+    render(
+      <EquipmentOverview
+        testId="t"
+        eq={mk({
+          summary: '요약 문장',
+          points: [
+            { label: '역할', text: '역할 본문' },
+            { label: '선정 포인트', text: '선정 본문' },
+          ],
+          basis: 'catalog',
+          sources: [{ title: '카탈로그', url: 'https://www.ls-electric.com/a.pdf', page: 2 }],
+        })}
+      />,
+    );
+    const root = screen.getByTestId('t');
+    expect(root).toHaveAttribute('data-overview', 'true');
+    expect(root.firstElementChild).toBe(screen.getByTestId('overview-summary'));
+    expect(screen.getByTestId('overview-summary')).toHaveTextContent('요약 문장');
+    const dl = screen.getByTestId('overview-points');
+    expect(dl.tagName).toBe('DL');
+    expect([...dl.querySelectorAll('dt')].map((d) => d.textContent)).toEqual(['역할', '선정 포인트']);
+    expect([...dl.querySelectorAll('dd')].map((d) => d.textContent)).toEqual(['역할 본문', '선정 본문']);
   });
 
-  it('출처 묶음 4개 이상 → 3개만 + "외 N건"', () => {
-    const sources = [1, 2, 3, 4, 5].map((n) => ({ title: `문서${n}`, url: U(n) }));
-    render(<EquipmentOverview eq={mk({ text: '본문', basis: 'catalog', sources })} />);
-    const src = screen.getByTestId('overview-sources');
-    expect(within(src).getAllByRole('link')).toHaveLength(3);
-    expect(src).toHaveTextContent(/외 2건$/);
+  it('근거 줄·출처 링크는 보이지 않는다', () => {
+    render(
+      <EquipmentOverview
+        testId="t"
+        eq={mk({ summary: '요약', points: [{ label: '역할', text: '본문' }], basis: 'catalog', sources: [{ title: '카탈로그', url: 'https://www.ls-electric.com/a.pdf' }] })}
+      />,
+    );
+    const root = screen.getByTestId('t');
+    expect(root).not.toHaveTextContent('근거');
+    expect(root).not.toHaveTextContent('일반 기술 설명');
+    expect(within(root).queryAllByRole('link')).toHaveLength(0);
+    expect(screen.queryByTestId('overview-sources')).toBeNull();
   });
 
-  it('overview 없으면 description 만, 근거 줄 없음', () => {
+  it('overview 없으면 description 만, 항목 없음', () => {
     render(<EquipmentOverview eq={mk(undefined)} testId="t" />);
     expect(screen.getByTestId('t')).toHaveTextContent('한 줄 요약');
-    expect(screen.queryByTestId('overview-sources')).toBeNull();
+    expect(screen.getByTestId('t')).toHaveAttribute('data-overview', 'false');
+    expect(screen.queryByTestId('overview-points')).toBeNull();
   });
 });

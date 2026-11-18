@@ -124,33 +124,27 @@ describe('UX 라운드 U — DetailPanel', () => {
   });
 });
 
-// ── 상세 설명(overview) — 펼친 패널은 overview 문단 + 근거 줄 ──
-const catalogPaged = model.nodes.find((n) => n.eq.overview?.basis === 'catalog' && n.eq.overview.sources.some((s) => s.page));
-const generalNode = model.nodes.find((n) => n.eq.overview?.basis === 'general');
+// ── 상세 설명(overview) — 펼친 패널은 요약 + 항목, 근거 줄 없음 ──
+const withOverview = model.nodes.find((n) => n.eq.overview && n.eq.overview.sources.length > 0) ?? model.nodes.find((n) => n.eq.overview);
+const missingOvNode = model.nodes.find((n) => n.eq.coverage === 'missing' && n.eq.overview);
 
 describe('상세 설명 overview — DetailPanel', () => {
-  it.skipIf(!catalogPaged)('펼친 패널 설명 자리 = overview 본문(description 아님), 근거 쪽 링크는 url#page=N 새 탭', () => {
-    const n = catalogPaged!;
+  it.skipIf(!withOverview)('펼친 패널 설명 자리 = 요약 + 항목 라벨·본문, 근거 줄 없음', () => {
+    const n = withOverview!;
     renderAt(n.id);
     const desc = screen.getByTestId('detail-desc');
-    expect(desc).toHaveTextContent(n.eq.overview!.text);
     expect(desc).toHaveAttribute('data-overview', 'true');
-    const src = screen.getByTestId('overview-sources');
-    expect(src).toHaveAttribute('data-basis', 'catalog');
-    expect(src).toHaveTextContent(/^근거:/);
-    const paged = n.eq.overview!.sources.find((s) => s.page)!;
-    const link = within(src)
-      .getAllByRole('link')
-      .find((a) => a.getAttribute('href') === `${paged.url}#page=${paged.page}`);
-    expect(link).toBeDefined();
-    expect(link).toHaveAttribute('target', '_blank');
-    expect(link!.getAttribute('rel')).toMatch(/noopener/);
+    expect(within(desc).getByTestId('overview-summary')).toHaveTextContent(n.eq.overview!.summary);
+    const dl = within(desc).getByTestId('overview-points');
+    expect([...dl.querySelectorAll('dt')].map((d) => d.textContent)).toEqual(n.eq.overview!.points.map((p) => p.label));
+    expect([...dl.querySelectorAll('dd')].map((d) => d.textContent)).toEqual(n.eq.overview!.points.map((p) => p.text));
+    expect(screen.queryByTestId('overview-sources')).toBeNull();
+    expect(desc).not.toHaveTextContent(/근거:|일반 기술 설명/);
   });
 
-  it.skipIf(!generalNode)('general 근거 → "일반 기술 설명", 링크 없음', () => {
-    renderAt(generalNode!.id);
-    const src = screen.getByTestId('overview-sources');
-    expect(src).toHaveTextContent('일반 기술 설명');
-    expect(within(src).queryAllByRole('link')).toHaveLength(0);
+  it.skipIf(!missingOvNode)('자사 제품이 없는 기기(missing)에는 "LS ELECTRIC 제품" 항목이 없다', () => {
+    renderAt(missingOvNode!.id);
+    const dl = within(screen.getByTestId('detail-desc')).getByTestId('overview-points');
+    expect([...dl.querySelectorAll('dt')].map((d) => d.textContent)).not.toContain('LS ELECTRIC 제품');
   });
 });

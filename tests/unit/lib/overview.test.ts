@@ -3,28 +3,18 @@
  */
 import { describe, it, expect } from 'vitest';
 import { getData } from '../../../src/data/load';
-import { groupOverviewSources, overviewText } from '../../../src/lib/overview';
+import { overviewParts, overviewText } from '../../../src/lib/overview';
 import { buildSearchIndexes } from '../../../src/lib/searchRank';
 
 describe('overview 헬퍼', () => {
-  it('overviewText: overview 가 있으면 본문, 없으면 description', () => {
-    expect(overviewText({ description: '요약', overview: { text: '본문', basis: 'general', sources: [] } })).toBe('본문');
-    expect(overviewText({ description: '요약' })).toBe('요약');
+  const ov = { summary: '요약', points: [{ label: '역할', text: '본문1' }, { label: '선정 포인트', text: '본문2' }], basis: 'general' as const, sources: [] };
+  it('overviewText: 요약 + "라벨: 본문" 항목 전체, 없으면 description', () => {
+    expect(overviewText({ description: 'd', overview: ov })).toBe('요약 역할: 본문1 선정 포인트: 본문2');
+    expect(overviewText({ description: 'd' })).toBe('d');
   });
-
-  it('groupOverviewSources: 같은 URL 은 쪽을 묶고(정렬·중복 제거), 처음 나온 순서 유지', () => {
-    const a = 'https://example.com/a.pdf';
-    const b = 'https://example.com/b';
-    const g = groupOverviewSources([
-      { title: 'A', url: a, page: 5 },
-      { title: 'B', url: b },
-      { title: 'A', url: a, page: 2 },
-      { title: 'A', url: a, page: 5 },
-    ]);
-    expect(g).toEqual([
-      { title: 'A', url: a, pages: [2, 5] },
-      { title: 'B', url: b, pages: [] },
-    ]);
+  it('overviewParts: 화면용 요약·항목, 없으면 description + 빈 항목', () => {
+    expect(overviewParts({ description: 'd', overview: ov })).toEqual({ summary: '요약', points: ov.points });
+    expect(overviewParts({ description: 'd' })).toEqual({ summary: 'd', points: [] });
   });
 });
 
@@ -44,7 +34,7 @@ describe('검색 색인', () => {
     const json = idx.eq.getIndex().toJSON() as { keys: unknown[]; records: unknown[] };
     const keys = JSON.stringify(json.keys);
     expect(keys).not.toContain('overview');
-    const sample = getData().equipmentTypes.find((e) => e.overview && e.overview.text !== e.description)!;
-    expect(JSON.stringify(json.records)).not.toContain(sample.overview!.text.slice(0, 40));
+    const sample = getData().equipmentTypes.find((e) => e.overview && e.overview.points.length > 0)!;
+    expect(JSON.stringify(json.records)).not.toContain(sample.overview!.points[0].text.slice(0, 30));
   });
 });

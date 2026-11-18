@@ -1,22 +1,22 @@
 /**
- * 기기 상세 설명(overview) — "계통에서 하는 일" 을 카탈로그·데이터시트 근거 문단으로 표시 (2026-11-18 사용자 요청)
- * 펼친 패널·제품 상세·기기 상세·비교 화면에 overview 본문 + 근거 줄(쪽 링크 url#page=N), 접힌 모바일 시트는 description 요약 유지.
+ * 기기 상세 설명(overview) — "계통에서 하는 일" 을 요약 문단 + 항목(라벨·본문)으로 표시 (2026-11-18 설명 전수 재정리, 출처 줄 삭제)
+ * 펼친 패널·제품 상세·기기 상세에 요약 + 항목, 비교 화면은 요약 기본 + 더 보기로 항목, 접힌 모바일 시트는 description 한 줄 유지.
  * 기기는 src/data/*.json 에서 조건으로 고른다.
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 
-interface Src {
-  title: string;
-  url: string;
-  page?: number;
+interface Point {
+  label: string;
+  text: string;
 }
 interface Eq {
   id: string;
   name: string;
   description: string;
-  overview?: { text: string; basis: 'catalog' | 'general'; sources: Src[] };
+  coverage: string;
+  overview?: { summary: string; points: Point[] };
   productIds?: string[];
   lseCategoryCodes: string[];
 }
@@ -31,15 +31,17 @@ const equipment = load<Eq[]>('equipment-types.json');
 const nodes = load<{ nodes: DNode[] }>('diagram.json').nodes.filter((n) => (n.kind ?? 'equipment') === 'equipment' && !n.ref && n.equipmentTypeId);
 const products = load<{ id: string; name: string; categoryCode: string }[]>('products.json');
 
-const paged = (e: Eq) => e.overview?.basis === 'catalog' && e.overview.sources.some((s) => s.page);
-/** 쪽 근거가 있고 계통도 타일이 있는 기기 (VCB 우선) */
-const pick = [...equipment].sort((a, b) => Number(b.id === 'vcb') - Number(a.id === 'vcb')).find((e) => paged(e) && nodes.some((n) => n.equipmentTypeId === e.id));
+const onDiagram = (e: Eq) => nodes.some((n) => n.equipmentTypeId === e.id);
+/** 계통도 타일이 있는 기기 (VCB 우선) */
+const pick = [...equipment].sort((a, b) => Number(b.id === 'vcb') - Number(a.id === 'vcb')).find((e) => e.overview && onDiagram(e));
 const pickNode = pick && nodes.find((n) => n.equipmentTypeId === pick.id)!;
-const firstPage = pick?.overview!.sources.find((s) => s.page);
-/** 제품 상세 — 쪽 근거 기기에 연결된 제품 (카테고리 접두사 규칙) */
+/** 자사 제품이 없는 기기 (coverage missing) */
+const missing = equipment.find((e) => e.coverage === 'missing' && e.overview && onDiagram(e));
+const missingNode = missing && nodes.find((n) => n.equipmentTypeId === missing.id)!;
+/** 제품 상세 — overview 기기에 연결된 제품 (ACB 우선, 카테고리 접두사 규칙) */
 const prodCase = (() => {
   for (const e of [...equipment].sort((a, b) => Number(b.id === 'acb') - Number(a.id === 'acb'))) {
-    if (!paged(e)) continue;
+    if (!e.overview) continue;
     const p = products.find((x) => e.productIds?.includes(x.id)) ?? products.find((x) => e.lseCategoryCodes.some((c) => x.categoryCode.startsWith(c)));
     if (p) return { eq: e, product: p };
   }
@@ -49,61 +51,72 @@ const prodCase = (() => {
 const tid = (page: Page, id: string) => page.locator(`[data-testid="${id}"]`);
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim();
 
-async function expectPageLink(_page: Page, scope: ReturnType<typeof tid>, s: Src) {
-  const a = scope.locator(`a[href="${s.url}#page=${s.page}"]`).first();
-  await expect(a).toBeVisible();
-  await expect(a).toHaveAttribute('target', '_blank');
-  await expect(a).toHaveAttribute('rel', /noopener/);
+/** 요약 + 항목 라벨(dt)·본문(dd)이 보이고 근거 줄은 없다 */
+async function expectOverview(scope: Locator, eq: Eq) {
+  await expect(scope.getByTestId('overview-summary')).toHaveText(norm(eq.overview!.summary));
+  const dl = scope.getByTestId('overview-points');
+  await expect(dl).toBeVisible();
+  await expect(dl.locator('dt')).toHaveText(eq.overview!.points.map((p) => p.label));
+  await expect(dl.locator('dd')).toHaveText(eq.overview!.points.map((p) => norm(p.text)));
+  await expect(scope.getByTestId('overview-sources')).toHaveCount(0);
+  await expect(scope).not.toContainText('근거:');
+  await expect(scope).not.toContainText('일반 기술 설명');
 }
 
 test.describe('상세 설명 overview', () => {
-  test.skip(!pick || !pickNode || !firstPage, '쪽 근거가 있는 기기 없음');
+  test.skip(!pick || !pickNode, 'overview 기기 없음');
 
-  test('데스크톱 패널: 설명 자리에 overview 문단 + 근거 쪽 링크(#page=N)', async ({ page }) => {
+  test('데스크톱 패널: 설명 자리에 요약 + 항목, 근거 줄 없음', async ({ page }) => {
     await page.goto(`./#/?node=${pickNode!.id}`);
     const p = tid(page, 'detail-panel');
     await expect(p).toBeVisible();
-    const desc = p.getByTestId('detail-desc');
-    await expect(desc).toHaveText(norm(pick!.overview!.text));
-    const src = p.getByTestId('overview-sources');
-    await expect(src).toContainText('근거:');
-    await expectPageLink(page, src, firstPage!);
+    await expectOverview(p.getByTestId('detail-desc'), pick!);
+    await expect(p.getByTestId('overview-sources')).toHaveCount(0);
   });
 
-  test('기기 상세: 계통에서 하는 일 = overview + 근거', async ({ page }) => {
+  test('자사 제품이 없는 기기(missing)에는 "LS ELECTRIC 제품" 항목이 없다', async ({ page }) => {
+    test.skip(!missingNode, 'missing 기기 없음');
+    await page.goto(`./#/?node=${missingNode!.id}`);
+    const dl = tid(page, 'detail-panel').getByTestId('overview-points');
+    await expect(dl).toBeVisible();
+    await expect(dl.locator('dt', { hasText: 'LS ELECTRIC 제품' })).toHaveCount(0);
+  });
+
+  test('기기 상세: 계통에서 하는 일 = 요약 + 항목', async ({ page }) => {
     await page.goto(`./#/equipment/${pick!.id}`);
-    await expect(tid(page, 'equipment-role-text')).toHaveText(norm(pick!.overview!.text));
-    await expectPageLink(page, tid(page, 'overview-sources'), firstPage!);
+    await expectOverview(tid(page, 'equipment-role-text'), pick!);
   });
 
-  test('제품 상세: 계통에서 하는 일 · 기기 = overview + 근거', async ({ page }) => {
+  test('제품 상세: 계통에서 하는 일 · 기기 = 요약 + 항목', async ({ page }) => {
     test.skip(!prodCase, '제품 연결 기기 없음');
     await page.goto(`./#/product/${prodCase!.product.id}`);
-    const role = page.locator('.pg-role').filter({ has: tid(page, 'product-role-text') }).first();
+    const role = tid(page, 'product-role-text').first();
     await expect(role).toBeVisible();
-    const text = await role.getByTestId('product-role-text').textContent();
-    const eq = equipment.find((e) => e.overview && norm(e.overview.text) === norm(text ?? ''));
-    expect(eq, '제품 상세 설명이 어떤 기기의 overview 와 일치').toBeDefined();
-    const s = eq!.overview!.sources.find((x) => x.page);
-    if (s) await expectPageLink(page, role.getByTestId('overview-sources'), s);
+    const summary = await role.getByTestId('overview-summary').textContent();
+    const eq = equipment.find((e) => e.overview && norm(e.overview.summary) === norm(summary ?? ''));
+    expect(eq, '제품 상세 요약이 어떤 기기의 overview 와 일치').toBeDefined();
+    await expectOverview(role, eq!);
+    await expect(page.getByTestId('overview-sources')).toHaveCount(0);
   });
 
-  test('비교: 설명 행은 overview, 4줄 clamp + 더 보기 토글', async ({ page }) => {
-    const two = equipment.filter((e) => e.overview && e.overview.text.length > 150).slice(0, 2);
-    test.skip(two.length < 2, '긴 설명 기기 부족');
+  test('비교: 설명 행은 요약 기본, 더 보기로 항목 펼침', async ({ page }) => {
+    const two = equipment.filter((e) => e.overview && e.overview.points.length > 0).slice(0, 2);
+    test.skip(two.length < 2, '기기 부족');
     await page.goto(`./#/compare?type=equipment&ids=${two.map((e) => e.id).join(',')}`);
     const row = tid(page, 'compare-row-description');
     await expect(row).toBeVisible();
-    const t = row.getByTestId('compare-desc-text').first();
-    await expect(t).toHaveText(norm(two[0].overview!.text));
-    const clampedH = (await t.boundingBox())!.height;
-    const lh = await t.evaluate((el) => parseFloat(getComputedStyle(el).lineHeight));
-    expect(clampedH).toBeLessThanOrEqual(lh * 4 + 2);
+    await expect(row.getByTestId('compare-desc-text').first()).toHaveText(norm(two[0].overview!.summary));
+    await expect(row.getByTestId('overview-points')).toHaveCount(0);
     const more = row.getByTestId('compare-desc-more').first();
     await expect(more).toHaveAttribute('aria-expanded', 'false');
     await more.click();
     await expect(more).toHaveAttribute('aria-expanded', 'true');
-    expect((await t.boundingBox())!.height).toBeGreaterThan(clampedH);
+    const dl = row.getByTestId('overview-points').first();
+    await expect(dl).toBeVisible();
+    await expect(dl.locator('dt')).toHaveText(two[0].overview!.points.map((p) => p.label));
+    await expect(row).not.toContainText('근거:');
+    await more.click();
+    await expect(row.getByTestId('overview-points')).toHaveCount(0);
   });
 });
 
@@ -111,16 +124,21 @@ test.describe('모바일 시트 390×844', () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   test.skip(!pick || !pickNode, '기기 없음');
 
-  test('접힌 시트 요약은 description (overview·근거 없음), 펼치면 overview + 근거', async ({ page }) => {
+  test('접힌 시트 요약은 description (overview 없음), 펼치면 요약 + 항목(라벨 위·본문 아래)', async ({ page }) => {
     await page.goto(`./#/?node=${pickNode!.id}`);
     const p = tid(page, 'detail-panel');
     await expect(p).toHaveAttribute('data-sheet', 'bottom');
     await expect(p).not.toHaveClass(/is-expanded/);
     await expect(p.getByTestId('detail-desc')).toHaveText(norm(pick!.description));
-    await expect(p.getByTestId('overview-sources')).toHaveCount(0);
+    await expect(p.getByTestId('overview-summary')).toHaveCount(0);
+    await expect(p.getByTestId('overview-points')).toHaveCount(0);
     await p.locator('.dp-expand').click();
     await expect(p).toHaveClass(/is-expanded/);
-    await expect(p.getByTestId('detail-desc')).toHaveText(norm(pick!.overview!.text));
-    await expect(p.getByTestId('overview-sources')).toBeVisible();
+    await expectOverview(p.getByTestId('detail-desc'), pick!);
+    // 좁은 화면 — 라벨 아래로 본문을 쌓는다
+    const first = p.getByTestId('overview-points').locator('.ov-point').first();
+    const dt = (await first.locator('dt').boundingBox())!;
+    const dd = (await first.locator('dd').boundingBox())!;
+    expect(dd.y).toBeGreaterThanOrEqual(dt.y + dt.height - 1);
   });
 });

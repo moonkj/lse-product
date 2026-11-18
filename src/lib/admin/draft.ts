@@ -37,7 +37,13 @@ export function canonicalEquipment(e: EquipmentType): EquipmentType {
     description: e.description,
   };
   // overview(상세 설명)는 description 바로 뒤 — 원본 파일 키 순서 유지 (관리자 저장 시 보존)
-  if (e.overview) out.overview = { text: e.overview.text, basis: e.overview.basis, sources: e.overview.sources.map((s) => ({ ...s })) };
+  if (e.overview)
+    out.overview = {
+      summary: e.overview.summary,
+      points: e.overview.points.map((p) => ({ label: p.label, text: p.text })),
+      basis: e.overview.basis,
+      sources: e.overview.sources.map((s) => ({ ...s })),
+    };
   out.learnPoints = [...e.learnPoints];
   out.coverage = e.coverage;
   out.lseCategoryCodes = [...e.lseCategoryCodes];
