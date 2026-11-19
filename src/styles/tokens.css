@@ -108,21 +108,27 @@
   --cov-on-color: #ffffff;
 
   /* 계층 L1~L7 + REN/MON 밴드 배경 — 옅은 블루·그레이 계열로 낮추되 계층끼리 색조를 조금씩 달리 */
-  --band-l1: #eeedf7;
-  --band-l2: #eaeef8;
-  --band-l3: #e6f0fa;
-  --band-l4: #e5f2f5;
-  --band-l5: #e8f3ef;
-  --band-l6: #f1f2ea;
-  --band-l7: #f4f0eb;
-  --band-ren: #eaf4ec;
-  --band-mon: #eef0f4;
+  --band-l1: #e6e2f6;
+  --band-l2: #dee6f8;
+  --band-l3: #daeaf8;
+  --band-l4: #d8eef0;
+  --band-l5: #dcf0e3;
+  --band-l6: #edeed9;
+  --band-l7: #f5e9dc;
+  --band-ren: #e5f2d4;
+  --band-mon: #e3e7ef;
   --band-label: #3d4450;
 
   /* 계통도 노드·선택·Gap */
   --node-bg: #ffffff;
   --node-selected-bg: #e6f0fa;
   --color-selected: #0068b7;
+  /* 흐름(D2 색 재검토 2026-11-19): 연한 트랙 위 진한 펄스, 빛 번짐. 멈춘 선택선 = 네이비 */
+  --flow-track: #b9d6f0;
+  --flow-pulse: #0068b7;
+  --flow-glow: rgb(0 104 183 / 0.55);
+  --flow-glow-r: 3px;
+  --color-edge-selected: #00337f;
   --color-line-bus: #14171c;
   --band-divider: rgb(0 51 127 / 0.08);
   --cov-owned-text: #146c33;
@@ -226,20 +232,25 @@
   --cov-na-bg: #232a33;
   --cov-on-color: #0b1220;
 
-  --band-l1: #1d1c2b;
-  --band-l2: #1a1f30;
-  --band-l3: #172334;
-  --band-l4: #162830;
-  --band-l5: #17282a;
-  --band-l6: #1d2524;
-  --band-l7: #232427;
-  --band-ren: #19271e;
-  --band-mon: #1c2029;
+  --band-l1: #25213b;
+  --band-l2: #1e2741;
+  --band-l3: #1a2b40;
+  --band-l4: #17303a;
+  --band-l5: #1a3127;
+  --band-l6: #2a2c1d;
+  --band-l7: #33291f;
+  --band-ren: #22301a;
+  --band-mon: #232833;
   --band-label: #c9ced6;
 
   --node-bg: #171b22;
   --node-selected-bg: #1a2740;
   --color-selected: #7fb2ff;
+  --flow-track: #1e3a5f;
+  --flow-pulse: #8cc4f0;
+  --flow-glow: rgb(140 196 240 / 0.7);
+  --flow-glow-r: 4px;
+  --color-edge-selected: #b0ccfa;
   --color-line-bus: #dfe4ea;
   --band-divider: rgb(255 255 255 / 0.07);
   --cov-owned-text: #7ee2a0;

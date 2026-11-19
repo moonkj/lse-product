@@ -13,21 +13,25 @@
 /* 흐르는 선 밑의 실선(전력선 색) — 아래 Edges 가 흐려져도 흐름 경로는 또렷하게 */
 .dflow__track {
   fill: none;
-  /* 흐름 경로 = CI 블루 굵은 선, 그 위로 흰 대시가 흐름(마켓뉴스 스플래시의 '전류' 연출) */
-  stroke: var(--color-selected);
-  stroke-width: 4px;
+  /* 연한 트랙(6px) 위로 진한 펄스가 움직임 — D2 색 재검토 */
+  stroke: var(--flow-track);
+  stroke-width: 6px;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .dflow__path {
   fill: none;
-  stroke: var(--flow-spark, #ffffff);
-  stroke-width: 2.5px;
+  stroke: var(--flow-pulse);
+  stroke-width: 4px;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: var(--flow-dash) var(--flow-gap);
+  filter: drop-shadow(0 0 var(--flow-glow-r) var(--flow-glow));
   animation: dflow-move var(--flow-duration, 0.75s) linear infinite;
+}
+@media (prefers-reduced-motion: reduce), print {
+  .dflow__path { filter: none; }
 }
 
 .dflow__path--rev {
@@ -146,4 +150,13 @@
   .dflow-toggle {
     display: none;
   }
+}
+
+/* 모선 위 흐름: 모선(4px)보다 굵은 트랙으로 덮어 같은 경로로 보이게 */
+.dflow__track--bus {
+  stroke-width: 8px;
+  stroke-linecap: butt;
+}
+.dflow__path--bus {
+  stroke-width: 4px;
 }

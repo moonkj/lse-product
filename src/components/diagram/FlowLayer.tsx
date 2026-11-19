@@ -38,6 +38,22 @@ export default function FlowLayer() {
     [on, all, mode, model, dirs, selectedId, busIds],
   );
 
+  // 흐름이 지나가는 모선(데이터 모선은 연결선이 아니라 별도 요소) — 같은 트랙·펄스로 그림 (2026-11-19 사용자: 380V 모선만 검은색)
+  const busPaths = useMemo(() => {
+    if (flows.length === 0) return [];
+    const byId = new Map(model.edges.map((e) => [e.id, e]));
+    const touched = new Set<string>();
+    for (const f of flows) {
+      const e = byId.get(f.id);
+      if (!e) continue;
+      if (busIds.has(e.from)) touched.add(e.from);
+      if (busIds.has(e.to)) touched.add(e.to);
+    }
+    return model.busNodes
+      .filter((b) => touched.has(b.id))
+      .map((b) => ({ id: b.id, d: `M${b.x - b.width / 2} ${b.y}H${b.x + b.width / 2}` }));
+  }, [flows, model, busIds]);
+
   if (!on || mode === 'gap') return null;
 
   // 대시·간격을 배율로 나눠 화면 크기를 고정 → 한 주기 시간도 배율과 무관
@@ -61,8 +77,14 @@ export default function FlowLayer() {
       data-scope={selectedId ? 'node' : 'all'}
       data-paused={hidden ? 'true' : undefined}
     >
+      {busPaths.map((b) => (
+        <path key={`bt-${b.id}`} className="dflow__track dflow__track--bus" d={b.d} />
+      ))}
       {flows.map((f) => (
         <path key={`t-${f.id}`} className="dflow__track" d={f.d} />
+      ))}
+      {busPaths.map((b) => (
+        <path key={`bp-${b.id}`} className="dflow__path dflow__path--bus" d={b.d} data-flow-bus={b.id} />
       ))}
       {flows.map((f) =>
         f.dir === 'bi' ? null : (

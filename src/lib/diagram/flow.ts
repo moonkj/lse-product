@@ -17,9 +17,9 @@ import type { Pt } from './router';
 export type FlowDir = NonNullable<DiagramEdge['flow']>;
 
 /** 대시 길이·간격(화면 px)과 속도(화면 px/s) — 속도는 시안 비교용으로 24(D3) / 48(D2)도 가능 */
-export const FLOW_DASH = 10;
-export const FLOW_GAP = 14;
-export const FLOW_SPEED = 32; // 24 · 48 비교용
+export const FLOW_DASH = 16;
+export const FLOW_GAP = 20;
+export const FLOW_SPEED = 56; // D2 색 재검토(2026-11-19): 한눈에 보이게 초당 56px
 /** 한 주기(대시+간격)를 지나는 시간(초) — 배율과 무관하게 일정 (대시·간격을 배율로 나눠 화면 크기를 고정하므로) */
 export const FLOW_PERIOD_SEC = (FLOW_DASH + FLOW_GAP) / FLOW_SPEED;
 
