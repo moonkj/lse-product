@@ -93,7 +93,7 @@ describe('실제 diagram.json', () => {
 
   it('선택 없음 = 전력선 수와 같고 신호선은 하나도 없음', () => {
     const r = computeFlowEdges(inputs, dirs, null, (id) => busIds.has(id));
-    expect(r.length).toBe(inputs.filter((e) => e.kind === 'power').length);
+    expect(r.length).toBe(inputs.filter((e) => e.kind === 'power' && dirs.get(e.id) !== 'none').length);
     const signal = new Set(inputs.filter((e) => e.kind === 'signal').map((e) => e.id));
     expect(r.some((x) => signal.has(x.id))).toBe(false);
   });
@@ -119,5 +119,18 @@ describe('pathMidpoint · parseFlow', () => {
     expect(parseFlow('1')).toBe(true);
     expect(parseFlow(null)).toBe(true);
     expect(parseFlow('0')).toBe(false);
+  });
+});
+
+describe('흐름 없음(none) — 보호·계측 분기·기계 연결 (2026-11-19 전수 확인)', () => {
+  it('none 연결선은 기기를 골라도, 전체 모드여도 흐르지 않는다', () => {
+    const edges: FlowEdgeInput[] = [
+      { id: 'a', from: 'S', to: 'B', kind: 'power', d: 'M0 0H1' },
+      { id: 'la', from: 'B', to: 'LA', kind: 'power', d: 'M0 0H1' },
+    ];
+    const dirs = new Map([['la', 'none' as const]]);
+    expect(computeFlowEdges(edges, dirs, null).map((e) => e.id)).toEqual(['a']);
+    expect(computeFlowEdges(edges, dirs, 'B').map((e) => e.id)).toEqual(['a']);
+    expect(computeFlowEdges(edges, dirs, 'LA')).toEqual([]);
   });
 });

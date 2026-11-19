@@ -649,13 +649,15 @@
       "id": "e004",
       "from": "n-ehv-gis",
       "to": "n-la-ehv",
-      "kind": "power"
+      "kind": "power",
+      "flow": "none"
     },
     {
       "id": "e005",
       "from": "n-ehv-gis",
       "to": "n-ct-ehv",
-      "kind": "power"
+      "kind": "power",
+      "flow": "none"
     },
     {
       "id": "e006",
@@ -748,7 +750,8 @@
       "id": "e019",
       "from": "n-lbs",
       "to": "n-la",
-      "kind": "power"
+      "kind": "power",
+      "flow": "none"
     },
     {
       "id": "e020",
@@ -997,6 +1000,7 @@
       "from": "bus-380",
       "to": "n-spd",
       "kind": "power",
+      "flow": "none",
       "points": [
         {
           "x": 841,
@@ -1474,7 +1478,8 @@
       "from": "n-motor",
       "to": "n-gearbox",
       "kind": "power",
-      "label": "전동기 축 연결 (기계)"
+      "label": "전동기 축 연결 (기계)",
+      "flow": "none"
     },
     {
       "id": "e089",

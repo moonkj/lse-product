@@ -25,6 +25,7 @@ import { useUiStore } from '../../store/useUiStore';
 import { overviewParts } from '../../lib/overview';
 import CoverageBadge from '../common/CoverageBadge';
 import CompareToggle from '../compare/CompareToggle';
+import { ButtonLink } from '../common/Button';
 import DocsList from '../common/DocsList';
 import EmptyProducts from '../common/EmptyProducts';
 import GapAssessmentSection from './GapAssessmentSection';
@@ -391,9 +392,10 @@ export default function DetailPanel() {
           {/* ② 고정 버튼 줄 — 스크롤해도 패널 위에 붙어 있음 */}
           <div className="dp-actions" data-testid="detail-actions">
             <PanelCompareButton id={eq.id} name={eq.name} />
-            <Link to={`/equipment/${eq.id}`} className="dp-eq-link" data-testid="detail-eq-link">
+            {/* 2026-11-19 사용자: 너무 작음 → 주 버튼(CI 네이비 채움, 40px·터치 44px) */}
+            <ButtonLink to={`/equipment/${eq.id}`} variant="primary" size="md" className="dp-eq-link" testId="detail-eq-link">
               기기 상세 페이지 →
-            </Link>
+            </ButtonLink>
           </div>
 
           {node.ref && (
@@ -491,9 +493,9 @@ export default function DetailPanel() {
           {compact && <PanelCompareButton id={eq.id} name={eq.name} />}
           {compact && (
             // 접힌 시트에서도 기기 상세로 바로 (2026-11-19 사용자: 기기 상세 페이지가 안 들어가짐 — 펼쳐야만 보였음)
-            <Link to={`/equipment/${eq.id}`} className="dp-sheet-eqlink" data-testid="detail-eq-link-sheet">
-              상세 →
-            </Link>
+            <ButtonLink to={`/equipment/${eq.id}`} variant="primary" size="md" className="dp-sheet-eqlink" testId="detail-eq-link-sheet">
+              기기 상세 →
+            </ButtonLink>
           )}
           {sheetSize === 'half' && (
             <button type="button" className="dp-shrink" data-testid="detail-sheet-shrink" onClick={() => setSheetSize('peek')}>

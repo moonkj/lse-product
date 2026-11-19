@@ -67,7 +67,7 @@ export function computeFlowEdges(
 ): FlowEdge[] {
   const dirOf = (e: FlowEdgeInput): FlowDir => dirs.get(e.id) ?? 'forward';
   if (!selectedId) {
-    return edges.filter((e) => e.kind === 'power').map((e) => ({ id: e.id, d: e.d, dir: dirOf(e), role: 'all' }));
+    return edges.filter((e) => e.kind === 'power' && dirOf(e) !== 'none').map((e) => ({ id: e.id, d: e.d, dir: dirOf(e), role: 'all' }));
   }
 
   // 흐름 방향 기준 들어오는 선 / 나가는 선 (bi 는 양쪽 다)
@@ -80,6 +80,7 @@ export function computeFlowEdges(
   };
   for (const e of edges) {
     if (e.kind === 'signal') continue;
+    if (dirOf(e) === 'none') continue; // 보호·계측 분기·기계 연결 — 전력 흐름 경로 아님
     // 택1 은 선택 기기에 바로 붙은 선만 (그 경로를 고른 것)
     if (e.kind === 'alt' && e.from !== selectedId && e.to !== selectedId) continue;
     const dir = dirOf(e);

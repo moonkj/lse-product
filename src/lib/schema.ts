@@ -228,7 +228,8 @@ export const DiagramEdgeSchema = z.object({
    * 전기 흐름 방향 (계통도 흐름 애니메이션). 생략 = forward(from→to).
    * reverse = to→from 으로 흐름, bi = 양방향(충·방전 — 움직이지 않고 ⇄ 표지만)
    */
-  flow: z.enum(['forward', 'reverse', 'bi']).optional(),
+  /** 흐름 방향 — none = 전력이 흐르는 경로가 아님(피뢰기·계기용 변성기·서지보호기 분기, 전동기→감속기 기계 연결) */
+  flow: z.enum(['forward', 'reverse', 'bi', 'none']).optional(),
 });
 export type DiagramEdge = z.infer<typeof DiagramEdgeSchema>;
 
