@@ -337,3 +337,101 @@
     box-shadow: none;
   }
 }
+
+/* ── 2026-11-19 사용자: 글자가 너무 작고 아래가 잘림 → 계통도 위 = 요약 카드, 상세 = 화면 고정 패널 ── */
+/* 계통도 위 요약: 어느 배율에서도 화면 기준 약 14px 이상 (--label-k = 0.8/배율) — 부가 줄·일정은 상세 패널로 */
+.mplan--map {
+  font-size: max(16px, calc(15px * var(--label-k, 1)));
+  height: auto;
+}
+.mplan--map :is(.mplan__sub, .mplan__note, .mplan__tl, .mplan__foot, .mplan__year, .mplan__editions) {
+  display: none;
+}
+.mplan--map .mplan__title { font-size: 1.15em; }
+.mplan--map .mplan__val--main { font-size: 1.3em; }
+.mplan--map .mplan__chip { font-size: 0.85em; line-height: 1.6; }
+.mplan--map .msrc { font-size: 0.7em; line-height: 1.4; }
+.mplan__more {
+  margin-left: auto;
+  padding: 0.15em 0.6em;
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-brand);
+  font-size: 0.85em;
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.mplan__more:hover { background: var(--color-brand); color: var(--color-on-brand, #fff); }
+.mplan__head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+
+/* 상세 패널: 계통도 칸 오른쪽 위에 고정(화면 좌표, 배율과 무관), 내용이 길면 패널 안에서 스크롤 */
+.mplan-dock {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  width: min(460px, calc(100% - 32px));
+  max-height: calc(100% - 96px);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.mplan-dock__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+}
+.mplan-dock__tabs { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
+.mplan-dock__tab {
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+.mplan-dock__tab[aria-selected='true'] { background: var(--color-brand); border-color: var(--color-brand); color: var(--color-on-brand, #fff); font-weight: var(--fw-bold); }
+.mplan-dock__close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.mplan.mplan--dock {
+  position: static;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  font-size: 15px;
+  padding: 12px 14px 14px;
+}
+.mplan--dock .mplan__title { font-size: 16px; }
+.mplan--dock .mplan__val--main { font-size: 20px; }
+.mplan--dock .msrc { font-size: 12px; line-height: 18px; }
+.mplan--dock :is(.mplan__sub, .mplan__note, .mplan__chip, .mplan__tl-head, .mplan__tl-axis, .mplan__foot, .mplan__year) { font-size: 13px; }
+.mplan--dock .mplan__tl-name { font-size: 13px; }
+@media (max-width: 900px) {
+  .mplan-dock { top: 8px; right: 8px; left: 8px; width: auto; max-height: 55%; }
+}
+@media print {
+  .mplan-dock { display: none; }
+}
+/* 상세 패널의 사업 일정: 사업명은 줄바꿈해 전부 보이게, 막대 아래 줄에 변동·출처 */
+.mplan--dock .mplan__tl-row { grid-template-columns: minmax(0, 1fr) 120px auto; row-gap: 2px; padding: 4px 0; border-bottom: 1px dashed var(--color-border); }
+.mplan--dock .mplan__tl-name { white-space: normal; overflow: visible; }
+.mplan--dock .mplan__tl-row > :last-child { grid-column: 1 / -1; justify-self: end; }

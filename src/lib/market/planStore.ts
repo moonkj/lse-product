@@ -7,6 +7,10 @@ import { create } from 'zustand';
 export interface PlanState {
   on: boolean;
   setOn: (on: boolean) => void;
+  /** 화면 오른쪽 위 상세 패널 — 켜면 기본 열림. dockLayer null = 화면 가운데 계층을 따라감 */
+  dockOpen: boolean;
+  dockLayer: 'L1' | 'L2' | 'L3' | 'REN' | null;
+  setDock: (open: boolean, layer: PlanState['dockLayer']) => void;
 }
 
 function initialOn(): boolean {
@@ -22,5 +26,8 @@ function initialOn(): boolean {
 
 export const usePlanStore = create<PlanState>((set) => ({
   on: initialOn(),
-  setOn: (on) => set({ on }),
+  setOn: (on) => set({ on, dockOpen: true, dockLayer: null }),
+  dockOpen: true,
+  dockLayer: null,
+  setDock: (dockOpen, dockLayer) => set({ dockOpen, dockLayer }),
 }));

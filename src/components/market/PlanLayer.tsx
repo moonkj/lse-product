@@ -1,4 +1,6 @@
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useView } from '../../lib/diagram/view';
 import { useData } from '../../data/load';
 import type { DiagramModel } from '../../lib/diagram/model';
 import type { EquipmentType } from '../../lib/schema';
@@ -41,7 +43,64 @@ const LAYER_NAMES: Record<PlanLayerId, string> = { L1: 'L1 송전', L2: 'L2 변�
 export default function PlanLayer({ model }: { model: DiagramModel }) {
   const on = usePlanStore((s) => s.on);
   if (!on) return null;
-  return <PlanCards model={model} />;
+  return (
+    <>
+      <PlanCards model={model} />
+      <PlanDock />
+    </>
+  );
+}
+
+/**
+ * 상세 패널 — 계통도 바깥(.diagram__stage 오른쪽 위, 화면 좌표)에 보통 글자 크기로. 2026-11-19 사용자: 계통도 위 카드는 글자가 너무 작고 아래가 잘림.
+ * 기본은 지금 화면 가운데 계층을 따라가고(계획이 있는 계층만), 탭을 누르면 그 계층에 고정. ✕ 로 접으면 요약 카드의 '자세히'로 다시 연다.
+ */
+function PlanDock() {
+  const open = usePlanStore((s) => s.dockOpen);
+  const pinned = usePlanStore((s) => s.dockLayer);
+  const setDock = usePlanStore((s) => s.setDock);
+  const viewLayer = useView((s) => s.layer);
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  useEffect(() => setHost(document.querySelector<HTMLElement>('.diagram__stage')), []);
+  const { equipmentTypes } = useData();
+  const plans = getPlans();
+  const avail = PLAN_LAYERS.filter((l) => plans.items.some((i) => i.layer === l) || plans.projects.some((p) => p.layer === l));
+  const follow = (avail as readonly string[]).includes(viewLayer ?? '') ? (viewLayer as PlanLayerId) : null;
+  const layer = pinned ?? follow ?? avail[0];
+  if (!host || !open || !layer) return null;
+  return createPortal(
+    <aside className="mplan-dock" data-testid="plan-dock" aria-label="계획 기반 설비 소요 상세">
+      <div className="mplan-dock__bar">
+        <div className="mplan-dock__tabs" role="tablist" aria-label="계층">
+          {avail.map((l) => (
+            <button
+              key={l}
+              type="button"
+              role="tab"
+              aria-selected={l === layer}
+              className="mplan-dock__tab"
+              data-testid={`plan-dock-tab-${l}`}
+              onClick={() => setDock(true, l)}
+            >
+              {LAYER_NAMES[l]}
+            </button>
+          ))}
+        </div>
+        <button type="button" className="mplan-dock__close" aria-label="계획 상세 접기" title="접기" onClick={() => setDock(false, null)}>
+          ✕
+        </button>
+      </div>
+      <PlanCard
+        layer={layer}
+        items={plans.items.filter((i) => i.layer === layer)}
+        projects={plans.projects.filter((p) => p.layer === layer)}
+        plans={plans}
+        types={equipmentTypes}
+        dock
+      />
+    </aside>,
+    host,
+  );
 }
 
 const PlanCards = memo(function PlanCards({ model }: { model: DiagramModel }) {
@@ -68,9 +127,11 @@ function PlanCard({
   projects,
   plans,
   types,
+  dock,
 }: {
   layer: PlanLayerId;
-  slot: Box;
+  slot?: Box;
+  dock?: boolean;
   items: PlanItem[];
   projects: PlanProject[];
   plans: PlansFile;
@@ -79,15 +140,16 @@ function PlanCard({
   const editions = new Map(plans.editions.map((e) => [e.id, e]));
   // 이 카드에서 쓰는 비교 쌍 (첫 항목 기준) — 머리말 "10차 → 11차 송변전"
   const pair = plans.compare.find((c) => items.some((i) => i.figures.some((g) => g.edition === c.to)) || projects.some((p) => p.milestones.some((m) => m.edition === c.to)));
-  const width = Math.min(slot.w, CARD_MAX_W);
-  const titleId = `mplan-title-${layer}`;
+  const setDock = usePlanStore((s) => s.setDock);
+  const width = slot ? Math.min(slot.w, CARD_MAX_W) : 0;
+  const titleId = `mplan-title-${layer}${dock ? '-dock' : ''}`;
   return (
     <section
-      className="mplan"
-      data-testid={`plan-card-${layer}`}
+      className={dock ? 'mplan mplan--dock' : 'mplan mplan--map'}
+      data-testid={dock ? `plan-dock-card-${layer}` : `plan-card-${layer}`}
       data-layer={layer}
       aria-labelledby={titleId}
-      style={{ left: slot.x + slot.w - width, top: slot.y, width, maxHeight: slot.h }}
+      style={slot && !dock ? { left: slot.x + slot.w - width, top: slot.y, width, maxHeight: slot.h } : undefined}
     >
       <header className="mplan__head">
         <h2 id={titleId} className="mplan__title">
@@ -97,6 +159,11 @@ function PlanCard({
           <span className="mplan__editions">
             {editions.get(pair.from)?.short} → <b>{editions.get(pair.to)?.short}</b>
           </span>
+        )}
+        {!dock && (
+          <button type="button" className="mplan__more" data-testid={`plan-more-${layer}`} onClick={() => setDock(true, layer)}>
+            자세히 →
+          </button>
         )}
       </header>
       <ul className="mplan__items">
