@@ -343,8 +343,9 @@ export default function DiagramCanvas() {
         if (pin) {
           const moved = Math.hypot(v.x + v.w / 2 - pin.cx, v.y + v.h / 2 - pin.cy) * v.scale;
           if (Math.abs(v.scale - pin.scale) > pin.scale * 0.01 || moved > PIN_RELEASE_PX) {
+            // 화면을 옮겨도 선택 영역 표시는 유지 — 같은 영역 재클릭·해제 버튼·Esc·전체 보기로만 해제 (2026-11-19 사용자)
+            // 고정만 풀어 '현재 계층'(사이드바 괄호)은 화면 가운데를 따라감
             pinRef.current = null;
-            viewStore.set({ focus: null });
           }
         }
         let layer: Layer | null;

@@ -936,9 +936,8 @@
   .app-header { min-height: 56px; padding-top: var(--space-2); padding-bottom: var(--space-2); }
   .app-header__logo { font-size: var(--fs-md); }
 }
-/* 오른쪽 버튼 묶음 시작 = QR (검색창과 사이를 띄움) */
-.app-header .hdr-qr { margin-left: auto; }
-.app-header .hdr-qr + .present-toggle { margin-left: 0; }
+/* 오른쪽 버튼 묶음 = [넓게 보기][다크] [QR] — 넓게 보기부터 오른쪽 끝으로 붙임, QR 은 맨 끝 (2026-11-19 사용자) */
+.app-header .hdr-qr { margin-left: var(--space-2); }
 @media (max-width: 600px) {
   .app-header .present-toggle { margin-left: auto; }
 }

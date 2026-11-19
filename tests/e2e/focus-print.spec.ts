@@ -121,3 +121,19 @@ test('선택 해제: 도구줄 해제 버튼 · 같은 영역 다시 누르기 �
   await page.keyboard.press('Escape');
   await expect(focus).toHaveCount(0);
 });
+
+test('영역 선택은 화면을 끌어 옮겨도 유지 — 같은 영역을 다시 눌러야 해제 (2026-11-19 사용자)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('./#/');
+  await page.getByTestId('layer-nav-L4').click();
+  const focus = page.getByTestId('layer-focus');
+  await expect(focus).toHaveAttribute('data-layer', 'L4');
+  const vp = (await page.locator('#diagram-viewport').boundingBox())!;
+  await page.mouse.move(vp.x + vp.width / 2, vp.y + vp.height - 80);
+  await page.mouse.down();
+  await page.mouse.move(vp.x + vp.width / 2, vp.y + 80, { steps: 12 });
+  await page.mouse.up();
+  await expect(focus).toHaveAttribute('data-layer', 'L4');
+  await page.mouse.wheel(0, 300);
+  await expect(focus).toHaveAttribute('data-layer', 'L4');
+});
