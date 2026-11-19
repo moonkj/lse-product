@@ -20,6 +20,7 @@ concurrency:
 
 jobs:
   # 예약 실행(20분)은 수급 키(DATA_GO_KR_KEY)가 등록돼 있을 때만 빌드·배포 — 키 등록 전에는 아무것도 하지 않음
+  # 단, 키가 없어도 6시간마다 한 번(UTC 0·6·12·18시 첫 20분)은 시장 동향 스냅샷(fetch-market) 갱신용으로 빌드·배포
   gate:
     runs-on: ubuntu-latest
     outputs:
@@ -29,12 +30,15 @@ jobs:
         env:
           HAS_KEY: ${{ secrets.DATA_GO_KR_KEY != '' }}
         run: |
-          if [ "${{ github.event_name }}" != "schedule" ] || [ "$HAS_KEY" = "true" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; fi
+          if [ "${{ github.event_name }}" != "schedule" ] || [ "$HAS_KEY" = "true" ] || { [ $((10#$(date -u +%H) % 6)) -eq 0 ] && [ $((10#$(date -u +%M))) -lt 20 ]; }; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; fi
 
   build:
     needs: gate
     if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
+    env:
+      # Cloudflare Pages(계정 이름 없는 주소) 배포 여부 — 저장소 Secret 이 둘 다 있을 때만
+      CF_ENABLED: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,6 +46,11 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # 마켓뉴스 대시보드 공개 페이지 → src/data/market-feed.json (빌드에만 반영, 커밋하지 않음). 실패하면 커밋된 스냅샷 그대로
+      - name: Fetch market feed (LSE 마켓뉴스)
+        continue-on-error: true
+        timeout-minutes: 2
+        run: node scripts/fetch-market.mjs
       - run: npm run build
       - id: pages
         uses: actions/configure-pages@v5
@@ -54,6 +63,18 @@ jobs:
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
           # 이번 수집이 실패하면 지금 배포된 값을 '갱신 실패'로 다시 씀
           SUPPLY_PREV_URL: ${{ steps.pages.outputs.base_url }}/data/supply.json
+      # 같은 dist 를 Cloudflare Pages 에도 올림 → https://lse-grid-map.pages.dev (base './' + HashRouter 라 그대로 동작)
+      # 프로젝트가 없으면 처음 한 번 만들고, 실패해도 GitHub Pages 배포는 계속
+      - name: Deploy to Cloudflare Pages
+        if: env.CF_ENABLED == 'true'
+        continue-on-error: true
+        timeout-minutes: 4
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4.155.0 pages project create lse-grid-map --production-branch=main || true
+          npx --yes wrangler@4.155.0 pages deploy dist --project-name=lse-grid-map --branch=main --commit-dirty=true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
