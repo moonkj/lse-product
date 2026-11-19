@@ -74,9 +74,19 @@ test('계통도 안 영역을 누르거나 기기를 고르면 그 계층이 선
   await expect(page.getByTestId('layer-focus')).toHaveAttribute('data-layer', 'L5');
 });
 
-test('전기 흐름: 기기를 고르면 기본으로 흐르고(대시 이동), ?flow=0 이면 꺼짐', async ({ page }) => {
+test('전기 흐름: 처음 화면부터 켜짐(전체 전력선, 빛 번짐 끔), 기기를 고르면 그 경로만 흐르고(대시 이동), 끄면 ?flow=0', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
+  // 기기를 고르지 않은 처음 화면: 토글 켜짐 + 전체 전력선 흐름
+  await page.goto('./#/');
+  await expect(page.getByTestId('flow-toggle')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('flow-layer')).toHaveAttribute('data-scope', 'all');
+  const allCount = await page.locator('.dflow__path').count();
+  expect(allCount).toBeGreaterThan(0);
+  expect(await page.locator('.dflow__glow').evaluate((el) => getComputedStyle(el).filter)).toBe('none');
+
   await page.goto('./#/?node=n-vcb');
+  await expect(page.getByTestId('flow-layer')).toHaveAttribute('data-scope', 'node');
+  expect(await page.locator('.dflow__path').count()).toBeLessThan(allCount);
   const path = page.locator('.dflow__path').first();
   await expect(path).toBeAttached();
   const moved = await path.evaluate(async (el) => {

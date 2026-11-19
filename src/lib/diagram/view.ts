@@ -57,6 +57,8 @@ export function useViewState(): ViewState {
 export interface DiagramController {
   jumpToLayer(layer: Layer): void;
   fitAll(): void;
+  /** 폭 맞춤 — 계통도 폭을 화면 폭에 맞추고 위쪽부터 */
+  fitWidth(): void;
   zoomBy(factor: number): void;
   /** diagram 좌표 지점을 화면 가운데로 */
   centerOn(x: number, y: number): void;

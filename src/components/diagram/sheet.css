@@ -1,0 +1,20 @@
+/*
+ * 도면 시트 틀 (E5 P0, 2026-11-19 F1) — 캔버스 바탕(--color-bg, .diagram__viewport) 위에
+ * 계통도 전체를 surface 시트로 감싼다. 위치·크기는 PanZoom(frame 옵션)이 화면 px 로 넣는다:
+ * 안쪽 여백 16px, 시트 아래 여백 72px, 그림이 화면보다 좁으면 가운데.
+ */
+.diagram__sheet {
+  position: absolute;
+  box-sizing: border-box;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+}
+
+@media print {
+  .diagram__sheet {
+    display: none !important;
+  }
+}

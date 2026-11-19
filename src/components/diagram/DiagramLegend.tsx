@@ -29,7 +29,7 @@ function writeCollapsed(v: boolean) {
 
 /**
  * 계통도 범례 카드 — 캔버스 왼쪽 아래 도킹 (디자인 토론 P0-2).
- * 데스크톱: 커버리지 6종(아이콘·이름·개수) 한 줄을 늘 펼침, "선 종류 ▾"만 접힘(선 4종 + 참조 표시 + 공백 후보/확정 테두리).
+ * 데스크톱: 커버리지 6종(아이콘·이름·개수) 한 줄을 늘 펼침(접기 없음), "선 종류 ▾"만 접힘(선 4종 + 참조 표시 + 공백 후보/확정 테두리).
  * 모바일·압축 화면: 기본 접힘 "범례" 버튼.
  * 커버리지 항목 = aria-pressed 버튼 → 누르면 그 상태 타일만 또렷하게(나머지는 Gap 보기 흐림과 같은 규칙, CSS :has).
  */
@@ -43,8 +43,9 @@ export default function DiagramLegend({ mode }: { mode: ViewMode }) {
   const linesId = useId();
 
   // null = 사용자 조작 없음 → 화면 크기 기본값을 따름. 데스크톱 접힘만 저장값을 씀
+  // 데스크톱은 접기 버튼이 없어 늘 펼침(예전에 접어 둔 저장값도 무시). 모바일·압축 화면은 기본 접힘
   const [userOpen, setUserOpen] = useState<boolean | null>(() => (readCollapsed() ? false : null));
-  const collapsed = userOpen === null ? collapsedByDefault : !userOpen;
+  const collapsed = collapsedByDefault ? (userOpen === null ? true : !userOpen) : false;
   const [linesOpen, setLinesOpen] = useState(false);
   const [focus, setFocus] = useState<Coverage | null>(null);
 
@@ -110,6 +111,7 @@ export default function DiagramLegend({ mode }: { mode: ViewMode }) {
             );
           })}
         </ul>
+        <span className="dlegend__divider" aria-hidden="true" />
         <button
           type="button"
           className="dlegend__lines-btn"
@@ -120,17 +122,19 @@ export default function DiagramLegend({ mode }: { mode: ViewMode }) {
         >
           선 종류 <span aria-hidden="true">{linesOpen ? '▴' : '▾'}</span>
         </button>
-        <button
-          type="button"
-          className="dlegend__close"
-          data-testid="legend-collapse"
-          aria-expanded="true"
-          aria-label="범례 접기"
-          title="범례 접기"
-          onClick={() => setOpen(false)}
-        >
-          <span aria-hidden="true">▾</span>
-        </button>
+        {/* 데스크톱은 늘 펼침 — 끝의 뜻 없는 '▾'(접기) 제거 (E5 P0). 기본 접힘 화면(모바일·압축)만 글자 '접기' 버튼 */}
+        {collapsedByDefault && (
+          <button
+            type="button"
+            className="dlegend__close"
+            data-testid="legend-collapse"
+            aria-expanded="true"
+            aria-label="범례 접기"
+            onClick={() => setOpen(false)}
+          >
+            접기
+          </button>
+        )}
       </div>
       {linesOpen && (
         <div className="dlegend__more" id={linesId}>

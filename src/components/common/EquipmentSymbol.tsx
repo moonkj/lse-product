@@ -38,6 +38,14 @@ const BY_ID: Record<string, string> = {
   'lv-ats': 'M20 6V24M52 6V24M36 48V66M36 48L20 26M14 24h12M46 24h12',
   // UPS: 함체 + 대각선(정류·인버터) + 교류(~)·직류(=) + 아래 배터리
   ups: 'M36 2V10M14 10h44v40H14zM14 50L58 10M20 22q4-6 8 0t8 0M40 38h12M40 43h12M36 50V58M24 58h24M30 64h12',
+  // 계측 3종 구분 (E3 P1 — MOF·CT/PT·WHM 이 measurement 하나를 같이 써서 똑같아 보였음)
+  // CT/PT: 선로를 감싼 CT 원 + 아래로 PT(겹친 작은 두 원)
+  'ct-pt': 'M4 22H68M36 10a12 12 0 1 1 0 24a12 12 0 1 1 0-24M36 34V42M36 42a7 7 0 1 1 0 14a7 7 0 1 1 0-14M36 52a7 7 0 1 1 0 14a7 7 0 1 1 0-14',
+  'ct-pt-ehv': 'M4 22H68M36 10a12 12 0 1 1 0 24a12 12 0 1 1 0-24M36 34V42M36 42a7 7 0 1 1 0 14a7 7 0 1 1 0-14M36 52a7 7 0 1 1 0 14a7 7 0 1 1 0-14',
+  // MOF: CT·PT 를 한 함체에 넣은 계기용 변성기함
+  mof: 'M10 8h52v56H10zM2 26H70M36 18a8 8 0 1 1 0 16a8 8 0 1 1 0-16M36 34V40M36 40a5 5 0 1 1 0 10a5 5 0 1 1 0-10M36 48a5 5 0 1 1 0 10a5 5 0 1 1 0-10',
+  // WHM(전력량계): 함체 + 표시창 + 회전 원판
+  meter: 'M14 6h44v60H14zM22 14h28v14H22zM36 38a9 9 0 1 1 0 18a9 9 0 1 1 0-18M36 47l6-5M26 18v6M32 18v6M38 18v6M44 18v6',
 };
 
 interface Props {
@@ -63,7 +71,7 @@ function EquipmentSymbol({ category, equipmentId, size, className, label }: Prop
       className={className ? `eq-symbol ${className}` : 'eq-symbol'}
       fill="none"
       stroke="currentColor"
-      strokeWidth={2.5}
+      strokeWidth={3}
       strokeLinecap="round"
       strokeLinejoin="round"
     >

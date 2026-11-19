@@ -136,20 +136,25 @@
 
 .dedge--power {
   stroke: var(--color-line-power);
-  stroke-width: 2px;
+  stroke-width: var(--edge-w, var(--line-w-hv));
   stroke-linecap: round;
 }
 
+/* 전압 등급별 굵기 (E4 P1): Edges 가 from 기기의 계층으로 data-tier 를 단다 — 위에서 아래로 가늘어지는 계통 */
+.dedge[data-tier='ehv'] { --edge-w: var(--line-w-ehv); }
+.dedge[data-tier='hv'] { --edge-w: var(--line-w-hv); }
+.dedge[data-tier='lv'] { --edge-w: var(--line-w-lv); }
+
 .dedge--signal {
   stroke: var(--color-line-signal);
-  stroke-width: 1.5px;
+  stroke-width: var(--line-w-signal);
   stroke-dasharray: 4 4;
 }
 
 /* 선 4종 (P0-4): 전력선(실선) · 신호선(점선 — 점선은 신호선만) · 모선(굵은 4px) · 택1(전력선과 같은 실선 + "택1" 칩) */
 .dedge--alt {
   stroke: var(--color-line-power);
-  stroke-width: 2px;
+  stroke-width: var(--edge-w, var(--line-w-hv));
   stroke-linecap: round;
 }
 
@@ -158,9 +163,9 @@
 }
 
 .dedge.is-selected {
-  /* 멈춘 선택선 = 네이비, 움직이는 흐름 = 블루 (D2 색 재검토) */
-  stroke: var(--color-edge-selected, var(--color-selected));
-  stroke-width: 2.5px;
+  /* 멈춘 선택선 = 선택 링과 같은 색(라이트 네이비·다크 흰색), 움직이는 흐름 = 블루 (E1 P0-3) */
+  stroke: var(--color-edge-selected, var(--color-node-selected-ring));
+  stroke-width: calc(var(--edge-w, var(--line-w-hv)) + 1px);
   opacity: 1;
 }
 
@@ -175,10 +180,11 @@
   opacity: 0.3;
 }
 
-/* ── 모선 노드 (데이터 모선, 굵은 가로선 4px + 라벨) ─────────────────────────────── */
+/* ── 모선 노드 (데이터 모선, CI 네이비 5px + 라벨 칩, E4 P1) ─────────────────────────────── */
 .dbusnode {
   position: absolute;
-  height: 4px;
+  height: var(--bus-h);
+  margin-top: calc(var(--bus-h) / -2); /* top = 모선 중심 y */
   background: var(--color-line-bus);
   border-radius: 1px;
   pointer-events: none;
@@ -186,26 +192,32 @@
 
 .dbusnode__label {
   position: absolute;
-  bottom: 7px;
+  bottom: 8px;
   left: 0;
-  padding: 0 4px;
-  border-radius: 3px;
-  background: var(--band-label-bg, transparent);
-  font-size: 12px;
+  padding: 0 6px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: 13px;
   font-weight: var(--fw-bold);
-  line-height: 16px;
-  color: var(--color-text-muted);
+  line-height: 18px;
+  color: var(--color-text-soft);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-/* ── 끝점 라벨 (기기 아님 — 점선 상자, 클릭 불가) ─────────────────────────────── */
+/* ── 끝점 라벨 (기기 아님 — 실선 1px + "→", 클릭 불가). 점선은 공백 후보·신호선 전용 (E3 P0) ── */
+.dendpoint__arrow {
+  font-weight: var(--fw-bold);
+}
+
 .dendpoint {
   position: absolute;
   display: grid;
   place-items: center;
   padding: 2px 6px;
-  border: 1.5px dashed var(--color-text-muted);
-  border-radius: 8px;
+  border: 1px solid var(--color-node-border);
+  border-radius: var(--radius-tile);
   background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 12px;
@@ -226,9 +238,9 @@
   border-radius: var(--radius-pill);
   background: var(--color-surface);
   color: var(--color-line-alt-text);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: var(--fw-bold);
-  line-height: 16px;
+  line-height: 18px; /* 높이 20px (E3 P2) */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -243,25 +255,25 @@
   box-shadow: var(--shadow-md);
 }
 
-/* ── 노드 (사진 타일 120×116) ─────────────────────────────── */
+/* ── 노드 (사진 타일 120×116, 2026-11-19 색·타일 고도화 E3·E5) ─────────────────────────────── */
 .dnode {
   position: absolute;
   width: 120px;
   height: 116px;
-  padding: 6px 6px 4px;
+  padding: 5px 5px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: 0;
   background: var(--node-bg);
   border: var(--node-bw, var(--node-border-w)) solid var(--node-border, var(--color-node-border));
-  border-radius: 10px;
+  border-radius: var(--radius-tile);
   color: var(--color-text);
-  font-size: 13px;
-  line-height: 16px;
+  font-size: 14px;
+  line-height: 17px;
   text-align: center;
   cursor: pointer;
-  transition: box-shadow var(--transition-fast), opacity var(--transition-fast);
+  transition: box-shadow var(--transition-fast), opacity var(--transition-fast), transform var(--transition-fast);
 }
 
 .dnode:hover {
@@ -273,25 +285,69 @@
   outline-offset: 3px;
 }
 
-/* 테두리 (P0-3): 기본 회색 1px — 커버리지는 배지가 전달. 소수만 칠한다:
-   미보유 2px 빨강(+ ✕ 배지), 일부 보유 1.5px 황색(A안, + ◐ 배지) */
-.dnode--missing { --node-border: var(--cov-missing); --node-bw: var(--node-border-w-missing); }
+/* 테두리 (P0-3·E3 P1): 기본 회색 1px — 커버리지는 배지가 전달. 소수만 칠한다:
+   미보유 1.5px 빨강 + 판 옅은 빨강(+ ✕ 배지), 일부 보유 1.5px 황색 + 판 하단 4px 황색 띠(+ ◐ 배지) */
+.dnode--missing { --node-border: var(--cov-missing); --node-bw: var(--node-border-w-missing); --plate-bg: var(--tile-plate-missing-bg); }
 .dnode--partial { --node-border: var(--cov-partial); --node-bw: var(--node-border-w-partial); }
 
 /* 공백 판정 확신도 (개선 R3): 공백류 테두리 — 후보 = 점선, 확정 = 실선 */
 .dnode[data-confidence='candidate'] { border-style: dashed; }
 .dnode[data-confidence='confirmed'] { border-style: solid; }
 
-/* 참조 타일: 같은 기기가 계통에 다시 나오는 자리 — 점선 테두리 대신 ↗ 표시 + 옅은 바탕·사진.
+/* 사진 판 108×60 가로형 (E3 P0) — 사진·심볼 공통. 흰 타일 위에서도 판 경계가 보이는 옅은 회색(다크는 한 단계 낮춘 흰색 + 테두리) */
+.dnode__plate {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 60px;
+  border: 1px solid var(--tile-plate-border);
+  border-radius: var(--radius-xs);
+  background: var(--plate-bg, var(--tile-plate-bg));
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* 일부 보유: 판 하단 4px 황색 띠 — 1.5px 황색 테두리만으로는 잘 안 보임 (E3 진단 5) */
+.dnode--partial .dnode__plate::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--cov-partial);
+}
+
+.dnode__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.dnode__symbol {
+  width: 48px;
+  height: 48px;
+  color: var(--tile-symbol); /* 판이 밝은 색(다크 포함)이라 판 위 대비가 나는 회색 */
+}
+
+/* 참조 타일: 같은 기기가 계통에 다시 나오는 자리 — 이중선 테두리 + ↗ 원형 칩 + 사진 0.8 (E3 P1).
    타일 전체 opacity 를 쓰지 않아 글자 대비 4.5:1 유지 (P0-7) */
 .dnode--ref {
   background: var(--color-node-ref-bg);
   color: var(--color-text-muted);
+  box-shadow: inset 0 0 0 3px var(--color-node-ref-bg), inset 0 0 0 4px var(--color-node-border);
+}
+
+.dnode--ref:hover {
+  box-shadow: inset 0 0 0 3px var(--color-node-ref-bg), inset 0 0 0 4px var(--color-node-border), var(--shadow-md);
 }
 
 .dnode--ref .dnode__img,
 .dnode--ref .dnode__symbol {
-  opacity: 0.55;
+  opacity: 0.8;
 }
 
 .dnode--ref:hover :is(.dnode__img, .dnode__symbol),
@@ -307,40 +363,25 @@
 
 .dnode__ref {
   position: absolute;
-  top: 3px;
-  left: 6px;
-  font-size: 14px;
+  top: 8px;
+  left: 8px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-node-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: 11px;
   font-weight: var(--fw-bold);
-  line-height: 16px;
+  line-height: 1;
   color: var(--color-text-muted);
   pointer-events: none;
-}
-
-/* 사진·심볼 60px(흰 판 56~72px 범위) — 이름 두 줄 자리를 확보 (타일 120×116 유지) */
-/* 사진 영역은 테마와 무관하게 흰 바탕 (다크 타일 위에서도 사진 외곽이 깔끔하게) */
-.dnode__img {
-  flex: none;
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  border-radius: 6px;
-  background: var(--photo-plate-bg);
-  pointer-events: none;
-}
-
-.dnode__symbol {
-  flex: none;
-  width: 60px;
-  height: 60px;
-  color: var(--color-text-muted);
-}
-
-.dnode--missing .dnode__symbol {
-  color: var(--cov-missing-text);
 }
 
 .dnode__title {
   max-width: 100%;
+  margin-top: 1px;
   overflow: hidden;
   font-weight: var(--fw-bold);
   white-space: nowrap;
@@ -362,6 +403,7 @@
   -webkit-box-orient: vertical;
 }
 
+/* 미보유: 빨강은 테두리·판·부제만 (심볼·제목은 기본색, E3 P1) */
 .dnode--missing .dnode__caption {
   color: var(--cov-missing-text);
 }
@@ -372,31 +414,59 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-height: 15px;
+  line-height: 16px;
 }
 
+/* 커버리지 배지: 타일 **안쪽** 위·오른쪽 4px (2026-11-19 사용자 여러 번 지적 — 모서리 밖에 걸쳐 계층 경계선과 겹침).
+   타일 테두리 상자 안에서만 그려지므로 밴드 경계·옆 타일을 넘지 않는다. ✓ 16px · ✕◐ 등 18px (E3 P0) */
 .dnode .dnode__badge {
   position: absolute;
-  top: -9px;
-  right: -9px;
+  top: 4px;
+  right: 4px;
+  z-index: 1;
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
 }
 
 .dnode__badge .cov-badge__icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   font-size: 12px;
-  box-shadow: 0 0 0 2px var(--node-bg);
+  box-shadow: 0 0 0 1.5px var(--node-bg);
 }
 
-/* 선택 (P0-3): 테두리는 그대로 두고 바깥 CI 블루 링 (2px 틈 + 3px 링) */
+.dnode__badge.cov-badge--owned .cov-badge__icon {
+  width: 16px;
+  height: 16px;
+  font-size: 11px;
+}
+
+/* 계열사 마름모는 회전하면 대각선이 길어지므로 한 단계 작게 — 18px 상자 안에 */
+.dnode__badge.cov-badge--affiliate .cov-badge__icon {
+  width: 13px;
+  height: 13px;
+}
+
+/* 선택 (P0-3·E1 P0-3·E3 P1): 테두리는 그대로 두고 바깥 네이비 링(다크 흰 링) + 2px 들림 + 그림자 */
 .dnode.is-selected {
   background: var(--node-selected-bg);
-  box-shadow: 0 0 0 2px var(--node-bg), 0 0 0 calc(2px + var(--node-ring-w)) var(--color-selected);
+  box-shadow: 0 0 0 2px var(--node-bg), 0 0 0 calc(2px + var(--node-ring-w)) var(--color-node-selected-ring), var(--shadow-md);
+  transform: translateY(-2px);
   z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dnode.is-selected {
+    transform: none;
+  }
+}
+
+@media print {
+  .dnode.is-selected {
+    transform: none;
+  }
 }
 
 /*
@@ -415,8 +485,8 @@
   color: var(--color-text-muted);
 }
 
-.dnode[data-dimmed='true'] .dnode__img,
-.dnode[data-dimmed='true'] .dnode__symbol {
+.dnode[data-dimmed='true'] .dnode__plate,
+.dnode[data-dimmed='true'] .dnode__ref {
   opacity: 0.3;
 }
 
@@ -435,8 +505,8 @@
   background: var(--node-bg);
 }
 
-.dnode[data-dimmed='true'].is-selected :is(.dnode__img, .dnode__symbol, .dnode__badge),
-.dnode[data-dimmed='true']:focus-visible :is(.dnode__img, .dnode__symbol, .dnode__badge) {
+.dnode[data-dimmed='true'].is-selected :is(.dnode__plate, .dnode__ref, .dnode__badge),
+.dnode[data-dimmed='true']:focus-visible :is(.dnode__plate, .dnode__ref, .dnode__badge) {
   opacity: 1;
 }
 
@@ -450,10 +520,15 @@
   box-shadow: 0 0 0 5px var(--gap-glow-partial);
 }
 
+/* Gap 보기 미보유 타일은 타일 전체가 옅은 빨강 → 판은 흰 판으로 되돌려 사진·심볼이 묻히지 않게 */
+.dnode[data-emphasized='true'].dnode--missing .dnode__plate {
+  background: var(--tile-plate-bg);
+}
+
 .dnode[data-emphasized='true'].is-selected {
   box-shadow:
     0 0 0 2px var(--node-bg),
-    0 0 0 calc(2px + var(--node-ring-w)) var(--color-selected),
+    0 0 0 calc(2px + var(--node-ring-w)) var(--color-node-selected-ring),
     0 0 0 calc(7px + var(--node-ring-w)) var(--gap-glow-missing);
 }
 
@@ -467,7 +542,7 @@
   gap: 4px;
 }
 
-.diagram__inner[data-zoom='overview'] :is(.dnode__img, .dnode__symbol, .dnode__caption, .dnode__ref) {
+.diagram__inner[data-zoom='overview'] :is(.dnode__plate, .dnode__caption, .dnode__ref) {
   display: none;
 }
 
@@ -478,7 +553,7 @@
   height: auto;
 }
 
-.diagram__inner[data-zoom='overview'] .dnode__badge .cov-badge__icon {
+.diagram__inner[data-zoom='overview'] .dnode .dnode__badge .cov-badge__icon {
   width: min(calc(16px * var(--label-k, 1)), 44px);
   height: min(calc(16px * var(--label-k, 1)), 44px);
   font-size: min(calc(10px * var(--label-k, 1)), 28px);
@@ -486,6 +561,8 @@
 }
 
 .diagram__inner[data-zoom='overview'] .dnode--affiliate .dnode__badge .cov-badge__icon {
+  width: min(calc(12px * var(--label-k, 1)), 32px);
+  height: min(calc(12px * var(--label-k, 1)), 32px);
   font-size: 0; /* 계열사 = 글자 없는 마름모 */
 }
 
@@ -724,25 +801,54 @@
   }
 }
 
-/* ── 범례 카드 — 캔버스 왼쪽 아래 도킹 (디자인 토론 P0-2) ─────────────── */
+/* ── 범례 카드 — 캔버스 왼쪽 아래 도킹 (디자인 토론 P0-2, E5 P0 카드 마감: 불투명·모서리 12·그림자·높이 40) ─── */
 .dlegend {
   position: absolute;
   left: 16px;
   bottom: 16px;
   z-index: 3;
+  box-sizing: border-box;
   max-width: calc(100% - 32px);
-  padding: 4px 6px;
-  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  min-height: 40px;
+  padding: 5px 12px;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
   font-size: 13px;
   color: var(--color-text);
 }
 
+/* 범례 아이콘은 모두 16×16 상자 안에 (◆ 계열사만 크던 문제) */
+.dlegend .cov-badge__icon {
+  width: var(--legend-icon);
+  height: var(--legend-icon);
+  font-size: 11px;
+}
+.dlegend .cov-badge--affiliate .cov-badge__icon {
+  width: 11px;
+  height: 11px;
+  margin: 2.5px;
+}
+.dlegend .cov-badge--sourced .cov-badge__icon {
+  font-size: 11px;
+}
+
+/* '선 종류' 앞 세로 구분선 1×20 */
+.dlegend__divider {
+  flex: none;
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--color-border);
+}
+
 .dlegend--collapsed {
+  min-height: 0;
   padding: 0;
   border: 0;
   background: none;
+  box-shadow: none;
 }
 
 .dlegend__row {
@@ -786,7 +892,7 @@
 }
 
 .dlegend__btn[aria-pressed='true'] {
-  border-color: var(--color-selected);
+  border-color: var(--color-node-selected-ring);
   background: var(--node-selected-bg);
   font-weight: var(--fw-bold);
 }
@@ -851,7 +957,7 @@
 
 .dlegend__sw--power { border-top: 2px solid var(--color-line-power); }
 .dlegend__sw--signal { border-top: 2px dashed var(--color-line-signal); }
-.dlegend__sw--bus { border-top: 4px solid var(--color-line-bus); }
+.dlegend__sw--bus { border-top: var(--bus-h) solid var(--color-line-bus); }
 
 .dlegend__chip {
   padding: 0 4px;
@@ -862,8 +968,16 @@
 }
 
 .dlegend__ref {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-node-border);
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  line-height: 1;
   font-weight: var(--fw-bold);
-  color: var(--color-text);
+  color: var(--color-text-muted);
 }
 
 .dlegend__conf {
@@ -1143,3 +1257,14 @@
   .dtool__clear-label { display: none; }
 }
 .app-shell--compact .dtool__clear-label { display: none; }
+/* 좁은 폭·압축 화면: 도구줄 한 줄 유지 — 인쇄 숨김, '(76종)' 숨김 */
+@media (max-width: 1100px) {
+  .dtool__count { display: none; }
+}
+.app-shell--compact .dtool__count,
+.app-shell--compact [data-testid='diagram-print'] {
+  display: none;
+}
+@media (max-width: 900px) {
+  [data-testid='diagram-print'] { display: none; }
+}

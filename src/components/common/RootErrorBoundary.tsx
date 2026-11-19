@@ -1,6 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import ErrorDetails, { errorHeading } from './ErrorDetails';
 import './RootErrorBoundary.css';
+import { reloadFresh } from '../../lib/freshReload';
 
 interface State {
   error?: Error;
@@ -26,7 +27,7 @@ export default class RootErrorBoundary extends Component<{ children: ReactNode }
       <div role="alert" className="root-error" data-testid="root-error">
         <h1>{errorHeading(error, '화면')}</h1>
         <ErrorDetails error={error} />
-        <button type="button" onClick={() => window.location.reload()}>
+        <button type="button" onClick={() => reloadFresh()}>
           새로고침
         </button>
       </div>

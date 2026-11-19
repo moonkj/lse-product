@@ -42,6 +42,7 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-pill: 999px;
+  --radius-tile: 8px;    /* 계통도 기기 타일 (E5 P1 — 10px → 토큰) */
   --header-h: 56px;      /* 네이비 띠 높이 (아래 CI 레드 선 3px 별도) — 계통도 영역을 줄이지 않도록 기존과 같은 총높이 */
   --header-accent-w: 3px;
   --nav-w: 224px;
@@ -94,15 +95,15 @@
 
   /* 커버리지 6상태 (색 + 아이콘 병행) — 흰 아이콘 대비는 모두 3:1 이상 */
   --cov-owned: #1b8f44;      /* 초록: 보유 — 흰 아이콘 4.2:1 (옅은 밴드 위 테두리 3:1 확보 위해 한 단계 진하게) */
-  --cov-partial: #a67c00;    /* 노랑(진한 황토): 일부 보유 — 흰 아이콘 대비 3.8:1 */
+  --cov-partial: #b58300;    /* 노랑(진한 황토): 일부 보유 — 흰 아이콘 3.4:1, 미보유와 명도 간격(L 0.64 vs 0.54, E1 P1-5) */
   --cov-affiliate: #2f6fd6;  /* 파랑: 계열사 보유 — 4.8:1 */
-  --cov-sourced: #6d3aa8;    /* 보라(가장 어두움): 패널 구성품(타사 조달) — 흰 아이콘 대비 7.4:1 */
-  --cov-missing: #d93a3a;    /* 빨강: 미보유(공백) — 4.6:1 */
+  --cov-sourced: #8e3a9e;    /* 자홍: 패널 구성품(타사 조달) — 흰 아이콘 6.5:1, 색각 이상에서도 계열사 파랑과 갈림(E1 P1-4) */
+  --cov-missing: #c62d1f;    /* 빨강: 미보유(공백) — 흰 아이콘 5.5:1 (L 0.54) */
   --cov-na: #737c88;         /* 회색: 해당 없음 — 흰 아이콘 대비 4.2:1 */
   --cov-owned-bg: #e3f5e9;
   --cov-partial-bg: #fdf3d0;
   --cov-affiliate-bg: #e2ecfb;
-  --cov-sourced-bg: #f1e8fa;
+  --cov-sourced-bg: #f6e6f4;
   --cov-missing-bg: #fbe4e4;
   --cov-na-bg: #eef0f2;
   --cov-on-color: #ffffff;
@@ -113,44 +114,55 @@
   --band-accent-l2: #3d5fb8;
   --band-accent-l3: #1f6aa8;
   --band-accent-l4: #11727d;
-  --band-accent-l5: #23764a;
+  --band-accent-l5: #1c7660;   /* 민트 밴드(H172)에 맞춤 */
   --band-accent-l6: #6b6a1f;
   --band-accent-l7: #9a5a1f;
   --band-accent-ren: #4a7d1f;
   --band-accent-mon: #4d5a70;
-  --band-l1: #e6e2f6;
-  --band-l2: #dee6f8;
-  --band-l3: #daeaf8;
-  --band-l4: #d8eef0;
-  --band-l5: #dcf0e3;
-  --band-l6: #edeed9;
-  --band-l7: #f5e9dc;
-  --band-ren: #e5f2d4;
-  --band-mon: #e3e7ef;
+  /* 명도 램프 (E1 P0-1, 2026-11-19): 고압일수록 진하게 — OKLCH L 0.885(L1) → 0.965(L7), 채도 0.034 통일 */
+  --band-l1: #d8d6ef;
+  --band-l2: #d3def5;
+  --band-l3: #cee6f7;
+  --band-l4: #cdeef1;
+  --band-l5: #d5f3e8;
+  --band-l6: #f2f1d7;
+  --band-l7: #ffefdd;
+  --band-ren: #e1f0d0;
+  --band-mon: #e2e7ed;
   --band-label: #3d4450;
 
   /* 계통도 노드·선택·Gap */
   --node-bg: #ffffff;
   --node-selected-bg: #e6f0fa;
   --color-selected: #0068b7;
-  /* 흐름(D2 색 재검토 2026-11-19): 연한 트랙 위 진한 펄스, 빛 번짐. 멈춘 선택선 = 네이비 */
-  --flow-track: #b9d6f0;
+  /* 계통도 선택(타일 링·선택 연결선) — 흐름 블루와 분리 (E1 P0-3): 위계 선택(네이비) > 흐름(블루) > 선 > 밴드.
+     사이드바·칩·미니맵 등 다른 곳의 선택은 --color-selected 그대로 */
+  --color-node-selected-ring: #00337f;
+  /* 흐름(E1 P0-2·E4 P0): 흰 바탕선(casing) → 연한 트랙 → 진한 펄스. 바탕선은 트랙보다 2px 넓게 */
+  --flow-casing: rgb(255 255 255 / 0.9);
+  --flow-track: #8fbbe3;
   --flow-pulse: #0068b7;
   --flow-glow: rgb(0 104 183 / 0.55);
   --flow-glow-r: 3px;
   --color-edge-selected: #00337f;
-  --color-line-bus: #14171c;
+  --color-line-bus: #2b4a7a;  /* 모선 = 채도 낮춘 남색 5px — 선택 표시(CI 네이비)와 구분 (디자이너 2라운드 E1·E3·E5) */
+  --bus-h: 5px;
+  /* 전력선 굵기 (E4 P1): 초고압 L1~L2 · 고압 L3~L5 · 저압 L6~L7 */
+  --line-w-ehv: 2.5px;
+  --line-w-hv: 2px;
+  --line-w-lv: 1.5px;
+  --line-w-signal: 1.25px;
   --band-divider: rgb(0 51 127 / 0.08);
   --cov-owned-text: #146c33;
   --cov-partial-text: #6b5000;
   --cov-affiliate-text: #1f4f9c;
-  --cov-sourced-text: #5b2a8f;
-  --cov-missing-text: #b42828;
+  --cov-sourced-text: #74287f;
+  --cov-missing-text: #b0281b;
   --cov-na-text: #4a5363;
   --gap-banner-bg: #fff7f7;
   --gap-note-border: #f0c4c4;
-  --gap-glow-missing: rgb(217 58 58 / 0.22);
-  --gap-glow-partial: rgb(166 124 0 / 0.25);
+  --gap-glow-missing: rgb(198 45 31 / 0.22);
+  --gap-glow-partial: rgb(181 131 0 / 0.25);
   --sheet-handle: #c3c9d1;
   /* 택1(대체 관계) 연결선 — 2026-11-19 청록 폐지(P0-4): 전력선과 같은 실선 + "택1" 칩. 칩 테두리·글자만 이 토큰 */
   --color-line-alt: #8a939f;
@@ -159,7 +171,7 @@
   /* 계통도 타일 테두리 (P0-3): 기본 회색 1px, 미보유 2px 빨강, 일부 보유 1.5px 황색(A안), 선택 = 바깥 블루 링 */
   --color-node-border: #c3cad4;
   --node-border-w: 1px;
-  --node-border-w-missing: 2px;
+  --node-border-w-missing: 1.5px; /* E3 P1: 빨강은 테두리 1.5px + 판 바탕 + 부제만 (과한 빨강 줄임) */
   --node-border-w-partial: 1.5px;
   --node-ring-w: 3px;        /* 선택 링 두께 (타일과 링 사이 2px 틈은 --node-bg) */
   --color-node-ref-bg: #f7f9fc; /* 참조 타일 바탕 (점선 테두리 대신 ↗ 표시) */
@@ -188,6 +200,13 @@
   /* 제품 사진 판 — 테마와 무관하게 흰 바탕 (헤더 흰 로고 상자와 같은 방식, 2026-11-18) */
   --photo-plate-bg: #ffffff;
   --photo-plate-border: #e3e7ed;
+  /* 계통도 타일 사진 판 108×60 (E3 P0): 흰 타일 위에서 판 경계가 보이게 옅은 회색 */
+  --tile-plate-bg: #f3f5f8;
+  --tile-plate-border: transparent;
+  --tile-symbol: #5b6270;
+  --tile-plate-missing-bg: #fbe4e4; /* 미보유 판 = 옅은 빨강 (E3 P1) */
+  /* 범례 아이콘 상자 (E5 P0) */
+  --legend-icon: 16px;
 }
 
 /* 다크 — 헤더 토글로 고른 경우에만 (시스템 다크 설정으로 자동 적용하지 않음) */
@@ -229,15 +248,15 @@
   --color-line-signal: #8792a3;
 
   --cov-owned: #3cc16a;
-  --cov-partial: #f2c230;
+  --cov-partial: #f2c230;   /* 미보유 #ff6b5e 와 명도 간격 */
   --cov-affiliate: #5a93f0;
-  --cov-sourced: #cf9bff;   /* 어두운 배경 대비 7.9:1 */
-  --cov-missing: #f05a5a;
+  --cov-sourced: #e08ad6;   /* 자홍 (E1 P1-4) */
+  --cov-missing: #ff6b5e;
   --cov-na: #7d8794;
   --cov-owned-bg: #16301f;
   --cov-partial-bg: #33290c;
   --cov-affiliate-bg: #172742;
-  --cov-sourced-bg: #2a1d3d;
+  --cov-sourced-bg: #33192f;
   --cov-missing-bg: #3a1a1a;
   --cov-na-bg: #232a33;
   --cov-on-color: #0b1220;
@@ -246,41 +265,44 @@
   --band-accent-l2: #a3b8f2;
   --band-accent-l3: #8fc0ee;
   --band-accent-l4: #7fd0d8;
-  --band-accent-l5: #8fd8ac;
+  --band-accent-l5: #8fd8c4;
   --band-accent-l6: #d4d28a;
   --band-accent-l7: #f0bb8a;
   --band-accent-ren: #b4dc8a;
   --band-accent-mon: #b0bccf;
-  --band-l1: #25213b;
-  --band-l2: #1e2741;
-  --band-l3: #1a2b40;
-  --band-l4: #17303a;
-  --band-l5: #1a3127;
-  --band-l6: #2a2c1d;
-  --band-l7: #33291f;
-  --band-ren: #22301a;
-  --band-mon: #232833;
+  /* 명도 램프 (E1 P0-1): 다크는 L1 0.335 → L7 0.257 (고압일수록 밝게 떠오름) */
+  --band-l1: #36334c;
+  --band-l2: #28334b;
+  --band-l3: #183344;
+  --band-l4: #093337;
+  --band-l5: #0d3127;
+  --band-l6: #2a280b;
+  --band-l7: #331e0a;
+  --band-ren: #243014;
+  --band-mon: #25292f;
   --band-label: #c9ced6;
 
   --node-bg: #171b22;
   --node-selected-bg: #1a2740;
   --color-selected: #7fb2ff;
-  --flow-track: #1e3a5f;
+  --color-node-selected-ring: #f2f4f7; /* 무채색 흰 링 — 흐름 #8cc4f0 과 명도·색조 모두 분리 */
+  --flow-casing: rgb(15 18 23 / 0.9);
+  --flow-track: #2f5f8f;
   --flow-pulse: #8cc4f0;
-  --flow-glow: rgb(140 196 240 / 0.7);
+  --flow-glow: rgb(140 196 240 / 0.5);
   --flow-glow-r: 4px;
-  --color-edge-selected: #b0ccfa;
-  --color-line-bus: #dfe4ea;
+  --color-edge-selected: #f2f4f7;
+  --color-line-bus: #9fb8d8;
   --band-divider: rgb(255 255 255 / 0.07);
   --cov-owned-text: #7ee2a0;
   --cov-partial-text: #f5d36a;
   --cov-affiliate-text: #a7c6ff;
-  --cov-sourced-text: #e2c9ff;
+  --cov-sourced-text: #f0c2ea;
   --cov-missing-text: #ff9b9b;
   --cov-na-text: #c2cad6;
   --gap-banner-bg: #2a1818;
   --gap-note-border: #5a2a2a;
-  --gap-glow-missing: rgb(240 90 90 / 0.35);
+  --gap-glow-missing: rgb(255 107 94 / 0.35);
   --gap-glow-partial: rgb(242 194 48 / 0.3);
   --sheet-handle: #4a5563;
   --color-line-alt: #6b7585;
@@ -300,6 +322,10 @@
   --color-alert-border: #5a2b2b;
   --color-muted-dot: #7d8794;
   --photo-plate-border: #3a4250;
+  --tile-plate-bg: #e9edf2;      /* 흰 판 눈부심 줄임 (E5 P1) */
+  --tile-plate-border: #3a4250;
+  --tile-symbol: #3d4450;
+  --tile-plate-missing-bg: #f5d5d2; /* 다크도 밝은 판 계열 유지 — 심볼 대비 */
 
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.5);

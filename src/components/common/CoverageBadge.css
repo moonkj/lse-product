@@ -29,6 +29,13 @@
 .cov-badge--affiliate .cov-badge__icon { border-radius: 2px; transform: rotate(45deg); }
 .cov-badge--affiliate .cov-badge__icon { font-size: 0; }
 .cov-badge--na .cov-badge__icon { border-radius: 3px; }
+/* 해당 없음 = 속 빈 배지 (E1 P1-6): 채움 대신 바탕색 + 1.5px 회색 테두리 + 회색 − — 상태 색 5종과 무게가 갈림 */
+.cov-badge--na .cov-badge__icon {
+  box-sizing: border-box;
+  background: var(--color-surface);
+  border: 1.5px solid var(--cov-na);
+  color: var(--cov-na-text);
+}
 .cov-badge--sourced .cov-badge__icon { border-radius: 5px; font-size: 13px; }
 
 /* pill: 상세 패널 헤더 (배경색 알약) */

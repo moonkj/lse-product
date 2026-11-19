@@ -109,7 +109,16 @@ function ZoomControls({ total }: { total: number }) {
         </button>
       </div>
       <button type="button" className="dtool__btn" data-testid="zoom-reset" onClick={() => getDiagramController()?.fitAll()}>
-        전체 보기 ({total}종)
+        전체 보기<span className="dtool__count"> ({total}종)</span>
+      </button>
+      <button
+        type="button"
+        className="dtool__btn"
+        data-testid="zoom-fit-width"
+        title="계통도 폭을 화면 폭에 맞춤 (위쪽부터)"
+        onClick={() => getDiagramController()?.fitWidth()}
+      >
+        폭 맞춤
       </button>
     </>
   );

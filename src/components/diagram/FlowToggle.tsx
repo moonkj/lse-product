@@ -4,7 +4,7 @@ import { announce } from '../../lib/announce';
 import './flow.css';
 
 /**
- * 도구줄 토글 [⚡ 흐름] — 전기 흐름 애니메이션 켜기/끄기 (기본 꺼짐, 주소 `?flow=1`로 공유).
+ * 도구줄 토글 [⚡ 흐름] — 전기 흐름 애니메이션 켜기/끄기 (기본 켜짐 = 전체 전력선, 기기를 고르면 그 상·하류만. 끄면 주소 `?flow=0`).
  * 5초 넘게 움직이는 표현의 정지 수단을 겸한다(WCAG 2.2.2). Gap 보기에서는 흐름을 그리지 않으므로 비활성.
  */
 export default function FlowToggle() {

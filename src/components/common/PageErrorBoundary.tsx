@@ -1,6 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import ErrorDetails, { errorHeading, isNetworkError } from './ErrorDetails';
 import './RootErrorBoundary.css';
+import { reloadFresh, tryAutoFreshReload } from '../../lib/freshReload';
 
 interface Props {
   children: ReactNode;
@@ -39,10 +40,13 @@ export default class PageErrorBoundary extends Component<Props, State> {
       this.setState({ stillOffline: true });
       return;
     }
-    window.location.reload();
+    // 예전 index 캐시를 피해 새 버전으로 (?v=시각)
+    reloadFresh();
   };
 
   componentDidCatch(error: Error, info: ErrorInfo) {
+    // 배포 직후 페이지 조각을 못 받은 경우 — 자동으로 한 번 새 버전을 받아 온다(오류 화면을 보이지 않게)
+    if (isNetworkError(error) && tryAutoFreshReload()) return;
     console.error('[PageErrorBoundary]', error, info.componentStack);
   }
 

@@ -4,8 +4,8 @@ import { ENDPOINT_H, ENDPOINT_W } from '../../lib/diagram/geometry';
 
 /**
  * 계통도의 기기가 아닌 요소 (개선 R3 계통 정정) — 일반 화면·관리자 화면 공용.
- * - 모선: 굵은 가로선 4px + 라벨 (클릭 불가)
- * - 끝점: 점선 라벨 상자 120×44 (클릭 불가, 정보만)
+ * - 모선: CI 네이비 굵은 가로선 5px + 라벨 칩 (클릭 불가)
+ * - 끝점: 실선 라벨 상자 120×44 + "→" (클릭 불가, 정보만)
  * - 택1 배지: alt 연결선 묶음마다 1개, 툴팁 = 연결선 label. 연결된 기기가 선택되면 label 전체를 펼친다
  */
 export const BusNodes = memo(function BusNodes({ buses }: { buses: readonly BusNodeItem[] }) {
@@ -15,7 +15,7 @@ export const BusNodes = memo(function BusNodes({ buses }: { buses: readonly BusN
         <div
           key={b.id}
           className="dbusnode"
-          style={{ left: b.x - b.width / 2, top: b.y - 2, width: b.width }}
+          style={{ left: b.x - b.width / 2, top: b.y, width: b.width }}
           data-testid={`diagram-bus-${b.id}`}
           data-node-id={b.id}
           role="img"
@@ -44,7 +44,15 @@ export const EndpointNodes = memo(function EndpointNodes({ endpoints }: { endpoi
           role="note"
           aria-label={`끝점: ${p.label}`}
         >
-          {p.label}
+          {/* 끝점 = 실선 상자 + "→" (점선은 공백 후보·신호선 전용, E3 P0). 라벨에 화살표가 이미 있으면 덧붙이지 않음 */}
+          <span>
+            {/^[→←]/.test(p.label) ? null : (
+              <span className="dendpoint__arrow" aria-hidden="true">
+                →{' '}
+              </span>
+            )}
+            {p.label}
+          </span>
         </div>
       ))}
     </>

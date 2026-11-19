@@ -5,11 +5,11 @@ import type { EdgeKind } from './geometry';
 import type { Pt } from './router';
 
 /**
- * 계통도 전기 흐름 애니메이션 — 흐를 연결선 계산(순수 함수)과 `?flow=1` 상태 훅.
+ * 계통도 전기 흐름 애니메이션 — 흐를 연결선 계산(순수 함수)과 `?flow` 상태 훅 (기본 켜짐, `?flow=0` 만 끔).
  * 근거: docs/personas-design/DEBATE.md 신규 안건 1, round2/d3-dataviz.md 3-1.
  *
  * - 대상: 전력선(power)만. 신호선(signal)은 흐르지 않는다. 택1(alt)은 선택 기기에 바로 붙은 선만(그 경로를 고른 것).
- * - 기기 없이 켜면 전체 전력선(택1 제외).
+ * - 기기를 고르지 않은 처음 화면 = 전체 전력선(택1 제외) 흐름 (2026-11-19 사용자: 흐름은 처음부터 켜져 있어야 함).
  * - 기기를 고르면: 상류 = 들어오는 선을 전원 쪽 끝까지, 하류 = 나가는 선 1단계(모선은 단계로 세지 않음 — 모선 너머 피더까지).
  * - 방향: 데이터 from→to, 엣지 flow 필드로 예외(reverse = to→from, bi = 양방향 → 움직이지 않고 ⇄ 표지).
  */
@@ -21,6 +21,10 @@ export const FLOW_DASH = 16;
 export const FLOW_GAP = 20;
 export const FLOW_SPEED = 56; // D2 색 재검토(2026-11-19): 한눈에 보이게 초당 56px
 /** 한 주기(대시+간격)를 지나는 시간(초) — 배율과 무관하게 일정 (대시·간격을 배율로 나눠 화면 크기를 고정하므로) */
+/** 평소(전체 흐름) 펄스 — 옅고 짧고 느리게 (디자이너 2라운드) */
+export const IDLE_DASH = 6;
+export const IDLE_GAP = 30;
+export const IDLE_SPEED = 24;
 export const FLOW_PERIOD_SEC = (FLOW_DASH + FLOW_GAP) / FLOW_SPEED;
 
 export interface FlowEdgeInput {
@@ -161,9 +165,8 @@ export function pathMidpoint(d: string): { x: number; y: number; angle: number }
 
 /**
  * 흐름 상태 (2026-11-19 사용자: 애니메이션이 안 보인다 → 기본 켜짐)
- *  - 없음 = 켜짐: 기기를 고르면 그 기기의 상·하류 경로가 흐름
+ *  - 없음(또는 `?flow=1`) = 켜짐: 기기를 고르지 않으면 전체 전력선, 고르면 그 기기의 상·하류 경로가 흐름
  *  - `?flow=0` = 꺼짐
- *  - `?flow=1` = 전체: 기기를 고르지 않아도 모든 전력선이 흐름(발표·공유용)
  */
 export function parseFlow(v: string | null): boolean {
   return v !== '0';
@@ -172,12 +175,6 @@ export function parseFlow(v: string | null): boolean {
 export function useFlowOn(): boolean {
   const [params] = useSearchParams();
   return parseFlow(params.get('flow'));
-}
-
-/** `?flow=1` — 기기를 고르지 않아도 전체 전력선 흐름 */
-export function useFlowAll(): boolean {
-  const [params] = useSearchParams();
-  return params.get('flow') === '1';
 }
 
 /** 흐름 켜기/끄기 — 끄면 주소 `?flow=0` (기록은 늘리지 않음, 다른 쿼리는 유지) */

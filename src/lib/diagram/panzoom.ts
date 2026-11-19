@@ -24,6 +24,11 @@ export interface PanZoomOptions {
   /** 콘텐츠 둘레 여백 (화면 px) */
   pad?: number;
   maxScale?: number;
+  /**
+   * 도면 시트 틀 (E5 P0) — 계통도 둘레를 감싸는 요소. 화면 px 기준 안쪽 여백 pad, 시트 아래 여백 bottom
+   * (범례 카드가 그림 아래를 가리지 않게). 배율과 무관하게 테두리·그림자가 1px 그대로 보이도록 inner 밖에 두고 위치만 맞춘다.
+   */
+  frame?: { el: HTMLElement; pad: number; bottom: number };
   onView: (v: ViewInfo) => void;
 }
 
@@ -112,13 +117,24 @@ export class PanZoom {
     this.scale = this.clamp(s);
     const cw = this.opts.width * this.scale;
     const ch = this.opts.height * this.scale;
+    // 시트 아래 여백: 시트 안쪽 여백 + 시트 아래 여백이 기본 여백(pad)보다 큰 만큼 아래에 더 둔다
+    const f = this.opts.frame;
+    const extraB = f ? Math.max(0, f.pad + f.bottom - this.pad) : 0;
     const sw = Math.max(this.vw, cw + 2 * this.pad + this.inset.r);
-    const sh = Math.max(this.vh, ch + 2 * this.pad + this.inset.b);
+    const sh = Math.max(this.vh, ch + 2 * this.pad + extraB + this.inset.b);
+    // 그림이 화면보다 좁으면 가운데 (E2 P1)
     this.ox = (sw - this.inset.r - cw) / 2;
-    this.oy = (sh - this.inset.b - ch) / 2;
+    this.oy = (sh - this.inset.b - extraB - ch) / 2;
     this.sizer.style.width = `${sw}px`;
     this.sizer.style.height = `${sh}px`;
     this.inner.style.transform = `translate(${this.ox}px, ${this.oy}px) scale(${this.scale})`;
+    if (f) {
+      const st = f.el.style;
+      st.left = `${this.ox - f.pad}px`;
+      st.top = `${this.oy - f.pad}px`;
+      st.width = `${cw + 2 * f.pad}px`;
+      st.height = `${ch + 2 * f.pad}px`;
+    }
     // 많이 축소했을 때 밴드 라벨이 읽히도록 글자 배율 보정
     this.inner.style.setProperty('--label-k', String(Math.max(1, Math.min(3.5, 0.8 / this.scale))));
   }
@@ -215,6 +231,19 @@ export class PanZoom {
     this.fitRect({ x: 0, y: 0, w: this.opts.width, h: this.opts.height }, 1);
   }
 
+  /** 폭 맞춤 배율 — 계통도 폭(+ 양옆 여백 pad)이 화면 폭에 맞는 배율 (maxScale 이하) */
+  fitWidthScale(maxScale = 1) {
+    return Math.min((this.vw - 2 * this.pad) / this.opts.width, maxScale);
+  }
+
+  /** 폭 맞춤: 계통도 폭을 화면 폭에 맞추고 세로는 위쪽부터 (E2 P0) */
+  fitWidth(maxScale = 1) {
+    this.apply(this.fitWidthScale(maxScale));
+    this.vp.scrollLeft = this.ox + (this.opts.width * this.scale) / 2 - this.vw / 2;
+    this.vp.scrollTop = 0;
+    this.opts.onView(this.view());
+  }
+
   /** 영역이 지금 화면 안에 다 보이는지 */
   isVisible(r: Rect) {
     const v = this.view();
@@ -228,11 +257,11 @@ export class PanZoom {
     const w = this.vp.clientWidth;
     const h = this.vp.clientHeight;
     if (w === this.lastSize.w && h === this.lastSize.h) return;
+    // 왼쪽 위를 고정한다 — 상세 패널이 열리고 닫혀 폭이 바뀔 때 가운데 기준으로 다시 맞추면
+    // 내용이 한 번 튀고, 이어서 선택 기기로 이동해 화면이 두 번 흔들림 (2026-11-19 사용자)
     const v = this.view();
-    const cx = v.x + (this.lastSize.w / this.scale) / 2;
-    const cy = v.y + (this.lastSize.h / this.scale) / 2;
     this.lastSize = { w, h };
-    this.centerOn(cx, cy, this.scale);
+    this.centerOn(v.x + w / this.scale / 2, v.y + h / this.scale / 2, this.scale);
   };
 
   private onWheel = (e: WheelEvent) => {

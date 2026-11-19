@@ -120,6 +120,16 @@ describe('pathMidpoint · parseFlow', () => {
     expect(parseFlow(null)).toBe(true);
     expect(parseFlow('0')).toBe(false);
   });
+  it('기기를 고르지 않은 처음 화면 = 전체 전력선이 흐름 대상 (2026-11-19 사용자: 흐름 초기 활성화)', () => {
+    const edges: FlowEdgeInput[] = [
+      { id: 'p1', from: 'A', to: 'B', kind: 'power', d: 'M0 0H1' },
+      { id: 'p2', from: 'B', to: 'C', kind: 'power', d: 'M0 0H1' },
+      { id: 's1', from: 'C', to: 'D', kind: 'signal', d: 'M0 0H1' },
+    ];
+    const all = computeFlowEdges(edges, new Map(), null);
+    expect(all.map((e) => e.id)).toEqual(['p1', 'p2']);
+    expect(all.every((e) => e.role === 'all')).toBe(true);
+  });
 });
 
 describe('흐름 없음(none) — 보호·계측 분기·기계 연결 (2026-11-19 전수 확인)', () => {

@@ -1,5 +1,6 @@
 /* 전기 흐름 오버레이 (FlowLayer) · 토글 (FlowToggle) — DEBATE.md 신규 안건 1
-   색: CI 블루(라이트 #0068b7 = --color-selected). 빛 번짐·빨강·노랑 없음.
+   3겹: 흰 바탕선 --flow-casing(트랙 +2px) → 연한 트랙 --flow-track → 진한 펄스 --flow-pulse(CI 블루).
+   계통도 선택(네이비 링·선택선)과 색을 나눔 (E1 P0-3). 상·하류 색 구분은 하지 않음(선택색과 충돌).
    속도: FLOW_SPEED(flow.ts) 기본 32px/s — 24(D3)·48(D2) 비교는 flow.ts 상수만 바꾼다. */
 
 .dflow {
@@ -10,7 +11,16 @@
   pointer-events: none;
 }
 
-/* 흐르는 선 밑의 실선(전력선 색) — 아래 Edges 가 흐려져도 흐름 경로는 또렷하게 */
+/* 흰 바탕선 — 흐름 경로를 밴드·검은 전력선에서 떼어 냄 (청색 밴드 위 트랙 대비 1.2:1 문제, E1 진단 4) */
+.dflow__casing {
+  fill: none;
+  stroke: var(--flow-casing);
+  stroke-width: 8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 흐르는 선 밑의 트랙 — 아래 Edges 가 흐려져도 흐름 경로는 또렷하게 */
 .dflow__track {
   fill: none;
   /* 연한 트랙(6px) 위로 진한 펄스가 움직임 — D2 색 재검토 */
@@ -27,11 +37,18 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: var(--flow-dash) var(--flow-gap);
-  filter: drop-shadow(0 0 var(--flow-glow-r) var(--flow-glow));
   animation: dflow-move var(--flow-duration, 0.75s) linear infinite;
 }
+
+/* 빛 번짐: 펄스 묶음 그룹 하나에만 (성능). 전체 흐름(기기 미선택, 경로 수십 개)·움직임 줄이기·인쇄에서는 끔 */
+.dflow__glow {
+  filter: drop-shadow(0 0 var(--flow-glow-r) var(--flow-glow));
+}
+.dflow[data-scope='all'] .dflow__glow {
+  filter: none;
+}
 @media (prefers-reduced-motion: reduce), print {
-  .dflow__path { filter: none; }
+  .dflow__glow { filter: none; }
 }
 
 .dflow__path--rev {
@@ -59,18 +76,18 @@
 /* 정지 화살표 ▸ — 평소엔 숨김, 움직임 줄이기·인쇄에서만 */
 .dflow__arrow {
   display: none;
-  fill: var(--flow-color, var(--color-selected));
+  fill: var(--flow-pulse);
 }
 
 /* 양방향(ESS↔PCS) ⇄ 표지 — 움직이지 않음 */
 .dflow__bi rect {
   fill: var(--color-surface);
-  stroke: var(--flow-color, var(--color-selected));
+  stroke: var(--flow-pulse);
   stroke-width: 1.5px;
 }
 
 .dflow__bi text {
-  fill: var(--flow-color, var(--color-selected));
+  fill: var(--flow-pulse);
   font-size: 13px;
   font-weight: 700;
 }
@@ -129,9 +146,15 @@
 }
 
 .dflow-toggle[aria-pressed='true'] {
-  border-color: var(--color-selected);
-  color: var(--color-selected);
+  /* 켜짐이 한눈에 — CI 블루 채움 + 흰 글자 (라이트 #0068b7, 다크 #2563eb 흰 글자 5.2:1) */
+  border-color: var(--color-chip-active-bg);
+  background: var(--color-chip-active-bg);
+  color: var(--color-chip-active-text);
   font-weight: var(--fw-bold);
+}
+
+.dflow-toggle[aria-pressed='true']:hover {
+  background: color-mix(in srgb, var(--color-chip-active-bg) 88%, #000);
 }
 
 .dflow-toggle[aria-disabled='true'] {
@@ -152,11 +175,32 @@
   }
 }
 
-/* 모선 위 흐름: 모선(4px)보다 굵은 트랙으로 덮어 같은 경로로 보이게 */
+/* 모선 위 흐름: 모선(5px)보다 굵은 트랙(9px)으로 덮어 같은 경로로 보이게 + 바탕선 11px */
+.dflow__casing--bus {
+  stroke-width: 11px;
+  stroke-linecap: butt;
+}
 .dflow__track--bus {
-  stroke-width: 8px;
+  stroke-width: 9px;
   stroke-linecap: butt;
 }
 .dflow__path--bus {
   stroke-width: 4px;
+}
+
+/* ── 디자이너 2라운드 합의 ──────────────────────────────
+   평소(기기 미선택 · 전체 흐름): 트랙·바탕선·빛 번짐 없이 반투명 펄스만 — 계통도 전체가 파래지지 않게.
+   기기를 고르면(data-scope=node) 그 경로만 바탕선·트랙·진한 펄스로 또렷하게. */
+.dflow[data-scope='all'] .dflow__casing,
+.dflow[data-scope='all'] .dflow__track {
+  display: none;
+}
+.dflow[data-scope='all'] .dflow__path {
+  stroke-width: 2px;
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .dflow[data-scope='all'] .dflow__path { opacity: 0.55; }
+/* 35% 미만 축소(점·약칭 단계): 펄스는 멈춤 — 가는 선 위 점선이 빽빽해져 산만 */
+.diagram__inner[data-zoom='overview'] .dflow__path {
+  animation-play-state: paused;
 }

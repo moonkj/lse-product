@@ -3,7 +3,7 @@ import { useData } from '../../data/load';
 import { getDiagramModel } from '../../lib/diagram/model';
 import { useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
 import { useView } from '../../lib/diagram/view';
-import { FLOW_DASH, FLOW_GAP, FLOW_PERIOD_SEC, computeFlowEdges, flowDirMap, pathMidpoint, useFlowAll, useFlowOn } from '../../lib/diagram/flow';
+import { FLOW_DASH, FLOW_GAP, FLOW_PERIOD_SEC, IDLE_DASH, IDLE_GAP, IDLE_SPEED, computeFlowEdges, flowDirMap, pathMidpoint, useFlowOn } from '../../lib/diagram/flow';
 import './flow.css';
 
 /** 배율을 이 단위로 반올림해 줌 중 다시 그리기를 줄인다 */
@@ -11,12 +11,11 @@ const SCALE_STEP = 0.05;
 
 /**
  * 전기 흐름 오버레이 — 연결선(Edges) 위에 별도 SVG 로 겹쳐 그린다. DiagramCanvas 의 `.diagram__inner` 안, `<Edges/>` 바로 뒤에 둔다.
- * `?flow=1` 일 때만, Gap 보기에서는 그리지 않는다. 움직임은 CSS stroke-dashoffset (JS 루프 없음).
+ * 기본 켜짐(`?flow=0` 이면 끔) — 기기 미선택 = 전체 전력선, 선택 = 그 상·하류. Gap 보기에서는 그리지 않는다. 움직임은 CSS stroke-dashoffset (JS 루프 없음).
  * 움직임 줄이기·인쇄 = 정지 화살표 ▸, 패닝 중·탭 숨김 = 정지.
  */
 export default function FlowLayer() {
   const on = useFlowOn();
-  const all = useFlowAll();
   const mode = useViewMode();
   const selectedId = useSelectedNodeId();
   const data = useData();
@@ -33,9 +32,9 @@ export default function FlowLayer() {
   const dirs = useMemo(() => flowDirMap(data.diagram.edges), [data]);
   const busIds = useMemo(() => new Set(model.busNodes.map((b) => b.id)), [model]);
   const flows = useMemo(
-    // 기본(켜짐)은 기기를 골랐을 때만 그 경로가 흐름. 기기 없이 전체를 흘리려면 ?flow=1
-    () => (on && mode !== 'gap' && (selectedId || all) ? computeFlowEdges(model.edges, dirs, selectedId, (id) => busIds.has(id)) : []),
-    [on, all, mode, model, dirs, selectedId, busIds],
+    // 기본 켜짐: 기기를 고르지 않으면 전체 전력선, 고르면 그 기기 상·하류만. ?flow=0 이면 끔
+    () => (on && mode !== 'gap' ? computeFlowEdges(model.edges, dirs, selectedId, (id) => busIds.has(id)) : []),
+    [on, mode, model, dirs, selectedId, busIds],
   );
 
   // 흐름이 지나가는 모선(데이터 모선은 연결선이 아니라 별도 요소) — 같은 트랙·펄스로 그림 (2026-11-19 사용자: 380V 모선만 검은색)
@@ -57,11 +56,16 @@ export default function FlowLayer() {
   if (!on || mode === 'gap') return null;
 
   // 대시·간격을 배율로 나눠 화면 크기를 고정 → 한 주기 시간도 배율과 무관
+  // 평소(기기 미선택 · 전체 흐름)는 옅고 느린 펄스만 — 짧은 대시 6/30, 초당 24px (디자이너 2라운드 E1·E4)
+  const idle = !selectedId;
+  const dash = idle ? IDLE_DASH : FLOW_DASH;
+  const gap = idle ? IDLE_GAP : FLOW_GAP;
+  const period = idle ? (IDLE_DASH + IDLE_GAP) / IDLE_SPEED : FLOW_PERIOD_SEC;
   const style = {
-    '--flow-dash': `${FLOW_DASH / scale}px`,
-    '--flow-gap': `${FLOW_GAP / scale}px`,
-    '--flow-period': `${(FLOW_DASH + FLOW_GAP) / scale}px`,
-    '--flow-duration': `${FLOW_PERIOD_SEC}s`,
+    '--flow-dash': `${dash / scale}px`,
+    '--flow-gap': `${gap / scale}px`,
+    '--flow-period': `${(dash + gap) / scale}px`,
+    '--flow-duration': `${period}s`,
   } as CSSProperties;
 
   return (
@@ -77,20 +81,30 @@ export default function FlowLayer() {
       data-scope={selectedId ? 'node' : 'all'}
       data-paused={hidden ? 'true' : undefined}
     >
+      {/* 3겹 (E1 P0-2·E4 P0): 흰 바탕선(casing) → 연한 트랙 → 진한 펄스. 바탕선이 밴드·선과 흐름을 떼어 놓아 한눈에 보이게 */}
+      {busPaths.map((b) => (
+        <path key={`bc-${b.id}`} className="dflow__casing dflow__casing--bus" d={b.d} />
+      ))}
+      {flows.map((f) => (
+        <path key={`c-${f.id}`} className="dflow__casing" d={f.d} />
+      ))}
       {busPaths.map((b) => (
         <path key={`bt-${b.id}`} className="dflow__track dflow__track--bus" d={b.d} />
       ))}
       {flows.map((f) => (
         <path key={`t-${f.id}`} className="dflow__track" d={f.d} />
       ))}
-      {busPaths.map((b) => (
-        <path key={`bp-${b.id}`} className="dflow__path dflow__path--bus" d={b.d} data-flow-bus={b.id} />
-      ))}
-      {flows.map((f) =>
-        f.dir === 'bi' ? null : (
-          <path key={f.id} className={`dflow__path${f.dir === 'reverse' ? ' dflow__path--rev' : ''}`} d={f.d} data-flow-edge={f.id} />
-        ),
-      )}
+      {/* 빛 번짐은 그룹 하나에만 filter (경로마다 걸면 프레임마다 다시 래스터 — E4 P0 성능). 전체 흐름(기기 미선택)이면 끔 */}
+      <g className="dflow__glow">
+        {busPaths.map((b) => (
+          <path key={`bp-${b.id}`} className="dflow__path dflow__path--bus" d={b.d} data-flow-bus={b.id} />
+        ))}
+        {flows.map((f) =>
+          f.dir === 'bi' ? null : (
+            <path key={f.id} className={`dflow__path${f.dir === 'reverse' ? ' dflow__path--rev' : ''}`} d={f.d} data-flow-edge={f.id} />
+          ),
+        )}
+      </g>
       {flows.map((f) => {
         const m = pathMidpoint(f.d);
         if (!m) return null;

@@ -1,5 +1,5 @@
 {
-  "width": 2320,
+  "width": 3010,
   "height": 4398,
   "review": {
     "status": "approved",
@@ -16,7 +16,7 @@
       "y": 0,
       "height": 540,
       "x": 0,
-      "width": 1740
+      "width": 2262
     },
     {
       "id": "L2",
@@ -25,7 +25,7 @@
       "y": 540,
       "height": 540,
       "x": 0,
-      "width": 1740
+      "width": 2262
     },
     {
       "id": "L3",
@@ -34,7 +34,7 @@
       "y": 1080,
       "height": 540,
       "x": 0,
-      "width": 1740
+      "width": 2262
     },
     {
       "id": "L4",
@@ -43,7 +43,7 @@
       "y": 1620,
       "height": 864,
       "x": 0,
-      "width": 1740
+      "width": 2262
     },
     {
       "id": "L5",
@@ -52,7 +52,7 @@
       "y": 2484,
       "height": 540,
       "x": 0,
-      "width": 1740
+      "width": 2262
     },
     {
       "id": "L6",
@@ -61,7 +61,7 @@
       "y": 3024,
       "height": 540,
       "x": 0,
-      "width": 1740
+      "width": 2262
     },
     {
       "id": "L7",
@@ -70,14 +70,14 @@
       "y": 3564,
       "height": 834,
       "x": 0,
-      "width": 1740
+      "width": 2262
     },
     {
       "id": "MON",
       "label": "감시·제어",
       "voltage": "통신",
-      "x": 1769,
-      "width": 551,
+      "x": 2310,
+      "width": 700,
       "y": 0,
       "height": 1620
     },
@@ -85,8 +85,8 @@
       "id": "REN",
       "label": "신재생·저장 연계",
       "voltage": "계층별 연계",
-      "x": 1769,
-      "width": 551,
+      "x": 2310,
+      "width": 700,
       "y": 1620,
       "height": 2778
     }
@@ -95,445 +95,445 @@
     {
       "id": "n-gen",
       "equipmentTypeId": "generator",
-      "x": 145,
+      "x": 189,
       "y": 270
     },
     {
       "id": "n-step-up",
       "equipmentTypeId": "step-up-tr",
-      "x": 377,
+      "x": 490,
       "y": 270
     },
     {
       "id": "n-ehv-gis",
       "equipmentTypeId": "ehv-gis",
-      "x": 624,
+      "x": 811,
       "y": 270
     },
     {
       "id": "n-la-ehv",
       "equipmentTypeId": "la-ehv",
-      "x": 624,
+      "x": 811,
       "y": 90
     },
     {
       "id": "n-ct-ehv",
       "equipmentTypeId": "ct-pt-ehv",
-      "x": 624,
+      "x": 811,
       "y": 450
     },
     {
       "id": "n-relay-tx",
       "equipmentTypeId": "relay-tx",
-      "x": 377,
+      "x": 490,
       "y": 450
     },
     {
       "id": "n-tline",
       "equipmentTypeId": "transmission-line",
-      "x": 899,
+      "x": 1169,
       "y": 270
     },
     {
       "id": "n-hvdc",
       "equipmentTypeId": "hvdc",
-      "x": 1189,
+      "x": 1546,
       "y": 180
     },
     {
       "id": "n-facts",
       "equipmentTypeId": "facts",
-      "x": 1189,
+      "x": 1546,
       "y": 378
     },
     {
       "id": "n-substation",
       "equipmentTypeId": "substation",
-      "x": 261,
+      "x": 339,
       "y": 810
     },
     {
       "id": "n-gis154",
       "equipmentTypeId": "gis-154",
-      "x": 899,
+      "x": 1169,
       "y": 774
     },
     {
       "id": "n-main-tr",
       "equipmentTypeId": "main-tr",
-      "x": 899,
+      "x": 1169,
       "y": 936
     },
     {
       "id": "n-sas",
       "equipmentTypeId": "sas",
-      "x": 1247,
+      "x": 1621,
       "y": 774
     },
     {
       "id": "n-fcl",
       "equipmentTypeId": "fcl",
-      "x": 899,
+      "x": 1169,
       "y": 1206
     },
     {
       "id": "n-dline",
       "equipmentTypeId": "dist-line",
-      "x": 899,
+      "x": 1169,
       "y": 1422
     },
     {
       "id": "n-recloser",
       "equipmentTypeId": "recloser",
-      "x": 1160,
+      "x": 1508,
       "y": 1422
     },
     {
       "id": "n-auto-sw",
       "equipmentTypeId": "auto-switch",
-      "x": 1421,
+      "x": 1847,
       "y": 1422
     },
     {
       "id": "n-pole-tr",
       "equipmentTypeId": "pole-tr",
-      "x": 1624,
+      "x": 2111,
       "y": 1422
     },
     {
       "id": "n-mv-swgr",
       "equipmentTypeId": "mv-swgr",
-      "x": 261,
+      "x": 339,
       "y": 1890
     },
     {
       "id": "n-la",
       "equipmentTypeId": "la",
-      "x": 682,
+      "x": 887,
       "y": 1683
     },
     {
       "id": "n-lbs",
       "equipmentTypeId": "lbs",
-      "x": 899,
+      "x": 1169,
       "y": 1683
     },
     {
       "id": "n-alts",
       "equipmentTypeId": "alts",
-      "x": 1160,
+      "x": 1508,
       "y": 1683
     },
     {
       "id": "n-meter",
       "equipmentTypeId": "meter",
-      "x": 682,
+      "x": 887,
       "y": 1836
     },
     {
       "id": "n-mof",
       "equipmentTypeId": "mof",
-      "x": 899,
+      "x": 1169,
       "y": 1836
     },
     {
       "id": "n-relay",
       "equipmentTypeId": "protection-relay",
-      "x": 478,
+      "x": 621,
       "y": 1989
     },
     {
       "id": "n-ct-pt",
       "equipmentTypeId": "ct-pt",
-      "x": 682,
+      "x": 887,
       "y": 1989
     },
     {
       "id": "n-vcb",
       "equipmentTypeId": "vcb",
-      "x": 899,
+      "x": 1169,
       "y": 1989
     },
     {
       "id": "n-pf",
       "equipmentTypeId": "pf",
-      "x": 1160,
+      "x": 1508,
       "y": 2214
     },
     {
       "id": "n-vc",
       "equipmentTypeId": "vc-vi",
-      "x": 1305,
+      "x": 1697,
       "y": 2376
     },
     {
       "id": "n-mv-drive",
       "equipmentTypeId": "mv-drive",
-      "x": 1668,
+      "x": 2168,
       "y": 2376
     },
     {
       "id": "n-cast-tr",
       "equipmentTypeId": "cast-tr",
-      "x": 899,
+      "x": 1169,
       "y": 2754
     },
     {
       "id": "n-oil-tr",
       "equipmentTypeId": "oil-tr",
-      "x": 1160,
+      "x": 1508,
       "y": 2754
     },
     {
       "id": "n-lv-swgr",
       "equipmentTypeId": "lv-swgr",
-      "x": 261,
+      "x": 339,
       "y": 3294
     },
     {
       "id": "n-pmeter",
       "equipmentTypeId": "power-meter",
-      "x": 667,
+      "x": 867,
       "y": 3114
     },
     {
       "id": "n-acb",
       "equipmentTypeId": "acb",
-      "x": 899,
+      "x": 1169,
       "y": 3114
     },
     {
       "id": "n-mccb",
       "equipmentTypeId": "mccb",
-      "x": 522,
+      "x": 679,
       "y": 3312
     },
     {
       "id": "n-mcc",
       "equipmentTypeId": "mcc",
-      "x": 682,
+      "x": 887,
       "y": 3312
     },
     {
       "id": "n-spd",
       "equipmentTypeId": "spd",
-      "x": 841,
+      "x": 1093,
       "y": 3312
     },
     {
       "id": "n-cap",
       "equipmentTypeId": "capacitor",
-      "x": 1000,
+      "x": 1300,
       "y": 3312
     },
     {
       "id": "n-busway",
       "equipmentTypeId": "busway",
-      "x": 1508,
+      "x": 1960,
       "y": 3312
     },
     {
       "id": "n-sag",
       "equipmentTypeId": "sag-protector",
-      "x": 1668,
+      "x": 2168,
       "y": 3312
     },
     {
       "id": "n-aps",
       "equipmentTypeId": "aps",
-      "x": 478,
+      "x": 621,
       "y": 2214
     },
     {
       "id": "n-ats",
       "equipmentTypeId": "lv-ats",
-      "x": 1160,
+      "x": 1508,
       "y": 3474
     },
     {
       "id": "n-egen",
       "equipmentTypeId": "emergency-gen",
-      "x": 1334,
+      "x": 1734,
       "y": 3474
     },
     {
       "id": "n-panel",
       "equipmentTypeId": "panelboard",
-      "x": 435,
+      "x": 566,
       "y": 3654
     },
     {
       "id": "n-elcb",
       "equipmentTypeId": "elcb",
-      "x": 261,
+      "x": 339,
       "y": 3852
     },
     {
       "id": "n-mcb",
       "equipmentTypeId": "mcb-rcbo",
-      "x": 435,
+      "x": 566,
       "y": 3852
     },
     {
       "id": "n-bmccb",
       "equipmentTypeId": "branch-mccb",
-      "x": 609,
+      "x": 792,
       "y": 3852
     },
     {
       "id": "n-light",
       "equipmentTypeId": "lighting-outlet",
-      "x": 348,
+      "x": 452,
       "y": 4068
     },
     {
       "id": "n-evc",
       "equipmentTypeId": "ev-charger",
-      "x": 609,
+      "x": 792,
       "y": 4068
     },
     {
       "id": "n-mms",
       "equipmentTypeId": "mms",
-      "x": 841,
+      "x": 1093,
       "y": 3654
     },
     {
       "id": "n-ms",
       "equipmentTypeId": "ms",
-      "x": 841,
+      "x": 1093,
       "y": 3852
     },
     {
       "id": "n-empr",
       "equipmentTypeId": "empr",
-      "x": 1015,
+      "x": 1320,
       "y": 3852
     },
     {
       "id": "n-drive",
       "equipmentTypeId": "lv-drive",
-      "x": 1189,
+      "x": 1546,
       "y": 3852
     },
     {
       "id": "n-soft",
       "equipmentTypeId": "soft-starter",
-      "x": 1363,
+      "x": 1772,
       "y": 3852
     },
     {
       "id": "n-servo",
       "equipmentTypeId": "servo",
-      "x": 1566,
+      "x": 2036,
       "y": 3852
     },
     {
       "id": "n-motor",
       "equipmentTypeId": "motor",
-      "x": 1015,
+      "x": 1320,
       "y": 4077
     },
     {
       "id": "n-plc",
       "equipmentTypeId": "plc",
-      "x": 1276,
+      "x": 1659,
       "y": 4077
     },
     {
       "id": "n-hmi",
       "equipmentTypeId": "hmi",
-      "x": 1450,
+      "x": 1885,
       "y": 4077
     },
     {
       "id": "n-dmc",
       "equipmentTypeId": "dmc",
-      "x": 1610,
+      "x": 2093,
       "y": 3654
     },
     {
       "id": "n-smart",
       "equipmentTypeId": "smart-device",
-      "x": 145,
+      "x": 189,
       "y": 4068
     },
     {
       "id": "n-scada",
       "equipmentTypeId": "scada",
-      "x": 1914,
+      "x": 2494,
       "y": 270
     },
     {
       "id": "n-ems",
       "equipmentTypeId": "ems",
-      "x": 2175,
+      "x": 2826,
       "y": 270
     },
     {
       "id": "n-dms",
       "equipmentTypeId": "dms",
-      "x": 1914,
+      "x": 2494,
       "y": 720
     },
     {
       "id": "n-xems",
       "equipmentTypeId": "xems",
-      "x": 2175,
+      "x": 2826,
       "y": 720
     },
     {
       "id": "n-care",
       "equipmentTypeId": "care",
-      "x": 1914,
+      "x": 2494,
       "y": 1170
     },
     {
       "id": "n-amrs",
       "equipmentTypeId": "amrs",
-      "x": 2175,
+      "x": 2826,
       "y": 1170
     },
     {
       "id": "n-pv",
       "equipmentTypeId": "pv",
-      "x": 1914,
+      "x": 2494,
       "y": 1800
     },
     {
       "id": "n-dc",
       "equipmentTypeId": "dc-devices",
-      "x": 2175,
+      "x": 2826,
       "y": 1800
     },
     {
       "id": "n-pcs",
       "equipmentTypeId": "pcs",
-      "x": 1914,
+      "x": 2494,
       "y": 2088
     },
     {
       "id": "n-ess",
       "equipmentTypeId": "ess",
-      "x": 2175,
+      "x": 2826,
       "y": 2088
     },
     {
       "id": "n-microgrid",
       "equipmentTypeId": "microgrid",
-      "x": 2044,
+      "x": 2659,
       "y": 2412
     },
     {
       "id": "n-modular",
       "equipmentTypeId": "modular-substation",
-      "x": 1914,
+      "x": 2494,
       "y": 2790
     },
     {
       "id": "n-railway",
       "equipmentTypeId": "railway",
-      "x": 2175,
+      "x": 2826,
       "y": 2790
     },
     {
@@ -541,7 +541,7 @@
       "equipmentTypeId": "main-tr",
       "ref": true,
       "label": "345/154kV",
-      "x": 899,
+      "x": 1169,
       "y": 612
     },
     {
@@ -549,7 +549,7 @@
       "equipmentTypeId": "cast-tr",
       "ref": true,
       "label": "22.9/6.6kV",
-      "x": 1450,
+      "x": 1885,
       "y": 2214
     },
     {
@@ -557,7 +557,7 @@
       "equipmentTypeId": "acb",
       "ref": true,
       "label": "TR2 2차 주차단기",
-      "x": 1508,
+      "x": 1960,
       "y": 3114
     },
     {
@@ -565,25 +565,25 @@
       "kind": "bus",
       "label": "22.9kV 모선",
       "layer": "L4",
-      "x": 1174,
+      "x": 1526,
       "y": 2097,
-      "width": 552
+      "width": 718
     },
     {
       "id": "bus-380",
       "kind": "bus",
       "label": "380V 모선",
       "layer": "L6",
-      "x": 870,
+      "x": 1131,
       "y": 3204,
-      "width": 696
+      "width": 906
     },
     {
       "id": "ep-mv-motor",
       "kind": "endpoint",
       "label": "고압 전동기",
       "layer": "L4",
-      "x": 1486,
+      "x": 1932,
       "y": 2376
     },
     {
@@ -591,7 +591,7 @@
       "kind": "endpoint",
       "label": "비상 부하 (소방·승강기)",
       "layer": "L6",
-      "x": 1000,
+      "x": 1300,
       "y": 3474
     },
     {
@@ -599,7 +599,7 @@
       "kind": "endpoint",
       "label": "→ 380V 모선 연계",
       "layer": "REN",
-      "x": 1914,
+      "x": 2494,
       "y": 2250
     },
     {
@@ -607,19 +607,19 @@
       "kind": "endpoint",
       "label": "← 신재생 PCS 연계",
       "layer": "L6",
-      "x": 1218,
+      "x": 1583,
       "y": 3114
     },
     {
       "id": "n-gearbox",
       "equipmentTypeId": "gearbox",
-      "x": 1015,
+      "x": 1320,
       "y": 4263
     },
     {
       "id": "n-ups",
       "equipmentTypeId": "ups",
-      "x": 1334,
+      "x": 1734,
       "y": 3312
     }
   ],
@@ -814,19 +814,19 @@
       "voltage": "트립",
       "points": [
         {
-          "x": 478,
+          "x": 621,
           "y": 1931
         },
         {
-          "x": 478,
+          "x": 621,
           "y": 1913
         },
         {
-          "x": 899,
+          "x": 1169,
           "y": 1913
         },
         {
-          "x": 899,
+          "x": 1169,
           "y": 1931
         }
       ]
@@ -838,11 +838,11 @@
       "kind": "power",
       "points": [
         {
-          "x": 899,
+          "x": 1169,
           "y": 2047
         },
         {
-          "x": 899,
+          "x": 1169,
           "y": 2097
         }
       ]
@@ -856,11 +856,11 @@
       "label": "CB형 피더 (피더마다 VCB+CT+OCR ×n)",
       "points": [
         {
-          "x": 899,
+          "x": 1169,
           "y": 2097
         },
         {
-          "x": 899,
+          "x": 1169,
           "y": 2696
         }
       ]
@@ -873,11 +873,11 @@
       "label": "PF형 피더 (LBS+PF, 소용량 TR)",
       "points": [
         {
-          "x": 1160,
+          "x": 1508,
           "y": 2097
         },
         {
-          "x": 1160,
+          "x": 1508,
           "y": 2156
         }
       ]
@@ -897,11 +897,11 @@
       "label": "고압 전동기용 피더",
       "points": [
         {
-          "x": 1450,
+          "x": 1885,
           "y": 2097
         },
         {
-          "x": 1450,
+          "x": 1885,
           "y": 2156
         }
       ]
@@ -948,11 +948,11 @@
       "kind": "power",
       "points": [
         {
-          "x": 899,
+          "x": 1169,
           "y": 3172
         },
         {
-          "x": 899,
+          "x": 1169,
           "y": 3204
         }
       ]
@@ -970,11 +970,11 @@
       "kind": "power",
       "points": [
         {
-          "x": 522,
+          "x": 679,
           "y": 3204
         },
         {
-          "x": 522,
+          "x": 679,
           "y": 3254
         }
       ]
@@ -986,11 +986,11 @@
       "kind": "power",
       "points": [
         {
-          "x": 682,
+          "x": 887,
           "y": 3204
         },
         {
-          "x": 682,
+          "x": 887,
           "y": 3254
         }
       ]
@@ -1003,11 +1003,11 @@
       "flow": "none",
       "points": [
         {
-          "x": 841,
+          "x": 1093,
           "y": 3204
         },
         {
-          "x": 841,
+          "x": 1093,
           "y": 3254
         }
       ]
@@ -1019,11 +1019,11 @@
       "kind": "power",
       "points": [
         {
-          "x": 1000,
+          "x": 1300,
           "y": 3204
         },
         {
-          "x": 1000,
+          "x": 1300,
           "y": 3254
         }
       ]
@@ -1036,11 +1036,11 @@
       "voltage": "상용",
       "points": [
         {
-          "x": 1160,
+          "x": 1508,
           "y": 3204
         },
         {
-          "x": 1160,
+          "x": 1508,
           "y": 3416
         }
       ]
@@ -1129,15 +1129,15 @@
       "kind": "signal",
       "points": [
         {
-          "x": 375,
+          "x": 506,
           "y": 3654
         },
         {
-          "x": 145,
+          "x": 189,
           "y": 3654
         },
         {
-          "x": 145,
+          "x": 189,
           "y": 4010
         }
       ]
@@ -1200,15 +1200,15 @@
       "kind": "power",
       "points": [
         {
-          "x": 1508,
+          "x": 1960,
           "y": 3370
         },
         {
-          "x": 1508,
+          "x": 1960,
           "y": 3852
         },
         {
-          "x": 1506,
+          "x": 1976,
           "y": 3852
         }
       ]
@@ -1220,19 +1220,19 @@
       "kind": "signal",
       "points": [
         {
-          "x": 682,
+          "x": 887,
           "y": 3370
         },
         {
-          "x": 682,
+          "x": 887,
           "y": 3578
         },
         {
-          "x": 1610,
+          "x": 2093,
           "y": 3578
         },
         {
-          "x": 1610,
+          "x": 2093,
           "y": 3596
         }
       ]
@@ -1291,11 +1291,11 @@
       "kind": "power",
       "points": [
         {
-          "x": 1218,
+          "x": 1583,
           "y": 3136
         },
         {
-          "x": 1218,
+          "x": 1583,
           "y": 3204
         }
       ]
@@ -1307,15 +1307,15 @@
       "kind": "signal",
       "points": [
         {
-          "x": 2044,
+          "x": 2659,
           "y": 2354
         },
         {
-          "x": 2044,
+          "x": 2659,
           "y": 2088
         },
         {
-          "x": 1974,
+          "x": 2554,
           "y": 2088
         }
       ]
@@ -1345,23 +1345,23 @@
       "kind": "signal",
       "points": [
         {
-          "x": 2175,
+          "x": 2826,
           "y": 1228
         },
         {
-          "x": 2175,
+          "x": 2826,
           "y": 1607
         },
         {
-          "x": 760,
+          "x": 965,
           "y": 1607
         },
         {
-          "x": 760,
+          "x": 965,
           "y": 1836
         },
         {
-          "x": 742,
+          "x": 947,
           "y": 1836
         }
       ]
@@ -1373,19 +1373,19 @@
       "kind": "signal",
       "points": [
         {
-          "x": 1914,
+          "x": 2494,
           "y": 328
         },
         {
-          "x": 1914,
+          "x": 2494,
           "y": 536
         },
         {
-          "x": 478,
+          "x": 621,
           "y": 536
         },
         {
-          "x": 478,
+          "x": 621,
           "y": 1931
         }
       ]
@@ -1397,23 +1397,23 @@
       "kind": "signal",
       "points": [
         {
-          "x": 2115,
+          "x": 2766,
           "y": 720
         },
         {
-          "x": 1992,
+          "x": 2572,
           "y": 720
         },
         {
-          "x": 1992,
-          "y": 2300
+          "x": 2572,
+          "y": 3038
         },
         {
-          "x": 667,
-          "y": 2300
+          "x": 867,
+          "y": 3038
         },
         {
-          "x": 667,
+          "x": 867,
           "y": 3056
         }
       ]
@@ -1425,23 +1425,23 @@
       "kind": "signal",
       "points": [
         {
-          "x": 1854,
+          "x": 2434,
           "y": 1170
         },
         {
-          "x": 1746,
+          "x": 2010,
           "y": 1170
         },
         {
-          "x": 1746,
+          "x": 2010,
           "y": 2678
         },
         {
-          "x": 899,
+          "x": 1169,
           "y": 2678
         },
         {
-          "x": 899,
+          "x": 1169,
           "y": 2696
         }
       ]
@@ -1453,15 +1453,15 @@
       "kind": "signal",
       "points": [
         {
-          "x": 2115,
+          "x": 2766,
           "y": 270
         },
         {
-          "x": 2044,
+          "x": 2659,
           "y": 270
         },
         {
-          "x": 2044,
+          "x": 2659,
           "y": 2354
         }
       ]
@@ -1495,19 +1495,15 @@
       "label": "무정전 제어 전원",
       "points": [
         {
-          "x": 1334,
-          "y": 3370
+          "x": 1794,
+          "y": 3312
         },
         {
-          "x": 1334,
-          "y": 3398
+          "x": 1885,
+          "y": 3312
         },
         {
-          "x": 1450,
-          "y": 3398
-        },
-        {
-          "x": 1450,
+          "x": 1885,
           "y": 4019
         }
       ]

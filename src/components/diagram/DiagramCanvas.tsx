@@ -31,15 +31,19 @@ import Minimap from './Minimap';
 import DiagramLegend from './DiagramLegend';
 import FlowLayer from './FlowLayer';
 import './DiagramCanvas.css';
+import './sheet.css';
 
 /** 다른 페이지에서 계층 점프 시 navigate state 로 넘기는 값 */
 export interface JumpState extends FocusState {
   jumpTo?: Layer;
 }
 
-/** 처음 열었을 때 보이는 영역: L4 수전설비 주회로(VCB 열) 확대 */
-const INITIAL_DESKTOP: Rect = { x: 560, y: 1620, w: 900, h: 540 };
-const INITIAL_MOBILE: Rect = { x: 660, y: 1640, w: 480, h: 420 };
+/** 처음 열었을 때 보이는 영역: L4 수전설비 주회로(VCB 열) 확대 — 2026-11-19 주 계층 x ×1.3 뒤에도 같은 배율·같은 가운데 */
+const INITIAL_DESKTOP: Rect = { x: 863, y: 1620, w: 900, h: 540 };
+const INITIAL_MOBILE: Rect = { x: 930, y: 1640, w: 480, h: 420 };
+/** 도면 시트 틀 (E5 P0): 안쪽 여백 16px, 시트 아래 여백 72px (범례 카드 40px 가 그림 아래를 가리지 않게) — 화면 px */
+const SHEET_PAD = 16;
+const SHEET_BOTTOM = 72;
 
 export const Edges = memo(function Edges({
   model,
@@ -50,6 +54,19 @@ export const Edges = memo(function Edges({
 }) {
   const normal = model.edges.filter((e) => !selectedEdges.has(e.id));
   const hot = model.edges.filter((e) => selectedEdges.has(e.id));
+  // 전압 등급별 선 굵기 (E4 P1): from 기기(모선·끝점 포함)의 계층으로 판단 — L1~L2 초고압 · L6~L7 저압 · 나머지 고압
+  const tierOf = useMemo(() => {
+    const layerById = new Map<string, Layer>();
+    for (const n of model.nodeById.values()) layerById.set(n.id, n.layer);
+    for (const b of model.busNodes) layerById.set(b.id, b.layer);
+    for (const p of model.endpoints) layerById.set(p.id, p.layer);
+    return (from: string): 'ehv' | 'hv' | 'lv' => {
+      const l = layerById.get(from);
+      if (l === 'L1' || l === 'L2') return 'ehv';
+      if (l === 'L6' || l === 'L7') return 'lv';
+      return 'hv';
+    };
+  }, [model]);
   return (
     <svg
       className="dedges"
@@ -66,6 +83,7 @@ export const Edges = memo(function Edges({
           d={e.d}
           data-testid={`diagram-edge-${e.id}`}
           data-kind={e.kind}
+          data-tier={e.kind === 'signal' ? undefined : tierOf(e.from)}
         />
       ))}
     </svg>
@@ -122,8 +140,8 @@ export const Bands = memo(function Bands({
       const left = r.x + LABEL_LEFT;
       let max = r.w - LABEL_LEFT * 2;
       for (const t of tiles) {
-        const tl = t.x - TILE_W / 2 - 14; // 배지·여백
-        const tt = t.y - TILE_H / 2 - 12;
+        const tl = t.x - TILE_W / 2 - 8; // 여백 (배지는 2026-11-19부터 타일 안쪽)
+        const tt = t.y - TILE_H / 2 - 6;
         const tb = t.y + TILE_H / 2;
         if (tl < r.x || tl > r.x + r.w || tb < r.y || tt > r.y + LABEL_ZONE_H) continue;
         if (tl > left) max = Math.min(max, tl - left);
@@ -225,6 +243,7 @@ export default function DiagramCanvas() {
   const vpRef = useRef<HTMLDivElement>(null);
   const sizerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
   const pzRef = useRef<PanZoom | null>(null);
   /**
    * 현재 계층 고정 — 계층 점프·전체 보기·기기 선택 직후에는 화면 가운데 대신 그 계층을 현재 계층으로 보인다.
@@ -288,13 +307,15 @@ export default function DiagramCanvas() {
     const vp = vpRef.current;
     const sizer = sizerRef.current;
     const inner = innerRef.current;
-    if (!vp || !sizer || !inner) return;
+    const sheet = sheetRef.current;
+    if (!vp || !sizer || !inner || !sheet) return;
     // 보이는 영역은 덮개 크기가 바뀔 때만 다시 잰다 (onView 는 팬·핀치 프레임마다 불림 — 리뷰 R3)
     const visible = createVisibleAreaCache(vp);
     const pz = new PanZoom(vp, sizer, inner, {
       width: model.width,
       height: model.height,
       maxScale: 2,
+      frame: { el: sheet, pad: SHEET_PAD, bottom: SHEET_BOTTOM },
       onView: (v) => {
         const pin = pinRef.current;
         if (pin) {
@@ -334,6 +355,10 @@ export default function DiagramCanvas() {
       fitAll: () => {
         pz.fitAll();
         pinLayer(null); // 전체 보기 = 특정 계층 아님
+      },
+      fitWidth: () => {
+        pz.fitWidth();
+        pinLayer(null); // 폭 맞춤 = 특정 계층 아님
       },
       zoomBy: (f) => pz.zoomBy(f),
       centerOn: (x, y) => pz.centerOn(x, y),
@@ -549,6 +574,8 @@ export default function DiagramCanvas() {
           aria-label="계통도 — 드래그로 이동, 휠로 확대·축소. Tab 으로 기기 이동, Enter 로 선택"
         >
           <div ref={sizerRef} className="diagram__sizer">
+            {/* 도면 시트 틀 — 위치·크기는 PanZoom 이 배율에 맞춰 넣는다 (테두리·그림자는 배율과 무관하게 1px) */}
+            <div ref={sheetRef} className="diagram__sheet" data-testid="diagram-sheet" aria-hidden="true" />
             <div ref={innerRef} className="diagram__inner" style={{ width: model.width, height: model.height }}>
               <Bands model={model} mode={mode} highlight />
               <Edges model={model} selectedEdges={selectedEdges} />
