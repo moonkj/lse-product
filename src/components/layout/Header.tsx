@@ -20,10 +20,18 @@ export default function Header() {
         </span>
       </Link>
 
-      {/* 화면 메뉴 (디자이너 토론 P1): 계통도 · 공백 표. 제품/Gap 전환은 계통도 도구줄로 옮김 */}
+      {/* 화면 메뉴: 계통도 · 제품 조회 · 공백 표. 계통맵/단계별·제품/Gap 전환은 계통도 도구줄 */}
       <nav className="app-nav" aria-label="화면">
         <Link to="/" className="app-nav__link" aria-current={pathname === '/' ? 'page' : undefined}>
           계통도
+        </Link>
+        <Link
+          to="/products"
+          className="app-nav__link"
+          data-testid="products-link"
+          aria-current={pathname.startsWith('/products') ? 'page' : undefined}
+        >
+          제품 조회
         </Link>
         <Link
           to="/gap"

@@ -6,7 +6,7 @@ import DetailPanel from '../panel/DetailPanel';
 import PageErrorBoundary from '../common/PageErrorBoundary';
 import CompareTray, { useCompareTrayVisible } from '../compare/CompareTray';
 import { useData } from '../../data/load';
-import { MOBILE_QUERY, useMediaQuery } from '../../lib/diagram/url';
+import { MOBILE_QUERY, useHomeView, useMediaQuery } from '../../lib/diagram/url';
 import LiveRegion from './LiveRegion';
 import PanelResizer from './PanelResizer';
 import { shellGrid, useCompactDensity, usePanelRail } from './shellLayout';
@@ -40,7 +40,9 @@ export default function AppLayout() {
   const onHome = pathname === '/';
   const showPanel = onHome;
   // 사이드바(계층 바로가기·범례)는 계통도(제품·Gap 모드)에서만 (C1). 제품·기기·비교·공백 표 화면은 본문을 넓게
-  const showNav = onHome;
+  // 단계별 보기(?view=stage)는 열 자체가 계층 묶음이라 사이드바를 숨긴다
+  const homeView = useHomeView();
+  const showNav = onHome && homeView === 'map';
   const navRow = showNav && (isMobile || compact);
   // 모바일은 패널이 고정 위치(시트/사이드)라 열 없음
   // 넓은 화면: 패널 열은 늘 있다 — 빈 패널은 약 28px 레일(P0-8), 기기를 고르면 마지막에 끌어 둔 폭. 밀도(압축)와 무관

@@ -175,7 +175,7 @@ export function gapMemo(eq: EquipmentType): string {
   return eq.gapNote ?? eq.affiliateName ?? '';
 }
 
-function csvCell(raw: string): string {
+export function csvCell(raw: string): string {
   // 수식 주입 방지: = + - @ 탭 CR 로 시작하는 셀은 앞에 ' 를 붙여 Excel 이 텍스트로 읽게 한다
   const v = /^[=+\-@\t\r]/.test(raw) ? `'${raw}` : raw;
   return /[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;

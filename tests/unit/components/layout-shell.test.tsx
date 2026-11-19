@@ -95,7 +95,7 @@ describe('shellGrid — 압축 화면 규칙', () => {
 });
 
 describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
-  it('헤더에는 보기 모드 토글이 없고 화면 메뉴(계통도·공백 표)와 아이콘 버튼 2개', () => {
+  it('헤더에는 보기 모드 토글이 없고 화면 메뉴(계통도·제품 조회·공백 표)와 아이콘 버튼 2개', () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <Header />
@@ -105,7 +105,8 @@ describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
     expect(screen.queryByTestId('view-mode-product')).toBeNull();
     const nav = screen.getByRole('navigation', { name: '화면' });
     const links = Array.from(nav.querySelectorAll('a'));
-    expect(links.map((a) => a.textContent)).toEqual(['계통도', '공백 표']);
+    expect(links.map((a) => a.textContent)).toEqual(['계통도', '제품 조회', '공백 표']);
+    expect(screen.getByTestId('products-link')).toHaveAttribute('href', '/products');
     expect(links[0]).toHaveAttribute('aria-current', 'page');
     expect(screen.getByTestId('gap-table-link')).toHaveAttribute('href', '/gap');
     // 아이콘 버튼: 화면낭독기 이름 + title
@@ -132,9 +133,10 @@ describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
     expect(screen.getByTestId('view-mode-product')).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByTestId('view-mode-gap')).toHaveAttribute('aria-pressed', 'false');
     expect(screen.queryByTestId('view-mode-learn')).toBeNull();
-    // 도구줄 첫 요소가 보기 세그먼트, 오른쪽 끝 슬롯(흐름·수급 자리)이 있음
+    // 도구줄 첫 요소 = [계통맵 | 단계별] 보기 방식 스위치(2026-11-19), 그다음 보기 세그먼트, 오른쪽 끝 슬롯(흐름·수급 자리)
     const row = group.closest('.dtool__main')!;
-    expect(row.firstElementChild).toContainElement(group);
+    expect(row.firstElementChild).toHaveAttribute('data-testid', 'view-switch');
+    expect(row.children[1]).toContainElement(group);
     expect(screen.getByTestId('dtool-end')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('view-mode-gap'));
     expect(screen.getByTestId('loc').textContent).toBe('?node=n-vcb&mode=gap');

@@ -11,6 +11,7 @@ import FlowToggle from './FlowToggle';
 import SupplyPill from './SupplyPill';
 import PresetPicker from '../market/PresetPicker';
 import PlanToggle from '../market/PlanToggle';
+import ViewSwitch from '../stage/ViewSwitch';
 
 interface Props {
   mode: ViewMode;
@@ -49,7 +50,7 @@ function ReviewBadge({ review }: { review?: Diagram['review'] }) {
  * 보기 세그먼트 "보기 [전체｜공백만]" — 디자이너 토론 P0-5: 헤더의 제품/Gap 토글을 도구줄 맨 왼쪽으로 옮김.
  * URL `?mode=` 가 원본(useSetViewMode). 화면낭독기 그룹 이름은 "보기 모드" 유지.
  */
-function ViewSegment({ mode }: { mode: ViewMode }) {
+export function ViewSegment({ mode }: { mode: ViewMode }) {
   const setMode = useSetViewMode();
   const opts: { value: ViewMode; label: string; title: string }[] = [
     { value: 'product', label: '전체', title: '전체 기기 보기' },
@@ -212,6 +213,7 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
         </div>
       )}
       <div className="dtool__row dtool__main">
+        <ViewSwitch />
         <ViewSegment mode={mode} />
         <PresetPicker />
         <ZoomControls total={total} />

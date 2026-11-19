@@ -10,6 +10,8 @@ const ProductPage = lazy(() => import('./pages/ProductPage'));
 const GapPage = lazy(() => import('./pages/GapPage'));
 // 비교 화면 (?type=equipment|product&ids=a,b) — URL 이 원본
 const ComparePage = lazy(() => import('./pages/ComparePage'));
+// 제품 조회 (?q&biz&stage&volt&src…) — 2026-11-19 화면 추가
+const ProductsPage = lazy(() => import('./pages/ProductsPage'));
 // 관리자 편집 화면 — 별도 청크 (일반 사용자 번들에 포함되지 않음), 앱 레이아웃 밖 전체 화면
 const AdminPage = lazy(() => import('./pages/admin/AdminPage'));
 
@@ -32,6 +34,7 @@ export default function App() {
         {/* 교육 탭 제거(2026-11-18 사용자 결정) — 옛 링크·북마크(/learn?step=… 포함)는 계통도로 */}
         <Route path="learn/*" element={<Navigate to="/" replace />} />
         <Route path="compare" element={<ComparePage />} />
+        <Route path="products" element={<ProductsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

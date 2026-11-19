@@ -1,0 +1,23 @@
+{
+  "note": "단계별 보기(?view=stage) — 계층(L1~L7·REN)을 발전·송전·변전·배전·수용가 5단계로 묶는다. 기기는 layer 로 기본 배정하고 equipmentIds 로 예외를 옮긴다. MON(감시·제어)은 모든 단계에 걸치는 띠로 따로 보인다. 모든 기기가 정확히 한 단계(또는 MON 띠)에 들어가는지 tests/unit/lib/stages.test.ts 가 검사.",
+  "stages": [
+    { "id": "generation", "label": "발전", "voltage": "발전소 · 신재생 · 저장", "layers": ["REN"], "include": ["generator", "step-up-tr"], "exclude": ["modular-substation", "railway"] },
+    { "id": "transmission", "label": "송전", "voltage": "765 · 345kV", "layers": ["L1"], "include": [], "exclude": ["generator", "step-up-tr"] },
+    { "id": "substation", "label": "변전", "voltage": "345 · 154kV", "layers": ["L2"], "include": ["modular-substation"], "exclude": [] },
+    { "id": "distribution", "label": "배전", "voltage": "22.9kV", "layers": ["L3"], "include": ["railway"], "exclude": [] },
+    {
+      "id": "customer",
+      "label": "수용가",
+      "voltage": "수전 22.9kV → 380/220V",
+      "layers": ["L4", "L5", "L6", "L7"],
+      "include": [],
+      "exclude": [],
+      "groups": [
+        { "layer": "L4", "label": "수전설비" },
+        { "layer": "L5", "label": "변압" },
+        { "layer": "L6", "label": "저압 배전" },
+        { "layer": "L7", "label": "분전반 및 부하" }
+      ]
+    }
+  ]
+}

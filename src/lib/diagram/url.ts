@@ -135,3 +135,35 @@ export function focusNode(id: string) {
 }
 
 export const MOBILE_QUERY = '(max-width: 900px)';
+
+/** 홈(/) 보기 방식 — 계통맵(기본) / 단계별 (`?view=stage`). 공백만 보기(?mode)·선택(?node)과 독립 */
+export type HomeView = 'map' | 'stage';
+
+export function parseHomeView(v: string | null): HomeView {
+  return v === 'stage' ? 'stage' : 'map';
+}
+
+export function useHomeView(): HomeView {
+  const [params] = useSearchParams();
+  const { pathname } = useLocation();
+  return pathname === '/' ? parseHomeView(params.get('view')) : 'map';
+}
+
+/** 보기 방식 전환 — 항상 홈(/)으로, mode·node 는 유지 */
+export function useSetHomeView() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const locRef = useRef(location);
+  locRef.current = location;
+  return useCallback(
+    (view: HomeView) => {
+      const { pathname, search } = locRef.current;
+      const next = new URLSearchParams(pathname === '/' ? search : '');
+      if (view === 'map') next.delete('view');
+      else next.set('view', view);
+      const q = next.toString();
+      navigate({ pathname: '/', search: q ? `?${q}` : '' });
+    },
+    [navigate],
+  );
+}

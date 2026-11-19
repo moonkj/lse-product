@@ -23,8 +23,10 @@ describe('market-presets.json 무결성', () => {
     expect(PresetsFileSchema.safeParse(presetsJson).success).toBe(true);
   });
 
-  it('요구된 5개 유형과 4개 수전 방식이 있다', () => {
-    expect(file.presets.map((p) => p.id).sort()).toEqual(['building', 'datacenter', 'fab', 'factory', 'pv-ess']);
+  it('수요처 11개 유형(2026-11-19 영업 활용도 높은 6개 추가)과 4개 수전 방식이 있다', () => {
+    expect(file.presets.map((p) => p.id).sort()).toEqual(
+      ['apartment', 'battery', 'building', 'datacenter', 'fab', 'factory', 'hospital', 'logistics', 'offshore-wind', 'pv-ess', 'water'],
+    );
     expect(file.scenarios.map((s) => s.id).sort()).toEqual([...SCENARIO_IDS].sort());
   });
 
@@ -43,8 +45,8 @@ describe('market-presets.json 무결성', () => {
     }
   });
 
-  it('수전 방식 시나리오는 데이터센터·팹·공장에서만', () => {
-    expect(file.presets.filter((p) => p.scenarios).map((p) => p.id).sort()).toEqual(['datacenter', 'fab', 'factory']);
+  it('수전 방식 시나리오는 대용량 수전 유형(데이터센터·팹·공장·2차전지)에서만', () => {
+    expect(file.presets.filter((p) => p.scenarios).map((p) => p.id).sort()).toEqual(['battery', 'datacenter', 'fab', 'factory']);
   });
 
   it('없는 출처 키는 검증 실패', () => {
