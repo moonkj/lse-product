@@ -37,7 +37,7 @@ test('스모크: 앱이 뜨고 헤더와 범례 6종(v0.6 R3)이 보인다 (런�
 // ─────────────────────────────────────────────────────────────
 // v1.2 브랜드 로고·파비콘 (public/brand, BrandLogo)
 // ─────────────────────────────────────────────────────────────
-const LOGO = 'brand/ls-electric-logo.png';
+const LOGO = '/brand/ls-electric-logo-md.png';
 
 test.describe('브랜드 로고 (v1.2)', () => {
   test('로고 링크: 접근성 이름 "LS ELECTRIC 전력계통 제품맵", 다른 화면에서 누르면 계통도', async ({ page }) => {

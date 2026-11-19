@@ -5,11 +5,17 @@
  */
 const BASE = import.meta.env.BASE_URL;
 export const BRAND_LOGO = `${BASE}brand/ls-electric-logo.png`;
+/** 마켓뉴스 헤더와 같은 로고(600×215, 높이 34px로 표시) — 2026-11-19 사용자: 상단을 마켓뉴스와 똑같이 */
+export const BRAND_LOGO_MD = `${BASE}brand/ls-electric-logo-md.png`;
 
-export default function BrandLogo({ className }: { className?: string }) {
+export default function BrandLogo({ className, size = 'wide' }: { className?: string; size?: 'wide' | 'md' }) {
   return (
     <span className={className}>
-      <img src={BRAND_LOGO} alt="LS ELECTRIC" width={350} height={56} decoding="async" />
+      {size === 'md' ? (
+        <img src={BRAND_LOGO_MD} alt="LS ELECTRIC" width={95} height={34} decoding="async" />
+      ) : (
+        <img src={BRAND_LOGO} alt="LS ELECTRIC" width={350} height={56} decoding="async" />
+      )}
     </span>
   );
 }

@@ -13,7 +13,7 @@ export default function Header() {
   return (
     <header className="app-header">
       <Link to="/" className="app-header__logo">
-        <BrandLogo className="app-header__brand" />
+        <BrandLogo className="app-header__brand" size="md" />
         <span className="app-header__title">
           전력계통 제품맵
           <span className="app-header__sub">LS ELECTRIC 제품 지도</span>

@@ -942,3 +942,46 @@
 @media (max-width: 600px) {
   .app-header .present-toggle { margin-left: auto; }
 }
+
+/* ── 헤더 = 마켓뉴스와 같은 치수 (lse-market-news site.css .hdr·.hdr-title·.logo, 2026-11-19 사용자) ──
+   여백 12px 24px · 로고 흰 상자 4px 8px + 로고 높이 34px · 제목 24px/32px 굵게 -0.3px · 부제 13px/20px · 아래 선 4px.
+   휴대폰(≤640px): 여백 8px · 아래 선 3px · 제목 18px. */
+.app-header {
+  min-height: var(--header-h);
+  padding: 12px 24px;
+  column-gap: 16px;
+}
+.app-header__logo {
+  gap: 12px;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.3px;
+}
+.app-header__brand {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm, 6px);
+}
+.app-header__brand img {
+  height: 34px;
+}
+.app-header__title {
+  gap: 12px;
+}
+.app-header__sub {
+  font-size: 13px;
+  line-height: 20px;
+}
+@media (max-width: 900px) {
+  .app-header { min-height: 56px; padding: 8px 16px; }
+  .app-header__logo { font-size: 18px; line-height: 26px; gap: 8px; }
+  .app-header__brand { padding: 2px 8px; }
+  .app-header__brand img { height: 28px; }
+}
+@media (max-width: 640px) {
+  .app-header { border-bottom-width: 3px; }
+}
+@media (max-width: 400px) {
+  .app-header { padding-left: 12px; padding-right: 12px; column-gap: 8px; }
+  .app-header__brand { padding: 2px 6px; }
+  .app-header__brand img { height: 22px; }
+}
