@@ -94,6 +94,10 @@ export const Edges = memo(function Edges({
 /** 이름표 왼쪽 여백·이름표가 차지하는 밴드 위쪽 높이(두 줄 포함) — 계통도 좌표 */
 const LABEL_LEFT = 14;
 const LABEL_ZONE_H = 84;
+/** 계층 바로가기 최소 배율 */
+const LAYER_MIN_SCALE = 0.64;
+/** 이 배율 미만이면 부제를 숨기고 제목을 키운다(중간 단계) */
+const MID_SCALE = 0.6;
 export const OVERVIEW_SCALE = 0.35; // 2026-11-19 사용자: 35% 아래에서만 점+약칭
 
 export const Bands = memo(function Bands({
@@ -130,6 +134,7 @@ export const Bands = memo(function Bands({
   // semantic zoom: 배율이 경계를 넘을 때만 다시 그림(불리언 구독) → 캔버스 안쪽 상자에 data-zoom 을 달아 CSS 로 전환.
   // 타일 74개를 React 로 다시 그리지 않는다. 관리자 캔버스(view store 미사용, ready=false)는 늘 상세 단계.
   const overview = useView((s) => s.ready && s.scale < OVERVIEW_SCALE);
+  const mid = useView((s) => s.ready && s.scale < MID_SCALE);
   const probeRef = useRef<HTMLSpanElement>(null);
   // 이름표가 쓸 수 있는 최대 폭: 이름표 줄(밴드 위쪽 ~84px)에 걸린 가장 왼쪽 타일 앞까지 (2026-11-19 사용자: 이름표·타일 겹침)
   const labelMax = useMemo(() => {
@@ -153,8 +158,8 @@ export const Bands = memo(function Bands({
   useLayoutEffect(() => {
     const host = probeRef.current?.parentElement;
     if (!host) return;
-    host.dataset.zoom = overview ? 'overview' : 'detail';
-  }, [overview]);
+    host.dataset.zoom = overview ? 'overview' : mid ? 'mid' : 'detail';
+  }, [overview, mid]);
   return (
     <>
       <span ref={probeRef} hidden aria-hidden="true" />
@@ -350,6 +355,8 @@ export default function DiagramCanvas() {
         const r = layerRect(l);
         if (!r) return;
         pz.fitRect(r, 1);
+        // 폭을 1.3배로 펼친 뒤 계층 전체를 맞추면 51%로 떨어져 글자가 안 읽힘 → 최소 64%, 계층 왼쪽 위부터 (디자이너 3라운드 E5)
+        if (pz.scale < LAYER_MIN_SCALE) pz.placeAt(r.x, r.y, 24, 24, LAYER_MIN_SCALE);
         pinLayer(l, true); // 계층 칩 = 그 계층을 상자로 표시
       },
       fitAll: () => {

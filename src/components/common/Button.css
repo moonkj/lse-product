@@ -66,3 +66,15 @@
 @media (prefers-reduced-motion: reduce) {
   .btn { transition: none; }
 }
+
+/* 다크: 주 버튼은 라이트와 같은 인상 — 블루 바탕 + 흰 글자 (디자이너 3라운드 E1·E5) */
+:root[data-theme='dark'] .btn--primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #fff;
+}
+:root[data-theme='dark'] .btn--primary:hover {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+}

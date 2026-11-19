@@ -79,6 +79,7 @@ export default function FlowLayer() {
       style={style}
       data-testid="flow-layer"
       data-scope={selectedId ? 'node' : 'all'}
+      data-tiny={scale < 0.15 ? 'true' : undefined}
       data-paused={hidden ? 'true' : undefined}
     >
       {/* 3겹 (E1 P0-2·E4 P0): 흰 바탕선(casing) → 연한 트랙 → 진한 펄스. 바탕선이 밴드·선과 흐름을 떼어 놓아 한눈에 보이게 */}

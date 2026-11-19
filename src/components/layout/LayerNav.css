@@ -113,3 +113,8 @@
   color: var(--color-surface);
   box-shadow: none;
 }
+.layer-nav--gap .layer-nav__btn.is-current {
+  background: var(--layer-bg, var(--node-selected-bg));
+  color: var(--layer-accent, var(--color-link));
+  box-shadow: inset 3px 0 0 var(--layer-accent, var(--color-selected));
+}

@@ -227,8 +227,13 @@ export class PanZoom {
     this.centerOn(r.x + r.w / 2, r.y + r.h / 2, s);
   }
 
-  fitAll() {
-    this.fitRect({ x: 0, y: 0, w: this.opts.width, h: this.opts.height }, 1);
+  /** 전체 보기 — 아래 범례 카드(약 56px)에 가리지 않게 아래 여백을 더 둔다 (디자이너 3라운드 E2·E5) */
+  fitAll(bottomReserve = 64) {
+    const m = 16;
+    const W = this.opts.width;
+    const H = this.opts.height;
+    const s = Math.min((this.vw - 2 * m) / W, (this.vh - 2 * m - bottomReserve) / H, 1);
+    this.centerOn(W / 2, H / 2 + bottomReserve / 2 / s, s);
   }
 
   /** 폭 맞춤 배율 — 계통도 폭(+ 양옆 여백 pad)이 화면 폭에 맞는 배율 (maxScale 이하) */

@@ -95,7 +95,7 @@
 
   /* 커버리지 6상태 (색 + 아이콘 병행) — 흰 아이콘 대비는 모두 3:1 이상 */
   --cov-owned: #1b8f44;      /* 초록: 보유 — 흰 아이콘 4.2:1 (옅은 밴드 위 테두리 3:1 확보 위해 한 단계 진하게) */
-  --cov-partial: #b58300;    /* 노랑(진한 황토): 일부 보유 — 흰 아이콘 3.4:1, 미보유와 명도 간격(L 0.64 vs 0.54, E1 P1-5) */
+  --cov-partial: #a67c00;    /* 노랑(진한 황토): 일부 보유 — 흰 아이콘 3.4:1, 미보유와 명도 간격(L 0.64 vs 0.54, E1 P1-5) */
   --cov-affiliate: #2f6fd6;  /* 파랑: 계열사 보유 — 4.8:1 */
   --cov-sourced: #8e3a9e;    /* 자홍: 패널 구성품(타사 조달) — 흰 아이콘 6.5:1, 색각 이상에서도 계열사 파랑과 갈림(E1 P1-4) */
   --cov-missing: #c62d1f;    /* 빨강: 미보유(공백) — 흰 아이콘 5.5:1 (L 0.54) */
@@ -120,7 +120,7 @@
   --band-accent-ren: #4a7d1f;
   --band-accent-mon: #4d5a70;
   /* 명도 램프 (E1 P0-1, 2026-11-19): 고압일수록 진하게 — OKLCH L 0.885(L1) → 0.965(L7), 채도 0.034 통일 */
-  --band-l1: #d8d6ef;
+  --band-l1: #dcd2f0;
   --band-l2: #d3def5;
   --band-l3: #cee6f7;
   --band-l4: #cdeef1;
@@ -137,6 +137,8 @@
   --color-selected: #0068b7;
   /* 계통도 선택(타일 링·선택 연결선) — 흐름 블루와 분리 (E1 P0-3): 위계 선택(네이비) > 흐름(블루) > 선 > 밴드.
      사이드바·칩·미니맵 등 다른 곳의 선택은 --color-selected 그대로 */
+  /* 평소(전체) 흐름 펄스 — 검은 선 위에서도 보이게 선보다 밝은 불투명 색 (디자이너 3라운드 E1) */
+  --flow-pulse-idle: #6fb1ea;
   --color-node-selected-ring: #00337f;
   /* 흐름(E1 P0-2·E4 P0): 흰 바탕선(casing) → 연한 트랙 → 진한 펄스. 바탕선은 트랙보다 2px 넓게 */
   --flow-casing: rgb(255 255 255 / 0.9);
@@ -285,6 +287,7 @@
   --node-bg: #171b22;
   --node-selected-bg: #1a2740;
   --color-selected: #7fb2ff;
+  --flow-pulse-idle: #2f7fd0;
   --color-node-selected-ring: #f2f4f7; /* 무채색 흰 링 — 흐름 #8cc4f0 과 명도·색조 모두 분리 */
   --flow-casing: rgb(15 18 23 / 0.9);
   --flow-track: #2f5f8f;
@@ -332,3 +335,4 @@
   --shadow-sheet: 0 -6px 20px rgb(0 0 0 / 0.5);
   --shadow-side: -6px 0 20px rgb(0 0 0 / 0.5);
 }
+

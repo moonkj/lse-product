@@ -1268,3 +1268,25 @@
 @media (max-width: 900px) {
   [data-testid='diagram-print'] { display: none; }
 }
+
+/* ── 디자이너 3라운드 반영 ───────────────────────────── */
+/* 중간 축소(35~60%): 부제를 숨기고 제목을 키워 화면에서 읽히게 (E3) */
+.diagram__inner[data-zoom='mid'] .dnode__caption {
+  display: none;
+}
+.diagram__inner[data-zoom='mid'] .dnode__title {
+  font-size: 18px;
+  line-height: 1.25;
+}
+/* 긴 이름이 '케이/블'처럼 끊기지 않게 (E3) */
+.dnode__title,
+.dnode__caption {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+/* 계통도 밖으로 삐져나온 연결선은 시트 안에서 자름 (E5) */
+.diagram__inner {
+  overflow: clip;
+  overflow-clip-margin: 14px;
+}
+/* 공백만 보기 사이드바 활성도 계층 고유색 (E1) — 공백 수 빨강 점은 그대로 */
