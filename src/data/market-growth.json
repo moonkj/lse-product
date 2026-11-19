@@ -89,12 +89,12 @@
           "value": 3818,
           "unit": "C-km",
           "kind": "forecast",
-          "method": "원문 수치(보도 인용)",
+          "method": "원문 수치 — 계획 본문 p.13 표·p.3",
           "source": {
-            "title": "서울경제(다음 게재) 보도 — 한전 「제11차 장기 송·변전설비계획」",
-            "url": "https://v.daum.net/v/20250527174311494",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           }
         },
         {
@@ -104,12 +104,12 @@
           "value": 4,
           "unit": "루트(2GW급)",
           "kind": "forecast",
-          "method": "원문 수치(보도 인용) — 기존 4GW급 2개 루트에서 변경",
+          "method": "원문 수치 — 2GW급 4개 루트(보도자료 p.1)",
           "source": {
-            "title": "뉴시스 보도 — 한전 「제11차 장기 송·변전설비계획」 공개",
-            "url": "https://www.newsis.com/view/NISX20250527_0003191486",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           }
         }
       ]
@@ -135,27 +135,27 @@
           "value": 61183,
           "unit": "C-km",
           "kind": "forecast",
-          "method": "원문 수치(보도 인용)",
+          "method": "원문 수치 — 계획 본문 p.13 표·p.3",
           "source": {
-            "title": "서울경제(다음 게재) 보도 — 한전 「제11차 장기 송·변전설비계획」",
-            "url": "https://v.daum.net/v/20250527174311494",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           }
         },
         {
           "label": "2023년 대비 배수",
           "role": "context",
           "year": 2038,
-          "value": 1.7,
+          "value": 1.72,
           "unit": "배",
           "kind": "forecast",
-          "method": "원문 수치(보도 인용) — \"약 1.7배\"",
+          "method": "원문 수치 — 계획 본문 p.13: 2023년 대비 약 1.72배",
           "source": {
-            "title": "서울경제(다음 게재) 보도 — 한전 「제11차 장기 송·변전설비계획」",
-            "url": "https://v.daum.net/v/20250527174311494",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           }
         }
       ]
@@ -180,12 +180,12 @@
           "value": 1297,
           "unit": "개소",
           "kind": "forecast",
-          "method": "원문 수치(보도 인용)",
+          "method": "원문 수치 — 계획 본문 p.13 표·p.3",
           "source": {
-            "title": "아시아경제 보도 — 제11차 장기 송·변전설비계획 물량",
-            "url": "https://view.asiae.co.kr/article/2025112611491358543",
-            "asof": "2025-11-27",
-            "confidence": "secondary"
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
           }
         },
         {
@@ -195,12 +195,12 @@
           "value": 391,
           "unit": "개소",
           "kind": "forecast",
-          "method": "원문 수치(보도 인용) — 43.2% 증가",
+          "method": "원문 수치 — 계획 본문 p.13 표·p.3",
           "source": {
-            "title": "아시아경제 보도 — 제11차 장기 송·변전설비계획 물량",
-            "url": "https://view.asiae.co.kr/article/2025112611491358543",
-            "asof": "2025-11-27",
-            "confidence": "secondary"
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
           }
         }
       ]

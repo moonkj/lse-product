@@ -74,12 +74,12 @@
           "value": 72.8,
           "unit": "조원",
           "kind": "forecast",
-          "method": "원문 수치 — 2024~2038 누계",
+          "method": "원문 수치 — 2038년까지 투자 필요액(보도자료 p.2)",
           "source": {
-            "title": "뉴시스 보도 — 한전 「제11차 장기 송·변전설비계획(2024~2038)」 공개",
-            "url": "https://www.newsis.com/view/NISX20250527_0003191486",
+            "title": "한국전력공사 보도자료 「한전, 『제11차 장기 송변전설비계획』수립·발표」 (2025.5.27)",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "year": 2038,
           "edition": "tx11"
@@ -88,12 +88,12 @@
           "value": 56.5,
           "unit": "조원",
           "kind": "forecast",
-          "method": "원문 수치 — 2022~2036 누계",
+          "method": "원문 수치 — 11차 보도자료의 10차 계획 비교값(56.5조원, 16.3조원 증가)",
           "source": {
-            "title": "파이낸셜뉴스(뉴스1) 보도 — 한전 「제10차 장기 송·변전설비계획(2022~2036)」",
-            "url": "https://www.fnnews.com/news/202305080948340532",
-            "asof": "2023-05-08",
-            "confidence": "secondary"
+            "title": "한국전력공사 보도자료 「한전, 『제11차 장기 송변전설비계획』수립·발표」 (2025.5.27)",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
           },
           "year": 2036,
           "edition": "tx10"
@@ -113,32 +113,44 @@
       ],
       "figures": [
         {
-          "value": 35600,
-          "unit": "C-km",
-          "kind": "actual",
-          "method": "2038 전망 61,183C-km ÷ 1.719(보도된 2023년 말 대비 증가율 71.9%)로 역산, 백 단위 반올림",
-          "source": {
-            "title": "아시아경제 보도 — 제11차 장기 송·변전설비계획 송전선로·변전소 증가",
-            "url": "https://view.asiae.co.kr/article/2025112611491358543",
-            "asof": "2025-11-27",
-            "confidence": "secondary"
-          },
-          "year": 2023,
-          "needsCheck": true
-        },
-        {
           "value": 61183,
           "unit": "C-km",
           "kind": "forecast",
-          "method": "원문 수치 — 154kV 37,049C-km·HVDC 3,818C-km 포함 총계",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2038년, 2023년 대비 약 1.72배)",
           "source": {
-            "title": "서울경제(다음 게재) 보도 — 제11차 장기 송·변전설비계획 송전선로 전망",
-            "url": "https://v.daum.net/v/20250527174311494",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "year": 2038,
           "edition": "tx11"
+        },
+        {
+          "value": 35596,
+          "unit": "C-km",
+          "kind": "actual",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2023년, 765·345·154kV·HVDC 합계)",
+          "source": {
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
+          },
+          "year": 2023
+        },
+        {
+          "value": 47251,
+          "unit": "C-km",
+          "kind": "forecast",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2030년)",
+          "source": {
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
+          },
+          "year": 2030
         },
         {
           "value": 58000,
@@ -161,7 +173,6 @@
       "id": "tx-hvdc",
       "layer": "L1",
       "label": "HVDC 송전선로",
-      "note": "2023년 기준값(토론 인용 492C-km)은 원문 미확인으로 표시하지 않음",
       "equipment": [
         "hvdc"
       ],
@@ -170,17 +181,44 @@
           "value": 3818,
           "unit": "C-km",
           "kind": "forecast",
-          "method": "원문 수치",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2038년 HVDC)",
           "source": {
-            "title": "서울경제(다음 게재) 보도 — 제11차 장기 송·변전설비계획 송전선로 전망",
-            "url": "https://v.daum.net/v/20250527174311494",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "year": 2038,
           "edition": "tx11"
+        },
+        {
+          "value": 492,
+          "unit": "C-km",
+          "kind": "actual",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2023년 HVDC)",
+          "source": {
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
+          },
+          "year": 2023
+        },
+        {
+          "value": 1768,
+          "unit": "C-km",
+          "kind": "forecast",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2030년 HVDC)",
+          "source": {
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
+          },
+          "year": 2030
         }
-      ]
+      ],
+      "note": "HVDC 변환소 6개소(2023) → 17(2030) → 28(2038) · 같은 표"
     },
     {
       "id": "gen-new",
@@ -234,6 +272,20 @@
       ],
       "figures": [
         {
+          "value": 1297,
+          "unit": "개소",
+          "kind": "forecast",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2038년, 391개 증가·약 1.43배)",
+          "source": {
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
+          },
+          "year": 2038,
+          "edition": "tx11"
+        },
+        {
           "value": 892,
           "unit": "개소",
           "kind": "actual",
@@ -250,29 +302,27 @@
           "value": 906,
           "unit": "개소",
           "kind": "actual",
-          "method": "2038 전망 1,297개소 − 보도된 증가분 391개소로 역산 — 다른 보도(메트로신문 2026-10-27)는 현재 939개소로 적어 원문 대조 필요",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2023년, 765·345·154kV·HVDC 변환소 합계)",
           "source": {
-            "title": "아시아경제 보도 — 제11차 장기 송·변전설비계획 송전선로·변전소 증가",
-            "url": "https://view.asiae.co.kr/article/2025112611491358543",
-            "asof": "2025-11-27",
-            "confidence": "secondary"
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
           },
-          "year": 2023,
-          "needsCheck": true
+          "year": 2023
         },
         {
-          "value": 1297,
+          "value": 1131,
           "unit": "개소",
           "kind": "forecast",
-          "method": "원문 수치",
+          "method": "원문 수치 — 계획 본문 p.13 「전압별·설비별 송변전설비 증가 추이」 표 (2030년)",
           "source": {
-            "title": "아시아경제 보도 — 제11차 장기 송·변전설비계획 송전선로·변전소 증가",
-            "url": "https://view.asiae.co.kr/article/2025112611491358543",
-            "asof": "2025-11-27",
-            "confidence": "secondary"
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
+            "asof": "2025-05-27",
+            "confidence": "official-plan"
           },
-          "year": 2038,
-          "edition": "tx11"
+          "year": 2030
         },
         {
           "value": 1228,
@@ -499,12 +549,12 @@
           "value": 2036,
           "unit": "년",
           "kind": "forecast",
-          "method": "원문 수치 — 4GW급 2개 루트 일괄 준공",
+          "method": "원문 수치 — 11차 보도자료가 밝힌 기존 계획: 4GW급 2개 루트 '36년 준공",
           "source": {
-            "title": "뉴시스 보도 — 한전 「제11차 장기 송·변전설비계획(2024~2038)」 공개",
-            "url": "https://www.newsis.com/view/NISX20250527_0003191486",
+            "title": "한국전력공사 보도자료 「한전, 『제11차 장기 송변전설비계획』수립·발표」 (2025.5.27)",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "label": "4GW×2"
         },
@@ -513,12 +563,12 @@
           "value": 2031,
           "unit": "년",
           "kind": "forecast",
-          "method": "원문 수치 — 2GW급 4개 루트 단계 준공",
+          "method": "원문 수치 — 2GW급 4개 루트 단계 준공(보도자료 p.1·계획 본문 p.3: 1단계 '31, 2단계 '36, 3단계 '38)",
           "source": {
-            "title": "뉴시스 보도 — 한전 「제11차 장기 송·변전설비계획(2024~2038)」 공개",
-            "url": "https://www.newsis.com/view/NISX20250527_0003191486",
+            "title": "한국전력공사 보도자료 「한전, 『제11차 장기 송변전설비계획』수립·발표」 (2025.5.27)",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "label": "2GW×4 1단계"
         },
@@ -527,12 +577,12 @@
           "value": 2036,
           "unit": "년",
           "kind": "forecast",
-          "method": "원문 수치 — 2GW급 4개 루트 단계 준공",
+          "method": "원문 수치 — 2GW급 4개 루트 단계 준공(보도자료 p.1·계획 본문 p.3: 1단계 '31, 2단계 '36, 3단계 '38)",
           "source": {
-            "title": "뉴시스 보도 — 한전 「제11차 장기 송·변전설비계획(2024~2038)」 공개",
-            "url": "https://www.newsis.com/view/NISX20250527_0003191486",
+            "title": "한국전력공사 보도자료 「한전, 『제11차 장기 송변전설비계획』수립·발표」 (2025.5.27)",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "label": "2단계"
         },
@@ -541,12 +591,12 @@
           "value": 2038,
           "unit": "년",
           "kind": "forecast",
-          "method": "원문 수치 — 2GW급 4개 루트 단계 준공",
+          "method": "원문 수치 — 2GW급 4개 루트 단계 준공(보도자료 p.1·계획 본문 p.3: 1단계 '31, 2단계 '36, 3단계 '38)",
           "source": {
-            "title": "뉴시스 보도 — 한전 「제11차 장기 송·변전설비계획(2024~2038)」 공개",
-            "url": "https://www.newsis.com/view/NISX20250527_0003191486",
+            "title": "한국전력공사 보도자료 「한전, 『제11차 장기 송변전설비계획』수립·발표」 (2025.5.27)",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "label": "3단계"
         }
@@ -580,12 +630,12 @@
           "value": 2026,
           "unit": "년",
           "kind": "forecast",
-          "method": "원문 수치 — 변경 목표",
+          "method": "원문 수치 — 계획 본문 붙임2 「연도별 송변전설비계획」 준공시기",
           "source": {
-            "title": "연합뉴스(다음 게재) 보도 — 「제11차 장기 송·변전설비계획」 전기위원회 확정",
-            "url": "https://v.daum.net/v/20250527151123102",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "month": 10
         }
@@ -619,12 +669,12 @@
           "value": 2027,
           "unit": "년",
           "kind": "forecast",
-          "method": "원문 수치 — 변경 목표",
+          "method": "원문 수치 — 계획 본문 붙임2 「연도별 송변전설비계획」 준공시기",
           "source": {
-            "title": "연합뉴스(다음 게재) 보도 — 「제11차 장기 송·변전설비계획」 전기위원회 확정",
-            "url": "https://v.daum.net/v/20250527151123102",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "month": 12
         }
@@ -660,12 +710,12 @@
           "value": 2028,
           "unit": "년",
           "kind": "forecast",
-          "method": "원문 수치 — 변경 목표(3년 지연)",
+          "method": "원문 수치 — 계획 본문 붙임2 「연도별 송변전설비계획」 준공시기",
           "source": {
-            "title": "연합뉴스(다음 게재) 보도 — 「제11차 장기 송·변전설비계획」 전기위원회 확정",
-            "url": "https://v.daum.net/v/20250527151123102",
+            "title": "한국전력공사 「제11차 전력수급기본계획 관련 장기 송변전설비계획(2024~2038)」 (2025.5, 전기위원회 확정) — 한전 보도자료 첨부",
+            "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
             "asof": "2025-05-27",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "month": 12
         }

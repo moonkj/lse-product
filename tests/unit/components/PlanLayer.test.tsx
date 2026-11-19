@@ -43,7 +43,7 @@ describe('PlanLayer', () => {
     expect(line.querySelector('[data-coverage="missing"]')).not.toBeNull();
     expect(line.querySelector('[data-coverage="partial"]')).not.toBeNull();
     // 표시된 값마다 출처 링크(새 탭)
-    expect(within(line).getAllByRole('link').length).toBe(3);
+    expect(within(line).getAllByRole('link').length).toBe(4); // 11차 2038 · 10차 · 2023 실적 · 2030 전망
     // 일정 변동
     expect(within(l1).getByTestId('plan-project-dangjin-345')).toHaveTextContent('+36개월');
     expect(document.body.textContent).not.toMatch(/발주\s*예측/);

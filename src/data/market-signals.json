@@ -305,12 +305,12 @@
         "value": 72.8,
         "unit": "조원",
         "kind": "forecast",
-        "method": "제11차 장기 송변전설비계획(2024~2038) 투자 전망 총액(보도 인용, 계획 원문 미대조)",
+        "method": "원문 수치 — 2038년까지 송변전 투자 필요액(한전 보도자료 p.2)",
         "source": {
-          "title": "뉴시스, 한전 송변전 설비 확충에 15년간 72.8조 투입 전망(제11차 장기 송변전설비계획)",
-          "url": "https://www.newsis.com/view/NISX20250527_0003191486",
+          "title": "한국전력공사 보도자료 「한전, 『제11차 장기 송변전설비계획』수립·발표」 (2025.5.27)",
+          "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
           "asof": "2025-05-27",
-          "confidence": "secondary"
+          "confidence": "official-plan"
         }
       }
     },
