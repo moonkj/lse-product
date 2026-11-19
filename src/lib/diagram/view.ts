@@ -62,6 +62,8 @@ export interface DiagramController {
   centerOn(x: number, y: number): void;
   /** 노드가 보이는 영역(패널·시트·미니맵·비교 바 제외) 밖이면 그 가운데로 팬 */
   revealNode(id: string): void;
+  /** 화면은 그대로 두고 그 계층을 선택 영역(상자)으로 표시 — 계통도 안 영역을 눌렀을 때 */
+  focusLayer(layer: Layer): void;
 }
 
 let controller: DiagramController | null = null;

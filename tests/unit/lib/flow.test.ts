@@ -115,9 +115,9 @@ describe('pathMidpoint · parseFlow', () => {
     expect(pathMidpoint('M0 0L0 20')).toEqual({ x: 0, y: 10, angle: 90 });
     expect(pathMidpoint('M5 5')).toBeNull();
   });
-  it('?flow=1 만 켜짐', () => {
+  it('기본 켜짐 — ?flow=0 만 꺼짐 (2026-11-19 사용자 요청)', () => {
     expect(parseFlow('1')).toBe(true);
-    expect(parseFlow(null)).toBe(false);
+    expect(parseFlow(null)).toBe(true);
     expect(parseFlow('0')).toBe(false);
   });
 });

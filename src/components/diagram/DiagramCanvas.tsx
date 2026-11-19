@@ -5,7 +5,7 @@ import type { Layer } from '../../lib/schema';
 import { getDiagramModel, layerAt, type DiagramModel } from '../../lib/diagram/model';
 import { TILE_H, TILE_W } from '../../lib/diagram/geometry';
 import { PanZoom, type Rect } from '../../lib/diagram/panzoom';
-import { getSavedView, registerDiagramController, saveView, useView, viewStore } from '../../lib/diagram/view';
+import { getDiagramController, getSavedView, registerDiagramController, saveView, useView, viewStore } from '../../lib/diagram/view';
 import { applyPrintScale } from '../../lib/diagram/print';
 import { COVERAGES } from '../../lib/schema';
 import { COVERAGE_LABELS } from '../../lib/labels';
@@ -86,6 +86,22 @@ export const Bands = memo(function Bands({
 }) {
   const focus = useView((s) => s.focus);
   const active = highlight ? focus : null;
+  // 계통도 안 빈 영역을 누르면(끌기 아님) 그 계층을 선택 영역으로 — 왼쪽 계층을 고른 것과 같은 표시
+  const downRef = useRef<{ x: number; y: number } | null>(null);
+  const bandEvents = (layer: Layer) =>
+    highlight
+      ? {
+          onPointerDown: (e: React.PointerEvent) => {
+            downRef.current = { x: e.clientX, y: e.clientY };
+          },
+          onClick: (e: React.MouseEvent) => {
+            const d = downRef.current;
+            downRef.current = null;
+            if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) > 5) return;
+            getDiagramController()?.focusLayer(layer);
+          },
+        }
+      : {};
   // semantic zoom: 배율이 경계를 넘을 때만 다시 그림(불리언 구독) → 캔버스 안쪽 상자에 data-zoom 을 달아 CSS 로 전환.
   // 타일 74개를 React 로 다시 그리지 않는다. 관리자 캔버스(view store 미사용, ready=false)는 늘 상세 단계.
   const overview = useView((s) => s.ready && s.scale < OVERVIEW_SCALE);
@@ -118,6 +134,7 @@ export const Bands = memo(function Bands({
             className={`dband dband--${l.id.toLowerCase()} dband--tone-${tone}${active === l.id ? ' is-active' : ''}`}
             data-active={active === l.id ? 'true' : undefined}
             style={{ left: r.x, top: r.y, width: r.w, height: r.h }}
+            {...bandEvents(l.id)}
           >
             <span className="dband__label">
               {name}
@@ -149,9 +166,16 @@ const FocusOverlay = memo(function FocusOverlay({ model }: { model: DiagramModel
   return (
     <div className="dfocus" data-testid="layer-focus" data-layer={focus} aria-hidden="true">
       {veils.map((v, i) => (v.width > 0 && v.height > 0 ? <div key={i} className="dfocus__veil" style={v} /> : null))}
-      <div className="dfocus__box" style={{ left: r.x, top: r.y, width: r.w, height: r.h }} />
     </div>
   );
+});
+
+/** 선택 영역 상자 — 타일·배지·연결선보다 아래(밴드 바로 위)에 그려 ✓ 배지와 겹치지 않게 */
+const FocusBox = memo(function FocusBox({ model }: { model: DiagramModel }) {
+  const focus = useView((s) => s.focus);
+  const r = focus ? model.layerRect.get(focus) : undefined;
+  if (!r) return null;
+  return <div className="dfocus__box" aria-hidden="true" style={{ left: r.x, top: r.y, width: r.w, height: r.h }} />;
 });
 
 /** 기기를 열 때 이보다 작은 배율(전체 보기 ≈ 18%)이면 타일 글자를 읽을 수 있는 배율로 확대 (UX 토론 B2) */
@@ -229,7 +253,7 @@ export default function DiagramCanvas() {
         const c = centerOf(va.free);
         pz.placeAt(r.x + r.w / 2, r.y + r.h / 2, c.x, c.y, zoom ? READABLE_SCALE : undefined);
       }
-      if (opts.pin) pinLayer(model.nodeById.get(id)?.layer ?? null);
+      if (opts.pin) pinLayer(model.nodeById.get(id)?.layer ?? null, true); // 기기 선택 = 그 계층도 선택 영역으로 표시
     },
     [model, nodeRect, pinLayer],
   );
@@ -295,6 +319,7 @@ export default function DiagramCanvas() {
       zoomBy: (f) => pz.zoomBy(f),
       centerOn: (x, y) => pz.centerOn(x, y),
       revealNode: (id) => revealRef.current(id),
+      focusLayer: (l) => pinLayer(l, true),
     });
     return () => {
       // 다른 화면으로 갔다가 뒤로가기로 돌아오면 이 위치를 복원
@@ -482,6 +507,7 @@ export default function DiagramCanvas() {
           <div ref={sizerRef} className="diagram__sizer">
             <div ref={innerRef} className="diagram__inner" style={{ width: model.width, height: model.height }}>
               <Bands model={model} mode={mode} highlight />
+              <FocusBox model={model} />
               <Edges model={model} selectedEdges={selectedEdges} />
               <FlowLayer />
               <BusNodes buses={model.busNodes} />

@@ -3,7 +3,7 @@ import { useData } from '../../data/load';
 import { getDiagramModel } from '../../lib/diagram/model';
 import { useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
 import { useView } from '../../lib/diagram/view';
-import { FLOW_DASH, FLOW_GAP, FLOW_PERIOD_SEC, computeFlowEdges, flowDirMap, pathMidpoint, useFlowOn } from '../../lib/diagram/flow';
+import { FLOW_DASH, FLOW_GAP, FLOW_PERIOD_SEC, computeFlowEdges, flowDirMap, pathMidpoint, useFlowAll, useFlowOn } from '../../lib/diagram/flow';
 import './flow.css';
 
 /** 배율을 이 단위로 반올림해 줌 중 다시 그리기를 줄인다 */
@@ -16,6 +16,7 @@ const SCALE_STEP = 0.05;
  */
 export default function FlowLayer() {
   const on = useFlowOn();
+  const all = useFlowAll();
   const mode = useViewMode();
   const selectedId = useSelectedNodeId();
   const data = useData();
@@ -32,8 +33,9 @@ export default function FlowLayer() {
   const dirs = useMemo(() => flowDirMap(data.diagram.edges), [data]);
   const busIds = useMemo(() => new Set(model.busNodes.map((b) => b.id)), [model]);
   const flows = useMemo(
-    () => (on && mode !== 'gap' ? computeFlowEdges(model.edges, dirs, selectedId, (id) => busIds.has(id)) : []),
-    [on, mode, model, dirs, selectedId, busIds],
+    // 기본(켜짐)은 기기를 골랐을 때만 그 경로가 흐름. 기기 없이 전체를 흘리려면 ?flow=1
+    () => (on && mode !== 'gap' && (selectedId || all) ? computeFlowEdges(model.edges, dirs, selectedId, (id) => busIds.has(id)) : []),
+    [on, all, mode, model, dirs, selectedId, busIds],
   );
 
   if (!on || mode === 'gap') return null;

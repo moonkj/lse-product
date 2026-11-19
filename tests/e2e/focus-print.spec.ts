@@ -58,3 +58,35 @@ test('상세 정보 창 폭: 손잡이를 끌면 늘고 줄며, 새로고침해�
   await handle.dblclick();
   await expect.poll(async () => Math.round((await panel.boundingBox())!.width)).toBe(Math.round(w0));
 });
+
+test('계통도 안 영역을 누르거나 기기를 고르면 그 계층이 선택 영역(상자)으로 표시', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('./#/?node=n-vcb');
+  await expect(page.getByTestId('layer-focus')).toHaveAttribute('data-layer', 'L4');
+  await expect(page.getByTestId('layer-band-L4')).toHaveAttribute('data-active', 'true');
+  // 이름표 근처 빈 곳을 누름(끌기 아님)
+  await page.getByTestId('layer-nav-L5').click();
+  await page.getByTestId('zoom-reset').click();
+  await expect(page.getByTestId('layer-focus')).toHaveCount(0);
+  const band = page.getByTestId('layer-band-L5');
+  const bb = (await band.boundingBox())!;
+  await page.mouse.click(bb.x + 8, bb.y + bb.height - 6);
+  await expect(page.getByTestId('layer-focus')).toHaveAttribute('data-layer', 'L5');
+});
+
+test('전기 흐름: 기기를 고르면 기본으로 흐르고(대시 이동), ?flow=0 이면 꺼짐', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('./#/?node=n-vcb');
+  const path = page.locator('.dflow__path').first();
+  await expect(path).toBeAttached();
+  const moved = await path.evaluate(async (el) => {
+    const a = getComputedStyle(el).strokeDashoffset;
+    await new Promise((r) => setTimeout(r, 250));
+    return a !== getComputedStyle(el).strokeDashoffset;
+  });
+  expect(moved).toBe(true);
+  await expect(page.getByTestId('flow-toggle')).toHaveAttribute('aria-pressed', 'true');
+  await page.getByTestId('flow-toggle').click();
+  await expect(page.locator('.dflow__path')).toHaveCount(0);
+  await expect(page).toHaveURL(/flow=0/);
+});

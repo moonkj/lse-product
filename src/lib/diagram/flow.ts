@@ -17,8 +17,8 @@ import type { Pt } from './router';
 export type FlowDir = NonNullable<DiagramEdge['flow']>;
 
 /** 대시 길이·간격(화면 px)과 속도(화면 px/s) — 속도는 시안 비교용으로 24(D3) / 48(D2)도 가능 */
-export const FLOW_DASH = 8;
-export const FLOW_GAP = 16;
+export const FLOW_DASH = 10;
+export const FLOW_GAP = 14;
 export const FLOW_SPEED = 32; // 24 · 48 비교용
 /** 한 주기(대시+간격)를 지나는 시간(초) — 배율과 무관하게 일정 (대시·간격을 배율로 나눠 화면 크기를 고정하므로) */
 export const FLOW_PERIOD_SEC = (FLOW_DASH + FLOW_GAP) / FLOW_SPEED;
@@ -158,9 +158,14 @@ export function pathMidpoint(d: string): { x: number; y: number; angle: number }
   return null;
 }
 
-/** `?flow=1` 이면 흐름 켜짐 */
+/**
+ * 흐름 상태 (2026-11-19 사용자: 애니메이션이 안 보인다 → 기본 켜짐)
+ *  - 없음 = 켜짐: 기기를 고르면 그 기기의 상·하류 경로가 흐름
+ *  - `?flow=0` = 꺼짐
+ *  - `?flow=1` = 전체: 기기를 고르지 않아도 모든 전력선이 흐름(발표·공유용)
+ */
 export function parseFlow(v: string | null): boolean {
-  return v === '1';
+  return v !== '0';
 }
 
 export function useFlowOn(): boolean {
@@ -168,7 +173,13 @@ export function useFlowOn(): boolean {
   return parseFlow(params.get('flow'));
 }
 
-/** 흐름 켜기/끄기 — 주소 `?flow=1` (기록은 늘리지 않음, 다른 쿼리는 유지) */
+/** `?flow=1` — 기기를 고르지 않아도 전체 전력선 흐름 */
+export function useFlowAll(): boolean {
+  const [params] = useSearchParams();
+  return params.get('flow') === '1';
+}
+
+/** 흐름 켜기/끄기 — 끄면 주소 `?flow=0` (기록은 늘리지 않음, 다른 쿼리는 유지) */
 export function useSetFlow() {
   const [, setParams] = useSearchParams();
   return useCallback(
@@ -176,8 +187,8 @@ export function useSetFlow() {
       setParams(
         (prev) => {
           const next = new URLSearchParams(prev);
-          if (on) next.set('flow', '1');
-          else next.delete('flow');
+          if (on) next.delete('flow');
+          else next.set('flow', '0');
           return next;
         },
         { replace: true },

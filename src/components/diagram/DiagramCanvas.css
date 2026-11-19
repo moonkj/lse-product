@@ -957,6 +957,8 @@
 }
 .dfocus__box {
   position: absolute;
+  /* 밴드 바로 위·타일 아래에 그림(FocusBox) — ✓ 배지·연결선과 겹치지 않게, 클릭은 통과 */
+  pointer-events: none;
   border: 5px solid var(--color-brand-2);
   border-radius: 14px;
   box-shadow:
@@ -1002,6 +1004,7 @@
   .diagram__inner * {
     visibility: visible !important;
   }
+  .dfocus__box,
   .dfocus,
   .dfocus * {
     display: none !important;
