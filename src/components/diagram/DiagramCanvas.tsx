@@ -72,7 +72,7 @@ export const Edges = memo(function Edges({
 });
 
 /** semantic zoom 경계 (P1): 이 배율 미만이면 개요 단계 — 타일 사진·보조 글자를 숨기고 점 + 약칭만 */
-export const OVERVIEW_SCALE = 0.6;
+export const OVERVIEW_SCALE = 0.35; // 2026-11-19 사용자: 35% 아래에서만 점+약칭
 
 export const Bands = memo(function Bands({
   model,
@@ -501,8 +501,9 @@ export default function DiagramCanvas() {
             <div ref={innerRef} className="diagram__inner" style={{ width: model.width, height: model.height }}>
               <Bands model={model} mode={mode} highlight />
               <Edges model={model} selectedEdges={selectedEdges} />
-              <FlowLayer />
               <BusNodes buses={model.busNodes} />
+              {/* 흐름은 모선 위·타일 아래 (2026-11-19 사용자: 흐름이 검은 모선 아래로 지나감) */}
+              <FlowLayer />
               <EndpointNodes endpoints={model.endpoints} />
               {model.nodes.map((n) => (
                 <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} />

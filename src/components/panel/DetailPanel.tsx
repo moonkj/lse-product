@@ -391,7 +391,7 @@ export default function DetailPanel() {
           {/* ② 고정 버튼 줄 — 스크롤해도 패널 위에 붙어 있음 */}
           <div className="dp-actions" data-testid="detail-actions">
             <PanelCompareButton id={eq.id} name={eq.name} />
-            <Link to={`/equipment/${eq.id}`} className="dp-eq-link">
+            <Link to={`/equipment/${eq.id}`} className="dp-eq-link" data-testid="detail-eq-link">
               기기 상세 페이지 →
             </Link>
           </div>
@@ -489,6 +489,12 @@ export default function DetailPanel() {
         // 시트 아래 버튼 줄 (고정). 요약: 비교 담기 + 더 보기(→반) / 반: 줄이기 + 전체 보기 / 전체: 시트 줄이기(→요약)
         <div className="dp-sheet-actions">
           {compact && <PanelCompareButton id={eq.id} name={eq.name} />}
+          {compact && (
+            // 접힌 시트에서도 기기 상세로 바로 (2026-11-19 사용자: 기기 상세 페이지가 안 들어가짐 — 펼쳐야만 보였음)
+            <Link to={`/equipment/${eq.id}`} className="dp-sheet-eqlink" data-testid="detail-eq-link-sheet">
+              상세 →
+            </Link>
+          )}
           {sheetSize === 'half' && (
             <button type="button" className="dp-shrink" data-testid="detail-sheet-shrink" onClick={() => setSheetSize('peek')}>
               줄이기

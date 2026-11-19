@@ -59,12 +59,14 @@
 /* 이름표 "L4 수전설비 · 22.9kV · 10/13" — 밴드 왼쪽 위, 옅은 판 위에 (선·타일과 겹쳐도 읽히게) */
 .dband__label {
   position: absolute;
-  top: 8px;
-  left: 10px;
-  padding: 1px 8px;
-  border-radius: var(--radius-sm);
+  top: 10px;
+  left: 14px;
+  padding: 2px 14px;
+  border-radius: var(--radius-md);
   background: var(--band-label-bg);
-  font-size: calc(13px * var(--label-k, 1));
+  /* 2026-11-19 사용자: 너무 작음 → 약 2.2배(13px → 28px, 계통도 좌표 기준 — 3배는 너무 커서 조정) */
+  /* 축소 보정(--label-k)은 예전 13px 기준 유지 — 3배 크기에 보정까지 곱하면 전체 보기에서 타일을 덮음 */
+  font-size: max(28px, calc(13px * var(--label-k, 1)));
   font-weight: var(--fw-bold);
   line-height: 1.4;
   color: var(--band-label);
@@ -73,6 +75,8 @@
 }
 
 .dband__suffix {
+  /* 계층 이름은 크게, 전압·보유 수는 작게 — 이름표가 밴드 위쪽 타일을 덮지 않게 */
+  font-size: 0.6em;
   font-weight: var(--fw-medium);
   color: var(--band-label-meta);
   font-variant-numeric: tabular-nums;
@@ -439,7 +443,7 @@
 }
 
 /*
- * semantic zoom (P1) — 화면 배율 60% 미만(개요)이면 Bands 가 .diagram__inner 에 data-zoom="overview" 를 단다.
+ * semantic zoom (P1) — 화면 배율 35% 미만(개요)이면 Bands 가 .diagram__inner 에 data-zoom="overview" 를 단다.
  * 사진·심볼·캡션(보조 글자)을 숨기고 커버리지 점(배지 모양 그대로, ✕·◐ 포함) + 약칭만 크게.
  * --label-k = 0.8 / 배율(panzoom) → 약칭 15px×k 는 화면에서 약 12px (최소 글자 12px).
  */

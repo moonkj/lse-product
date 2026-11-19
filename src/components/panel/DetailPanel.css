@@ -740,3 +740,30 @@
     min-height: 44px;
   }
 }
+
+/* 기기 상세 링크 — 누르는 영역 넉넉히(데스크톱 36px, 터치 44px) */
+.dp-actions .dp-eq-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--space-2);
+  font-weight: var(--fw-bold);
+}
+.dp-sheet-eqlink {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-link);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+@media (pointer: coarse) {
+  .dp-actions .dp-eq-link { min-height: 44px; }
+}
