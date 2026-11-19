@@ -39,7 +39,7 @@ describe('PlanLayer', () => {
     expect(within(l1).getByRole('heading', { name: /계획 기반 설비 소요/ })).toBeInTheDocument();
     const line = within(l1).getByTestId('plan-item-tx-line');
     expect(line).toHaveTextContent('61,183');
-    expect(line).toHaveTextContent('단위 달라 비교 불가');
+    expect(line).toHaveTextContent('▲ 3,502'); // 11차 61,183 − 10차 57,681 C-km (두 원문 모두 C-km)
     expect(line.querySelector('[data-coverage="missing"]')).not.toBeNull();
     expect(line.querySelector('[data-coverage="partial"]')).not.toBeNull();
     // 표시된 값마다 출처 링크(새 탭)

@@ -83,11 +83,16 @@ describe('계산', () => {
   it('차수 비교: 같은 단위면 증감, 단위가 다르면 비교 불가', () => {
     const inv = plans.items.find((i) => i.id === 'tx-invest')!;
     expect(compareOf(inv, plans.compare)).toMatchObject({ comparable: true, delta: 16.3 });
+    // 송전선로: 10·11차 원문 모두 C-km → 비교 가능 (61,183 − 57,681)
     const line = plans.items.find((i) => i.id === 'tx-line')!;
     const c = compareOf(line, plans.compare)!;
-    expect(c.comparable).toBe(false);
-    expect(c.delta).toBeUndefined();
+    expect(c).toMatchObject({ comparable: true, delta: 3502 });
     expect(headlineOf(line, plans.compare).value).toBe(61183);
+    // 단위가 다르면 비교 불가 (합성 데이터)
+    const fake = { ...line, figures: line.figures.map((g) => (g.edition === 'tx10' ? { ...g, unit: 'km' } : g)) };
+    const f = compareOf(fake, plans.compare)!;
+    expect(f.comparable).toBe(false);
+    expect(f.delta).toBeUndefined();
   });
 
   it('차수 없는 항목은 가장 늦은 전망이 대표 값', () => {
