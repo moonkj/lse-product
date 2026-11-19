@@ -79,21 +79,22 @@
 }
 
 /* 밴드 색: 계층마다 다른 옅은 색 (2026-11-19 사용자: 2톤으로 줄이자 영역 구분이 사라짐 → 9색 복원) */
-.dband--l1 { --band-bg: var(--band-l1); }
-.dband--l2 { --band-bg: var(--band-l2); }
-.dband--l3 { --band-bg: var(--band-l3); }
-.dband--l4 { --band-bg: var(--band-l4); }
-.dband--l5 { --band-bg: var(--band-l5); }
-.dband--l6 { --band-bg: var(--band-l6); }
-.dband--l7 { --band-bg: var(--band-l7); }
-.dband--ren { --band-bg: var(--band-ren); }
-.dband--mon { --band-bg: var(--band-mon); }
+.dband--l1 { --band-bg: var(--band-l1); --band-accent: var(--band-accent-l1); }
+.dband--l2 { --band-bg: var(--band-l2); --band-accent: var(--band-accent-l2); }
+.dband--l3 { --band-bg: var(--band-l3); --band-accent: var(--band-accent-l3); }
+.dband--l4 { --band-bg: var(--band-l4); --band-accent: var(--band-accent-l4); }
+.dband--l5 { --band-bg: var(--band-l5); --band-accent: var(--band-accent-l5); }
+.dband--l6 { --band-bg: var(--band-l6); --band-accent: var(--band-accent-l6); }
+.dband--l7 { --band-bg: var(--band-l7); --band-accent: var(--band-accent-l7); }
+.dband--ren { --band-bg: var(--band-ren); --band-accent: var(--band-accent-ren); }
+.dband--mon { --band-bg: var(--band-mon); --band-accent: var(--band-accent-mon); }
 
 /* 선택 영역(계층 칩·영역 클릭·기기 선택): 영역 자체를 활성화 — 배경을 진하게 + 왼쪽 CI 블루 띠.
    경계에 테두리를 그리면 경계에 붙은 타일의 ✓ 배지와 겹치므로 테두리 상자는 쓰지 않는다 */
 .dband.is-active {
   /* D2 색 재검토: 영역 고유색은 그대로(블루를 섞지 않음), 왼쪽 띠만. 위·아래 테두리는 타일 배지와 겹치므로 쓰지 않음 */
-  box-shadow: inset 6px 0 0 var(--color-brand-2), inset 0 -1px 0 var(--band-divider), inset -1px 0 0 var(--band-divider);
+  /* 띠·라벨은 그 영역 고유색의 진한 색 (2026-11-19 사용자: 전부 파란색 → 영역색에 맞게) */
+  box-shadow: inset 6px 0 0 var(--band-accent, var(--color-brand-2)), inset 0 -1px 0 var(--band-divider), inset -1px 0 0 var(--band-divider);
 }
 @media (prefers-reduced-motion: reduce) {
   .dband.is-active { transition: none; }
@@ -992,7 +993,8 @@
   from { opacity: 0; }
 }
 .dband.is-active .dband__label {
-  color: var(--color-edge-selected, var(--color-brand));
+  color: var(--band-accent, var(--color-brand));
+  box-shadow: inset 0 -2px 0 var(--band-accent, var(--color-brand));
   font-weight: var(--fw-bold);
 }
 @media (prefers-reduced-motion: reduce) {

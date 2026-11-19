@@ -108,6 +108,16 @@
   --cov-on-color: #ffffff;
 
   /* 계층 L1~L7 + REN/MON 밴드 배경 — 옅은 블루·그레이 계열로 낮추되 계층끼리 색조를 조금씩 달리 */
+  /* 계층 강조색 — 그 영역 배경과 같은 색조의 진한 색 (선택 영역 띠·라벨·사이드바·칩). 흰 글자 대비 4.5:1 이상 */
+  --band-accent-l1: #5b4bb0;
+  --band-accent-l2: #3d5fb8;
+  --band-accent-l3: #1f6aa8;
+  --band-accent-l4: #11727d;
+  --band-accent-l5: #23764a;
+  --band-accent-l6: #6b6a1f;
+  --band-accent-l7: #9a5a1f;
+  --band-accent-ren: #4a7d1f;
+  --band-accent-mon: #4d5a70;
   --band-l1: #e6e2f6;
   --band-l2: #dee6f8;
   --band-l3: #daeaf8;
@@ -232,6 +242,15 @@
   --cov-na-bg: #232a33;
   --cov-on-color: #0b1220;
 
+  --band-accent-l1: #b3a8f0;
+  --band-accent-l2: #a3b8f2;
+  --band-accent-l3: #8fc0ee;
+  --band-accent-l4: #7fd0d8;
+  --band-accent-l5: #8fd8ac;
+  --band-accent-l6: #d4d28a;
+  --band-accent-l7: #f0bb8a;
+  --band-accent-ren: #b4dc8a;
+  --band-accent-mon: #b0bccf;
   --band-l1: #25213b;
   --band-l2: #1e2741;
   --band-l3: #1a2b40;

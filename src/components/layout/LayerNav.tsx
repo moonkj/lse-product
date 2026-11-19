@@ -58,7 +58,7 @@ export default function LayerNav() {
               <li key={l.id}>
                 <button
                   type="button"
-                  className={`layer-nav__btn${isCurrent ? ' is-current' : ''}`}
+                  className={`layer-nav__btn layer-nav__btn--${l.id.toLowerCase()}${isCurrent ? ' is-current' : ''}`}
                   data-testid={`layer-nav-${l.id}`}
                   aria-current={isCurrent ? 'true' : undefined}
                   onClick={() => jump(l.id)}

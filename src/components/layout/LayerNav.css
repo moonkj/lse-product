@@ -91,3 +91,25 @@
     white-space: nowrap;
   }
 }
+
+/* 사이드바·칩의 선택 계층 = 그 영역 고유색(계통도 밴드 강조색과 같음) */
+.layer-nav__btn--l1 { --layer-accent: var(--band-accent-l1); --layer-bg: var(--band-l1); }
+.layer-nav__btn--l2 { --layer-accent: var(--band-accent-l2); --layer-bg: var(--band-l2); }
+.layer-nav__btn--l3 { --layer-accent: var(--band-accent-l3); --layer-bg: var(--band-l3); }
+.layer-nav__btn--l4 { --layer-accent: var(--band-accent-l4); --layer-bg: var(--band-l4); }
+.layer-nav__btn--l5 { --layer-accent: var(--band-accent-l5); --layer-bg: var(--band-l5); }
+.layer-nav__btn--l6 { --layer-accent: var(--band-accent-l6); --layer-bg: var(--band-l6); }
+.layer-nav__btn--l7 { --layer-accent: var(--band-accent-l7); --layer-bg: var(--band-l7); }
+.layer-nav__btn--ren { --layer-accent: var(--band-accent-ren); --layer-bg: var(--band-ren); }
+.layer-nav__btn--mon { --layer-accent: var(--band-accent-mon); --layer-bg: var(--band-mon); }
+.layer-nav:not(.layer-nav--gap) .layer-nav__btn.is-current {
+  background: var(--layer-bg, var(--node-selected-bg));
+  color: var(--layer-accent, var(--color-link));
+  box-shadow: inset 3px 0 0 var(--layer-accent, var(--color-selected));
+}
+.app-shell--navrow .layer-nav:not(.layer-nav--gap) .layer-nav__btn.is-current {
+  border-color: var(--layer-accent, var(--color-chip-active-bg));
+  background: var(--layer-accent, var(--color-chip-active-bg));
+  color: var(--color-surface);
+  box-shadow: none;
+}
