@@ -170,13 +170,6 @@ const FocusOverlay = memo(function FocusOverlay({ model }: { model: DiagramModel
   );
 });
 
-/** 선택 영역 상자 — 타일·배지·연결선보다 아래(밴드 바로 위)에 그려 ✓ 배지와 겹치지 않게 */
-const FocusBox = memo(function FocusBox({ model }: { model: DiagramModel }) {
-  const focus = useView((s) => s.focus);
-  const r = focus ? model.layerRect.get(focus) : undefined;
-  if (!r) return null;
-  return <div className="dfocus__box" aria-hidden="true" style={{ left: r.x, top: r.y, width: r.w, height: r.h }} />;
-});
 
 /** 기기를 열 때 이보다 작은 배율(전체 보기 ≈ 18%)이면 타일 글자를 읽을 수 있는 배율로 확대 (UX 토론 B2) */
 const READABLE_MIN_SCALE = 0.6;
@@ -507,7 +500,6 @@ export default function DiagramCanvas() {
           <div ref={sizerRef} className="diagram__sizer">
             <div ref={innerRef} className="diagram__inner" style={{ width: model.width, height: model.height }}>
               <Bands model={model} mode={mode} highlight />
-              <FocusBox model={model} />
               <Edges model={model} selectedEdges={selectedEdges} />
               <FlowLayer />
               <BusNodes buses={model.busNodes} />
