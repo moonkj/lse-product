@@ -3,7 +3,7 @@ import { create } from 'zustand';
 /**
  * 화면 배치 상태 (UX 라운드 U — C1 압축 화면 · C4 시작 카드).
  *
- * - present: 헤더 "발표 보기" 토글. 켜면 압축 화면(compact)과 같은 상태가 된다 — 보이는 **내용**은 바꾸지 않고
+ * - present: 헤더 "넓게 보기" 토글. 켜면 압축 화면(compact)과 같은 상태가 된다 — 보이는 **내용**은 바꾸지 않고
  *   배치만 바꾼다(사이드바·빈 상세 패널 접기, 헤더 한 줄). localStorage `lse-present-v1` 에 저장.
  * - startCardDismissed: 첫 방문 시작 카드를 닫았는지. localStorage `lse-start-card-dismissed` 에 저장.
  * - entryClean: 앱을 연 주소에 쿼리·해시 경로가 없었는지(`/`, `/#`, `/#/`). 공유 링크로 들어오면 시작 카드를 띄우지 않는다.

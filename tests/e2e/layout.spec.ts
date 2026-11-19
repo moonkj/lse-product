@@ -1,6 +1,6 @@
 /**
  * UX 라운드 U — T1-C 레이아웃·안내 회귀 테스트
- *  - C1 압축 화면 규칙: 창 높이 ≤600(200% 확대·모바일 가로) 자동 + 헤더 "발표 보기" 토글(localStorage `lse-present-v1`)
+ *  - C1 압축 화면 규칙: 창 높이 ≤600(200% 확대·모바일 가로) 자동 + 헤더 "넓게 보기" 토글(localStorage `lse-present-v1`)
  *       압축이면 헤더 한 줄, 사이드바(범례) 접고 계층 칩 한 줄, 빈 상세 패널 숨김, 모바일 가로는 오른쪽 사이드 패널
  *       데스크톱 기본(1280↑·높이 700↑)은 그대로. 사이드바는 계통도(/)에서만.
  *  - C4 첫 방문 시작 카드: 쿼리·경로 없는 첫 방문 1회, 닫기/Esc → localStorage `lse-start-card-dismissed`, 공유 링크는 미표시
@@ -33,8 +33,8 @@ function visibleDiagram(page: Page) {
   });
 }
 
-test.describe('C1 압축 화면 · 발표 보기', () => {
-  test('데스크톱 기본(1440×900): 펼침 그대로 — 사이드바 범례·빈 상세 패널 표시, 발표 보기 꺼짐', async ({ page }) => {
+test.describe('C1 압축 화면 · 넓게 보기', () => {
+  test('데스크톱 기본(1440×900): 펼침 그대로 — 사이드바 범례·빈 상세 패널 표시, 넓게 보기 꺼짐', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await gotoHome(page);
     await expect(tid(page, 'app-shell')).toHaveAttribute('data-density', 'default');
@@ -44,7 +44,7 @@ test.describe('C1 압축 화면 · 발표 보기', () => {
     expect((await visibleDiagram(page)).w).toBeGreaterThan(800);
   });
 
-  test('1024×768 발표 보기: 사이드바·빈 패널을 접어 계통도 폭 ≥1000px, 새로고침 후에도 유지, 끄면 복귀', async ({ page }) => {
+  test('1024×768 넓게 보기: 사이드바·빈 패널을 접어 계통도 폭 ≥1000px, 새로고침 후에도 유지, 끄면 복귀', async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await gotoHome(page);
     const before = (await visibleDiagram(page)).w;
@@ -83,7 +83,7 @@ test.describe('C1 압축 화면 · 발표 보기', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);
   });
 
-  test('390×844 세로: 압축 아님, 헤더 2줄(≤120px)·버튼 44px, 발표 보기 버튼 숨김(M2)', async ({ page }) => {
+  test('390×844 세로: 압축 아님, 헤더 2줄(≤120px)·버튼 44px, 넓게 보기 버튼 숨김(M2)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await gotoHome(page);
     await expect(tid(page, 'app-shell')).toHaveAttribute('data-density', 'default');
@@ -96,15 +96,15 @@ test.describe('C1 압축 화면 · 발표 보기', () => {
   });
 });
 
-/** 리뷰 M2: 휴대폰 세로에서 저장된 발표 보기(lse-present-v1=1)가 켜져 있어도 압축 헤더·사이드 패널을 쓰지 않음 */
-test.describe('M2 휴대폰 세로 + 저장된 발표 보기', () => {
+/** 리뷰 M2: 휴대폰 세로에서 저장된 넓게 보기(lse-present-v1=1)가 켜져 있어도 압축 헤더·사이드 패널을 쓰지 않음 */
+test.describe('M2 휴대폰 세로 + 저장된 넓게 보기', () => {
   for (const [w, h] of [
     [390, 844],
     [360, 740],
   ] as const) {
     test.describe(`${w}×${h}`, () => {
       test.use({ viewport: { width: w, height: h }, isMobile: true, hasTouch: true });
-      test('가로 넘침 없음 · 검색창 ≥120px · 하단 시트 · 발표 보기 버튼 숨김', async ({ page }) => {
+      test('가로 넘침 없음 · 검색창 ≥120px · 하단 시트 · 넓게 보기 버튼 숨김', async ({ page }) => {
         await page.addInitScript(() => localStorage.setItem('lse-present-v1', '1'));
         await gotoHome(page, '?node=n-vcb');
         await expect(tid(page, 'app-shell')).toHaveAttribute('data-density', 'default');
@@ -125,7 +125,7 @@ test.describe('M2 휴대폰 세로 + 저장된 발표 보기', () => {
     });
   }
 
-  test.describe('844×390 가로 (저장된 발표 보기)', () => {
+  test.describe('844×390 가로 (저장된 넓게 보기)', () => {
     test.use({ viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true });
     test('압축 + 오른쪽 사이드 패널 유지, 넘침 없음', async ({ page }) => {
       await page.addInitScript(() => localStorage.setItem('lse-present-v1', '1'));

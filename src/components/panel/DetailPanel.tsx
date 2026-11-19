@@ -93,8 +93,8 @@ export default function DetailPanel() {
   const navigate = useNavigate();
   const navType = useNavigationType();
   // 모바일 시트 펼침 = 기록 항목의 state → 뒤로가기로 돌아오면 그때 펼침 상태 그대로, 새 기기를 열면 접힘
-  // 압축 화면(창 높이 ≤600·발표 보기)의 모바일 폭 = 하단 시트 대신 오른쪽 사이드 패널(AppLayout.css) →
-  // 항상 펼친 상태, 시트 핸들·펼치기 버튼·접힌 머리글 없음. 휴대폰 세로는 발표 보기여도 하단 시트(리뷰 M2)
+  // 압축 화면(창 높이 ≤600·넓게 보기)의 모바일 폭 = 하단 시트 대신 오른쪽 사이드 패널(AppLayout.css) →
+  // 항상 펼친 상태, 시트 핸들·펼치기 버튼·접힌 머리글 없음. 휴대폰 세로는 넓게 보기여도 하단 시트(리뷰 M2)
   const { compact: compactDensity } = useCompactState();
   const sideSheet = isMobile && compactDensity;
   const expanded = sideSheet || (isMobile && (location.state as PanelHistoryState | null)?.sheet === 'expanded');

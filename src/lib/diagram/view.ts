@@ -15,11 +15,13 @@ export interface ViewState {
   h: number;
   /** 화면 중심이 속한 계층 */
   layer: Layer | null;
+  /** 계층 칩으로 고른 계층 — 상자 테두리로 표시하고 나머지는 흐리게. 화면을 옮기거나 전체 보기·기기 선택이면 풀린다 */
+  focus: Layer | null;
   /** 계통도가 마운트되어 있는지 */
   ready: boolean;
 }
 
-let state: ViewState = { scale: 1, x: 0, y: 0, w: 0, h: 0, layer: null, ready: false };
+let state: ViewState = { scale: 1, x: 0, y: 0, w: 0, h: 0, layer: null, focus: null, ready: false };
 const listeners = new Set<() => void>();
 
 export const viewStore = {

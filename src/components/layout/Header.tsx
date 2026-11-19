@@ -49,20 +49,20 @@ export default function Header() {
         ))}
       </div>
 
-      {/* 발표 보기 (C1): 압축 화면을 손으로 켜는 토글 — 배치만 바꾸고 내용은 그대로 */}
+      {/* 넓게 보기 (C1, 옛 이름 넓게 보기): 압축 화면을 손으로 켜는 토글 — 배치만 바꾸고 내용은 그대로 */}
       <button
         type="button"
         className="present-toggle"
         aria-pressed={present}
         data-testid="present-toggle"
-        title={present ? '발표 보기 끄기 — 사이드바·상세 패널 다시 펼치기' : '발표 보기 — 사이드바·빈 상세 패널을 접어 계통도를 넓게'}
+        title={present ? '넓게 보기 끄기 — 사이드바·상세 패널 다시 펼치기' : '넓게 보기 — 사이드바·빈 상세 패널을 접어 계통도를 넓게'}
         onClick={togglePresent}
       >
         <svg className="present-toggle__icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
           <rect x="3" y="4" width="18" height="12" rx="1.5" />
           <path d="M12 16v4M8 20h8" />
         </svg>
-        <span className="present-toggle__label">발표 보기</span>
+        <span className="present-toggle__label">넓게 보기</span>
       </button>
 
       <ThemeToggle />

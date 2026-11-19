@@ -6,6 +6,7 @@ import type { Diagram } from '../../lib/schema';
 import { getData } from '../../data/load';
 import { gapConfidence } from '../../lib/labels';
 import { announce } from '../../lib/announce';
+import { printDiagram } from '../../lib/diagram/print';
 
 interface Props {
   mode: ViewMode;
@@ -105,6 +106,33 @@ function CopyLink() {
   );
 }
 
+/** 전체 계통도 한 장 인쇄 — 사진을 모두 받은 뒤 인쇄 대화상자 */
+function PrintButton() {
+  const [busy, setBusy] = useState(false);
+  const run = async () => {
+    if (busy) return;
+    setBusy(true);
+    announce('인쇄 준비 중입니다');
+    try {
+      await printDiagram();
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <button
+      type="button"
+      className="dtool__btn"
+      data-testid="diagram-print"
+      title="전체 계통도를 A4 한 장으로 인쇄"
+      onClick={run}
+      disabled={busy}
+    >
+      {busy ? '인쇄 준비 중…' : '인쇄'}
+    </button>
+  );
+}
+
 /** 계통도 위 툴바 — 줌 컨트롤 + Gap 모드 배너 */
 export default function DiagramToolbar({ mode, total, review }: Props) {
   return (
@@ -122,6 +150,7 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
       )}
       <div className="dtool__row">
         <ZoomControls total={total} />
+        <PrintButton />
         <ReviewBadge review={review} />
         <CurrentHint />
       </div>

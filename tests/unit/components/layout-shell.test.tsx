@@ -1,6 +1,6 @@
 /**
  * 단위·컴포넌트 테스트 — UX 라운드 U T1-C (레이아웃·안내)
- *  - useUiStore: 발표 보기·시작 카드 저장(localStorage, 차단돼도 동작), 첫 주소 판정 isCleanEntry
+ *  - useUiStore: 넓게 보기·시작 카드 저장(localStorage, 차단돼도 동작), 첫 주소 판정 isCleanEntry
  *  - shellGrid: 압축 화면 규칙의 grid 템플릿 (사이드바·칩 줄·패널 열·시작 카드 줄)
  *  - StartCard 표시 조건(1회·공유 링크 미표시·계통도에서만), Esc 닫기
  *  - LiveRegion: announce() 를 polite 영역에 표시
@@ -27,8 +27,8 @@ afterEach(() => {
   resetUiStore();
 });
 
-describe('useUiStore — 발표 보기·시작 카드 저장', () => {
-  it('발표 보기 토글은 localStorage 에 저장되고 새로 읽어도 유지', () => {
+describe('useUiStore — 넓게 보기·시작 카드 저장', () => {
+  it('넓게 보기 토글은 localStorage 에 저장되고 새로 읽어도 유지', () => {
     resetUiStore();
     expect(useUiStore.getState().present).toBe(false);
     useUiStore.getState().togglePresent();
@@ -71,7 +71,7 @@ describe('shellGrid — 압축 화면 규칙', () => {
     expect(g.areas).toBe("'header header header' 'nav main panel'");
   });
 
-  it('발표 보기·압축(선택 없음): 칩 한 줄 + 본문 전체 폭, 사이드바·패널 열 없음', () => {
+  it('넓게 보기·압축(선택 없음): 칩 한 줄 + 본문 전체 폭, 사이드바·패널 열 없음', () => {
     const g = shellGrid({ navSide: false, navRow: true, panelCol: false, notice: false });
     expect(g.cols).toBe('minmax(0, 1fr)');
     expect(g.areas).toBe("'header' 'nav' 'main'");

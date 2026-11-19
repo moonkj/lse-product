@@ -5,7 +5,10 @@ import type { Layer } from '../../lib/schema';
 import { getDiagramModel, layerAt, type DiagramModel } from '../../lib/diagram/model';
 import { TILE_H, TILE_W } from '../../lib/diagram/geometry';
 import { PanZoom, type Rect } from '../../lib/diagram/panzoom';
-import { getSavedView, registerDiagramController, saveView, viewStore } from '../../lib/diagram/view';
+import { getSavedView, registerDiagramController, saveView, useView, viewStore } from '../../lib/diagram/view';
+import { applyPrintScale } from '../../lib/diagram/print';
+import { COVERAGES } from '../../lib/schema';
+import { COVERAGE_LABELS } from '../../lib/labels';
 import { centerOf, createVisibleAreaCache, isFullyVisible, measureVisibleArea } from '../../lib/diagram/viewport';
 import {
   MOBILE_QUERY,
@@ -66,7 +69,18 @@ export const Edges = memo(function Edges({
   );
 });
 
-export const Bands = memo(function Bands({ model, mode }: { model: DiagramModel; mode: ViewMode }) {
+export const Bands = memo(function Bands({
+  model,
+  mode,
+  highlight = false,
+}: {
+  model: DiagramModel;
+  mode: ViewMode;
+  /** true 면 현재 계층(헤더 칩에서 고른 계층)을 상자 테두리로 표시 */
+  highlight?: boolean;
+}) {
+  const focus = useView((s) => s.focus);
+  const active = highlight ? focus : null;
   return (
     <>
       {model.layers.map((l) => {
@@ -79,7 +93,8 @@ export const Bands = memo(function Bands({ model, mode }: { model: DiagramModel;
             key={l.id}
             id={`layer-band-${l.id}`}
             data-testid={`layer-band-${l.id}`}
-            className={`dband dband--${l.id.toLowerCase()}`}
+            className={`dband dband--${l.id.toLowerCase()}${active === l.id ? ' is-active' : ''}`}
+            data-active={active === l.id ? 'true' : undefined}
             style={{ left: r.x, top: r.y, width: r.w, height: r.h }}
           >
             <span className="dband__label">
@@ -90,6 +105,30 @@ export const Bands = memo(function Bands({ model, mode }: { model: DiagramModel;
         );
       })}
     </>
+  );
+});
+
+/**
+ * 계층 칩으로 고른 계층 강조 (마켓뉴스 카드 선택 방식): 그 계층 둘레에 굵은 파란 상자,
+ * 나머지 영역은 반투명 덮개로 흐리게. 덮개는 클릭을 막지 않는다(pointer-events: none).
+ */
+const FocusOverlay = memo(function FocusOverlay({ model }: { model: DiagramModel }) {
+  const focus = useView((s) => s.focus);
+  const r = focus ? model.layerRect.get(focus) : undefined;
+  if (!r) return null;
+  const W = model.width;
+  const H = model.height;
+  const veils = [
+    { left: 0, top: 0, width: W, height: r.y },
+    { left: 0, top: r.y + r.h, width: W, height: Math.max(0, H - r.y - r.h) },
+    { left: 0, top: r.y, width: r.x, height: r.h },
+    { left: r.x + r.w, top: r.y, width: Math.max(0, W - r.x - r.w), height: r.h },
+  ];
+  return (
+    <div className="dfocus" data-testid="layer-focus" data-layer={focus} aria-hidden="true">
+      {veils.map((v, i) => (v.width > 0 && v.height > 0 ? <div key={i} className="dfocus__veil" style={v} /> : null))}
+      <div className="dfocus__box" style={{ left: r.x, top: r.y, width: r.w, height: r.h }} />
+    </div>
   );
 });
 
@@ -142,12 +181,12 @@ export default function DiagramCanvas() {
   );
 
   /** 현재 보기를 기준으로 계층 고정 */
-  const pinLayer = useCallback((layer: Layer | null) => {
+  const pinLayer = useCallback((layer: Layer | null, focus = false) => {
     const pz = pzRef.current;
     if (!pz) return;
     const v = pz.view();
     pinRef.current = { layer, scale: v.scale, cx: v.x + v.w / 2, cy: v.y + v.h / 2 };
-    viewStore.set({ layer });
+    viewStore.set({ layer, focus: focus ? layer : null });
   }, []);
 
   /**
@@ -195,7 +234,10 @@ export default function DiagramCanvas() {
         const pin = pinRef.current;
         if (pin) {
           const moved = Math.hypot(v.x + v.w / 2 - pin.cx, v.y + v.h / 2 - pin.cy) * v.scale;
-          if (Math.abs(v.scale - pin.scale) > pin.scale * 0.01 || moved > PIN_RELEASE_PX) pinRef.current = null;
+          if (Math.abs(v.scale - pin.scale) > pin.scale * 0.01 || moved > PIN_RELEASE_PX) {
+            pinRef.current = null;
+            viewStore.set({ focus: null });
+          }
         }
         let layer: Layer | null;
         if (pinRef.current) layer = pinRef.current.layer;
@@ -222,7 +264,7 @@ export default function DiagramCanvas() {
         const r = layerRect(l);
         if (!r) return;
         pz.fitRect(r, 1);
-        pinLayer(l);
+        pinLayer(l, true); // 계층 칩 = 그 계층을 상자로 표시
       },
       fitAll: () => {
         pz.fitAll();
@@ -240,7 +282,7 @@ export default function DiagramCanvas() {
       visible.destroy();
       pzRef.current = null;
       pinRef.current = null;
-      viewStore.set({ ready: false, layer: null });
+      viewStore.set({ ready: false, layer: null, focus: null });
     };
   }, [model, pinLayer]);
 
@@ -371,6 +413,13 @@ export default function DiagramCanvas() {
     [selectNode],
   );
 
+  // 인쇄: 계통도 전체가 한 장에 들어가는 배율을 인쇄 직전에 반영 (툴바 "인쇄" 버튼·Ctrl/Cmd+P 모두)
+  useEffect(() => {
+    const before = () => applyPrintScale(model.width, model.height);
+    window.addEventListener('beforeprint', before);
+    return () => window.removeEventListener('beforeprint', before);
+  }, [model.width, model.height]);
+
   const selectedEdges = useMemo<ReadonlySet<string>>(
     () => new Set(selectedId ? (model.edgesByNode.get(selectedId) ?? []) : []),
     [model, selectedId],
@@ -386,6 +435,18 @@ export default function DiagramCanvas() {
       <h1 id="diagram-title" className="visually-hidden">
         전력계통 단선결선도 {mode === 'gap' ? '(Gap 보기)' : ''}
       </h1>
+      <div className="dprint-head" aria-hidden="true">
+        <strong>LS ELECTRIC 전력계통 제품맵{mode === 'gap' ? ' · Gap 보기' : ''}</strong>
+        <span>기기 {model.nodes.length}종 · {new Date().toLocaleDateString('ko-KR')} 인쇄</span>
+        <span className="dprint-head__legend">
+          {COVERAGES.map((c) => (
+            <span key={c} className="dprint-head__item">
+              <i className={`dprint-head__sw cov-badge--${c}`} />
+              {COVERAGE_LABELS[c]} {model.coverageCounts[c]}
+            </span>
+          ))}
+        </span>
+      </div>
       <DiagramToolbar mode={mode} total={model.nodes.length} review={data.diagram.review} />
       <div className="diagram__stage">
         <div
@@ -398,7 +459,7 @@ export default function DiagramCanvas() {
         >
           <div ref={sizerRef} className="diagram__sizer">
             <div ref={innerRef} className="diagram__inner" style={{ width: model.width, height: model.height }}>
-              <Bands model={model} mode={mode} />
+              <Bands model={model} mode={mode} highlight />
               <Edges model={model} selectedEdges={selectedEdges} />
               <BusNodes buses={model.busNodes} />
               <EndpointNodes endpoints={model.endpoints} />
@@ -409,6 +470,7 @@ export default function DiagramCanvas() {
                 <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} />
               ))}
               <AltBadges badges={model.altBadges} activeEdges={selectedEdges} />
+              <FocusOverlay model={model} />
             </div>
           </div>
         </div>
