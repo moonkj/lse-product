@@ -93,8 +93,8 @@ export const SUPPLY_MODE_LABELS: Record<GapAssessment['supplyMode'], string> = {
 };
 
 export const CONFIDENCE_LABELS: Record<GapAssessment['confidence'], string> = {
-  candidate: '공백 후보',
-  confirmed: '공백 확정',
+  candidate: '보완 후보',
+  confirmed: '보완 확정',
 };
 
 /** 오늘 날짜 YYYY-MM-DD — 한국 표준시(KST, UTC+9) 기준. 화면·관리자·무결성 검사가 같은 날짜를 쓴다 (T2 L8) */
@@ -131,7 +131,7 @@ export function confidenceLabel(coverage: Coverage, conf: GapAssessment['confide
 }
 
 /** 상세 패널 판정 섹션 제목 — 패널 구성품은 "구성품 판정"(공백 아님), 그 밖의 공백류는 "공백 판정" */
-export const assessmentTitle = (coverage: Coverage) => (coverage === 'sourced' ? '구성품 판정' : '공백 판정');
+export const assessmentTitle = (coverage: Coverage) => (coverage === 'sourced' ? '구성품 판정' : '보완 판정');
 
 /** 주 계층(L1~L7) 여부 — 감시·신재생(MON/REN) 제외 */
 export const isMainLayer = (l: Layer | string): l is Exclude<Layer, 'MON' | 'REN'> => /^L[1-7]$/.test(l);

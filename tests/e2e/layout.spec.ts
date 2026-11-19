@@ -183,12 +183,12 @@ test.describe('C4 시작 카드 띠 제거 (디자이너 토론 P0-6)', () => {
 });
 
 test.describe('B10 live region · 라우트 포커스', () => {
-  test('live region 은 앱에 하나, 공백 표 필터 결과를 알림', async ({ page }) => {
+  test('live region 은 앱에 하나, 라인업 현황 필터 결과를 알림', async ({ page }) => {
     await page.goto('./#/gap');
     await expect(tid(page, 'gap-page')).toBeVisible();
     await expect(page.locator('[aria-live]').and(tid(page, 'live-region'))).toHaveCount(1);
     await tid(page, 'gap-filter-missing').click();
-    await expect(tid(page, 'live-region')).toHaveText(/공백 목록 · 미보유 — \d+종/);
+    await expect(tid(page, 'live-region')).toHaveText(/보완 필요 목록 · 미보유 — \d+종/);
   });
 
   test('라우트 이동 → 새 화면 h1 포커스, 같은 화면 쿼리 변경(보기 모드)은 포커스 유지', async ({ page }) => {
@@ -198,7 +198,7 @@ test.describe('B10 live region · 라우트 포커스', () => {
     await expect(tid(page, 'view-mode-gap')).toBeFocused();
 
     await tid(page, 'gap-table-link').click();
-    await expect(page.getByRole('heading', { level: 1, name: '공백 표' })).toBeFocused();
+    await expect(page.getByRole('heading', { level: 1, name: '라인업 현황' })).toBeFocused();
   });
 
   test('R1 제품 화면 "계통도에서 보기" Enter → 계통도 상세 패널 제목에 포커스', async ({ page }) => {

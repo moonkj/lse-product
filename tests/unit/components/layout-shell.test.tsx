@@ -95,7 +95,7 @@ describe('shellGrid — 압축 화면 규칙', () => {
 });
 
 describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
-  it('헤더에는 보기 모드 토글이 없고 화면 메뉴(계통도·제품 조회·공백 표)와 아이콘 버튼 2개', () => {
+  it('헤더에는 보기 모드 토글이 없고 화면 메뉴(계통도·제품 조회·라인업 현황)와 아이콘 버튼 2개', () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <Header />
@@ -105,7 +105,7 @@ describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
     expect(screen.queryByTestId('view-mode-product')).toBeNull();
     const nav = screen.getByRole('navigation', { name: '화면' });
     const links = Array.from(nav.querySelectorAll('a'));
-    expect(links.map((a) => a.textContent)).toEqual(['계통도', '제품 조회', '공백 표']);
+    expect(links.map((a) => a.textContent)).toEqual(['계통도', '제품 조회', '라인업 현황']);
     expect(screen.getByTestId('products-link')).toHaveAttribute('href', '/products');
     expect(links[0]).toHaveAttribute('aria-current', 'page');
     expect(screen.getByTestId('gap-table-link')).toHaveAttribute('href', '/gap');
@@ -116,7 +116,7 @@ describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
     expect(screen.queryByText(/교육/)).toBeNull();
   });
 
-  it('계통도 도구줄 맨 왼쪽 "보기 [전체｜공백만]" — 2개뿐, aria-pressed, 누르면 ?mode= 갱신', () => {
+  it('계통도 도구줄 맨 왼쪽 "보기 [전체｜보완 필요]" — 2개뿐, aria-pressed, 누르면 ?mode= 갱신', () => {
     function Loc() {
       const { search } = useLocation();
       return <span data-testid="loc">{search}</span>;
@@ -129,7 +129,7 @@ describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
     );
     const group = screen.getByRole('group', { name: '보기 모드' });
     const tabs = Array.from(group.querySelectorAll('button'));
-    expect(tabs.map((b) => b.textContent)).toEqual(['전체', '공백만']);
+    expect(tabs.map((b) => b.textContent)).toEqual(['전체', '보완 필요']);
     expect(screen.getByTestId('view-mode-product')).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByTestId('view-mode-gap')).toHaveAttribute('aria-pressed', 'false');
     expect(screen.queryByTestId('view-mode-learn')).toBeNull();

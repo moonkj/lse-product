@@ -133,6 +133,11 @@
   overflow: hidden;
 }
 .pcard__pic img { max-width: 100%; max-height: 100%; object-fit: contain; }
+/* 사진 = 상세 링크: 손가락 커서 + 살짝 확대로 누를 수 있음을 알림 */
+a.pcard__pic { cursor: pointer; text-decoration: none; }
+a.pcard__pic img { transition: transform var(--transition-fast); }
+a.pcard__pic:hover img { transform: scale(1.04); }
+.pcard:hover .pcard__name a { color: var(--color-link); }
 .pcard__nopic { font-size: 12px; color: var(--color-text-muted); }
 .pcard__tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .pcard__tag {

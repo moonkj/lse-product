@@ -8,13 +8,13 @@ describe('B7 confidenceLabel / assessmentTitle', () => {
   it('sourced → "판정 확정/후보", 제목 "구성품 판정" (공백 단어 없음)', () => {
     expect(confidenceLabel('sourced', 'confirmed')).toBe('판정 확정');
     expect(confidenceLabel('sourced', 'candidate')).toBe('판정 후보');
-    expect(assessmentTitle('sourced')).not.toMatch(/공백/);
+    expect(assessmentTitle('sourced')).not.toMatch(/공백|보완/);
   });
-  it('미보유·일부·계열사 → 기존 "공백 확정/후보"', () => {
+  it('미보유·일부·계열사 → "보완 확정/후보" (2026-11-19 용어 변경)', () => {
     for (const c of ['missing', 'partial', 'affiliate'] as const) {
       expect(confidenceLabel(c, 'confirmed')).toBe(CONFIDENCE_LABELS.confirmed);
       expect(confidenceLabel(c, 'candidate')).toBe(CONFIDENCE_LABELS.candidate);
-      expect(assessmentTitle(c)).toBe('공백 판정');
+      expect(assessmentTitle(c)).toBe('보완 판정');
     }
   });
 });

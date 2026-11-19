@@ -89,7 +89,7 @@ export default function EquipmentPage() {
             )}
             {isGap && (
               <ButtonLink variant="secondary" to="/gap">
-                공백 표에서 보기
+                라인업 현황에서 보기
               </ButtonLink>
             )}
             <CompareToggle kind="equipment" id={eq.id} name={eq.name} />

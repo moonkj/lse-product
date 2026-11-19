@@ -37,7 +37,7 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
 
   let caption = item.subtitle;
   if (ref) caption = item.refLabel ? `참조 · ${item.refLabel}` : '참조';
-  else if (missing) caption = gapMode ? `${item.subtitle ? `${item.subtitle} · ` : ''}공백` : '자사 제품 없음';
+  else if (missing) caption = gapMode ? `${item.subtitle ? `${item.subtitle} · ` : ''}보완 필요` : '자사 제품 없음';
 
   return (
     <div

@@ -97,9 +97,9 @@ describe('CT-07 기기 비교 (/compare?type=equipment)', () => {
     expect(v).toHaveTextContent('제품 하나: 690 V');
     expect(v).toHaveTextContent('제품 둘: 690 V');
     const hrefs = within(v).getAllByRole('link').map((a) => a.getAttribute('href')).filter((h) => h?.startsWith('https'));
-    expect(hrefs).toEqual([`${URL1}#page=3`, `${URL2}#page=6`]);
-    // 검수 전 제품(P90001) 포함 → 머리글 배지
-    expect(screen.getAllByTestId('compare-unreviewed').length).toBeGreaterThan(0);
+    // 출처 쪽 링크·검수 배지는 표시하지 않음 (2026-11-19 사용자)
+    expect(hrefs).toEqual([]);
+    expect(screen.queryByTestId('compare-unreviewed')).toBeNull();
   });
 
   it('상류·하류 연결 행 = 모선 너머 기기 (형제 피더 제외), 끝점·택1 표기', () => {
@@ -112,17 +112,15 @@ describe('CT-07 기기 비교 (/compare?type=equipment)', () => {
     expect(cells('downstream')[1]).toHaveTextContent('—');
   });
 
-  it('한 제품의 같은 key 여러 값(P90001 극수 3·4)이 모두 보이고, 두 번째 값(item.page 없음)은 source.page 링크', () => {
+  it('한 제품의 같은 key 여러 값(P90001 극수 3·4)이 모두 보이고, 쪽 링크는 없음', () => {
     renderAt('type=equipment&ids=eq-a,eq-b');
     const c = cells('spec-poles')[0];
     expect(within(c).getAllByRole('listitem').map((li) => li.textContent?.replace(/\s+/g, ' ').trim())).toEqual([
       expect.stringContaining('3 P'),
       expect.stringContaining('4 P'),
     ]);
-    expect(within(c).getAllByRole('link').map((a) => a.getAttribute('href')).filter((h) => h?.startsWith('https'))).toEqual([
-      `${URL1}#page=5`,
-      `${URL1}#page=2`,
-    ]);
+    // 쪽 링크는 표시하지 않음 (2026-11-19 사용자: 비교 화면 출처 없앰)
+    expect(within(c).queryAllByRole('link').map((a) => a.getAttribute('href')).filter((h) => h?.startsWith('https'))).toEqual([]);
   });
 
   // v0.9 B1 회귀 방지 (v1.0 수정: li key = `${product.id}-${i}`)
@@ -213,7 +211,7 @@ describe('CT-07 제품 비교 (/compare?type=product)', () => {
   it('기본 5행 + 사양 행(키 합집합, SPEC_KEYS 순 → 비표준) + 출처 행, 값 없음 "—"', () => {
     renderAt('type=product&ids=P90001,P90002');
     expect(rowKeys('basic')).toEqual(['equipment', 'category-path', 'business', 'status', 'docs']);
-    expect(rowKeys('specs')).toEqual(['spec-ratedVoltage', 'spec-ratedCurrent', 'spec-breakingCapacity', 'spec-poles', 'spec-ipRating', 'spec-source']);
+    expect(rowKeys('specs')).toEqual(['spec-ratedVoltage', 'spec-ratedCurrent', 'spec-breakingCapacity', 'spec-poles', 'spec-ipRating']);
     expect(cells('spec-ratedCurrent').map((c) => c.textContent?.trim())).toEqual([expect.stringContaining('630 A'), expect.stringContaining('—')]);
     expect(cells('spec-breakingCapacity')[0]).toHaveTextContent('—');
     // 한 제품 같은 key 2개 → 한 칸에 둘 다
@@ -221,23 +219,19 @@ describe('CT-07 제품 비교 (/compare?type=product)', () => {
     expect(screen.queryByTestId('compare-notice')).toBeNull(); // 같은 기기 제품 → 섞기 안내 없음
   });
 
-  it('출처 행: 카탈로그 링크 #page=source.page, 검수 전/완료 배지, 추출일', () => {
+  it('출처 행·검수 배지·추출일은 표시하지 않음 (2026-11-19 사용자: 비교 화면도 출처 없앰)', () => {
     renderAt('type=product&ids=P90001,P90002');
-    const s1 = screen.getByTestId('compare-spec-source-P90001');
-    expect(within(s1).getByRole('link')).toHaveAttribute('href', `${URL1}#page=2`);
-    expect(within(s1).getByTestId('compare-unreviewed')).toBeInTheDocument();
-    expect(s1).toHaveTextContent('추출일 2026-11-18');
-    const s2 = screen.getByTestId('compare-spec-source-P90002');
-    expect(within(s2).getByRole('link')).toHaveAttribute('href', `${URL2}#page=6`);
-    expect(within(s2).queryByTestId('compare-unreviewed')).toBeNull();
-    expect(s2).toHaveTextContent('검수 완료');
+    expect(screen.queryByTestId('compare-spec-source-P90001')).toBeNull();
+    expect(screen.queryByTestId('compare-spec-source-P90002')).toBeNull();
+    expect(screen.queryByTestId('compare-unreviewed')).toBeNull();
+    expect(screen.queryByText(/추출일/)).toBeNull();
   });
 
-  it('차이만 보기: 같은 값 행(소속 기기·경로·사업·상태·정격전압 690 V·IP20) 숨김, 출처 행은 유지', () => {
+  it('차이만 보기: 같은 값 행(소속 기기·경로·사업·상태·정격전압 690 V·IP20) 숨김', () => {
     renderAt('type=product&ids=P90001,P90002');
     fireEvent.click(screen.getByTestId('compare-diff-only'));
     expect(rowKeys('basic')).toEqual(['docs']);
-    expect(rowKeys('specs')).toEqual(['spec-ratedCurrent', 'spec-breakingCapacity', 'spec-poles', 'spec-source']);
+    expect(rowKeys('specs')).toEqual(['spec-ratedCurrent', 'spec-breakingCapacity', 'spec-poles']);
   });
 
   it('값 없음 칸 구분: 사양 자체 없음 = "사양 미수집", 사양은 있으나 key 없음 = "카탈로그에 없음"', () => {
@@ -248,11 +242,12 @@ describe('CT-07 제품 비교 (/compare?type=product)', () => {
     expect(p4).toHaveTextContent('카탈로그에 없음');
   });
 
-  it('사양 없는 제품끼리: 출처 행은 값이 같아도(둘 다 미수집) 차이만 보기에서 유지', () => {
+  it('사양 없는 제품끼리: 사양 미수집 행만, 출처 행 없음 (차이만 보기에서도)', () => {
     renderAt('type=product&ids=P90003,P90006');
-    expect(rowKeys('specs')).toEqual(['spec-none', 'spec-source']);
+    expect(rowKeys('specs')).toEqual(['spec-none']);
     fireEvent.click(screen.getByTestId('compare-diff-only'));
-    expect(rowKeys('specs')).toEqual(['spec-source']);
+    // 값이 같은 미수집 행만 있으면 차이만 보기에서 사양 섹션째 숨음 — 출처 행이 남지 않는지만 확인
+    expect(screen.queryByTestId('compare-row-spec-source')).toBeNull();
   });
 
   it('(v1.0 M3) 차이만 보기는 정규화 비교: "690 V" = "６９０ Vac" → 같은 값으로 숨김 (화면 표기는 원문)', () => {

@@ -32,7 +32,7 @@ export default function GapMatrix({ data = GROWTH }: { data?: MarketGrowth }) {
   return (
     <section className="pg-card mgm" aria-labelledby="mgm-title" data-testid="market-gap-matrix">
       <h2 id="mgm-title" className="mgm__title">
-        공백 매트릭스 <span className="mgm__sub">성장 방향 × 자사 보유</span>
+        보완 매트릭스 <span className="mgm__sub">성장 방향 × 자사 보유</span>
       </h2>
       <p className="mgm__rule">{data.rule}</p>
       <div className="mgm__scroll">

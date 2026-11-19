@@ -11,6 +11,7 @@ import FlowToggle from './FlowToggle';
 import SupplyPill from './SupplyPill';
 import PresetPicker from '../market/PresetPicker';
 import PlanToggle from '../market/PlanToggle';
+import MarketButton from '../market/MarketButton';
 import ViewSwitch from '../stage/ViewSwitch';
 
 interface Props {
@@ -54,7 +55,7 @@ export function ViewSegment({ mode }: { mode: ViewMode }) {
   const setMode = useSetViewMode();
   const opts: { value: ViewMode; label: string; title: string }[] = [
     { value: 'product', label: '전체', title: '전체 기기 보기' },
-    { value: 'gap', label: '공백만', title: '미보유·일부 보유 기기만 강조' },
+    { value: 'gap', label: '보완 필요', title: '미보유·일부 보유 기기만 강조' },
   ];
   return (
     <div className="dtool__view">
@@ -203,10 +204,10 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
     <div className={`dtool dtool--${mode}`}>
       {mode === 'gap' && (
         <div className="dtool__row dtool__banner" role="status">
-          <span className="dtool__pill">Gap 모드 · 미보유와 일부 보유만 강조 중</span>
+          <span className="dtool__pill">보완 필요 · 미보유와 일부 보유만 강조 중</span>
           {hasGapCandidate() && (
             <span className="dtool__note" data-testid="gap-candidate-note">
-              공백 후보는 홈페이지 제품 목록 기준이며 실제 보유 여부 확인이 필요합니다
+              보완 후보는 홈페이지 제품 목록 기준이며 실제 보유 여부 확인이 필요합니다
             </span>
           )}
           <CopyLink />
@@ -224,6 +225,7 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
         <div className="dtool__end" data-testid="dtool-end">
           <FlowToggle />
           <PlanToggle />
+          <MarketButton />
           <SupplyPill />
         </div>
       </div>

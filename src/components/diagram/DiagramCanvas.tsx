@@ -176,7 +176,7 @@ export const Bands = memo(function Bands({
         const main = isMainLayer(l.id);
         const name = main ? `${l.id} ${l.label}` : l.label;
         // 이름표 "L4 수전설비 · 22.9kV · 10/13" (보유/전체). Gap 보기는 공백 수를 덧붙인다
-        const meta = [l.voltage, s && s.total > 0 ? `${s.owned}/${s.total}` : undefined, mode === 'gap' ? (gaps > 0 ? `공백 ${gaps}` : '공백 없음') : undefined]
+        const meta = [l.voltage, s && s.total > 0 ? `${s.owned}/${s.total}` : undefined, mode === 'gap' ? (gaps > 0 ? `보완 ${gaps}` : '보완 없음') : undefined]
           .filter(Boolean)
           .join(' · ');
         // 2톤 교차: 주 계층 L1~L7 은 홀수 a · 짝수 b, 감시·신재생(사이드)은 옅은 블루 1톤

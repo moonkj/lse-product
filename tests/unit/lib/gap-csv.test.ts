@@ -55,7 +55,7 @@ describe('UT-01 buildGapCsv', () => {
   it('헤더 10열 + 행 값 (상태·계층·계층명·ID·이름·약어·기능·계열사·메모·판정) — v0.7 R4 판정 열', () => {
     const rows = parseCsv(csvOf([eq({ id: 'vcb', name: '진공차단기', abbr: 'VCB', coverage: 'partial', gapNote: '메모' })]).slice(1));
     expect(rows[0]).toEqual(['상태', '계층', '계층명', '기기 ID', '기기명', '약어', '기능', '계열사', '메모', '판정']);
-    expect(rows[1]).toEqual([COVERAGE_LABELS.partial, 'L4', LAYER_LABELS.L4, 'vcb', '진공차단기', 'VCB', CATEGORY_LABELS.switching, '', '메모', '공백 후보']);
+    expect(rows[1]).toEqual([COVERAGE_LABELS.partial, 'L4', LAYER_LABELS.L4, 'vcb', '진공차단기', 'VCB', CATEGORY_LABELS.switching, '', '메모', '보완 후보']);
   });
 
   it('판정 열: 공백류는 후보/확정(재확인 기한 지나면 후보), 보유·해당 없음은 빈칸', () => {

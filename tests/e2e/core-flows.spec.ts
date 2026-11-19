@@ -175,7 +175,7 @@ async function clickNode(page: Page, nodeId: string, layer: string) {
 //   헤더 모드 탭 = 제품·Gap, 옛 /learn 링크 → 계통도(/)로 replace 리디렉트, 옛 ?mode=learn → 제품 모드
 // ═════════════════════════════════════════════════════════════
 test.describe('E2E-1 교육 탭 제거', () => {
-  test('교육 탭 없음 — 도구줄 보기 세그먼트는 전체·공백만 2개 (헤더에는 없음)', async ({ page }) => {
+  test('교육 탭 없음 — 도구줄 보기 세그먼트는 전체·보완 필요 2개 (헤더에는 없음)', async ({ page }) => {
     await gotoHome(page);
     await expect(page.getByRole('banner').getByTestId(/^view-mode-/)).toHaveCount(0);
     await expect(tid(page, 'view-mode-product')).toBeVisible();
@@ -348,10 +348,10 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     await expect(tid(page, 'detail-coverage-badge')).toHaveAttribute('data-coverage', 'missing');
     await expect(tid(page, 'detail-gap-note')).toHaveCount(0); // 메모·판정 기록은 표시하지 않음 (2026-11-19)
     await expect(tid(page, 'detail-product-list')).toHaveCount(0);
-    await expect(tid(page, 'detail-empty-products')).toBeVisible(); // "자사 제품 미보유(공백)" — 오류 아님
+    await expect(tid(page, 'detail-empty-products')).toBeVisible(); // "자사 제품 미보유" — 오류 아님
   });
 
-  test('좌측 내비 아래 "공백 표 보기" 링크 → /gap 공백 표', async ({ page }) => {
+  test('좌측 내비 아래 "라인업 현황" 링크 → /gap 라인업 현황', async ({ page }) => {
     await gotoHome(page);
     const link = tid(page, 'gap-table-link');
     await expect(link).toBeVisible();

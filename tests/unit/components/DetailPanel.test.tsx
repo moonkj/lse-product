@@ -54,13 +54,13 @@ describe('CT-04 DetailPanel', () => {
     expect(empty).not.toHaveTextContent('미보유'); // 보유 기기를 공백으로 보이게 하지 않음
   });
 
-  it.skipIf(!missingNode)('미보유 기기 → "자사 제품 미보유(공백)", 제품 목록·카테고리 링크 없음, 메모·판정 기록은 표시하지 않음(2026-11-19)', () => {
+  it.skipIf(!missingNode)('미보유 기기 → "자사 제품 미보유", 제품 목록·카테고리 링크 없음, 메모·판정 기록은 표시하지 않음(2026-11-19)', () => {
     const n = missingNode!;
     renderAt(n.id);
     expect(screen.getByTestId('detail-coverage-badge')).toHaveAttribute('data-coverage', 'missing');
     expect(screen.queryByTestId('detail-product-list')).toBeNull();
     const empty = screen.getByTestId('detail-empty-products');
-    expect(empty).toHaveTextContent('자사 제품 미보유(공백)');
+    expect(empty).toHaveTextContent('자사 제품 미보유');
     expect(within(empty).queryAllByRole('link')).toHaveLength(0);
     expect(screen.queryByTestId('detail-gap-note')).toBeNull();
     expect(screen.queryByTestId('detail-gap-assessment')).toBeNull();

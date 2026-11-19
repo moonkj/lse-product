@@ -30,7 +30,6 @@ import {
   ownedRate,
 } from '../lib/pages/catalog';
 import GapMatrix from '../components/market/GapMatrix';
-import AnnualIndicators from '../components/market/AnnualIndicators';
 import './pages.css';
 import './GapPage.css';
 
@@ -60,7 +59,7 @@ export default function GapPage() {
   const listRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    document.title = pageTitle('공백 표');
+    document.title = pageTitle('라인업 현황');
   }, []);
 
   /** 칸 선택 시: 그 칸의 모든 기기 / 아니면: 미보유·일부·계열사·패널 구성품 (GAP_LIST_COVERAGES) */
@@ -77,7 +76,7 @@ export default function GapPage() {
   const scopeCounts = countCoverage(scope);
   const chipCoverages = cell ? COVERAGE_ORDER.filter((c) => scopeCounts[c] > 0) : GAP_LIST_COVERAGES;
   const visible = status === 'all' ? scope : scope.filter((e) => e.coverage === status);
-  const listTitle = cell ? `${cell.layer} · ${CATEGORY_LABELS[cell.category]} 기기` : '공백 목록';
+  const listTitle = cell ? `${cell.layer} · ${CATEGORY_LABELS[cell.category]} 기기` : '보완 필요 목록';
 
   // 필터·칸 선택 결과를 스크린리더에 알림 (B10 — 앱 공용 live region). 첫 화면은 알리지 않음
   const filterKey = `${status}|${cell?.layer ?? ''}|${cell?.category ?? ''}`;
@@ -113,8 +112,8 @@ export default function GapPage() {
   return (
     <div className="pg pg--wide" data-testid="gap-page">
       <PageHeader
-        crumbs={[{ label: '계통도', to: diagramHref(undefined, 'gap') }, { label: '공백 표' }]}
-        title="공백 표"
+        crumbs={[{ label: '계통도', to: diagramHref(undefined, 'gap') }, { label: '라인업 현황' }]}
+        title="라인업 현황"
         lead="전압 계층 × 기기 기능별로 자사 제품 커버리지를 봅니다. 칸을 누르면 해당 기기 목록이, 계층 이름을 누르면 계통도의 그 계층이 열립니다."
         actions={
         <dl className="gp-stats">
@@ -257,7 +256,7 @@ export default function GapPage() {
             CSV 내보내기
           </Button>
         </div>
-        <div className="gp-scroll" tabIndex={0} role="region" aria-label="공백 목록 (가로 스크롤)">
+        <div className="gp-scroll" tabIndex={0} role="region" aria-label="보완 필요 목록 (가로 스크롤)">
           <table className="gp-list" data-testid="gap-list">
             <thead>
               <tr>
@@ -314,9 +313,11 @@ export default function GapPage() {
           </table>
         </div>
       </section>
-      {/* 전력시장 연계 (10인 토론 P1): 성장 방향 × 보유 매트릭스, 연간 지표는 접힌 섹션 하나 */}
+      {/* 전력시장 연계 (10인 토론 P1): 성장 방향 × 보유 매트릭스. 연간 전력시장 지표는 별도 화면(/market, 계통도 도구줄 '시장 지표')으로 옮김 */}
       <GapMatrix />
-      <AnnualIndicators />
+      <p className="gp-market-link">
+        연간 전력시장 지표(전력소비·설비용량·전원믹스 등)는 <Link to="/market">전력시장 지표 화면</Link>으로 옮겼습니다.
+      </p>
     </div>
   );
 }

@@ -26,7 +26,7 @@ describe('axisRowHeights', () => {
     expect(axisRowHeights(bands, 100).every((v) => v === NAV_ROW_MIN)).toBe(true);
     // 최대에 걸려 남는 높이는 고르게 나눠 빈칸 없음
     const wide = axisRowHeights(bands, 700);
-    expect(wide.reduce((a, b) => a + b, 0) + 2 * (bands.length - 1)).toBeGreaterThan(700 - bands.length);
+    expect(wide.reduce((a, b) => a + b, 0) + 6 * (bands.length - 1)).toBeGreaterThan(700 - bands.length);
     expect(axisRowHeights(bands, 5000).every((v) => v > NAV_ROW_MAX)).toBe(true);
   });
 });
@@ -52,9 +52,9 @@ describe('LayerNav', () => {
     for (const l of model.layers) expect(screen.getByTestId(`layer-nav-${l.id}`)).toBeInTheDocument();
     const l1 = screen.getByTestId('layer-nav-L1');
     const s = model.layerStats.get('L1')!;
-    expect(l1).toHaveAccessibleName(new RegExp(`보유 ${s.owned} / 전체 ${s.total}, 공백 ${s.gaps}`));
+    expect(l1).toHaveAccessibleName(new RegExp(`보유 ${s.owned} / 전체 ${s.total}, 보완 필요 ${s.gaps}`));
     expect(l1.textContent).toContain('765/345kV');
-    if (s.gaps > 0) expect(l1.querySelector('.layer-nav__gap.has-gap')?.textContent).toBe(`공백 ${s.gaps}`);
+    if (s.gaps > 0) expect(l1.querySelector('.layer-nav__gap.has-gap')?.textContent).toBe(`보완 ${s.gaps}`);
     // 연계 묶음
     const side = screen.getByRole('heading', { name: '연계' }).parentElement!;
     expect(side.querySelector('[data-testid="layer-nav-MON"]')).not.toBeNull();

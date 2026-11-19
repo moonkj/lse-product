@@ -8,13 +8,13 @@ import AxeBuilder from '@axe-core/playwright';
 const tid = (page: Page, id: string) => page.getByTestId(id);
 
 test.describe('보기 전환 · 단계별 보기', () => {
-  test('계통맵 → 단계별: 5단계 열 + 감시·제어, 카드 누르면 상세 패널, 계통맵으로 돌아가도 선택 유지', async ({ page }) => {
+  test('계통맵 → 단계별: 계통맵 층 열(L1·L2·L3·수용가·신재생) + 감시·제어, 카드 누르면 상세 패널, 계통맵으로 돌아가도 선택 유지', async ({ page }) => {
     await page.goto('./#/');
     await expect(tid(page, 'diagram')).toBeVisible();
     await tid(page, 'view-switch-stage').click();
     await expect(page).toHaveURL(/view=stage/);
     await expect(tid(page, 'stage-view')).toBeVisible();
-    for (const id of ['generation', 'transmission', 'substation', 'distribution', 'customer']) await expect(tid(page, `stage-col-${id}`)).toBeVisible();
+    for (const id of ['L1', 'L2', 'L3', 'customer', 'REN']) await expect(tid(page, `stage-col-${id}`)).toBeVisible();
     await expect(tid(page, 'stage-monitoring')).toBeVisible();
     await expect(page.locator('.scard')).toHaveCount(76);
 
@@ -30,7 +30,7 @@ test.describe('보기 전환 · 단계별 보기', () => {
     await expect(tid(page, 'diagram')).toBeVisible();
   });
 
-  test('공백만 보기: 공백 아닌 카드는 흐리게, 접근성 위반 0', async ({ page }) => {
+  test('보완 필요 보기: 보완 대상 아닌 카드는 흐리게, 접근성 위반 0', async ({ page }) => {
     await page.goto('./#/?view=stage&mode=gap');
     await expect(tid(page, 'stage-view')).toBeVisible();
     await expect(page.locator('.scard[data-gap]').first()).not.toHaveAttribute('data-dim', /.*/);
@@ -42,7 +42,7 @@ test.describe('보기 전환 · 단계별 보기', () => {
   test('휴대폰 390px: 단계 탭으로 한 열씩, 가로 넘침 0', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('./#/?view=stage');
-    await expect(tid(page, 'stage-tab-generation')).toHaveAttribute('aria-selected', 'true');
+    await expect(tid(page, 'stage-tab-L1')).toHaveAttribute('aria-selected', 'true');
     await expect(page.locator('.scol')).toHaveCount(1);
     await tid(page, 'stage-tab-customer').click();
     await expect(tid(page, 'stage-col-customer')).toBeVisible();

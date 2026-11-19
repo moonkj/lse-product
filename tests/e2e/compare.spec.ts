@@ -169,30 +169,22 @@ test.describe('E2E-7 비교 기능', () => {
     await expect(tid(page, 'compare-table')).toHaveCount(0);
   });
 
-  test('제품 비교 URL: 사양 행(key 합집합·표준 순서), 출처 링크 #page=, 검수 전 배지', async ({ page }) => {
+  test('제품 비교 URL: 사양 행(key 합집합·표준 순서), 출처·검수 배지 없음', async ({ page }) => {
     test.skip(!productCompareReady, '지정 제품 또는 사양 데이터 없음');
     await page.goto(`./#/compare?type=product&ids=${PRODUCT_IDS.join(',')}`);
     await expect(tid(page, 'compare-page')).toBeVisible();
     await expect(tid(page, 'compare-table').getByTestId(/^compare-col-/)).toHaveCount(3);
+    // 사양(specs.json)은 지연 로딩 — 'spec-loading' 행이 사라지고 사양 행이 뜬 뒤에 읽는다
+    await expect(tid(page, 'compare-row-spec-ratedVoltage')).toBeVisible();
     const specRowIds = await tid(page, 'compare-section-specs')
       .getByTestId(/^compare-row-/)
       .evaluateAll((els) => els.map((e) => e.getAttribute('data-testid')!.replace('compare-row-', '')));
-    expect(specRowIds).toEqual([...expectedSpecKeys.map((k) => `spec-${k}`), 'spec-source']);
-    await expect(tid(page, 'compare-row-spec-ratedVoltage')).toBeVisible();
+    expect(specRowIds).toEqual(expectedSpecKeys.map((k) => `spec-${k}`));
 
-    for (const id of PRODUCT_IDS) {
-      const s = specs.products[id];
-      const link = tid(page, `compare-spec-source-${id}`).getByRole('link').first();
-      await expect(link).toHaveAttribute('href', s.source.page ? `${s.source.url}#page=${s.source.page}` : s.source.url);
-      await expect(link).toHaveAttribute('target', '_blank');
-      await expect(tid(page, `compare-spec-source-${id}`).getByTestId('compare-unreviewed')).toHaveCount(s.reviewed ? 0 : 1);
-    }
-    const anyDraft = PRODUCT_IDS.some((id) => !specs.products[id].reviewed);
-    await expect(tid(page, 'compare-page').getByTestId('compare-unreviewed').first()).toBeVisible({ visible: anyDraft });
-
-    // 차이만 보기: 출처 행은 항상 남음
-    await tid(page, 'compare-diff-only').click();
-    await expect(tid(page, 'compare-row-spec-source')).toBeVisible();
+    // 출처 행·쪽 링크·검수 배지는 표시하지 않음 (2026-11-19 사용자)
+    await expect(tid(page, 'compare-row-spec-source')).toHaveCount(0);
+    await expect(tid(page, 'compare-page').getByTestId('compare-unreviewed')).toHaveCount(0);
+    await expect(tid(page, 'compare-section-specs').locator('a[href*="#page="]')).toHaveCount(0);
   });
 
   test('없는 id·중복 → 안내 후 나머지만 비교', async ({ page }) => {
@@ -386,14 +378,10 @@ test.describe('E2E-8 사양 옵션 (v1.1)', () => {
     await expect(tid(page, 'product-specs')).toHaveAttribute('data-state', 'ready');
     await expect(tid(page, 'product-specs').getByTestId(/^product-spec-variant-/)).toHaveCount(vs.length);
     for (const v of vs) await expect(tid(page, `product-spec-variant-${v.id}`)).toContainText(v.label);
-    // 출처 쪽은 한 번만 표시(2026-11-18 표 정리) — 그래도 값마다의 쪽(item.page ?? variant.page)은 모두
-    // 섹션 안 어딘가의 링크(source.url#page=N)로 추적 가능해야 한다 (출처 줄·블록 제목·열 머리·칸 중 하나)
-    const pages = new Set(vs.flatMap((v) => v.items.map((i) => i.page ?? v.page)).filter((x): x is number => !!x));
-    const links = tid(page, 'product-specs').locator('a[href*="#page="]');
-    const hrefs = await links.evaluateAll((els) => els.map((e) => e.getAttribute('href') ?? ''));
-    expect(hrefs.every((h) => h.startsWith(`${detailSpecs.source.url}#page=`))).toBe(true);
-    for (const pg of pages) expect(hrefs, `p.${pg} 링크`).toContain(`${detailSpecs.source.url}#page=${pg}`);
-    if (!detailSpecs.reviewed) await expect(tid(page, 'product-specs-unreviewed')).toBeVisible();
+    // 제품 상세·비교 화면 모두 출처 줄·검수 배지·추출일·메모·쪽 링크를 표시하지 않음 (2026-11-19 사용자)
+    await expect(tid(page, 'product-specs').locator('a[href*="#page="]')).toHaveCount(0);
+    await expect(tid(page, 'product-specs-unreviewed')).toHaveCount(0);
+    await expect(tid(page, 'product-specs')).not.toContainText('추출일');
 
     const v0 = vs[0];
     const toggle = tid(page, `compare-toggle-${DETAIL_PID}:${v0.id}`);
@@ -431,7 +419,7 @@ test.describe('E2E-8 사양 옵션 (v1.1)', () => {
     const shown = await tid(page, 'compare-section-specs')
       .getByTestId(/^compare-row-/)
       .evaluateAll((els) => els.map((e) => e.getAttribute('data-testid')!.replace('compare-row-', '')));
-    expect(shown).toEqual([...differing.map((k) => `spec-${k}`), 'spec-source']);
+    expect(shown).toEqual(differing.map((k) => `spec-${k}`));
   });
 
   test('옵션 select: 바꾸면 URL 갱신, 다른 열이 쓰는 조합은 비활성', async ({ page }) => {

@@ -12,6 +12,8 @@ const GapPage = lazy(() => import('./pages/GapPage'));
 const ComparePage = lazy(() => import('./pages/ComparePage'));
 // 제품 조회 (?q&biz&stage&volt&src…) — 2026-11-19 화면 추가
 const ProductsPage = lazy(() => import('./pages/ProductsPage'));
+// 전력시장 지표 — 계통도 도구줄 '시장 지표' 버튼 (공백 표에서 분리, 2026-11-19)
+const MarketPage = lazy(() => import('./pages/MarketPage'));
 // 관리자 편집 화면 — 별도 청크 (일반 사용자 번들에 포함되지 않음), 앱 레이아웃 밖 전체 화면
 const AdminPage = lazy(() => import('./pages/admin/AdminPage'));
 
@@ -35,6 +37,7 @@ export default function App() {
         <Route path="learn/*" element={<Navigate to="/" replace />} />
         <Route path="compare" element={<ComparePage />} />
         <Route path="products" element={<ProductsPage />} />
+        <Route path="market" element={<MarketPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

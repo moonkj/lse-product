@@ -415,7 +415,7 @@ export const COVERAGE_LABELS: Record<Coverage, string> = {
   partial: '일부 보유',
   affiliate: '계열사 보유',
   sourced: '패널 구성품(타사 조달)',
-  missing: '미보유(공백)',
+  missing: '미보유',
   na: '해당 없음',
 };
 

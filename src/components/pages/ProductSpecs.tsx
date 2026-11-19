@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Product, ProductSpecs as Specs } from '../../lib/schema';
-import { hasVariants, pageHref, publicNote, specLabel, specValueText, variantDisplayName, variantSpecRows, type SpecEntry } from '../../lib/pages/compare';
+import { hasVariants, pageHref, specLabel, specValueText, variantDisplayName, variantSpecRows, type SpecEntry } from '../../lib/pages/compare';
 import { joinCompareId } from '../../store/useCompareStore';
 import { SPECS_ERROR_TEXT, useSpecs } from '../compare/useSpecs';
 import CompareToggle from '../compare/CompareToggle';
@@ -33,7 +33,11 @@ export default function ProductSpecs({ product }: { product: Product }) {
 }
 
 /** 쪽 링크 — base(위 단계에서 이미 보인 쪽)와 같으면 그리지 않는다 */
+/** 값 옆 카탈로그 쪽 링크(p.N) — 제품 상세에서는 숨김 (2026-11-19 사용자 요청) */
+const SHOW_SOURCE_LINKS = false;
+
 function PageLink({ specs, page, base, label }: { specs: Specs; page?: number; base?: number; label?: string }) {
+  if (!SHOW_SOURCE_LINKS) return null;
   if (!page || page === base) return null;
   return (
     <ExternalLink href={pageHref(specs.source.url, page)} className="ps-page" title={`${label ?? specs.source.title} ${page}쪽`}>
@@ -130,21 +134,7 @@ function SpecsBody({ product, specs }: { product: Product; specs: Specs }) {
   const colPage = (vPage?: number) => vPage ?? tableShown;
   return (
     <>
-      <div className="ps-meta">
-        <ExternalLink href={pageHref(specs.source.url, specs.source.page)} className="ps-source">
-          출처: {specs.source.title}
-          {specs.source.page ? ` · p.${specs.source.page}` : ''} ↗
-        </ExternalLink>
-        {specs.reviewed ? (
-          <span className="ps-badge ps-badge--ok">검수 완료</span>
-        ) : (
-          <span className="ps-badge ps-badge--draft" data-testid="product-specs-unreviewed">
-            카탈로그 추출값 · 검수 전
-          </span>
-        )}
-        <span className="pg-muted">추출일 {specs.extractedAt}</span>
-      </div>
-      {publicNote(specs.note) && <p className="pg-muted ps-note">{publicNote(specs.note)}</p>}
+      {/* 출처 줄·검수 배지·추출일·메모·쪽 링크는 제품 상세에서 표시하지 않음 (2026-11-19 사용자). 비교 화면·관리자 검수에는 그대로 */}
 
       {specs.items.length > 0 && (
         <div className="ps-block" data-testid="product-specs-common">
@@ -211,7 +201,6 @@ function SpecsBody({ product, specs }: { product: Product; specs: Specs }) {
                         <span className="ps-vhead__label">{v.label}</span>
                         {v.id === hit && <span className="ps-vhead__hit">검색한 옵션</span>}
                         <PageLink specs={specs} page={v.page} base={tableShown} label={`${v.label} 옵션 표`} />
-                        {publicNote(v.note) && <span className="ps-vhead__note">{publicNote(v.note)}</span>}
                         <CompareToggle
                           kind="product"
                           id={joinCompareId(product.id, v.id)}

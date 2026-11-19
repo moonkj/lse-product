@@ -11,7 +11,7 @@ export default function FlowToggle() {
   const on = useFlowOn();
   const setFlow = useSetFlow();
   const gap = useViewMode() === 'gap';
-  const title = gap ? '공백만 보기에서는 전기 흐름을 표시하지 않습니다' : on ? '전기 흐름 끄기' : '전기 흐름 켜기 — 기기를 고르면 그 기기의 상류·하류만';
+  const title = gap ? '보완 필요 보기에서는 전기 흐름을 표시하지 않습니다' : on ? '전기 흐름 끄기' : '전기 흐름 켜기 — 기기를 고르면 그 기기의 상류·하류만';
   return (
     <button
       type="button"

@@ -107,7 +107,7 @@
 }
 
 .app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__list {
-  gap: 2px;
+  gap: 6px; /* LayerNav.tsx ROW_GAP 과 같게 */
 }
 
 /* 계층 축 — 축선·괄호의 쌓임 기준 */
@@ -182,10 +182,23 @@
   height: 100%;
   min-height: var(--nav-row-min);
   padding: 6px var(--space-2) 6px 18px;
-  border-radius: 2px var(--radius-md) var(--radius-md) 2px;
+  /* 층마다 외곽선 상자 (2026-11-19 사용자: 층 구분이 얇은 선뿐이라 안 보임) */
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; /* 왼쪽 계층색 띠가 둥근 모서리 안에 */
   color: var(--color-text);
   font-size: var(--fs-sm);
   font-weight: var(--fw-regular);
+}
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn:hover {
+  border-color: var(--layer-accent, var(--color-border-strong));
+}
+/* 지금 계층: 외곽선을 계층색 2px 로 */
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-current {
+  border-color: var(--layer-accent, var(--color-link));
+  box-shadow: 0 0 0 1px var(--layer-accent, var(--color-link));
 }
 
 /* 왼쪽 계층색 띠 4px (지금 계층 6px) — 곧은 띠(둥근 inset 그림자는 범위 괄호와 헷갈림) */

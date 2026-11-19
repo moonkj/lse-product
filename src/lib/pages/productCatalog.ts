@@ -7,7 +7,7 @@ import { resolveProducts } from '../../data/load';
 import type { EquipmentType, Layer, Product, ProductSource } from '../schema';
 import { PRODUCT_SOURCE_LABELS } from '../schema';
 import { normalizeModel } from '../search';
-import { STAGE_DEFS, stageOf } from '../stages';
+import { MONITORING_LABEL, MONITORING_LAYER, STAGE_DEFS, stageOf } from '../stages';
 import { csvCell } from './catalog';
 
 export type VoltageClass = 'ehv' | 'mv' | 'lv' | 'system';
@@ -46,7 +46,7 @@ export interface ProductRow {
   source: ProductSource;
   /** 이 제품이 연결된 기기 (계통도 순서) */
   equipment: EquipmentType[];
-  /** 기기 단계 id (발전·송전·변전·배전·수용가·monitoring) */
+  /** 기기 단계 id = 단계별 보기 열 (L1·L2·L3·customer·REN·MON) */
   stages: string[];
   voltages: VoltageClass[];
   /** 북미 UL 제품 (미국 법인 출처 또는 이름에 UL) */
@@ -128,10 +128,11 @@ const listOf = <T extends string>(v: string | null, allowed: readonly T[]): T[] 
     .map((s) => s.trim())
     .filter((s): s is T => (allowed as readonly string[]).includes(s));
 
-export const STAGE_FILTER_IDS = [...STAGE_DEFS.map((d) => d.id), 'monitoring'];
+export const STAGE_FILTER_IDS = [...STAGE_DEFS.map((d) => d.id), MONITORING_LAYER];
+/** '단계' 필터 이름 = 단계별 보기 열 = 계통맵 층 이름 (예 'L1 초고압 발전·송전', 'L4~L7 수용가') */
 export const STAGE_FILTER_LABELS: Record<string, string> = Object.fromEntries([
-  ...STAGE_DEFS.map((d) => [d.id, d.label]),
-  ['monitoring', '감시·제어'],
+  ...STAGE_DEFS.map((d) => [d.id, d.code ? `${d.code} ${d.label}` : d.label]),
+  [MONITORING_LAYER, MONITORING_LABEL],
 ]);
 
 /** 주소(?q&biz&stage&volt&src&ul=1&specs=1&disc=1&sort) → 필터. 모르는 값은 버린다 */

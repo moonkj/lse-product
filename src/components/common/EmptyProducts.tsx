@@ -89,7 +89,7 @@ export default function EmptyProducts({ eq, testIdPrefix, className, listClassNa
   const categories = resolveCategories(eq);
   const family = useData().familyByEquipmentId.get(eq.id);
   let body;
-  if (eq.coverage === 'missing') body = <p>자사 제품 미보유(공백)</p>;
+  if (eq.coverage === 'missing') body = <p>자사 제품 미보유</p>;
   else if (eq.coverage === 'affiliate') body = <p>계열사 제품으로 공급합니다.</p>;
   else if (eq.coverage === 'sourced')
     body = <p>패널 구성품 — 수배전반에 타사 제품을 넣어 함께 공급합니다.</p>;

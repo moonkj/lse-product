@@ -84,3 +84,6 @@
 
 /* 가로 스크롤 시 계층 열 고정 */
 .gp-matrix .gp-matrix__rowhead { position: sticky; left: 0; z-index: 1; background: var(--color-surface); }
+
+/* 연간 전력시장 지표를 /market 으로 옮겼다는 안내 한 줄 */
+.gp-market-link { margin: 0; font-size: var(--fs-sm); color: var(--color-text-muted); }

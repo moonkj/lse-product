@@ -14,7 +14,7 @@ export default function GapSections({ node, onSelect }: { node: NodeItem; onSele
     <>
       <section className="dp-section" aria-labelledby="dp-gap-related">
         <h3 id="dp-gap-related" className="dp-label">
-          이 공백과 연결된 자사 제품
+          이 기기와 연결된 자사 제품
         </h3>
         {owned.length > 0 ? (
           <ul className="dp-related">
@@ -42,7 +42,7 @@ export default function GapSections({ node, onSelect }: { node: NodeItem; onSele
       </section>
       <section className="dp-section dp-section--divided" aria-labelledby="dp-gap-layer">
         <h3 id="dp-gap-layer" className="dp-label">
-          같은 계층({layerTitle(node.layer)})의 공백
+          같은 계층({layerTitle(node.layer)})의 보완 필요 기기
         </h3>
         <div className="dp-chips">
           {sameLayerGaps.map((n) => (
@@ -61,7 +61,7 @@ export default function GapSections({ node, onSelect }: { node: NodeItem; onSele
           전체 {model.nodes.length}종 · 미보유 <b>{c.missing}</b> · 일부 보유 <b>{c.partial}</b> · 계열사 보유 <b>{c.affiliate}</b> · 패널 구성품 <b>{c.sourced}</b>
         </p>
         <Link to="/gap" className="dp-strong-link">
-          공백 표에서 전체 보기 →
+          라인업 현황에서 전체 보기 →
         </Link>
       </section>
     </>

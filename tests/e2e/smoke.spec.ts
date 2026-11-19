@@ -9,7 +9,7 @@
 import { test, expect } from '@playwright/test';
 
 /** src/lib/schema.ts COVERAGE_LABELS 와 동일 (앱 코드 import 없이 독립 유지) */
-const COVERAGE_LABELS = ['보유', '일부 보유', '계열사 보유', '패널 구성품(타사 조달)', '미보유(공백)', '해당 없음'];
+const COVERAGE_LABELS = ['보유', '일부 보유', '계열사 보유', '패널 구성품(타사 조달)', '미보유', '해당 없음'];
 
 test('스모크: 앱이 뜨고 헤더와 범례 6종(v0.6 R3)이 보인다 (런타임 오류 없음)', async ({ page }) => {
   const errors: string[] = [];

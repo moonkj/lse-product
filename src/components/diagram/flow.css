@@ -172,7 +172,8 @@
   opacity: 0.6;
 }
 
-@media (pointer: coarse) {
+/* 터치 대상 44px — 좁은 화면(900px 이하)도 도구줄 다른 버튼과 같은 높이 */
+@media (pointer: coarse), (max-width: 900px) {
   .dflow-toggle {
     min-height: 44px;
   }
@@ -217,3 +218,8 @@
 .dflow[data-tiny='true'] .dflow__path--bus {
   animation-play-state: paused;
 }
+
+/* 도구줄 [시장 지표] 링크 — 흐름·계획 토글과 같은 모양 (MarketButton) */
+.dmarket-btn { text-decoration: none; }
+.dmarket-btn:hover { background: var(--color-surface-2); }
+.dmarket-btn__icon { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }

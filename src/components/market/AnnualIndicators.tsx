@@ -19,15 +19,15 @@ const KIND_LABEL = { actual: '실적', forecast: '전망' } as const;
 const digitsFor = (unit: string) => (unit === '원/kWh' ? 2 : 1);
 
 /**
- * 연간 전력시장 지표 — 공백 표 아래 접힌 섹션 하나 (토론 합의: 별도 시장 화면 없음, 연 단위 추이만).
- * 실적 = 공식 통계 실선, 전망 = 공식 계획 점선. 지표마다 출처 배지.
+ * 연간 전력시장 지표 — 전력시장 지표 화면(/market)의 본문 (2026-11-19 사용자: 공백 표에서 빼서 계통도 도구줄 '시장 지표' 버튼 → 새 화면).
+ * 실적 = 공식 통계 실선, 전망 = 공식 계획 점선. 지표마다 출처 배지. defaultOpen 이면 펼친 채로 연다.
  */
-export default function AnnualIndicators({ data = ANNUAL }: { data?: MarketAnnual }) {
+export default function AnnualIndicators({ data = ANNUAL, defaultOpen = false }: { data?: MarketAnnual; defaultOpen?: boolean }) {
   const years = data.indicators.flatMap((i) => i.actual.map((p) => p.year));
   const first = Math.min(...years);
   const last = Math.max(...years);
   return (
-    <details className="pg-card mai" data-testid="market-annual">
+    <details className="pg-card mai" data-testid="market-annual" open={defaultOpen || undefined}>
       <summary className="mai__summary">
         <h2 className="mai__title">연간 전력시장 지표</h2>
         <span className="mai__sub">

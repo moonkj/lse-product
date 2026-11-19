@@ -1327,3 +1327,149 @@
   .dtool__btn { padding: 0 var(--space-2); }
   .dtool__main { padding-left: var(--space-2); padding-right: var(--space-2); }
 }
+
+/* 시장 지표 버튼·[계통맵|단계별] 스위치가 늘면서 계통도 도구줄이 다시 넘침 (2026-11-19 재측정: 폭 640~1440px 전부,
+   기기 선택 시 상세 패널로 좁아진 도구줄도). 모든 글자를 펴면 약 1300px 이 필요해 덜 중요한 글자부터 단계별로 줄인다.
+   단계별 보기(dtool--stage)는 버튼이 적어 넘치지 않으므로 기존 단계만. 줄인 글자는 화면낭독기용으로 남김 */
+@container dtool (max-width: 1320px) {
+  .dtool:not(.dtool--stage) .dtool__count,
+  .dtool:not(.dtool--stage) .dtool__end .supply__label,
+  .dtool:not(.dtool--stage) .dtool__end .supply__time { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; margin: -1px; }
+}
+@container dtool (max-width: 1200px) {
+  /* 흐름·계획·시장 지표는 아이콘만, '보기' 글자 숨김 */
+  .dtool:not(.dtool--stage) .dflow-toggle__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+  .dtool:not(.dtool--stage) .dtool__end { gap: 4px; }
+  .dtool:not(.dtool--stage) .dtool__end .dflow-toggle { min-width: 44px; padding-left: 0; padding-right: 0; justify-content: center; }
+  .dtool:not(.dtool--stage) .dtool__view-label { display: none; }
+}
+@container dtool (max-width: 1080px) {
+  /* [계통맵|단계별] 스위치는 아이콘만 */
+  .dtool:not(.dtool--stage) .vswitch__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; margin: -1px; }
+  .dtool:not(.dtool--stage) .vswitch__btn { padding: 0 10px; min-width: 44px; justify-content: center; }
+}
+@container dtool (max-width: 980px) {
+  /* 폭 맞춤·인쇄 숨김 (전체 보기·확대로 대신, 인쇄는 넓은 화면에서) */
+  .dtool:not(.dtool--stage) [data-testid='zoom-fit-width'],
+  .dtool:not(.dtool--stage) [data-testid='diagram-print'] { display: none; }
+}
+@container dtool (max-width: 900px) {
+  /* 수급 알약은 아이콘 + 예비율만 */
+  .dtool:not(.dtool--stage) .dtool__end .supply__sep,
+  .dtool:not(.dtool--stage) .dtool__end .supply__status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+}
+@container dtool (max-width: 780px) {
+  /* '전체 보기'는 '전체'만, 간격·안쪽 여백 축소 */
+  .dtool:not(.dtool--stage) .dtool__btn-sub { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+  .dtool:not(.dtool--stage) .dtool__main { column-gap: 4px; padding-left: var(--space-2); padding-right: var(--space-2); }
+  .dtool:not(.dtool--stage) .dtool__seg-btn,
+  .dtool:not(.dtool--stage) .dtool__btn { padding: 0 var(--space-2); }
+}
+@container dtool (max-width: 700px) {
+  /* 배율 숫자는 화면에서만 숨김(읽기·테스트용 글자는 유지) — 아래 두 줄 단계(600px)와 같은 처리를 앞당김 */
+  .dtool:not(.dtool--stage) .dtool__pct { position: absolute; width: 1px; height: 1px; min-width: 0; padding: 0; overflow: hidden; clip: rect(0 0 0 0); border: 0; }
+}
+@container dtool (max-width: 700px) {
+  .dtool:not(.dtool--stage) .vswitch__btn { min-width: 40px; }
+}
+@container dtool (max-width: 660px) {
+  /* 600px 위는 한 줄 유지 — 간격·안쪽 여백을 한 번 더 조임 (버튼 높이 44px 는 그대로) */
+  .dtool:not(.dtool--stage) .dtool__main { padding-left: 4px; padding-right: 4px; }
+  .dtool:not(.dtool--stage) .dtool__end { gap: 2px; }
+  .dtool:not(.dtool--stage) .dtool__seg-btn { padding: 0 6px; }
+  .dtool:not(.dtool--stage) .dtool__end .supply__pill { padding: 0 8px; gap: 4px; }
+}
+@container dtool (min-width: 400px) {
+  /* 수요처를 고르면 버튼에 '· 데이터센터' 같은 이름이 붙어 최대 120px 넓어져 모든 폭에서 넘쳤다.
+     한 줄 도구줄에서는 고른 이름만 남는 폭만큼 보이고 말줄임(…) — 전체 이름은 버튼 이름(화면낭독기)과 패널에 그대로 */
+  .dtool__main > .mpre { flex-shrink: 1; min-width: 0; }
+  .dtool__main .mpre__trigger { min-width: 0; max-width: 100%; overflow: hidden; }
+  .dtool__main .mpre__cur { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dtool__main .mpre__warnbadge { flex: none; }
+}
+@container dtool (min-width: 400px) {
+  /* 줄어드는 건 고른 이름(·데이터센터)과 해제 칩의 영역 이름뿐 — '수요처'·경고 배지·'해제 ✕'는 최소 폭으로 지킴 */
+  .dtool__main > .mpre { min-width: 64px; }
+  .dtool__main > .mpre:has(.mpre__warnbadge) { min-width: 104px; }
+  .dtool__main .dtool__clear-x { flex: none; }
+  .dtool__main > .dtool__clear { min-width: 86px; }
+}
+@container dtool (max-width: 780px) {
+  .dtool:not(.dtool--stage) .dtool__main > .mpre { min-width: 56px; }
+  .dtool:not(.dtool--stage) .dtool__main > .mpre:has(.mpre__warnbadge) { min-width: 96px; }
+}
+@container dtool (max-width: 1100px) {
+  /* 기기·영역을 고르면 해제 칩이 생겨 약 90px 더 필요 → 칩 안쪽 여백을 줄이고 */
+  .dtool:not(.dtool--stage) .dtool__clear { gap: 4px; padding: 0 4px 0 6px; }
+  .dtool:not(.dtool--stage) .dtool__clear-x { padding: 0 6px; }
+  .dtool:not(.dtool--stage) .dtool__main > .dtool__clear { min-width: 68px; }
+}
+@container dtool (max-width: 900px) {
+  /* 선택 중에는 수급 알약을 아이콘(색)만 — 예비율 숫자는 버튼 이름·팝오버에 그대로 */
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) .supply__rate { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+}
+@media (min-width: 901px) and (pointer: fine) {
+  /* 넓은 화면에서 상세 패널로 도구줄만 좁아질 때(마우스): 아이콘 버튼을 36px 로 (터치 44px 기준은 900px 이하·터치 기기) */
+  @container dtool (max-width: 700px) {
+    .dtool:not(.dtool--stage) .dtool__end .dflow-toggle { min-width: 36px; }
+    .dtool:not(.dtool--stage) .vswitch__btn { min-width: 34px; padding: 0 8px; }
+  }
+}
+/* 600px 바로 위에서 수요처 경고 배지나 선택 해제 칩까지 붙으면 한 줄에 다 못 담음 → 600px 아래처럼 오른쪽 묶음만 둘째 줄로.
+   (해제 칩만 ≤640, 경고 배지만 ≤690, 둘 다 ≤760 — 2026-11-19 실측) */
+@container dtool (max-width: 640px) {
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) { flex-wrap: wrap; row-gap: 4px; }
+}
+@container dtool (max-width: 690px) {
+  .dtool:not(.dtool--stage) .dtool__main:has(.mpre__warnbadge) { flex-wrap: wrap; row-gap: 4px; }
+}
+@container dtool (max-width: 760px) {
+  .dtool:not(.dtool--stage) .dtool__main:has(.mpre__warnbadge):has(.dtool__clear) { flex-wrap: wrap; row-gap: 4px; }
+}
+@container dtool (max-width: 900px) {
+  /* 경고 배지가 붙으면 780px 단계의 조임을 900px 까지 앞당김 */
+  .dtool:not(.dtool--stage) .dtool__main:has(.mpre__warnbadge) { column-gap: 4px; padding-left: var(--space-2); padding-right: var(--space-2); }
+  .dtool:not(.dtool--stage) .dtool__main:has(.mpre__warnbadge) .dtool__btn-sub { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+}
+/* 해제 칩이 있으면(약 70~130px) 폭 맞춤·인쇄 숨김과 스위치 아이콘화를 더 넓은 폭에서 */
+@container dtool (max-width: 1130px) {
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) [data-testid='zoom-fit-width'],
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) [data-testid='diagram-print'] { display: none; }
+}
+@container dtool (max-width: 1230px) {
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) .vswitch__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; margin: -1px; }
+  .dtool:not(.dtool--stage) :where(.dtool__main:has(.dtool__clear)) .vswitch__btn { padding: 0 10px; min-width: 44px; justify-content: center; }
+}
+@container dtool (max-width: 1350px) {
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) .dflow-toggle__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+  .dtool:not(.dtool--stage) :where(.dtool__main:has(.dtool__clear)) .dtool__end { gap: 4px; }
+  .dtool:not(.dtool--stage) :where(.dtool__main:has(.dtool__clear)) .dtool__end .dflow-toggle { min-width: 44px; padding-left: 0; padding-right: 0; justify-content: center; }
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) .dtool__view-label { display: none; }
+}
+@container dtool (max-width: 1470px) {
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) .dtool__clear-label,
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) .dtool__count,
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) .dtool__end .supply__label,
+  .dtool:not(.dtool--stage) .dtool__main:has(.dtool__clear) .dtool__end .supply__time { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; margin: -1px; }
+}
+@container dtool (min-width: 1471px) {
+  /* '선택됨' 글자가 보이는 폭에서는 칩 최소 폭도 그만큼 */
+  .dtool__main > .dtool__clear { min-width: 132px; }
+}
+@container dtool (max-width: 780px) {
+  /* 경고 배지나 해제 칩이 붙으면 배율 숫자 숨김을 780px 까지 앞당김 */
+  .dtool:not(.dtool--stage) .dtool__main:is(:has(.mpre__warnbadge), :has(.dtool__clear)) .dtool__pct { position: absolute; width: 1px; height: 1px; min-width: 0; padding: 0; overflow: hidden; clip: rect(0 0 0 0); border: 0; }
+}
+/* 위의 '해제 칩' 단계가 좁은 폭 조임을 덮지 않게 같은 규칙을 맨 뒤에 다시 둠 (선택자 세기가 같아 뒤가 이김) */
+@container dtool (max-width: 700px) {
+  .dtool:not(.dtool--stage) .vswitch__btn { min-width: 40px; }
+}
+@container dtool (max-width: 660px) {
+  .dtool:not(.dtool--stage) .dtool__end { gap: 2px; }
+}
+@media (min-width: 901px) and (pointer: fine) {
+  @container dtool (max-width: 700px) {
+    .dtool:not(.dtool--stage) .dtool__end .dflow-toggle { min-width: 36px; }
+    .dtool:not(.dtool--stage) .vswitch__btn { min-width: 34px; padding: 0 8px; }
+  }
+}

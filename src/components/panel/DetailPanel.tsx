@@ -41,7 +41,7 @@ const MAX_PRODUCTS = 8;
 
 /** 패널 헤더 커버리지 문구 */
 function pillText(coverage: Coverage, productCount: number, confirmed: boolean, relatedCount = 0): string {
-  if (coverage === 'missing') return confirmed ? '미보유 · 공백 확정' : '미보유 · 공백 후보';
+  if (coverage === 'missing') return confirmed ? '미보유 · 보완 확정' : '미보유 · 보완 후보';
   const base = COVERAGE_LABELS[coverage];
   if (coverage !== 'owned' && coverage !== 'partial') return base;
   if (productCount > 0) return `${base} · 제품 ${productCount}개`;

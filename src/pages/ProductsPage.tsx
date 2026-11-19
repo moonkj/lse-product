@@ -70,9 +70,10 @@ function ProductCard({ row, specs }: { row: ProductRow; specs?: SpecsMap }) {
   const catalog = docsByProductId(p.id)?.docs.find((d) => d.type === 'catalog');
   return (
     <li className="pcard" data-testid={`pcard-${p.id}`}>
-      <div className="pcard__pic" aria-hidden="true">
+      {/* 사진도 상세로 가는 링크 (2026-11-19 사용자). 제목 링크와 같은 곳이라 키보드·화면낭독기에서는 건너뜀(중복 링크 방지) */}
+      <Link to={`/product/${encodeURIComponent(p.id)}`} className="pcard__pic" tabIndex={-1} aria-hidden="true" data-testid={`pcard-pic-${p.id}`}>
         {img ? <img src={img} alt="" loading="lazy" /> : <span className="pcard__nopic">사진 없음</span>}
-      </div>
+      </Link>
       <div className="pcard__tags">
         <span className="pcard__tag">{PRODUCT_SOURCE_LABELS[row.source]}</span>
         <span className="pcard__tag">{BUSINESS_LABELS[p.business]}</span>

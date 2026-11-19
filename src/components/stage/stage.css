@@ -96,12 +96,23 @@
   background: var(--stage-color, var(--color-brand));
   color: #fff;
 }
-.scol[data-stage='generation'] { --stage-color: #00337f; }
-.scol[data-stage='transmission'] { --stage-color: #0b4a9e; }
-.scol[data-stage='substation'] { --stage-color: #0060a8; }
-.scol[data-stage='distribution'] { --stage-color: #18697a; }
+.scol[data-stage='L1'] { --stage-color: #00337f; }
+.scol[data-stage='L2'] { --stage-color: #0b4a9e; }
+.scol[data-stage='L3'] { --stage-color: #0060a8; }
 .scol[data-stage='customer'] { --stage-color: #3f5a73; }
-.scol__title { margin: 0; font-size: var(--fs-lg); }
+.scol[data-stage='REN'] { --stage-color: #18697a; }
+.scol__title { margin: 0; font-size: var(--fs-lg); display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+/* 계통맵 층 번호 (L1·L4~L7) — 계통도 밴드 이름표와 같은 표기 */
+.scol__code {
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  background: rgb(0 0 0 / 0.24);
+  border-radius: var(--radius-chip);
+  padding: 1px 6px;
+}
+.scol__group-code { color: var(--color-brand); }
+.scol__group-title { display: flex; align-items: baseline; gap: 4px; }
+.scol__group-n { margin-left: auto; font-weight: var(--fw-regular); font-variant-numeric: tabular-nums; }
 .scol__count {
   font-size: 12px;
   font-weight: var(--fw-bold);

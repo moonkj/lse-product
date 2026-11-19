@@ -218,48 +218,74 @@
   cursor: pointer;
 }
 
-/* 화면 메뉴 "계통도 · 공백 표" (디자이너 토론 P0-5) — 서비스명 옆 텍스트 링크, 현재 화면 = 흰 글자 + 밑줄 */
+/* 화면 메뉴 "계통도 · 제품 조회 · 라인업 현황" — 페르소나 5인 검토(2026-11-19) 고도화
+   - 현재 화면 = 흰 알약 채움 + 헤더색(네이비) 굵은 글자 → 멀리서도 한눈에(채움 면적, 색만으로 구분하지 않음)
+     도구줄 눌림 상태(.vswitch__btn / .dtool__seg-btn = 채움 + 굵은 글자)와 같은 "채움 = 선택" 문법
+   - 글자색은 --color-header-bg 를 써서 다크 모드(헤더 #0e2a57)에서도 흰 알약 위 대비 14:1 유지
+     (--color-brand 는 다크에서 연파랑 #8ab4f8 이 되어 흰 바탕 위 대비가 부족)
+   - 안 고른 메뉴 = 흰 글자 100%(투명도 없음) + 마우스 올리면 옅은 흰 바탕
+   - 키보드 초점 = 흰 2px 테두리(알약 밖으로 띄움) */
 .app-nav {
   display: inline-flex;
-  align-items: stretch;
+  align-items: center;
   gap: var(--space-1, 4px);
-  align-self: stretch;
+  align-self: center;
 }
 
 .app-nav__link {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-sm, 4px);
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
   color: var(--color-on-header);
-  opacity: 0.78;
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
+  line-height: 1;
   text-decoration: none;
   white-space: nowrap;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.app-nav__icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .app-nav__link:hover {
-  opacity: 1;
   background: var(--color-on-header-hover);
+  border-color: var(--color-on-header-line);
 }
 
-.app-nav__link[aria-current='page'] {
-  opacity: 1;
+.app-nav__link:focus-visible {
+  outline: var(--focus-ring-w, 2px) solid var(--color-on-header);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* 현재 화면 — 흰 알약 + 네이비 굵은 글자 */
+.app-nav__link[aria-current='page'],
+.app-nav__link[aria-current='page']:hover {
+  border-color: var(--color-on-header);
+  background: var(--color-on-header);
+  color: var(--color-header-bg);
   font-weight: var(--fw-bold);
 }
 
-/* 현재 화면 밑줄 — 글자 아래 2px 흰 선 (색만으로 구분하지 않음) */
-.app-nav__link[aria-current='page']::after {
-  content: '';
-  position: absolute;
-  left: var(--space-2);
-  right: var(--space-2);
-  bottom: 6px;
-  height: 2px;
-  border-radius: 1px;
-  background: var(--color-on-header);
+/* 중간 폭(노트북 1024 등): 검색창·아이콘 버튼과 한 줄에 들어가도록 메뉴 아이콘 숨김(글자·알약은 유지) */
+@media (max-width: 1180px) {
+  .app-nav__link {
+    padding: 0 7px; /* + 1px 테두리 = 예전 메뉴 폭과 같음 */
+  }
+
+  .app-nav__icon {
+    display: none;
+  }
 }
 
 /* 좌측 내비 */
@@ -548,20 +574,18 @@
     padding: 6px 8px;
   }
 
-  /* 메뉴 링크 터치 대상 44px 높이 */
+  /* 메뉴 링크 터치 대상 44px 높이 — 아이콘은 숨겨 헤더 1줄 유지 */
   .app-nav {
-    gap: 0;
+    gap: 2px;
   }
 
   .app-nav__link {
     min-height: 44px;
-    padding: 0 6px;
+    padding: 0 10px;
   }
 
-  .app-nav__link[aria-current='page']::after {
-    left: 6px;
-    right: 6px;
-    bottom: 8px;
+  .app-nav__icon {
+    display: none;
   }
 
   /* 서비스명 글자는 숨김(스크린리더는 읽음) — 헤더 1줄 유지 */
@@ -989,3 +1013,18 @@
 .app-shell--compact .app-header__brand { padding: 2px 6px; }
 .app-shell--compact .app-header__brand img { height: 24px; }
 .app-shell--compact .hdr-qr { display: none; }
+
+/* 901~1100px: 헤더가 두 줄로 넘치던 문제 (2026-11-19) — 한 줄 고정, 서비스명 글자는 화면낭독기용으로만(로고는 그대로),
+   검색창이 남는 폭만 차지하며 줄어듦 */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .app-header { flex-wrap: nowrap; }
+  .app-header__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .app-header__search { flex: 1 1 0; min-width: 160px; }
+}

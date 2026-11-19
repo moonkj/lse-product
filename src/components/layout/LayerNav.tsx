@@ -21,7 +21,7 @@ const SIDE_ICON: Partial<Record<Layer, string>> = { MON: '▣', REN: '☀' };
 /** 계층 축 줄 높이 (5라운드 합의: 밴드 높이 비례, 최소 56·최대 120 / 화면 높이 700 미만은 44 고정 목록) */
 export const NAV_ROW_MIN = 56;
 export const NAV_ROW_MAX = 140;
-const ROW_GAP = 2;
+const ROW_GAP = 6; // 줄 사이 — LayerNav.css .layer-nav__list gap 과 같게 (층 상자 외곽선 사이 여백, 2026-11-19)
 
 type Rect = { x: number; y: number; w: number; h: number };
 
@@ -307,10 +307,10 @@ export default function LayerNav() {
           <span className="layer-nav__count">{`${s.owned}/${s.total}`}</span>
           {/* 공백 알약 — 0이면 자리만. 읽기는 아래 보조 설명이 맡음 */}
           <span className={`layer-nav__gap${s.gaps > 0 ? ' has-gap' : ''}`} aria-hidden="true">
-            {s.gaps > 0 ? `공백 ${s.gaps}` : ''}
+            {s.gaps > 0 ? `보완 ${s.gaps}` : ''}
           </span>
           <CoverageBar counts={coverage.get(l.id)!} className="layer-nav__bar" />
-          <span className="visually-hidden">{` · ${l.label}, 보유 ${s.owned} / 전체 ${s.total}, 공백 ${s.gaps}`}</span>
+          <span className="visually-hidden">{` · ${l.label}, 보유 ${s.owned} / 전체 ${s.total}, 보완 필요 ${s.gaps}`}</span>
         </button>
       </li>
     );
@@ -326,7 +326,7 @@ export default function LayerNav() {
       <div className="nav-block">
         <h2 className="nav-section-title">
           계층 바로가기{' '}
-          <span className="nav-section-title__sub" title="공백 = 미보유 + 일부 보유">
+          <span className="nav-section-title__sub" title="보완 필요 = 미보유 + 일부 보유">
             · 보유/전체
           </span>
         </h2>
@@ -375,19 +375,19 @@ export default function LayerNav() {
           </span>
           <p className="layer-nav__summary-foot">
             <span className="layer-nav__summary-gaps">
-              공백 {totals.gaps}종{' '}
+              보완 필요 {totals.gaps}종{' '}
               <span className="layer-nav__summary-gaps-detail">
                 (미보유 {model.coverageCounts.missing} · 일부 {model.coverageCounts.partial})
               </span>
             </span>
             <Link to="/gap" className="layer-nav__summary-link" data-testid="layer-nav-gap-table-link">
-              공백 표 <span aria-hidden="true">→</span>
+              라인업 현황 <span aria-hidden="true">→</span>
             </Link>
           </p>
         </section>
         {/* 휴대폰 세로: 헤더의 "계통도 · 공백 표" 메뉴는 검색창 자리를 위해 숨김 → 칩 줄 끝에서 공백 표로 */}
         <Link to="/gap" className="layer-nav__gaplink" data-testid="gap-table-link-mobile">
-          공백 표 <span aria-hidden="true">→</span>
+          라인업 현황 <span aria-hidden="true">→</span>
         </Link>
       </div>
     </nav>

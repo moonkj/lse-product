@@ -218,6 +218,9 @@ function LinkedList({ items }: { items: LinkedItem[] }) {
 
 const linkedText = (items: LinkedItem[]) => items.map((l) => `${l.eq?.id ?? l.label}:${l.kind}`).join(',');
 
+/** 출처 행·쪽 링크·검수 배지 — 비교 화면에서 표시하지 않음 (2026-11-19 사용자: 제품 상세와 같이 출처 없앰) */
+const SHOW_SOURCES = false;
+
 function UnreviewedBadge() {
   return (
     <Tag tone="warn" className="cmp-badge" testId="compare-unreviewed">
@@ -345,7 +348,7 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
                           {variantDisplayName(product.name, variant?.label)}
                         </Link>
                         : <span className="cmp-specs__value">{specValueText(item)}</span>
-                        {src && (
+                        {SHOW_SOURCES && src && (
                           <ExternalLink href={pageHref(src.source.url, page)} className="cmp-page" title={src.source.title}>
                             {page ? `p.${page}` : '출처'}
                           </ExternalLink>
@@ -403,7 +406,7 @@ function SpecEntryList({ entries, specs, series }: { entries: SpecEntry[]; specs
           <>
             {series && e.variant && <span className="cmp-specs__name">{e.variant.label}: </span>}
             <span className="cmp-specs__value">{specValueText(e.item)}</span>
-            {e.page && (
+            {SHOW_SOURCES && e.page && (
               <ExternalLink href={pageHref(specs.source.url, e.page)} className="cmp-page" title={specs.source.title}>
                 p.{e.page}
               </ExternalLink>
@@ -536,7 +539,7 @@ function productSections(cols: ProductCol[], specsState: SpecsState): { sections
     });
   }
   const anyUnreviewed = specs.some((s) => s && !s.reviewed);
-  specRows.push({
+  if (SHOW_SOURCES) specRows.push({
     key: 'spec-source',
     label: '사양 출처',
     keep: true,
@@ -807,7 +810,7 @@ export default function ComparePage() {
         actions={
           columns.length >= 2 && (
           <div className="cmp-tools">
-            {anyUnreviewed && <UnreviewedBadge />}
+            {SHOW_SOURCES && anyUnreviewed && <UnreviewedBadge />}
             <CopyLinkButton url={shareUrl(location.pathname, location.search)} />
             <Button className="cmp-diff" aria-pressed={diffOnly} testId="compare-diff-only" onClick={toggleDiff}>
               <span aria-hidden="true" className="cmp-diff__box">

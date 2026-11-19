@@ -9,6 +9,7 @@ import { usePresetStore } from '../../lib/market/presetStore';
 import { buildChecklist, presetById, scenarioById, PRESET_TIER_LABELS, type ChecklistRow } from '../../lib/market/presets';
 import { ViewSegment } from '../diagram/DiagramToolbar';
 import PresetPicker from '../market/PresetPicker';
+import MarketButton from '../market/MarketButton';
 import ViewSwitch from './ViewSwitch';
 import './stage.css';
 
@@ -81,18 +82,26 @@ function Column({ col, render }: { col: StageColumn; render: (eq: EquipmentType)
     <section className="scol" data-stage={col.id} aria-labelledby={`scol-${col.id}`} data-testid={`stage-col-${col.id}`}>
       <header className="scol__head">
         <h2 id={`scol-${col.id}`} className="scol__title">
+          {col.code && <span className="scol__code">{col.code}</span>}
           {col.label}
         </h2>
         <span className="scol__count" title={`보유 ${col.owned}종 / 전체 ${col.total}종`}>
           보유 {col.owned}/{col.total}
         </span>
         <span className="scol__volt">{col.voltage}</span>
-        {col.gaps > 0 && <span className="scol__gaps">공백 {col.gaps}</span>}
+        {col.gaps > 0 && <span className="scol__gaps">보완 {col.gaps}</span>}
       </header>
       <div className="scol__body">
-        {col.groups.map((g) => (
-          <div key={g.label || 'all'} className="scol__group">
-            {g.label && <h3 className="scol__group-title">{g.label}</h3>}
+        {col.groupsList.map((g) => (
+          <div key={g.layer || 'all'} className="scol__group">
+            {g.label && (
+              <h3 className="scol__group-title">
+                <span className="scol__group-code">{g.layer}</span> {g.label}
+                <span className="scol__group-n" title={`보유 ${g.items.filter((e) => e.coverage === 'owned').length}종 / 전체 ${g.items.length}종`}>
+                  {g.items.filter((e) => e.coverage === 'owned').length}/{g.items.length}
+                </span>
+              </h3>
+            )}
             <ul className="scol__list">{g.items.map(render)}</ul>
           </div>
         ))}
@@ -102,10 +111,10 @@ function Column({ col, render }: { col: StageColumn; render: (eq: EquipmentType)
 }
 
 /**
- * 단계별 보기 (?view=stage) — 발전·송전·변전·배전·수용가 5단계 열 + 감시·제어 띠.
+ * 단계별 보기 (?view=stage) — 계통맵 층과 같은 열(L1·L2·L3·수용가 L4~L7·신재생) + 감시·제어 띠.
  * 같은 기기 데이터·같은 보유 색. 카드를 누르면 계통맵과 같은 상세 패널(?node=)이 열린다.
  * 공백만 보기(?mode=gap)면 공백 아닌 카드를 흐리게, 수요처 프리셋이 있으면 필수·이중화·선택 표시.
- * 휴대폰(≤900px)은 단계 탭으로 한 열씩.
+ * 휴대폰(≤900px)은 층 탭으로 한 열씩.
  */
 export default function StageView() {
   const board = useMemo(() => buildStageBoard(getData().equipmentTypes), []);
@@ -116,7 +125,7 @@ export default function StageView() {
   const presetRows = usePresetRows();
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const selectedEqId = selectedNode ? getDiagramModel().nodeById.get(selectedNode)?.eq.id : undefined;
-  const selectedStage = selectedEqId ? board.columns.find((c) => c.groups.some((g) => g.items.some((e) => e.id === selectedEqId)))?.id : undefined;
+  const selectedStage = selectedEqId ? board.columns.find((c) => c.groupsList.some((g) => g.items.some((e) => e.id === selectedEqId)))?.id : undefined;
   const [tab, setTab] = useState(selectedStage ?? board.columns[0].id);
   // 검색·뒤로가기로 다른 단계 기기가 선택되면 휴대폰 탭도 그 단계로
   useEffect(() => {
@@ -155,16 +164,19 @@ export default function StageView() {
           <span className="stage__total" aria-live="polite">
             기기 {total}종
           </span>
+          <div className="dtool__end">
+            <MarketButton />
+          </div>
         </div>
       </div>
 
       <div className="stage__scroll">
         <p className="stage__lead">
-          발전소에서 수용가까지 전기가 흐르는 순서대로 기기를 나눴습니다. 카드를 누르면 계통맵과 같은 상세 정보가 열립니다.
+          계통맵과 같은 층(L1~L7·신재생)으로 기기를 나눠 카드로 보여 줍니다. 카드를 누르면 계통맵과 같은 상세 정보가 열립니다.
         </p>
 
         {isMobile && (
-          <div className="stage__tabs" role="tablist" aria-label="단계">
+          <div className="stage__tabs" role="tablist" aria-label="층">
             {board.columns.map((c) => (
               <button
                 key={c.id}
@@ -175,6 +187,7 @@ export default function StageView() {
                 data-testid={`stage-tab-${c.id}`}
                 onClick={() => setTab(c.id)}
               >
+                {c.code ? `${c.code} ` : ''}
                 {c.label} <span className="stage__tab-n">{c.owned}/{c.total}</span>
               </button>
             ))}
@@ -190,9 +203,9 @@ export default function StageView() {
         {board.monitoring.length > 0 && (
           <section className="stage__mon" aria-labelledby="stage-mon-title" data-testid="stage-monitoring">
             <h2 id="stage-mon-title" className="stage__mon-title">
-              감시·제어{' '}
+              {board.monitoringLabel}{' '}
               <span className="stage__mon-sub">
-                모든 단계에 걸침 · 보유 {board.monitoring.filter((e) => e.coverage === 'owned').length}/{board.monitoring.length}
+                모든 층에 걸침 · 보유 {board.monitoring.filter((e) => e.coverage === 'owned').length}/{board.monitoring.length}
               </span>
             </h2>
             <ul className="stage__mon-list">{board.monitoring.map(render)}</ul>
