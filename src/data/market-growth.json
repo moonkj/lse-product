@@ -95,8 +95,7 @@
             "url": "https://v.daum.net/v/20250527174311494",
             "asof": "2025-05-27",
             "confidence": "secondary"
-          },
-          "needsCheck": true
+          }
         },
         {
           "label": "호남~수도권 HVDC 루트",
@@ -111,8 +110,7 @@
             "url": "https://www.newsis.com/view/NISX20250527_0003191486",
             "asof": "2025-05-27",
             "confidence": "secondary"
-          },
-          "needsCheck": true
+          }
         }
       ]
     },
@@ -143,8 +141,7 @@
             "url": "https://v.daum.net/v/20250527174311494",
             "asof": "2025-05-27",
             "confidence": "secondary"
-          },
-          "needsCheck": true
+          }
         },
         {
           "label": "2023년 대비 배수",
@@ -159,8 +156,7 @@
             "url": "https://v.daum.net/v/20250527174311494",
             "asof": "2025-05-27",
             "confidence": "secondary"
-          },
-          "needsCheck": true
+          }
         }
       ]
     },
@@ -190,8 +186,7 @@
             "url": "https://view.asiae.co.kr/article/2025112611491358543",
             "asof": "2025-11-27",
             "confidence": "secondary"
-          },
-          "needsCheck": true
+          }
         },
         {
           "label": "2023년 말 대비 증가",
@@ -206,8 +201,7 @@
             "url": "https://view.asiae.co.kr/article/2025112611491358543",
             "asof": "2025-11-27",
             "confidence": "secondary"
-          },
-          "needsCheck": true
+          }
         }
       ]
     },

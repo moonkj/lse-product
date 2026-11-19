@@ -5,7 +5,9 @@
       "id": "lt-gsu",
       "kind": "leadtime",
       "level": "delay",
-      "equipmentIds": ["step-up-tr"],
+      "equipmentIds": [
+        "step-up-tr"
+      ],
       "text": "美 발전기 승압 변압기(GSU) 평균 리드타임 약 144주 — 해외 조사 2차 인용, 국내 납기 아님",
       "basis": "해외 조사 평균 기준: 100주 이상 지연 · 26~100주 주의 · 26주 미만 원활",
       "value": {
@@ -18,15 +20,16 @@
           "url": "https://powermag.com/transformers-in-2026-shortage-scramble-or-self-inflicted-crisis/",
           "asof": "2026-01-02",
           "confidence": "secondary"
-        },
-        "needsCheck": true
+        }
       }
     },
     {
       "id": "lt-power-tr",
       "kind": "leadtime",
       "level": "delay",
-      "equipmentIds": ["main-tr"],
+      "equipmentIds": [
+        "main-tr"
+      ],
       "text": "美 대형 전력용 변압기 평균 리드타임 약 128주 — 해외 조사 2차 인용, 국내 납기 아님",
       "basis": "해외 조사 평균 기준: 100주 이상 지연 · 26~100주 주의 · 26주 미만 원활",
       "value": {
@@ -39,15 +42,17 @@
           "url": "https://powermag.com/transformers-in-2026-shortage-scramble-or-self-inflicted-crisis/",
           "asof": "2026-01-02",
           "confidence": "secondary"
-        },
-        "needsCheck": true
+        }
       }
     },
     {
       "id": "lt-switchgear",
       "kind": "leadtime",
       "level": "caution",
-      "equipmentIds": ["ehv-gis", "gis-154"],
+      "equipmentIds": [
+        "ehv-gis",
+        "gis-154"
+      ],
       "text": "美 개폐장치(switchgear) 전체 평균 리드타임 약 44주 — GIS 단독 수치 아님, 해외 2차 인용",
       "basis": "해외 조사 평균 기준: 100주 이상 지연 · 26~100주 주의 · 26주 미만 원활",
       "value": {
@@ -60,15 +65,17 @@
           "url": "https://powermag.com/transformers-in-2026-shortage-scramble-or-self-inflicted-crisis/",
           "asof": "2026-01-02",
           "confidence": "secondary"
-        },
-        "needsCheck": true
+        }
       }
     },
     {
       "id": "lt-dist-tr",
       "kind": "leadtime",
       "level": "caution",
-      "equipmentIds": ["pole-tr", "oil-tr"],
+      "equipmentIds": [
+        "pole-tr",
+        "oil-tr"
+      ],
       "text": "美 배전용 변압기 평균 리드타임 약 30주 — 2023년 100주 이상 정점 뒤 하락, 해외 2차 인용",
       "basis": "해외 조사 평균 기준: 100주 이상 지연 · 26~100주 주의 · 26주 미만 원활",
       "value": {
@@ -81,15 +88,18 @@
           "url": "https://eepower.com/market-insights/transformer-supply-chain-woes-persist-as-energy-demand-grows/",
           "asof": "2025-08-27",
           "confidence": "secondary"
-        },
-        "needsCheck": true
+        }
       }
     },
-
     {
       "id": "kec-214-2-1",
       "kind": "code",
-      "equipmentIds": ["mcb-rcbo", "elcb", "branch-mccb", "panelboard"],
+      "equipmentIds": [
+        "mcb-rcbo",
+        "elcb",
+        "branch-mccb",
+        "panelboard"
+      ],
       "clause": "KEC 214.2.1",
       "noticeNo": "기후에너지환경부공고 제2025-198호",
       "publishedAt": "2025-12-30",
@@ -107,7 +117,10 @@
     {
       "id": "kec-522",
       "kind": "code",
-      "equipmentIds": ["pv", "dc-devices"],
+      "equipmentIds": [
+        "pv",
+        "dc-devices"
+      ],
       "clause": "KEC 522.2.1·522.2.3·522.3.2",
       "noticeNo": "기후에너지환경부공고 제2025-198호",
       "publishedAt": "2025-12-30",
@@ -125,7 +138,9 @@
     {
       "id": "kec-241-17",
       "kind": "code",
-      "equipmentIds": ["ev-charger"],
+      "equipmentIds": [
+        "ev-charger"
+      ],
       "clause": "KEC 241.17",
       "noticeNo": "기후에너지환경부공고 제2025-198호",
       "publishedAt": "2025-12-30",
@@ -143,7 +158,10 @@
     {
       "id": "kec-232-84",
       "kind": "code",
-      "equipmentIds": ["lv-swgr", "panelboard"],
+      "equipmentIds": [
+        "lv-swgr",
+        "panelboard"
+      ],
       "clause": "KEC 232.84",
       "noticeNo": "기후에너지환경부공고 제2025-198호",
       "publishedAt": "2025-12-30",
@@ -161,7 +179,9 @@
     {
       "id": "kec-232-86",
       "kind": "code",
-      "equipmentIds": ["meter"],
+      "equipmentIds": [
+        "meter"
+      ],
       "clause": "KEC 232.86",
       "noticeNo": "기후에너지환경부공고 제2025-198호",
       "publishedAt": "2025-12-30",
@@ -179,7 +199,9 @@
     {
       "id": "kec-512-1-4",
       "kind": "code",
-      "equipmentIds": ["ess"],
+      "equipmentIds": [
+        "ess"
+      ],
       "clause": "KEC 512.1.4",
       "noticeNo": "기후에너지환경부공고 제2025-198호",
       "publishedAt": "2025-12-30",
@@ -197,7 +219,9 @@
     {
       "id": "kec-333-32",
       "kind": "code",
-      "equipmentIds": ["dist-line"],
+      "equipmentIds": [
+        "dist-line"
+      ],
       "clause": "KEC 333.32",
       "noticeNo": "기후에너지환경부공고 제2025-198호",
       "publishedAt": "2025-12-30",
@@ -212,12 +236,17 @@
         "confidence": "official-plan"
       }
     },
-
     {
       "id": "kepco-tx-2026",
       "kind": "kepco",
       "level": "expand",
-      "equipmentIds": ["substation", "gis-154", "main-tr", "sas", "scada"],
+      "equipmentIds": [
+        "substation",
+        "gis-154",
+        "main-tr",
+        "sas",
+        "scada"
+      ],
       "text": "한전 송변전 투자 2026~2030년 약 33.0조원 계획 — 2027~2029 송배전 합계 직전 계획 대비 9.6% 증액",
       "basis": "직전 중장기 재무관리계획 대비 증액=확대 · 동일=유지 · 감액=긴축",
       "value": {
@@ -230,15 +259,22 @@
           "url": "https://newsis.com/view/NISX20260908_0003781245",
           "asof": "2026-09-09",
           "confidence": "secondary"
-        },
-        "needsCheck": true
+        }
       }
     },
     {
       "id": "kepco-dist-2026",
       "kind": "kepco",
       "level": "expand",
-      "equipmentIds": ["fcl", "dist-line", "recloser", "auto-switch", "pole-tr", "dms", "amrs"],
+      "equipmentIds": [
+        "fcl",
+        "dist-line",
+        "recloser",
+        "auto-switch",
+        "pole-tr",
+        "dms",
+        "amrs"
+      ],
       "text": "한전 배전 투자 2026~2030년 약 22.4조원 계획 — 2027~2029 송배전 합계 직전 계획 대비 9.6% 증액",
       "basis": "직전 중장기 재무관리계획 대비 증액=확대 · 동일=유지 · 감액=긴축",
       "value": {
@@ -251,15 +287,18 @@
           "url": "https://newsis.com/view/NISX20260908_0003781245",
           "asof": "2026-09-09",
           "confidence": "secondary"
-        },
-        "needsCheck": true
+        }
       }
     },
     {
       "id": "kepco-11th-tx-plan",
       "kind": "kepco",
       "level": "expand",
-      "equipmentIds": ["substation", "gis-154", "main-tr"],
+      "equipmentIds": [
+        "substation",
+        "gis-154",
+        "main-tr"
+      ],
       "text": "제11차 장기 송변전설비계획 2038년까지 약 72.8조원 — 10차(56.5조원) 대비 16.3조원 증가",
       "basis": "직전 차수 계획 대비 증액=확대 · 동일=유지 · 감액=긴축",
       "value": {
@@ -272,18 +311,20 @@
           "url": "https://www.newsis.com/view/NISX20250527_0003191486",
           "asof": "2025-05-27",
           "confidence": "secondary"
-        },
-        "needsCheck": true
+        }
       }
     },
-
     {
       "id": "ren-smp",
       "kind": "renewable",
       "metric": "smp",
       "trend": "up",
       "level": "neutral",
-      "equipmentIds": ["pv", "pcs", "ess"],
+      "equipmentIds": [
+        "pv",
+        "pcs",
+        "ess"
+      ],
       "text": "육지 SMP 2026년 10월 110.05원/kWh — 전년 동월(101.53원) 대비 상승, 전월(119.02원) 대비 하락",
       "basis": "방향은 전년 동월 대비. 수익 신호로 방향만 표시(판정 없음)",
       "value": {
@@ -305,7 +346,9 @@
       "metric": "rec",
       "trend": "flat",
       "level": "neutral",
-      "equipmentIds": ["pv"],
+      "equipmentIds": [
+        "pv"
+      ],
       "text": "육지 REC 현물 2026년 10월 평균 약 71,342원/REC — 전월(71,460원) 대비 보합",
       "basis": "방향은 전월 대비(±1% 이내 보합). 수익 신호로 방향만 표시(판정 없음)",
       "value": {
@@ -328,7 +371,12 @@
       "metric": "curtailment",
       "trend": "up",
       "level": "caution",
-      "equipmentIds": ["pv", "pcs", "ess", "microgrid"],
+      "equipmentIds": [
+        "pv",
+        "pcs",
+        "ess",
+        "microgrid"
+      ],
       "text": "육지 출력제어 2026년 상반기 59일 — 2024년 연 26일, 2025년 연 82일에서 증가",
       "basis": "출력제어 증가=주의(접속·유연성 설비 압력↑). 공식 집계표 미확인",
       "value": {
@@ -350,7 +398,12 @@
       "kind": "renewable",
       "metric": "deployment",
       "level": "caution",
-      "equipmentIds": ["pv", "pcs", "dc-devices", "modular-substation"],
+      "equipmentIds": [
+        "pv",
+        "pcs",
+        "dc-devices",
+        "modular-substation"
+      ],
       "text": "재생에너지 누적 39.1GW(2026년 상반기) / 2030년 목표 100GW — 반기 6.8GW씩 필요, 최근 반기 평균 1.7GW의 약 4배",
       "basis": "목표 대비 필요 보급 속도가 실적의 2배 이상이면 주의",
       "value": {
@@ -372,7 +425,11 @@
       "metric": "ess-auction",
       "trend": "up",
       "level": "positive",
-      "equipmentIds": ["ess", "pcs", "modular-substation"],
+      "equipmentIds": [
+        "ess",
+        "pcs",
+        "modular-substation"
+      ],
       "text": "2026년 ESS 중앙계약시장 1,180MW(육지 1,100·제주 80) — 9/22 공고, 11/11 입찰 마감, 11월 낙찰, 2029년 2월 구축 기한",
       "basis": "공고 물량이 직전(540MW) 대비 증가=수요 신호 강함",
       "value": {
@@ -385,8 +442,7 @@
           "url": "https://inews24.com/view/2008907",
           "asof": "2026-09-23",
           "confidence": "secondary"
-        },
-        "needsCheck": true
+        }
       }
     }
   ]

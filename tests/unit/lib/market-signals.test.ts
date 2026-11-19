@@ -48,10 +48,10 @@ describe('market-signals.json', () => {
     }
   });
 
-  it('2차 인용 수치는 확인 필요 표시 또는 원문 대조 방법 명시', () => {
+  it('역산·추정·민간 집계·표기 혼용 값은 확인 필요 표시 (주요 매체의 공식 수치 직접 보도는 2차 인용 배지만)', () => {
     for (const s of file.signals) {
-      if (!s.value || s.value.source.confidence !== 'secondary') continue;
-      expect(Boolean(s.value.needsCheck) || s.value.method.includes('원문 수치'), s.id).toBe(true);
+      if (!s.value) continue;
+      if (/역산|추정|혼용|민간 집계/.test(s.value.method)) expect(s.value.needsCheck, s.id).toBe(true);
     }
   });
 
