@@ -31,7 +31,7 @@ test.describe('테마 (기본 라이트 고정 + 헤더 토글)', () => {
     expect(await page.evaluate(() => localStorage.getItem('lse-theme'))).toBeNull();
   });
 
-  test('헤더: CI 네이비 띠 + 레드 강조선, 데스크톱 총높이 ≤ 64px (계통도 영역 유지)', async ({ page }) => {
+  test('헤더: CI 네이비 띠 + 레드 강조선 4px, 데스크톱 총높이 ≤ 80px (마켓뉴스와 같은 넉넉한 헤더, 2026-11-19)', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('./#/');
     const header = page.locator('.app-header');
@@ -41,8 +41,8 @@ test.describe('테마 (기본 라이트 고정 + 헤더 토글)', () => {
     });
     expect(style.bg).toBe('rgb(0, 51, 127)');
     expect(style.line).toBe('rgb(230, 0, 51)');
-    expect(style.lineW).toBe('3px');
-    expect(style.h).toBeLessThanOrEqual(64);
+    expect(style.lineW).toBe('4px');
+    expect(style.h).toBeLessThanOrEqual(80);
   });
 });
 

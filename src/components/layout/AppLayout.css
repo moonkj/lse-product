@@ -860,3 +860,87 @@
   align-items: center;
   gap: 6px;
 }
+
+/* ── 헤더: 마켓뉴스와 같은 구성 (큰 제목 + 작은 부제, 넉넉한 높이) — 2026-11-19 사용자 ── */
+.app-header {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.app-header__logo {
+  font-size: 22px;
+  letter-spacing: -0.3px;
+}
+.app-header__title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.app-header__sub {
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  color: var(--color-on-header-2, rgb(255 255 255 / 0.78));
+  letter-spacing: 0;
+}
+@media (max-width: 1280px) {
+  .app-header__sub { display: none; }
+}
+
+/* QR — 휴대폰으로 열기 (마켓뉴스와 같은 방식: 작은 QR 버튼 → 누르면 큰 QR) */
+.hdr-qr {
+  position: relative;
+  flex: none;
+}
+.hdr-qr__btn {
+  list-style: none;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  border: 1px solid var(--color-on-header-line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+}
+.hdr-qr__btn::-webkit-details-marker { display: none; }
+.hdr-qr__btn:hover { box-shadow: 0 0 0 2px rgb(255 255 255 / 0.35); }
+.hdr-qr__mini { width: 30px; height: 30px; }
+.hdr-qr__pop {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 60;
+  width: 248px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+.hdr-qr__big {
+  display: block;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 10px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
+  color: #111;
+}
+.hdr-qr__t { margin: 0 0 6px; font-size: var(--fs-sm); font-weight: var(--fw-bold); line-height: 1.5; }
+.hdr-qr__u { margin: 0; font-size: 12px; color: var(--color-text-muted); word-break: break-all; }
+@media (pointer: coarse) {
+  .hdr-qr__btn { width: 44px; height: 44px; }
+}
+/* 휴대폰에서는 이미 휴대폰이므로 QR 숨김 */
+@media (max-width: 600px) {
+  .hdr-qr { display: none; }
+}
+/* 휴대폰·태블릿: 헤더 여백은 예전처럼 낮게(계통도 높이 확보) */
+@media (max-width: 900px) {
+  .app-header { min-height: 56px; padding-top: var(--space-2); padding-bottom: var(--space-2); }
+  .app-header__logo { font-size: var(--fs-md); }
+}

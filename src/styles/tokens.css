@@ -43,8 +43,8 @@
   --radius-lg: 12px;
   --radius-pill: 999px;
   --radius-tile: 8px;    /* 계통도 기기 타일 (E5 P1 — 10px → 토큰) */
-  --header-h: 56px;      /* 네이비 띠 높이 (아래 CI 레드 선 3px 별도) — 계통도 영역을 줄이지 않도록 기존과 같은 총높이 */
-  --header-accent-w: 3px;
+  --header-h: 68px;      /* 네이비 띠 높이 — 마켓뉴스처럼 넉넉하게(2026-11-19 사용자: 상단이 너무 좁음), 아래 CI 레드 선 별도 */
+  --header-accent-w: 4px;
   --nav-w: 224px;
   --panel-w: 360px;
   --bp-mobile: 900px; /* 참고값 (미디어쿼리는 리터럴 사용) */

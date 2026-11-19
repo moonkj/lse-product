@@ -3,6 +3,7 @@ import SearchBox from './SearchBox';
 import BrandLogo from '../common/BrandLogo';
 import { useUiStore } from '../../store/useUiStore';
 import ThemeToggle from './ThemeToggle';
+import QrButton from './QrButton';
 
 export default function Header() {
   const { pathname } = useLocation();
@@ -13,7 +14,10 @@ export default function Header() {
     <header className="app-header">
       <Link to="/" className="app-header__logo">
         <BrandLogo className="app-header__brand" />
-        <span className="app-header__title">전력계통 제품맵</span>
+        <span className="app-header__title">
+          전력계통 제품맵
+          <span className="app-header__sub">LS ELECTRIC 제품 지도</span>
+        </span>
       </Link>
 
       {/* 화면 메뉴 (디자이너 토론 P1): 계통도 · 공백 표. 제품/Gap 전환은 계통도 도구줄로 옮김 */}
@@ -49,6 +53,7 @@ export default function Header() {
         <span className="present-toggle__label">넓게 보기</span>
       </button>
 
+      <QrButton />
       <ThemeToggle />
     </header>
   );
