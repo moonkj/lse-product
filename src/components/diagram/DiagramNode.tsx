@@ -10,7 +10,8 @@ interface Props {
   item: NodeItem;
   mode: ViewMode;
   selected: boolean;
-  onActivate: (id: string) => void;
+  /** via = 'pointer'(클릭) | 'keyboard'(Enter·Space) — 선택된 타일을 다시 클릭하면 해제, 키보드는 패널로 이동 */
+  onActivate: (id: string, via: 'pointer' | 'keyboard') => void;
 }
 
 /**
@@ -52,11 +53,11 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
       data-ref={ref ? 'true' : undefined}
       data-dimmed={dimmed ? 'true' : 'false'}
       data-emphasized={emphasized ? 'true' : 'false'}
-      onClick={() => onActivate(id)}
+      onClick={(e) => onActivate(id, e.detail === 0 ? 'keyboard' : 'pointer')}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          onActivate(id);
+          onActivate(id, 'keyboard');
         }
       }}
     >

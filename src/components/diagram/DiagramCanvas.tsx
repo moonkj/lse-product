@@ -7,6 +7,7 @@ import { TILE_H, TILE_W } from '../../lib/diagram/geometry';
 import { PanZoom, type Rect } from '../../lib/diagram/panzoom';
 import { getDiagramController, getSavedView, registerDiagramController, saveView, useView, viewStore } from '../../lib/diagram/view';
 import { applyPrintScale } from '../../lib/diagram/print';
+import { announce } from '../../lib/announce';
 import { COVERAGES } from '../../lib/schema';
 import { COVERAGE_LABELS } from '../../lib/labels';
 import { centerOf, createVisibleAreaCache, isFullyVisible, measureVisibleArea } from '../../lib/diagram/viewport';
@@ -463,8 +464,16 @@ export default function DiagramCanvas() {
   const selectedRef = useRef(selectedId);
   selectedRef.current = selectedId;
   const onActivate = useCallback(
-    (id: string) => {
+    (id: string, via: 'pointer' | 'keyboard' = 'pointer') => {
       if (id === selectedRef.current) {
+        // 2026-11-19 사용자: 활성화된 기기를 다시 클릭하면 해제 — 패널은 레일로 접히고 선택 영역 표시도 해제.
+        // 키보드(Enter·Space)는 기존대로 상세 패널 제목으로 이동 (B4)
+        if (via === 'pointer') {
+          selectNode(null);
+          viewStore.set({ focus: null });
+          announce('선택 해제');
+          return;
+        }
         focusPanelTitle();
         revealRef.current(id);
         return;

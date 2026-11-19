@@ -112,7 +112,7 @@ describe('CT-03 DiagramNode', () => {
     expect(node()).toHaveTextContent('22.9/6.6kV');
     expect(node().getAttribute('aria-label')).toContain('테스트 차단기'); // 같은 기기임을 읽어 줌
     fireEvent.click(node());
-    expect(onActivate).toHaveBeenCalledWith('n-test'); // → 그 기기 상세
+    expect(onActivate).toHaveBeenCalledWith('n-test', expect.anything()); // → 그 기기 상세
     cleanup();
     render(<DiagramNode item={makeItem('owned')} mode="product" selected={false} onActivate={() => {}} />);
     expect(node()).not.toHaveAttribute('data-ref', 'true');
@@ -147,6 +147,6 @@ describe('CT-03 DiagramNode', () => {
     fireEvent.keyDown(node(), { key: ' ' });
     fireEvent.keyDown(node(), { key: 'a' });
     expect(onActivate).toHaveBeenCalledTimes(3);
-    expect(onActivate).toHaveBeenCalledWith('n-test');
+    expect(onActivate).toHaveBeenCalledWith('n-test', expect.anything());
   });
 });

@@ -34,6 +34,8 @@ export default function EquipmentPage() {
 
   const node = nodeForEquipment(eq.id);
   const products = productsForEquipment(eq.id);
+  const relatedCount = useData().familyByEquipmentId.get(eq.id)?.products.length ?? 0;
+  const showRelated = products.length === 0 && relatedCount > 0;
   const isGap = isGapCoverage(eq.coverage);
   const docProducts = products.filter((p) => (docsByProductId(p.id)?.docs.length ?? 0) > 0).slice(0, DOC_PRODUCTS_MAX);
 
@@ -64,7 +66,7 @@ export default function EquipmentPage() {
           </h1>
           <div className="pg-badges">
             <CoverageBadge coverage={eq.coverage} variant="pill" testId="equipment-coverage-badge" />
-            <Tag>자사 제품 {products.length}개</Tag>
+            <Tag>{showRelated ? `관련 제품 ${relatedCount}개` : `자사 제품 ${products.length}개`}</Tag>
           </div>
 
           <div className="pg-role">
@@ -103,7 +105,7 @@ export default function EquipmentPage() {
         <div className="pg-split__main eqp-main">
           <section className="pg-card" aria-labelledby="eq-products-h">
             <h2 id="eq-products-h">
-              자사 제품 <Count>· {products.length}</Count>
+              {showRelated ? '관련 제품' : '자사 제품'} <Count>· {showRelated ? relatedCount : products.length}</Count>
             </h2>
             {products.length > 0 ? (
               <ul className="eqp-products" data-testid="equipment-product-list">

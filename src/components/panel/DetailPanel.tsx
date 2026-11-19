@@ -25,6 +25,7 @@ import { useUiStore } from '../../store/useUiStore';
 import { overviewParts } from '../../lib/overview';
 import CoverageBadge from '../common/CoverageBadge';
 import CompareToggle from '../compare/CompareToggle';
+import { useData } from '../../data/load';
 import { ButtonLink } from '../common/Button';
 import DocsList from '../common/DocsList';
 import EmptyProducts from '../common/EmptyProducts';
@@ -39,10 +40,13 @@ import './DetailPanel.css';
 const MAX_PRODUCTS = 8;
 
 /** 패널 헤더 커버리지 문구 */
-function pillText(coverage: Coverage, productCount: number, confirmed: boolean): string {
+function pillText(coverage: Coverage, productCount: number, confirmed: boolean, relatedCount = 0): string {
   if (coverage === 'missing') return confirmed ? '미보유 · 공백 확정' : '미보유 · 공백 후보';
   const base = COVERAGE_LABELS[coverage];
-  return productCount > 0 && (coverage === 'owned' || coverage === 'partial') ? `${base} · 제품 ${productCount}개` : base;
+  if (coverage !== 'owned' && coverage !== 'partial') return base;
+  if (productCount > 0) return `${base} · 제품 ${productCount}개`;
+  // 시스템·솔루션 기기: 개별 제품 대신 공식 제품군의 관련 제품 수 (2026-11-19 사용자)
+  return relatedCount > 0 ? `${base} · 관련 제품 ${relatedCount}개` : base;
 }
 
 /** gapNote 라벨: 상태에 맞게 (보유 기기 메모에 "공백"이 붙지 않게) */
@@ -324,6 +328,7 @@ export default function DetailPanel() {
   // 참조 타일: 머리글 계층·전압 = 타일이 놓인 자리(밴드)·참조 라벨, 원래 기기 계층은 참조 안내에 "원래 위치"로 (T2 M5)
   const placeVoltage = node.ref ? (node.refLabel ?? model.layers.find((l) => l.id === node.layer)?.voltage) : eq.voltage;
   const products = productsForEquipment(eq.id);
+  const relatedCount = useData().familyByEquipmentId.get(eq.id)?.products.length ?? 0;
   const anyPhoto = products.slice(0, MAX_PRODUCTS).some((p) => hasProductPhoto(p.id));
   const rep = representative(products);
   const gapView = mode === 'gap' && isGapCoverage(eq.coverage);
@@ -373,7 +378,7 @@ export default function DetailPanel() {
           <CoverageBadge
             coverage={eq.coverage}
             variant="pill"
-            label={pillText(eq.coverage, products.length, gapConfidence(eq) === 'confirmed')}
+            label={pillText(eq.coverage, products.length, gapConfidence(eq) === 'confirmed', relatedCount)}
             testId="detail-coverage-badge"
           />
         </div>
@@ -420,7 +425,7 @@ export default function DetailPanel() {
           {/* ③ 자사 제품 목록 */}
           <section className="dp-section" aria-labelledby="dp-products-title">
             <h3 id="dp-products-title" className="dp-label">
-              자사 제품{products.length > 0 ? ` · ${products.length}개` : ''}
+              {products.length > 0 ? `자사 제품 · ${products.length}개` : relatedCount > 0 ? `관련 제품 · ${relatedCount}개` : '자사 제품'}
             </h3>
             {products.length > 0 ? (
               <>
