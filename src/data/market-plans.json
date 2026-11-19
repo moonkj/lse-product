@@ -9,10 +9,10 @@
       "title": "제10차 장기 송·변전설비계획",
       "period": "2022~2036",
       "source": {
-        "title": "파이낸셜뉴스(뉴스1) 보도 — 한전 「제10차 장기 송·변전설비계획(2022~2036)」",
-        "url": "https://www.fnnews.com/news/202305080948340532",
+        "title": "한국전력공사 보도자료 — 「제10차 장기 송변전설비계획」 수립",
+        "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21061873&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
         "asof": "2023-05-08",
-        "confidence": "secondary"
+        "confidence": "official-plan"
       }
     },
     {
@@ -21,10 +21,10 @@
       "title": "제11차 장기 송·변전설비계획",
       "period": "2024~2038",
       "source": {
-        "title": "연합뉴스(다음 게재) 보도 — 「제11차 장기 송·변전설비계획」 전기위원회 확정",
-        "url": "https://v.daum.net/v/20250527151123102",
+        "title": "한국전력공사 보도자료 — 「제11차 장기 송변전설비계획」 수립·발표",
+        "url": "https://home.kepco.co.kr/kepco/PR/ntcob/ntcobView.do?pageIndex=1&boardSeq=21070654&boardCd=BRD_000117&menuCd=FN06030103&parnScrpSeq=0",
         "asof": "2025-05-27",
-        "confidence": "secondary"
+        "confidence": "official-plan"
       }
     },
     {
@@ -250,7 +250,7 @@
           "value": 906,
           "unit": "개소",
           "kind": "actual",
-          "method": "2038 전망 1,297개소 − 보도된 증가분 391개소로 역산",
+          "method": "2038 전망 1,297개소 − 보도된 증가분 391개소로 역산 — 다른 보도(메트로신문 2026-10-27)는 현재 939개소로 적어 원문 대조 필요",
           "source": {
             "title": "아시아경제 보도 — 제11차 장기 송·변전설비계획 송전선로·변전소 증가",
             "url": "https://view.asiae.co.kr/article/2025112611491358543",
@@ -294,7 +294,7 @@
       "id": "dist-der",
       "layer": "L3",
       "label": "배전망 연계 분산전원",
-      "note": "한전 첫 장기 배전계획(2025 착수)은 물량 미공개",
+      "note": "한전 「제1차 장기 배전계획(2024~2028)」(2025.7 확정) 수치",
       "equipment": [
         "dist-line",
         "recloser",
@@ -304,28 +304,28 @@
       ],
       "figures": [
         {
-          "value": 26,
+          "value": 25.5,
           "unit": "GW",
           "kind": "actual",
-          "method": "원문 수치 — 2024년 173개 지자체 조사",
+          "method": "원문 수치 — 2024년 말, 173개 지자체 발전사업 허가 조사",
           "source": {
-            "title": "아시아경제 보도 — 배전망 연계 분산전원·배전 투자(한전 인용)",
-            "url": "https://view.asiae.co.kr/article/2025072110020375187",
-            "asof": "2025-07-22",
-            "confidence": "secondary"
+            "title": "한국전력공사 KEPCO STORY(2025.9) — 「제1차 장기 배전계획(2024~2028)」 확정(2025.7.29)",
+            "url": "https://www.kepco.co.kr/KEPCO_FILE/html/2025_09/story.html",
+            "asof": "2025-07-29",
+            "confidence": "official-plan"
           },
           "year": 2024
         },
         {
-          "value": 36,
+          "value": 36.6,
           "unit": "GW",
           "kind": "forecast",
-          "method": "원문 수치 — 한전 전망 보도",
+          "method": "원문 수치 — 2028년 말 전망(약 44% 증가)",
           "source": {
-            "title": "아시아경제 보도 — 배전망 연계 분산전원·배전 투자(한전 인용)",
-            "url": "https://view.asiae.co.kr/article/2025072110020375187",
-            "asof": "2025-07-22",
-            "confidence": "secondary"
+            "title": "한국전력공사 KEPCO STORY(2025.9) — 「제1차 장기 배전계획(2024~2028)」 확정(2025.7.29)",
+            "url": "https://www.kepco.co.kr/KEPCO_FILE/html/2025_09/story.html",
+            "asof": "2025-07-29",
+            "confidence": "official-plan"
           },
           "year": 2028
         }
@@ -337,6 +337,19 @@
       "label": "배전망 투자 추산",
       "equipment": [],
       "figures": [
+        {
+          "value": 10.2,
+          "unit": "조원",
+          "kind": "forecast",
+          "method": "원문 수치 — 2024~2028 5년 누계(배전망 약 2조 + 전기사용자망 포함), 유지보수·지중화 제외",
+          "source": {
+            "title": "한국전력공사 KEPCO STORY(2025.9) — 「제1차 장기 배전계획(2024~2028)」 확정(2025.7.29)",
+            "url": "https://www.kepco.co.kr/KEPCO_FILE/html/2025_09/story.html",
+            "asof": "2025-07-29",
+            "confidence": "official-plan"
+          },
+          "year": 2028
+        },
         {
           "value": 31,
           "unit": "조원",
@@ -368,12 +381,12 @@
           "value": 29.2,
           "unit": "GW",
           "kind": "actual",
-          "method": "원문 수치(2022년)",
+          "method": "원문 수치(2022년, 정격용량)",
           "source": {
-            "title": "전자신문 보도 — 제10차 전력수급기본계획 확정",
-            "url": "https://www.etnews.com/20230112000138",
+            "title": "산업통상자원부 보도참고자료 — 「제10차 전력수급기본계획(2022~2036)」 확정",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/166650/view",
             "asof": "2023-01-12",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "year": 2022
         },
@@ -395,12 +408,12 @@
           "value": 108.3,
           "unit": "GW",
           "kind": "forecast",
-          "method": "원문 수치",
+          "method": "원문 수치 — 2036년 연말 정격용량",
           "source": {
-            "title": "전자신문 보도 — 제10차 전력수급기본계획 확정",
-            "url": "https://www.etnews.com/20230112000138",
+            "title": "산업통상자원부 보도참고자료 — 「제10차 전력수급기본계획(2022~2036)」 확정",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/166650/view",
             "asof": "2023-01-12",
-            "confidence": "secondary"
+            "confidence": "official-plan"
           },
           "year": 2036,
           "edition": "bp10"

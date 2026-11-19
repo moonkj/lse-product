@@ -265,39 +265,37 @@
         "auto-switch",
         "pole-tr"
       ],
-      "reason": "배전망 연계 분산전원 26GW → 2028년 36GW(약 40% 증가) 전망. 배전 기기 물량과는 간접 연결.",
+      "reason": "배전망 연계 분산전원 2024년 말 25.5GW → 2028년 말 36.6GW(약 44% 증가) 전망(한전 제1차 장기 배전계획). 배전 기기 물량과는 간접 연결.",
       "basis": [
         {
-          "label": "배전망 연계 분산전원(현재)",
+          "label": "배전망 연계 분산전원(2024년 말)",
           "role": "base",
-          "year": 2025,
-          "value": 26,
+          "year": 2024,
+          "value": 25.5,
           "unit": "GW",
           "kind": "actual",
-          "method": "원문 수치(보도 인용) — 한전 보고서",
+          "method": "원문 수치 — 2024년 말",
           "source": {
-            "title": "아시아경제 보도 — 한전 배전망 연계 분산전원 전망",
-            "url": "https://view.asiae.co.kr/article/2025072110020375187",
-            "asof": "2025-07-22",
-            "confidence": "secondary"
-          },
-          "needsCheck": true
+            "title": "한국전력공사 KEPCO STORY(2025.9) — 「제1차 장기 배전계획(2024~2028)」 확정(2025.7.29)",
+            "url": "https://www.kepco.co.kr/KEPCO_FILE/html/2025_09/story.html",
+            "asof": "2025-07-29",
+            "confidence": "official-plan"
+          }
         },
         {
           "label": "배전망 연계 분산전원(2028)",
           "role": "target",
           "year": 2028,
-          "value": 36,
+          "value": 36.6,
           "unit": "GW",
           "kind": "forecast",
-          "method": "원문 수치(보도 인용) — 한전 보고서",
+          "method": "원문 수치 — 2028년 말 전망",
           "source": {
-            "title": "아시아경제 보도 — 한전 배전망 연계 분산전원 전망",
-            "url": "https://view.asiae.co.kr/article/2025072110020375187",
-            "asof": "2025-07-22",
-            "confidence": "secondary"
-          },
-          "needsCheck": true
+            "title": "한국전력공사 KEPCO STORY(2025.9) — 「제1차 장기 배전계획(2024~2028)」 확정(2025.7.29)",
+            "url": "https://www.kepco.co.kr/KEPCO_FILE/html/2025_09/story.html",
+            "asof": "2025-07-29",
+            "confidence": "official-plan"
+          }
         }
       ]
     },

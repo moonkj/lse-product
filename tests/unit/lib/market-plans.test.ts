@@ -42,7 +42,7 @@ describe('market-plans.json 스키마·출처', () => {
 
   it('공식 문서가 아닌 보도 인용은 2차 인용, 역산 값은 확인 필요로 표시', () => {
     for (const v of plans.items.flatMap((i) => i.figures)) {
-      if (!/motir\.go\.kr/.test(v.source.url)) expect(v.source.confidence).toBe('secondary');
+      if (!/(motir\.go\.kr|kepco\.co\.kr)/.test(v.source.url)) expect(v.source.confidence).toBe('secondary');
       if (/역산/.test(v.method)) expect(v.needsCheck).toBe(true);
     }
   });
@@ -92,7 +92,7 @@ describe('계산', () => {
 
   it('차수 없는 항목은 가장 늦은 전망이 대표 값', () => {
     const der = plans.items.find((i) => i.id === 'dist-der')!;
-    expect(headlineOf(der, plans.compare)).toMatchObject({ value: 36, year: 2028 });
+    expect(headlineOf(der, plans.compare)).toMatchObject({ value: 36.6, year: 2028 });
   });
 
   it('사업 일정 변동 (개월, + = 지연)', () => {
