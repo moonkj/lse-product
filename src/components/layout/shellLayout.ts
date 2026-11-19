@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
-import { useMediaQuery } from '../../lib/diagram/url';
+import { useMediaQuery, useSelectedNodeId } from '../../lib/diagram/url';
+import { getDiagramModel } from '../../lib/diagram/model';
 import { useUiStore } from '../../store/useUiStore';
 
 /**
  * 압축 화면(C1) — 하나의 규칙: `<html data-density="compact">` + `.app-shell--compact`.
  * 자동: 창 높이 600px 이하(200% 확대·모바일 가로 포함). 수동: 헤더 "넓게 보기".
- * 압축 상태에서는 헤더 한 줄, 사이드바(범례) 접고 계층 칩 한 줄, 빈 상세 패널 숨김, 모바일 가로는 오른쪽 사이드 패널.
+ * 압축 상태에서는 헤더 한 줄, 사이드바(범례) 접고 계층 칩 한 줄, 모바일 가로는 오른쪽 사이드 패널.
+ * 빈 상세 패널은 밀도와 무관하게 오른쪽 레일로 접힌다(P0-8, usePanelRail).
  * 내용은 바꾸지 않는다(토론 합의 — 보기 모드별로 다른 내용 금지).
  */
 export const COMPACT_QUERY = '(max-height: 600px)';
@@ -64,3 +66,20 @@ export function shellGrid({ navSide, navRow, panelCol, notice }: ShellOptions) {
   const rows = ['auto', ...mid.map((c) => (c === 'main' ? 'minmax(0, 1fr)' : 'auto'))].join(' ');
   return { cols, rows, areas };
 }
+
+/** 오른쪽 레일 폭 — 셸 클래스 `.app-shell--panel-rail` 이 --panel-w 를 이 값으로 덮는다 (AppLayout.css) */
+export const PANEL_RAIL_W = 28;
+
+/**
+ * 상세 패널 열 상태 (P0-8, 넓은 화면 전용 — 모바일은 하단 시트라 열 없음).
+ *  - 'rail': 기기를 고르지 않았고 빈 안내도 펼치지 않음 → 약 28px 레일("‹ 상세")만
+ *  - 'open': 기기 선택(데이터에 있는 ?node=) 또는 레일 버튼으로 빈 안내를 펼침 → 마지막에 끌어 둔 폭(lse-panel-w)
+ * 기본 밀도·압축(넓게 보기) 모두 같은 규칙 — 압축에서 빈 패널을 숨기던 규칙을 레일로 통일.
+ */
+export function usePanelRail(): 'rail' | 'open' {
+  const selectedId = useSelectedNodeId();
+  const emptyOpen = useUiStore((s) => s.emptyPanelOpen);
+  const hasNode = !!selectedId && getDiagramModel().nodeById.has(selectedId);
+  return hasNode || emptyOpen ? 'open' : 'rail';
+}
+

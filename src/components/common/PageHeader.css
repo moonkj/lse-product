@@ -1,0 +1,25 @@
+/* 페이지 머리말 1종 — 브레드크럼 → 제목 → 보조문 · 오른쪽 액션 */
+.pghead { display: flex; flex-direction: column; gap: var(--space-2); }
+.pghead__row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-3) var(--space-4); }
+.pghead__text { flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.pghead__title { margin: 0; font-size: var(--fs-xl); line-height: var(--lh-tight); overflow-wrap: anywhere; }
+.pghead__lead { color: var(--color-text-muted); font-size: var(--fs-sm); }
+.pghead__lead p { margin: 0; }
+.pghead__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+
+.pg-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+.pg-crumbs li + li::before { content: '›'; margin-right: 6px; }
+.pg-crumbs [aria-current='page'] { color: var(--color-text); }
+
+@media (max-width: 900px), (pointer: coarse) {
+  .pg-crumbs a { display: inline-flex; align-items: center; min-height: 44px; }
+}

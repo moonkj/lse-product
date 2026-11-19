@@ -4,6 +4,9 @@ import { LAYER_LABELS, type Coverage, type EquipmentCategory, type Layer } from 
 import { useData } from '../data/load';
 import { announce } from '../lib/announce';
 import CoverageBadge from '../components/common/CoverageBadge';
+import Button, { ButtonLink, DIAGRAM_CTA_LABEL } from '../components/common/Button';
+import { Count, FilterChip, Tag } from '../components/common/Badge';
+import PageHeader, { jumpState } from '../components/common/PageHeader';
 import {
   CATEGORY_LABELS,
   CATEGORY_ORDER,
@@ -109,16 +112,11 @@ export default function GapPage() {
 
   return (
     <div className="pg pg--wide" data-testid="gap-page">
-      <div className="gp-head">
-        <div className="gp-head__text">
-          <Link to={diagramHref(undefined, 'gap')} className="gp-back">
-            ← 계통도로 돌아가기
-          </Link>
-          <h1 className="gp-title">공백 표</h1>
-          <p className="pg-muted gp-lead">
-            전압 계층 × 기기 기능별로 자사 제품 커버리지를 봅니다. 칸을 누르면 해당 기기 목록이 열립니다.
-          </p>
-        </div>
+      <PageHeader
+        crumbs={[{ label: '계통도', to: diagramHref(undefined, 'gap') }, { label: '공백 표' }]}
+        title="공백 표"
+        lead="전압 계층 × 기기 기능별로 자사 제품 커버리지를 봅니다. 칸을 누르면 해당 기기 목록이, 계층 이름을 누르면 계통도의 그 계층이 열립니다."
+        actions={
         <dl className="gp-stats">
           <div className="gp-stat gp-stat--owned">
             <dt>
@@ -143,7 +141,8 @@ export default function GapPage() {
             <dd>{totals.sourced}</dd>
           </div>
         </dl>
-      </div>
+        }
+      />
 
       <section className="pg-card gp-card" aria-labelledby="mx-h">
         <div className="gp-card__head">
@@ -174,10 +173,20 @@ export default function GapPage() {
                 return (
                   <tr key={row.layer} data-layer={row.layer}>
                     <th scope="row" className="gp-matrix__rowhead">
-                      {isMainLayer(row.layer) && <b>{row.layer}</b>} {LAYER_LABELS[row.layer]}
-                      {layerVoltage.get(row.layer) && isMainLayer(row.layer) && (
-                        <span className="gp-matrix__volt"> {layerVoltage.get(row.layer)}</span>
-                      )}
+                      {/* 계층 이름 = 계통도의 그 계층 밴드로 이동 (디자인 토론 P1 공백 표 진입) */}
+                      <Link
+                        to="/"
+                        state={jumpState(row.layer)}
+                        className="gp-layer-link"
+                        data-testid={`gap-row-jump-${row.layer}`}
+                        title="계통도에서 이 계층 보기"
+                      >
+                        {isMainLayer(row.layer) && <b>{row.layer}</b>} {LAYER_LABELS[row.layer]}
+                        {layerVoltage.get(row.layer) && isMainLayer(row.layer) && (
+                          <span className="gp-matrix__volt"> {layerVoltage.get(row.layer)}</span>
+                        )}
+                        <span className="visually-hidden"> — 계통도에서 보기</span>
+                      </Link>
                     </th>
                     {CATEGORY_ORDER.map((cat) => {
                       const items = row.cells[cat];
@@ -227,39 +236,26 @@ export default function GapPage() {
       <section className="pg-card gp-card" aria-labelledby="list-h" ref={listRef}>
         <div className="gp-card__head">
           <h2 id="list-h">
-            {listTitle} <span className="pg-count">· {visible.length}종</span>
+            {listTitle} <Count>· {visible.length}종</Count>
           </h2>
           {cell && (
-            <button type="button" className="gp-filter gp-filter--clear" onClick={clearCell}>
+            <Button variant="ghost" size="sm" onClick={clearCell}>
               칸 선택 해제 ✕
-            </button>
+            </Button>
           )}
           <div className="gp-filters" role="group" aria-label="상태 필터">
-            <button
-              type="button"
-              className="gp-filter"
-              aria-pressed={status === 'all'}
-              data-testid="gap-filter-all"
-              onClick={() => setStatus('all')}
-            >
-              전체 {scope.length}
-            </button>
+            <FilterChip pressed={status === 'all'} testId="gap-filter-all" onClick={() => setStatus('all')}>
+              전체 <Count>{scope.length}</Count>
+            </FilterChip>
             {chipCoverages.map((c) => (
-              <button
-                key={c}
-                type="button"
-                className="gp-filter"
-                aria-pressed={status === c}
-                data-testid={`gap-filter-${c}`}
-                onClick={() => setStatus(c)}
-              >
-                {FILTER_LABELS[c]} {scopeCounts[c]}
-              </button>
+              <FilterChip key={c} pressed={status === c} testId={`gap-filter-${c}`} onClick={() => setStatus(c)}>
+                {FILTER_LABELS[c]} <Count>{scopeCounts[c]}</Count>
+              </FilterChip>
             ))}
           </div>
-          <button type="button" className="pg-btn pg-btn--sm gp-csv" onClick={exportCsv} disabled={visible.length === 0}>
+          <Button size="sm" className="gp-csv" onClick={exportCsv} disabled={visible.length === 0}>
             CSV 내보내기
-          </button>
+          </Button>
         </div>
         <div className="gp-scroll" tabIndex={0} role="region" aria-label="공백 목록 (가로 스크롤)">
           <table className="gp-list" data-testid="gap-list">
@@ -289,15 +285,21 @@ export default function GapPage() {
                       <td>
                         <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_SHORT_LABELS[eq.coverage]} />
                         {gapConfidence(eq) && (
-                          <span
+                          <Tag
+                            tone={gapConfidence(eq)!}
                             className={`gp-conf gp-conf--${gapConfidence(eq)}`}
-                            data-testid={`gap-confidence-${eq.id}`}
+                            testId={`gap-confidence-${eq.id}`}
                           >
                             {confidenceLabel(eq.coverage, gapConfidence(eq)!).replace('공백 ', '')}
-                          </span>
+                          </Tag>
                         )}
                       </td>
-                      <td>{eq.layer}</td>
+                      <td>
+                        <Link to="/" state={jumpState(eq.layer)} className="gp-layer-link" title="계통도에서 이 계층 보기">
+                          {eq.layer}
+                          <span className="visually-hidden"> {LAYER_LABELS[eq.layer]} — 계통도에서 보기</span>
+                        </Link>
+                      </td>
                       <td>
                         <Link to={`/equipment/${eq.id}`} className="gp-list__eq">
                           <b>{eq.name}</b>
@@ -306,7 +308,12 @@ export default function GapPage() {
                       </td>
                       <td className="gp-list__memo">{gapMemo(eq)}</td>
                       <td className="gp-list__go">
-                        {node && <Link to={diagramHref(node.id, 'gap')}>계통도에서 보기</Link>}
+                        {node && (
+                          <ButtonLink variant="ghost" size="sm" to={diagramHref(node.id, 'gap')}>
+                            {DIAGRAM_CTA_LABEL}
+                            <span className="visually-hidden"> — {eq.name}</span>
+                          </ButtonLink>
+                        )}
                       </td>
                     </tr>
                   );

@@ -1,8 +1,4 @@
-.gp-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-4); }
-.gp-head__text { flex: 1 1 400px; display: flex; flex-direction: column; gap: 4px; }
-.gp-back { font-size: 13px; }
-.gp-title { font-size: 28px; }
-.gp-lead { font-size: var(--fs-md); }
+/* 머리말은 공용 PageHeader (브레드크럼 "계통도 › 공백 표" — 예전 "← 계통도로 돌아가기" 대체), 보유율 KPI 는 오른쪽 액션 슬롯 */
 
 .gp-stats { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; }
 .gp-stat {
@@ -13,7 +9,7 @@
   border-radius: 10px;
   text-align: center;
 }
-.gp-stat dt { font-size: 12px; }
+.gp-stat dt { font-size: var(--fs-xs); }
 .gp-stat dd { margin: 0; font-size: 24px; font-weight: var(--fw-bold); line-height: 1.3; }
 .gp-stat--owned { background: var(--color-surface); border: 1px solid var(--color-border); }
 .gp-stat--owned dd { color: var(--cov-owned-text); }
@@ -22,18 +18,17 @@
 .gp-stat--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
 .gp-stat--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
 .gp-stat--sourced { background: var(--cov-sourced-bg); color: var(--cov-sourced-text); }
-.gp-conf { display: inline-block; margin-left: 4px; padding: 0 5px; border: 1px dashed currentColor; border-radius: 4px; font-size: 11px; color: var(--color-text-muted); white-space: nowrap; }
-.gp-conf--confirmed { border-style: solid; color: var(--color-text); }
+/* 공백 후보/확정 = 공용 Tag(candidate·confirmed 톤) */
+.gp-conf { margin-left: var(--space-1); }
 
 .gp-card { padding: var(--space-4) var(--space-5); gap: var(--space-3); }
 .gp-card__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
-.gp-legend { font-size: 12px; color: var(--color-text-muted); }
+.gp-legend { font-size: var(--fs-xs); color: var(--color-text-muted); }
 
 .gp-scroll { position: relative; overflow-x: auto; max-width: 100%; }
-.gp-scroll:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 
 .gp-matrix,
-.gp-list { width: 100%; border-collapse: collapse; font-size: 13px; }
+.gp-list { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
 .gp-matrix { min-width: 980px; }
 .gp-list { min-width: 760px; }
 .gp-matrix thead th,
@@ -66,23 +61,7 @@
 .gp-cell[aria-pressed='true'] { border-color: var(--color-brand); background: var(--color-surface-2); }
 
 .gp-filters { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.gp-filter {
-  min-height: 32px;
-  padding: 0 12px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--color-border-strong);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font-size: 13px;
-  cursor: pointer;
-}
-.gp-filter[aria-pressed='true'] {
-  border-color: var(--color-chip-active-bg);
-  background: var(--color-chip-active-bg);
-  color: var(--color-chip-active-text);
-  font-weight: var(--fw-bold);
-}
-.gp-filter--clear { border-style: dashed; }
+/* 필터 = 공용 FilterChip (Badge.css) */
 .gp-csv { margin-left: auto; }
 
 .gp-list td { padding: 8px; vertical-align: top; }
@@ -91,15 +70,16 @@
 .gp-list__memo { color: var(--color-text-muted); }
 .gp-list__go { white-space: nowrap; }
 
+/* 계층 이름 → 계통도의 그 계층 (행 머리·목록 계층 칸) */
+.gp-layer-link { color: inherit; text-decoration: underline; text-decoration-color: var(--color-border-strong); text-underline-offset: 3px; }
+.gp-layer-link:hover { color: var(--color-link); text-decoration-color: currentColor; }
+
 @media (max-width: 900px) {
-  .gp-title { font-size: 24px; }
   .gp-stat { flex: 1 1 40%; }
   .gp-csv { margin-left: 0; }
-  /* 터치 대상 44px */
-  .gp-filter,
-  .gp-csv,
-  .gp-back { min-height: 44px; }
-  .gp-back { display: inline-flex; align-items: center; }
+}
+@media (max-width: 900px), (pointer: coarse) {
+  .gp-layer-link { display: inline-flex; align-items: center; min-height: 44px; }
 }
 
 /* 가로 스크롤 시 계층 열 고정 */

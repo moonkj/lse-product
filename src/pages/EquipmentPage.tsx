@@ -7,6 +7,9 @@ import DocsList from '../components/common/DocsList';
 import EmptyProducts from '../components/common/EmptyProducts';
 import EquipmentOverview from '../components/common/EquipmentOverview';
 import CompareToggle from '../components/compare/CompareToggle';
+import { ButtonLink, DIAGRAM_CTA_LABEL } from '../components/common/Button';
+import { Count, Tag } from '../components/common/Badge';
+import PageHeader from '../components/common/PageHeader';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import ProductVisual from '../components/pages/ProductVisual';
 import { CATEGORY_LABELS, isGapCoverage, pageTitle } from '../lib/labels';
@@ -36,17 +39,13 @@ export default function EquipmentPage() {
 
   return (
     <div className="pg" data-testid="equipment-page">
-      <nav aria-label="경로">
-        <ol className="pg-crumbs">
-          <li>
-            <Link to={diagramHref(node?.id)}>계통도</Link>
-          </li>
-          <li>
-            {eq.layer} {LAYER_LABELS[eq.layer]}
-          </li>
-          <li aria-current="page">{eq.name}</li>
-        </ol>
-      </nav>
+      <PageHeader
+        crumbs={[
+          { label: '계통도', to: diagramHref(node?.id) },
+          { label: `${eq.layer} ${LAYER_LABELS[eq.layer]}`, layer: eq.layer },
+          { label: eq.name },
+        ]}
+      />
 
       <section className="pg-hero" aria-labelledby="equipment-title">
         <div className={`pg-hero__media${eq.coverage === 'missing' ? ' pg-hero__media--missing' : ''}`}>
@@ -54,20 +53,18 @@ export default function EquipmentPage() {
         </div>
         <div className="pg-hero__body">
           <div className="pg-badges">
-            <span className="pg-badge pg-badge--layer" style={layerStyle(eq.layer)}>
+            <Tag tone="layer" style={layerStyle(eq.layer)}>
               {eq.layer} · {eq.voltage}
-            </span>
-            <span className="pg-badge">{CATEGORY_LABELS[eq.category]}</span>
-            {eq.abbr && <span className="pg-badge">{eq.abbr}</span>}
+            </Tag>
+            <Tag>{CATEGORY_LABELS[eq.category]}</Tag>
+            {eq.abbr && <Tag>{eq.abbr}</Tag>}
           </div>
           <h1 id="equipment-title" className="pg-hero__title" data-testid="equipment-title">
             {eq.name}
           </h1>
           <div className="pg-badges">
-            <span className={`cov-chip cov-chip--${eq.coverage}`}>
-              <CoverageBadge coverage={eq.coverage} testId="equipment-coverage-badge" />
-            </span>
-            <span className="pg-badge">자사 제품 {products.length}개</span>
+            <CoverageBadge coverage={eq.coverage} variant="pill" testId="equipment-coverage-badge" />
+            <Tag>자사 제품 {products.length}개</Tag>
           </div>
 
           <div className="pg-role">
@@ -88,14 +85,14 @@ export default function EquipmentPage() {
 
           <div className="pg-actions">
             {node && (
-              <Link className="pg-btn pg-btn--primary" to={diagramHref(node.id, isGap ? 'gap' : undefined)}>
-                계통도에서 보기
-              </Link>
+              <ButtonLink variant="primary" to={diagramHref(node.id, isGap ? 'gap' : undefined)}>
+                {DIAGRAM_CTA_LABEL}
+              </ButtonLink>
             )}
             {isGap && (
-              <Link className="pg-btn" to="/gap">
+              <ButtonLink variant="secondary" to="/gap">
                 공백 표에서 보기
-              </Link>
+              </ButtonLink>
             )}
             <CompareToggle kind="equipment" id={eq.id} name={eq.name} />
           </div>
@@ -106,7 +103,7 @@ export default function EquipmentPage() {
         <div className="pg-split__main eqp-main">
           <section className="pg-card" aria-labelledby="eq-products-h">
             <h2 id="eq-products-h">
-              자사 제품 <span className="pg-count">· {products.length}</span>
+              자사 제품 <Count>· {products.length}</Count>
             </h2>
             {products.length > 0 ? (
               <ul className="eqp-products" data-testid="equipment-product-list">
@@ -118,7 +115,11 @@ export default function EquipmentPage() {
                       <span className="eqp-product__body">
                         <b className="eqp-product__name">{p.name}</b>
                         <span className="eqp-product__meta">{p.categoryPath.join(' › ')}</span>
-                        {p.discontinued && <span className="pg-badge pg-badge--off eqp-product__off">단종</span>}
+                        {p.discontinued && (
+                          <Tag dot className="eqp-product__off">
+                            단종
+                          </Tag>
+                        )}
                       </span>
                     </Link>
                   </li>

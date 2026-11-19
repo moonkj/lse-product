@@ -14,9 +14,11 @@ interface Props {
 }
 
 /**
- * 사진 타일 노드 120×116 (160px 썸네일을 72px 로 + 약어 + 이름). 커버리지 = 테두리 색 + 우상단 배지.
+ * 사진 타일 노드 120×116 (160px 썸네일을 흰 판 60px 로 + 약어 + 이름). 커버리지 = 우상단 배지(모양+색).
+ * 테두리(P0-3): 기본 회색 1px, 미보유만 2px 빨강, 일부 보유 1.5px 황색(A안), 선택 = 바깥 블루 링.
  * 사진 없는 기기는 단선결선도 심볼. 공백류(미보유·일부·계열사·패널 구성품)는 판정 확신도로 테두리 모양:
- * 공백 후보 = 점선, 확정 = 실선 (data-confidence). 참조 타일(ref)은 흐리게 + 라벨, 누르면 그 기기 상세.
+ * 공백 후보 = 점선, 확정 = 실선 (data-confidence). 참조 타일(ref)은 ↗ 표시 + 라벨, 누르면 그 기기 상세.
+ * 60% 미만 축소(개요)에서는 CSS(data-zoom)로 사진·보조 글자를 숨기고 점 + 약칭만 보인다.
  * memo: 줌/패닝은 부모의 transform 만 바뀌므로 노드는 다시 그리지 않는다.
  */
 function DiagramNode({ item, mode, selected, onActivate }: Props) {
@@ -82,6 +84,12 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
         </span>
       )}{' '}
       <CoverageBadge coverage={coverage} variant="icon" className="dnode__badge" />
+      {ref && (
+        // 참조 표시(점선 테두리 대신) — 의미는 캡션 "참조 · …"과 aria-label 이 전달
+        <span className="dnode__ref" aria-hidden="true">
+          ↗
+        </span>
+      )}
     </div>
   );
 }

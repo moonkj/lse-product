@@ -6,11 +6,10 @@ import DetailPanel from '../panel/DetailPanel';
 import PageErrorBoundary from '../common/PageErrorBoundary';
 import CompareTray, { useCompareTrayVisible } from '../compare/CompareTray';
 import { useData } from '../../data/load';
-import { MOBILE_QUERY, useMediaQuery, useSelectedNodeId } from '../../lib/diagram/url';
+import { MOBILE_QUERY, useMediaQuery } from '../../lib/diagram/url';
 import LiveRegion from './LiveRegion';
 import PanelResizer from './PanelResizer';
-import StartCard, { useStartCardVisible } from './StartCard';
-import { shellGrid, useCompactDensity } from './shellLayout';
+import { shellGrid, useCompactDensity, usePanelRail } from './shellLayout';
 import { useRouteFocus } from './useRouteFocus';
 import './AppLayout.css';
 
@@ -29,8 +28,7 @@ export default function AppLayout() {
   const trayVisible = useCompareTrayVisible();
   const isMobile = useMediaQuery(MOBILE_QUERY);
   const { compact } = useCompactDensity();
-  const selectedId = useSelectedNodeId();
-  const startCard = useStartCardVisible();
+  const panelState = usePanelRail();
   useRouteFocus();
 
   // 화면을 옮기면 본문 스크롤을 맨 위로 (스크롤 컨테이너 .app-main 이 라우트 사이에 유지되므로)
@@ -44,10 +42,12 @@ export default function AppLayout() {
   // 사이드바(계층 바로가기·범례)는 계통도(제품·Gap 모드)에서만 (C1). 제품·기기·비교·공백 표 화면은 본문을 넓게
   const showNav = onHome;
   const navRow = showNav && (isMobile || compact);
-  // 압축 화면: 빈 상세 패널은 접고, 기기를 고르면 그때 열을 연다. 모바일은 패널이 고정 위치(시트/사이드)라 열 없음
-  const panelCol = showPanel && !isMobile && (!compact || !!selectedId);
+  // 모바일은 패널이 고정 위치(시트/사이드)라 열 없음
+  // 넓은 화면: 패널 열은 늘 있다 — 빈 패널은 약 28px 레일(P0-8), 기기를 고르면 마지막에 끌어 둔 폭. 밀도(압축)와 무관
+  const panelCol = showPanel && !isMobile;
+  const panelRail = panelCol && panelState === 'rail';
   const navSide = showNav && !navRow;
-  const grid = shellGrid({ navSide, navRow, panelCol, notice: startCard });
+  const grid = shellGrid({ navSide, navRow, panelCol, notice: false }); // 시작 카드 띠 제거(디자이너 토론 P0-6) — notice 줄 없음
 
   // 헤더 실제 높이 → --app-header-h (모바일 가로 사이드 패널의 top 기준)
   useLayoutEffect(() => {
@@ -70,7 +70,7 @@ export default function AppLayout() {
 
   return (
     <div
-      className={`app-shell${showPanel ? '' : ' app-shell--no-panel'}${onHome ? ' app-shell--home' : ''}${trayVisible ? ' app-shell--tray' : ''}${compact ? ' app-shell--compact' : ''}${navRow ? ' app-shell--navrow' : ''}${showNav ? '' : ' app-shell--no-nav'}${navSide ? '' : ' app-shell--no-navside'}${panelCol ? '' : ' app-shell--no-panelcol'}`}
+      className={`app-shell${showPanel ? '' : ' app-shell--no-panel'}${onHome ? ' app-shell--home' : ''}${trayVisible ? ' app-shell--tray' : ''}${compact ? ' app-shell--compact' : ''}${navRow ? ' app-shell--navrow' : ''}${showNav ? '' : ' app-shell--no-nav'}${navSide ? '' : ' app-shell--no-navside'}${panelCol ? '' : ' app-shell--no-panelcol'}${panelRail ? ' app-shell--panel-rail' : ''}`}
       style={{ '--shell-cols': grid.cols, '--shell-rows': grid.rows, '--shell-areas': grid.areas } as React.CSSProperties}
       data-testid="app-shell"
       data-density={compact ? 'compact' : 'default'}
@@ -80,7 +80,6 @@ export default function AppLayout() {
       </a>
       <Header />
       {showNav && <LayerNav />}
-      {startCard && <StartCard />}
       <main className="app-main" id="main" tabIndex={-1}>
         <PageErrorBoundary resetKey={pathname}>
           <Suspense fallback={<PageLoading />}>
@@ -89,7 +88,7 @@ export default function AppLayout() {
         </PageErrorBoundary>
       </main>
       {showPanel && <DetailPanel />}
-      {panelCol && <PanelResizer />}
+      {panelCol && !panelRail && <PanelResizer />}
       <CompareTray />
       <LiveRegion />
     </div>

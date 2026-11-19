@@ -4,6 +4,9 @@ import { DOC_TYPE_LABELS, type EquipmentType, type Product, type ProductSpecs, t
 import { getData, useData, type SpecsMap } from '../data/load';
 import { SPECS_ERROR_TEXT, useSpecs, type SpecsState } from '../components/compare/useSpecs';
 import CoverageBadge from '../components/common/CoverageBadge';
+import Button, { ButtonLink } from '../components/common/Button';
+import { Tag } from '../components/common/Badge';
+import PageHeader from '../components/common/PageHeader';
 import ExternalLink from '../components/common/ExternalLink';
 import { OverviewPoints } from '../components/common/EquipmentOverview';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
@@ -217,9 +220,9 @@ const linkedText = (items: LinkedItem[]) => items.map((l) => `${l.eq?.id ?? l.la
 
 function UnreviewedBadge() {
   return (
-    <span className="cmp-badge cmp-badge--draft" data-testid="compare-unreviewed">
+    <Tag tone="warn" className="cmp-badge" testId="compare-unreviewed">
       카탈로그 추출값 · 검수 전
-    </span>
+    </Tag>
   );
 }
 
@@ -252,9 +255,9 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
             <div className="cmp-stack">
               <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_LABELS[eq.coverage]} />
               {conf && (
-                <span className={`cmp-badge cmp-badge--${conf}`} data-confidence={conf}>
+                <Tag tone={conf} className="cmp-badge" data-confidence={conf}>
                   {confidenceLabel(eq.coverage, conf)}
-                </span>
+                </Tag>
               )}
             </div>
           ),
@@ -467,10 +470,10 @@ function productSections(cols: ProductCol[], specsState: SpecsState): { sections
       label: '판매 상태',
       cells: list.map((p) => ({
         text: String(p.discontinued),
-        node: p.discontinued ? (
-          <span className="cmp-badge cmp-badge--off">단종</span>
-        ) : (
-          <span className="cmp-badge cmp-badge--ok">판매 중</span>
+        node: (
+          <Tag dot className="cmp-badge">
+            {p.discontinued ? '단종' : '판매 중'}
+          </Tag>
         ),
       })),
     },
@@ -568,7 +571,7 @@ function productSections(cols: ProductCol[], specsState: SpecsState): { sections
                 )}
                 {publicNote(v?.note) && <span className="cmp-muted">{publicNote(v?.note)}</span>}
                 {s.reviewed ? (
-                  <span className="cmp-badge cmp-badge--ok">검수 완료</span>
+                  <Tag className="cmp-badge">검수 완료</Tag>
                 ) : (
                   <UnreviewedBadge />
                 )}
@@ -657,13 +660,13 @@ function EmptyState({ type }: { type: CompareKind | null }) {
         담을 수 있습니다. 기기는 기기끼리, 제품은 제품끼리 비교합니다.
       </p>
       <div className="pg-actions">
-        <Link className="pg-btn pg-btn--primary" to="/">
+        <ButtonLink variant="primary" to="/">
           계통도로 가기
-        </Link>
+        </ButtonLink>
         {ready.map((k) => (
-          <Link key={k} className="pg-btn" to={compareHref(k, stored[k])}>
+          <ButtonLink key={k} variant="secondary" to={compareHref(k, stored[k])}>
             담아 둔 {KIND_LABEL[k]} 비교하기
-          </Link>
+          </ButtonLink>
         ))}
       </div>
     </section>
@@ -797,44 +800,34 @@ export default function ComparePage() {
     <>
     <NoticeAnnouncer text={noticeText} />
     <div className="pg pg--wide cmp" data-testid="compare-page">
-      <nav aria-label="경로">
-        <ol className="pg-crumbs">
-          <li>
-            <Link to="/">계통도</Link>
-          </li>
-          <li aria-current="page">{title}</li>
-        </ol>
-      </nav>
-
-      <header className="cmp-head">
-        <div>
-          <h1 className="cmp-title">{title}</h1>
-          {columns.length >= 2 && type && (
-            <p className="pg-muted">
+      <PageHeader
+        className="cmp-head"
+        crumbs={[{ label: '계통도', to: '/' }, { label: title }]}
+        title={title}
+        lead={
+          columns.length >= 2 &&
+          type && (
+            <p>
               {KIND_LABEL[type]} {columns.length}
               {type === 'equipment' ? '종' : '개'} · 링크를 복사해 보내면 같은 비교 화면이 열립니다.
             </p>
-          )}
-        </div>
-        {columns.length >= 2 && (
+          )
+        }
+        actions={
+          columns.length >= 2 && (
           <div className="cmp-tools">
             {anyUnreviewed && <UnreviewedBadge />}
             <CopyLinkButton url={shareUrl(location.pathname, location.search)} />
-            <button
-              type="button"
-              className="cmp-diff"
-              aria-pressed={diffOnly}
-              data-testid="compare-diff-only"
-              onClick={toggleDiff}
-            >
+            <Button className="cmp-diff" aria-pressed={diffOnly} testId="compare-diff-only" onClick={toggleDiff}>
               <span aria-hidden="true" className="cmp-diff__box">
                 {diffOnly ? '✓' : ''}
               </span>
               차이만 보기
-            </button>
+            </Button>
           </div>
-        )}
-      </header>
+          )
+        }
+      />
 
       {notices.length > 0 && (
         // 스크린리더 안내는 앱 공용 live region(announce)으로 — 화면 목록은 그대로 (B10)
@@ -978,9 +971,9 @@ function CopyLinkButton({ url }: { url: string }) {
   };
   return (
     <span className="cmp-copy">
-      <button type="button" className="cmp-diff cmp-copy__btn" data-testid="compare-copy-link" onClick={copy}>
+      <Button className="cmp-copy__btn" testId="compare-copy-link" onClick={copy}>
         {copied ? '링크 복사됨 ✓' : '링크 복사'}
-      </button>
+      </Button>
       {fallback && (
         <input
           ref={inputRef}

@@ -1,12 +1,55 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { getDiagramModel } from '../../lib/diagram/model';
 import { getDiagramController, useViewState } from '../../lib/diagram/view';
 import type { ViewMode } from '../../lib/diagram/url';
 
 const MM_W = 88;
+/** 펼침 상태 기억 — 기본 접힘(디자인 토론 P0-9) */
+const OPEN_KEY = 'lse-minimap-open-v1';
 
-/** 우하단 미니맵: 레이어 밴드 축소 + 현재 뷰 사각형, 클릭 시 그 지점으로 이동. Gap 모드면 공백 있는 계층에 빨간 점 */
+function readOpen(): boolean {
+  try {
+    return localStorage.getItem(OPEN_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 오른쪽 위 미니맵(기본 접힘 — "미니맵 ▸" 토글): 레이어 밴드 축소 + 현재 뷰 사각형, 클릭 시 그 지점으로 이동.
+ * Gap 모드면 공백 있는 계층에 빨간 점
+ */
 export default function Minimap({ mode }: { mode: ViewMode }) {
+  const [open, setOpen] = useState(readOpen);
+  const toggle = () => {
+    const next = !open;
+    setOpen(next);
+    try {
+      if (next) localStorage.setItem(OPEN_KEY, '1');
+      else localStorage.removeItem(OPEN_KEY);
+    } catch {
+      /* 저장 불가 — 이번 화면에서만 */
+    }
+  };
+
+  return (
+    <div className={`minimap-dock${open ? ' is-open' : ''}`} data-diagram-obscures="">
+      <button
+        type="button"
+        className="minimap-dock__toggle"
+        data-testid="minimap-toggle"
+        aria-pressed={open}
+        title={open ? '미니맵 접기' : '미니맵 펼치기'}
+        onClick={toggle}
+      >
+        미니맵 <span aria-hidden="true">{open ? '▾' : '▸'}</span>
+      </button>
+      {open && <MinimapMap mode={mode} />}
+    </div>
+  );
+}
+
+function MinimapMap({ mode }: { mode: ViewMode }) {
   const model = getDiagramModel();
   const v = useViewState();
   const k = MM_W / model.width;

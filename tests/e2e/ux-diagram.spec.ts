@@ -308,7 +308,8 @@ for (const [w, h] of [
       await tid(page, 'detail-sheet-toggle').tap();
       await expect(tid(page, 'detail-panel')).toHaveClass(/is-expanded/);
       await expect(tid(page, 'detail-product-list')).toBeVisible();
-      await expect(tid(page, 'detail-sheet-toggle')).toHaveText('시트 줄이기');
+      // 시트 3단(P1): 요약 → 반(제품 목록) → 전체 — 반 단계 버튼 글자는 "전체 보기"
+      await expect(tid(page, 'detail-sheet-toggle')).toHaveText('전체 보기');
     });
   });
 }

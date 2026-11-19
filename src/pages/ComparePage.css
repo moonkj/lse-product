@@ -1,22 +1,7 @@
 /* 비교 화면 /compare — 열 = 항목(2~4), 행 = 속성. 첫 열 고정 + 가로 스크롤 박스 */
-.cmp-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-3); }
-.cmp-title { font-size: var(--fs-2xl); }
+/* 머리말 = 공용 PageHeader, 도구 버튼 = 공용 Button(secondary md) */
 .cmp-tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
-.cmp-diff {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 14px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font: inherit;
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-}
-.cmp-diff[aria-pressed='true'] { border-color: var(--color-brand); background: var(--node-selected-bg); }
+.cmp-diff { color: var(--color-text); }
 .cmp-diff__box {
   display: inline-grid;
   place-items: center;
@@ -28,9 +13,6 @@
   line-height: 1;
 }
 .cmp-diff[aria-pressed='true'] .cmp-diff__box { border-color: var(--color-brand); background: var(--color-brand); color: var(--color-on-brand); }
-.cmp-diff:focus-visible,
-.cmp-scroll:focus-visible,
-.cmp-colhead__remove:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 
 .cmp-notices {
   margin: 0;
@@ -171,8 +153,6 @@
   font-size: var(--fs-xs);
   cursor: pointer;
 }
-.cmp-more:focus-visible,
-.cmp-variant__select:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 /* 제품 열 옵션 선택 (사양 옵션별) */
 .cmp-variant { display: flex; flex-direction: column; gap: 2px; font-weight: var(--fw-regular); }
 .cmp-variant__label { font-size: var(--fs-xs); color: var(--color-text-muted); }
@@ -191,26 +171,11 @@
 .cmp-none { color: var(--color-text-muted); }
 .cmp-doclink { font-size: var(--fs-xs); color: var(--color-link); }
 
-.cmp-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  background: var(--color-surface-2);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  white-space: nowrap;
-}
-.cmp-badge--ok { background: var(--cov-owned-bg); color: var(--cov-owned-text); }
-.cmp-badge--off { background: var(--cov-na-bg); color: var(--cov-na-text); }
-.cmp-badge--draft { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
-.cmp-badge--candidate { border: 1px dashed var(--cov-missing); background: transparent; color: var(--cov-missing-text); }
-.cmp-badge--confirmed { border: 1px solid var(--cov-missing); background: transparent; color: var(--cov-missing-text); }
+/* 판매 상태·검수·공백 판정 = 공용 Tag (Badge.css) */
 
 .cmp-empty h2 { font-size: var(--fs-lg); }
 
 @media (max-width: 900px) {
-  .cmp-title { font-size: var(--fs-xl); }
   .cmp-table { min-width: calc(108px + var(--cmp-cols, 2) * 168px); }
   .cmp-table th:first-child { width: 108px; }
   /* 모바일: 헤더+계층 칩 줄이 더 높고, 고정 머리글이 화면을 덜 차지하게 사진 칸을 줄임 */
@@ -236,7 +201,6 @@
   font: inherit;
   font-size: var(--fs-sm);
 }
-.cmp-copy__input:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 /* 설명 행 — 펼친 항목 목록은 표 칸이 좁아 라벨 아래로 본문을 쌓는다 */
 .cmp-table .ov-points { margin-top: var(--space-2); }
 .cmp-table .ov-point { grid-template-columns: minmax(0, 1fr); row-gap: 2px; }

@@ -1,0 +1,148 @@
+/* 전기 흐름 오버레이 (FlowLayer) · 토글 (FlowToggle) — DEBATE.md 신규 안건 1
+   색: CI 블루(라이트 #0068b7 = --color-selected). 빛 번짐·빨강·노랑 없음.
+   속도: FLOW_SPEED(flow.ts) 기본 32px/s — 24(D3)·48(D2) 비교는 flow.ts 상수만 바꾼다. */
+
+.dflow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* 흐르는 선 밑의 실선(전력선 색) — 아래 Edges 가 흐려져도 흐름 경로는 또렷하게 */
+.dflow__track {
+  fill: none;
+  stroke: var(--color-line-power);
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dflow__path {
+  fill: none;
+  stroke: var(--flow-color, var(--color-selected));
+  stroke-width: 2px;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  stroke-dasharray: var(--flow-dash) var(--flow-gap);
+  animation: dflow-move var(--flow-duration, 0.75s) linear infinite;
+}
+
+.dflow__path--rev {
+  animation-name: dflow-move-rev;
+}
+
+@keyframes dflow-move {
+  from {
+    stroke-dashoffset: var(--flow-period);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes dflow-move-rev {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: var(--flow-period);
+  }
+}
+
+/* 정지 화살표 ▸ — 평소엔 숨김, 움직임 줄이기·인쇄에서만 */
+.dflow__arrow {
+  display: none;
+  fill: var(--flow-color, var(--color-selected));
+}
+
+/* 양방향(ESS↔PCS) ⇄ 표지 — 움직이지 않음 */
+.dflow__bi rect {
+  fill: var(--color-surface);
+  stroke: var(--flow-color, var(--color-selected));
+  stroke-width: 1.5px;
+}
+
+.dflow__bi text {
+  fill: var(--flow-color, var(--color-selected));
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* 패닝 중·탭 숨김이면 정지 */
+.diagram__viewport.is-panning .dflow__path,
+.dflow[data-paused='true'] .dflow__path {
+  animation-play-state: paused;
+}
+
+/* 기기를 골랐을 때: 흐름 경로 밖의 연결선은 흐리게 */
+.diagram__inner:has(> .dflow[data-scope='node'] .dflow__track) .dedge {
+  opacity: 0.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dflow__path {
+    animation: none;
+    stroke-dasharray: none;
+    opacity: 0;
+  }
+  .dflow__arrow {
+    display: inline;
+  }
+}
+
+@media print {
+  .dflow__path {
+    animation: none;
+    stroke-dasharray: none;
+    opacity: 0;
+  }
+  .dflow__arrow {
+    display: inline;
+    fill: #000;
+  }
+}
+
+/* ── 도구줄 토글 [⚡ 흐름] ── */
+.dflow-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dflow-toggle:hover:not([aria-disabled='true']) {
+  background: var(--color-surface-2);
+}
+
+.dflow-toggle[aria-pressed='true'] {
+  border-color: var(--color-selected);
+  color: var(--color-selected);
+  font-weight: var(--fw-bold);
+}
+
+.dflow-toggle[aria-disabled='true'] {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (pointer: coarse) {
+  .dflow-toggle {
+    min-height: 44px;
+  }
+}
+
+@media print {
+  .dflow-toggle {
+    display: none;
+  }
+}

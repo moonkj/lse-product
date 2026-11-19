@@ -228,7 +228,7 @@ test.describe('E2E-7 비교 기능', () => {
     await expect(tid(page, 'compare-go')).toBeVisible();
     expect(await noHorizontalOverflow(page)).toBe(true);
 
-    await tid(page, 'detail-panel').getByRole('button', { name: /전체 정보 보기/ }).click();
+    await tid(page, 'detail-panel').getByTestId('detail-sheet-toggle').click(); // 시트 3단(P1): 접힌 요약 → 반
     await expect(tid(page, 'compare-tray')).toBeHidden();
   });
 

@@ -37,7 +37,8 @@ test('인쇄: 버튼이 있고, 인쇄 배율이 계통도를 A4 한 장에 맞�
 
 test('상세 정보 창 폭: 손잡이를 끌면 늘고 줄며, 새로고침해도 유지, 두 번 누르면 기본 폭', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
+  // 빈 패널은 레일로 접혀 있으므로(P0-8) 기기를 골라 패널을 연다
+  await page.goto('./#/?node=n-vcb');
   const panel = page.locator('.detail-panel');
   const handle = page.getByTestId('panel-resizer');
   await expect(handle).toBeVisible();

@@ -2,21 +2,21 @@
  * 단위·컴포넌트 테스트 — UX 라운드 U T1-C (레이아웃·안내)
  *  - useUiStore: 넓게 보기·시작 카드 저장(localStorage, 차단돼도 동작), 첫 주소 판정 isCleanEntry
  *  - shellGrid: 압축 화면 규칙의 grid 템플릿 (사이드바·칩 줄·패널 열·시작 카드 줄)
- *  - StartCard 표시 조건(1회·공유 링크 미표시·계통도에서만), Esc 닫기
  *  - LiveRegion: announce() 를 polite 영역에 표시
  *  - diagramHandlesFocus: 계통도 노드 선택·점프 이동은 라우트 포커스를 건드리지 않음
- *  - 교육 탭 제거(2026-11-18 사용자 결정): 헤더 모드 탭은 제품·Gap 뿐, 옛 ?mode=learn 은 제품 모드
+ *  - 교육 탭 제거(2026-11-18 사용자 결정): 보기 세그먼트는 전체·공백만 뿐, 옛 ?mode=learn 은 제품 모드
+ *  - 디자이너 토론 P0-5·6: 헤더 = 로고·메뉴·검색·아이콘 버튼 2개, 보기 세그먼트는 계통도 도구줄 맨 왼쪽, 시작 카드 없음
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { PRESENT_KEY, START_CARD_KEY, isCleanEntry, resetUiStore, useUiStore } from '../../../src/store/useUiStore';
+import { MemoryRouter, useLocation } from 'react-router-dom';
+import { PRESENT_KEY, isCleanEntry, resetUiStore, useUiStore } from '../../../src/store/useUiStore';
 import { shellGrid } from '../../../src/components/layout/shellLayout';
-import StartCard, { useStartCardVisible } from '../../../src/components/layout/StartCard';
 import LiveRegion from '../../../src/components/layout/LiveRegion';
 import { diagramHandlesFocus } from '../../../src/components/layout/useRouteFocus';
 import { announce } from '../../../src/lib/announce';
 import Header from '../../../src/components/layout/Header';
+import DiagramToolbar from '../../../src/components/diagram/DiagramToolbar';
 import { parseMode } from '../../../src/lib/diagram/url';
 
 afterEach(() => {
@@ -94,66 +94,50 @@ describe('shellGrid — 압축 화면 규칙', () => {
   });
 });
 
-function Probe() {
-  return <span data-testid="probe">{String(useStartCardVisible())}</span>;
-}
-
-describe('StartCard — 첫 방문 1회', () => {
-  const renderAt = (path: string) =>
-    render(
-      <MemoryRouter initialEntries={[path]}>
-        <Probe />
-        <StartCard />
-      </MemoryRouter>,
-    );
-
-  it('첫 주소가 깨끗하고 닫은 적 없을 때 계통도(/)에서만 보임', () => {
-    useUiStore.setState({ entryClean: true, startCardDismissed: false });
-    renderAt('/');
-    expect(screen.getByTestId('probe').textContent).toBe('true');
-    cleanup();
-    renderAt('/gap');
-    expect(screen.getByTestId('probe').textContent).toBe('false');
-  });
-
-  it('공유 링크로 들어온 경우(entryClean=false)·이미 닫은 경우에는 안 보임', () => {
-    useUiStore.setState({ entryClean: false, startCardDismissed: false });
-    renderAt('/');
-    expect(screen.getByTestId('probe').textContent).toBe('false');
-    cleanup();
-    useUiStore.setState({ entryClean: true, startCardDismissed: true });
-    renderAt('/');
-    expect(screen.getByTestId('probe').textContent).toBe('false');
-  });
-
-  it('안내 링크 2개(기기·공백 표, 교육 투어 없음) + 검색 안내 문구 + 닫기 버튼, Esc 로 닫으면 저장', () => {
-    useUiStore.setState({ entryClean: true, startCardDismissed: false });
-    renderAt('/');
-    const links = screen.getAllByRole('link');
-    expect(links.map((a) => a.getAttribute('href'))).toEqual(['/?node=n-vcb', '/gap']);
-    expect(screen.queryByTestId('start-card-tour')).toBeNull();
-    expect(screen.queryByText(/교육/)).toBeNull();
-    expect(screen.getByTestId('start-card-hint').textContent).toMatch(/검색창에 모델명\(예: TS250\)/);
-    expect(screen.getByRole('button', { name: '시작 안내 닫기' })).toBeInTheDocument();
-    expect(screen.queryByRole('dialog')).toBeNull(); // 모달 아님
-    fireEvent.keyDown(links[1], { key: 'Escape' });
-    expect(useUiStore.getState().startCardDismissed).toBe(true);
-    expect(localStorage.getItem(START_CARD_KEY)).toBe('1');
-  });
-});
-
 describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
-  it('헤더 보기 모드 탭은 제품·Gap 2개뿐 — 교육 탭 없음', () => {
+  it('헤더에는 보기 모드 토글이 없고 화면 메뉴(계통도·공백 표)와 아이콘 버튼 2개', () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <Header />
       </MemoryRouter>,
     );
+    expect(screen.queryByRole('group', { name: '보기 모드' })).toBeNull();
+    expect(screen.queryByTestId('view-mode-product')).toBeNull();
+    const nav = screen.getByRole('navigation', { name: '화면' });
+    const links = Array.from(nav.querySelectorAll('a'));
+    expect(links.map((a) => a.textContent)).toEqual(['계통도', '공백 표']);
+    expect(links[0]).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByTestId('gap-table-link')).toHaveAttribute('href', '/gap');
+    // 아이콘 버튼: 화면낭독기 이름 + title
+    expect(screen.getByTestId('present-toggle')).toHaveAccessibleName('넓게 보기');
+    expect(screen.getByTestId('present-toggle')).toHaveAttribute('title');
+    expect(screen.getByTestId('theme-toggle')).toHaveAttribute('title');
+    expect(screen.queryByText(/교육/)).toBeNull();
+  });
+
+  it('계통도 도구줄 맨 왼쪽 "보기 [전체｜공백만]" — 2개뿐, aria-pressed, 누르면 ?mode= 갱신', () => {
+    function Loc() {
+      const { search } = useLocation();
+      return <span data-testid="loc">{search}</span>;
+    }
+    render(
+      <MemoryRouter initialEntries={['/?node=n-vcb']}>
+        <DiagramToolbar mode="product" total={10} />
+        <Loc />
+      </MemoryRouter>,
+    );
     const group = screen.getByRole('group', { name: '보기 모드' });
     const tabs = Array.from(group.querySelectorAll('button'));
-    expect(tabs.map((b) => b.textContent)).toEqual(['제품', 'Gap']);
+    expect(tabs.map((b) => b.textContent)).toEqual(['전체', '공백만']);
+    expect(screen.getByTestId('view-mode-product')).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('view-mode-gap')).toHaveAttribute('aria-pressed', 'false');
     expect(screen.queryByTestId('view-mode-learn')).toBeNull();
-    expect(screen.queryByRole('button', { name: '교육' })).toBeNull();
+    // 도구줄 첫 요소가 보기 세그먼트, 오른쪽 끝 슬롯(흐름·수급 자리)이 있음
+    const row = group.closest('.dtool__main')!;
+    expect(row.firstElementChild).toContainElement(group);
+    expect(screen.getByTestId('dtool-end')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('view-mode-gap'));
+    expect(screen.getByTestId('loc').textContent).toBe('?node=n-vcb&mode=gap');
   });
 
   it('옛 링크 ?mode=learn 은 제품 모드로 해석 (gap 만 Gap 모드)', () => {

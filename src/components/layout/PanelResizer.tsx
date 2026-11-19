@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 /**
  * 상세 패널 폭 조절 손잡이 (패널 왼쪽 가장자리). 넓은 화면에서 패널 열이 있을 때만 그린다.
  *  - 끌기: 왼쪽으로 늘리고 오른쪽으로 줄인다. 두 번 누르면 기본 폭(360px)으로.
  *  - 키보드: ←/→ 24px, Home 최소, End 최대 (role=separator).
  *  - 폭은 --panel-w(문서 루트)로 반영하고 localStorage `lse-panel-w` 에 저장.
+ *  - 빈 패널이 레일로 접혀 있을 때는 그리지 않는다(P0-8). 다시 열리면(기기 선택·레일 버튼) 저장된 폭을
+ *    그리기 전에(useLayoutEffect) 적용해, 기본 폭이 한 프레임 비치지 않게 한다.
  */
 const KEY = 'lse-panel-w';
 export const PANEL_DEFAULT = 360;
@@ -50,7 +52,7 @@ export default function PanelResizer() {
     }
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     apply(width);
     const onResize = () => commit(width, false);
     window.addEventListener('resize', onResize);

@@ -41,6 +41,12 @@ export interface UiState {
   present: boolean;
   startCardDismissed: boolean;
   entryClean: boolean;
+  /**
+   * 기기를 고르지 않은 상태에서 상세 패널(빈 안내)을 펼쳐 두었는가 (P0-8). 기본 false = 오른쪽 레일("‹ 상세")만.
+   * 저장하지 않는다 — 새로 열면 늘 레일부터 (계통도 폭 우선).
+   */
+  emptyPanelOpen: boolean;
+  setEmptyPanelOpen: (open: boolean) => void;
   togglePresent: () => void;
   setPresent: (on: boolean) => void;
   dismissStartCard: () => void;
@@ -51,6 +57,7 @@ function initial() {
     present: read(PRESENT_KEY),
     startCardDismissed: read(START_CARD_KEY),
     entryClean: typeof window === 'undefined' ? false : isCleanEntry(window.location),
+    emptyPanelOpen: false,
   };
 }
 
@@ -61,6 +68,7 @@ export const useUiStore = create<UiState>()((set, get) => ({
     write(PRESENT_KEY, on);
     set({ present: on });
   },
+  setEmptyPanelOpen: (open) => set({ emptyPanelOpen: open }),
   dismissStartCard: () => {
     write(START_CARD_KEY, true);
     set({ startCardDismissed: true });

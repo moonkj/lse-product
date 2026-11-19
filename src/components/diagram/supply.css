@@ -1,0 +1,287 @@
+/*
+ * 실시간 전력수급 알약·팝오버 (SupplyPill). 위젯 전용 색 --grid-* 은 여기서만 정의 —
+ * CI 레드·커버리지 초록/노랑과 섞지 않는다 (DEBATE.md 신규 안건 2). 정상은 회색(무색).
+ * 단계: 정상 회색 → 준비·관심 황토 → 주의·경계 주황 → 심각 적갈. 지연·실패도 회색(오래된 값을 최신처럼 보이지 않게).
+ */
+.supply {
+  --grid-normal: #5b6270;
+  --grid-ochre: #8a6a10;
+  --grid-ochre-bg: #fbf4e0;
+  --grid-orange: #b4510b;
+  --grid-orange-bg: #fdeee2;
+  --grid-severe: #8a2f1c;
+  --grid-severe-bg: #f8e6e1;
+  --grid-stale: #7a8392;
+  --grid-spark: #7a8392;
+
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+:root[data-theme='dark'] .supply {
+  --grid-normal: #a3abb8;
+  --grid-ochre: #e0be62;
+  --grid-ochre-bg: #2e2716;
+  --grid-orange: #f0a066;
+  --grid-orange-bg: #33231a;
+  --grid-severe: #ec9a86;
+  --grid-severe-bg: #36201b;
+  --grid-stale: #8a939f;
+  --grid-spark: #a3abb8;
+}
+
+.supply__pill {
+  --tone: var(--grid-normal);
+  --tone-bg: var(--color-surface, #fff);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-strong, #d5dae2);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--tone-bg);
+  color: var(--color-text, #14171c);
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.supply__pill:hover {
+  background: var(--color-surface-2, #eef1f5);
+}
+
+.supply__pill:focus-visible,
+.supply__retry:focus-visible {
+  outline: 2px solid var(--color-focus, #0068b7);
+  outline-offset: 2px;
+}
+
+.supply__pill[data-tone='ready'],
+.supply__pill[data-tone='concern'],
+.supply__badge[data-tone='ready'],
+.supply__badge[data-tone='concern'] {
+  --tone: var(--grid-ochre);
+  --tone-bg: var(--grid-ochre-bg);
+}
+
+.supply__pill[data-tone='caution'],
+.supply__pill[data-tone='alert'],
+.supply__badge[data-tone='caution'],
+.supply__badge[data-tone='alert'] {
+  --tone: var(--grid-orange);
+  --tone-bg: var(--grid-orange-bg);
+}
+
+.supply__pill[data-tone='serious'],
+.supply__badge[data-tone='serious'] {
+  --tone: var(--grid-severe);
+  --tone-bg: var(--grid-severe-bg);
+}
+
+.supply__pill[data-tone='stale'],
+.supply__badge[data-tone='stale'] {
+  --tone: var(--grid-stale);
+}
+
+.supply__pill:not([data-tone='normal']):not([data-tone='stale']) {
+  border-color: var(--tone);
+}
+
+.supply__icon {
+  color: var(--tone);
+  font-size: 10px;
+}
+
+.supply__label {
+  color: var(--color-text-muted, #5b6270);
+}
+
+.supply__rate {
+  font-weight: var(--fw-bold, 700);
+  font-variant-numeric: tabular-nums;
+}
+
+.supply__sep {
+  color: var(--color-text-muted, #5b6270);
+}
+
+.supply__status {
+  color: var(--tone);
+  font-weight: var(--fw-semibold, 600);
+}
+
+.supply__pill[data-tone='normal'] .supply__status {
+  color: var(--color-text-soft, #3d4450);
+  font-weight: var(--fw-regular, 400);
+}
+
+.supply__time {
+  color: var(--color-text-muted, #5b6270);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 팝오버 ---------- */
+.supply__pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  width: 280px;
+  padding: var(--space-3, 12px) var(--space-4, 16px);
+  border: 1px solid var(--color-border, #e3e7ed);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--color-surface, #fff);
+  box-shadow: var(--shadow-md, 0 4px 12px rgb(20 23 28 / 0.12));
+  color: var(--color-text, #14171c);
+  font-size: 13px;
+}
+
+.supply__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 8px);
+}
+
+.supply__big {
+  font-size: 13px;
+  color: var(--color-text-muted, #5b6270);
+}
+
+.supply__big b {
+  font-size: 22px;
+  color: var(--color-text, #14171c);
+  font-variant-numeric: tabular-nums;
+}
+
+.supply__badge {
+  --tone: var(--grid-normal);
+  --tone-bg: var(--color-surface-2, #eef1f5);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--tone-bg);
+  color: var(--tone);
+  font-size: 12px;
+  font-weight: var(--fw-semibold, 600);
+}
+
+.supply__kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2, 8px);
+  margin: var(--space-3, 12px) 0 var(--space-2, 8px);
+}
+
+.supply__kpis dt {
+  font-size: 12px;
+  color: var(--color-text-muted, #5b6270);
+}
+
+.supply__kpis dd {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: var(--fw-semibold, 600);
+  font-variant-numeric: tabular-nums;
+}
+
+.supply__kpis small {
+  font-size: 12px;
+  font-weight: var(--fw-regular, 400);
+  color: var(--color-text-muted, #5b6270);
+}
+
+.supply__spark {
+  margin: 0;
+}
+
+.supply__spark svg {
+  display: block;
+}
+
+.supply__spark path {
+  fill: none;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.supply__spark-demand {
+  stroke: var(--grid-spark);
+}
+
+.supply__spark-supply {
+  stroke: var(--color-text-muted, #5b6270);
+  stroke-dasharray: 3 3;
+}
+
+.supply__spark figcaption {
+  display: flex;
+  gap: var(--space-3, 12px);
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--color-text-muted, #5b6270);
+}
+
+.supply__key {
+  display: inline-block;
+  width: 14px;
+  vertical-align: middle;
+  border-top: 2px solid var(--grid-spark);
+}
+
+.supply__key--supply {
+  border-top: 2px dashed var(--color-text-muted, #5b6270);
+}
+
+.supply__src {
+  margin: var(--space-2, 8px) 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-muted, #5b6270);
+}
+
+.supply__retry {
+  margin-top: var(--space-2, 8px);
+  height: 32px;
+  padding: 0 var(--space-3, 12px);
+  border: 1px solid var(--color-border, #e3e7ed);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #14171c);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* 모바일: 알약은 "예비율" 라벨만 빼고 짧게(기준 시각은 유지), 팝오버는 하단 시트 */
+@media (max-width: 900px) {
+  .supply__label {
+    display: none;
+  }
+
+  .supply__pill {
+    min-height: 28px;
+  }
+
+  .supply__pop {
+    position: fixed;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    border-radius: var(--radius-lg, 12px) var(--radius-lg, 12px) 0 0;
+    box-shadow: var(--shadow-sheet, 0 -6px 20px rgb(20 23 28 / 0.18));
+    padding-bottom: calc(var(--space-4, 16px) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .supply__retry {
+    min-height: 44px;
+  }
+}
+
+@media print {
+  .supply {
+    display: none;
+  }
+}

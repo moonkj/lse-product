@@ -24,3 +24,70 @@
     transform: translate(-50%, -50%);
   }
 }
+
+/*
+ * 숫자 고정 열 (디자인 토론 P0-1): 이름 | 보유/전체 | ●공백 — 모드와 무관하게 같은 자리·같은 인코딩.
+ * 공백 0 이면 빈칸으로 열 폭만 유지. 보조 설명(visually-hidden)은 absolute 라 grid 칸을 차지하지 않는다.
+ */
+.layer-nav .layer-nav__btn {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 2.2em;
+  column-gap: var(--space-2);
+}
+
+.layer-nav .layer-nav__name {
+  min-width: 0;
+}
+
+.layer-nav .layer-nav__count {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.layer-nav .layer-nav__gap {
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--cov-missing-text);
+  white-space: nowrap;
+}
+
+.layer-nav .layer-nav__gap.has-gap {
+  font-weight: var(--fw-bold);
+}
+
+.layer-nav__gapmark {
+  color: var(--cov-missing-text);
+}
+
+/* 칩 줄(모바일·압축)에서는 숫자 열 숨김 — 칩 모양은 AppLayout.css */
+.app-shell--navrow .layer-nav .layer-nav__btn {
+  display: flex;
+}
+
+.app-shell--navrow .layer-nav__gap {
+  display: none;
+}
+
+/* 칩 줄 끝 "공백 표" — 헤더 메뉴를 숨기는 휴대폰 세로(≤600px)에서만 */
+.layer-nav__gaplink {
+  display: none;
+}
+@media (max-width: 600px) {
+  .app-shell--navrow .layer-nav__gaplink {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    color: var(--color-link);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+}

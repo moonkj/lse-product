@@ -5,6 +5,9 @@ import { docsByProductId, equipmentImageUrl, useData } from '../data/load';
 import ExternalLink from '../components/common/ExternalLink';
 import EquipmentOverview from '../components/common/EquipmentOverview';
 import CompareToggle from '../components/compare/CompareToggle';
+import Button, { ButtonExternal, ButtonLink, DIAGRAM_CTA_LABEL } from '../components/common/Button';
+import { Count, Tag } from '../components/common/Badge';
+import PageHeader, { type Crumb } from '../components/common/PageHeader';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import ProductVisual, { FALLBACK_PHOTO_LABEL, hasProductPhoto } from '../components/pages/ProductVisual';
 import ProductSpecs, { SPECS_VARIANTS_ANCHOR } from '../components/pages/ProductSpecs';
@@ -46,24 +49,18 @@ export default function ProductPage() {
 
   return (
     <div className="pg" data-testid="product-page">
-      <nav aria-label="경로">
-        <ol className="pg-crumbs">
-          <li>
-            <Link to={diagramHref(node?.id)}>계통도</Link>
-          </li>
-          {eq && (
-            <>
-              <li>
-                {eq.layer} {LAYER_LABELS[eq.layer]}
-              </li>
-              <li>
-                <Link to={`/equipment/${eq.id}`}>{eq.name}</Link>
-              </li>
-            </>
-          )}
-          <li aria-current="page">{product.name}</li>
-        </ol>
-      </nav>
+      <PageHeader
+        crumbs={[
+          { label: '계통도', to: diagramHref(node?.id) },
+          ...(eq
+            ? ([
+                { label: `${eq.layer} ${LAYER_LABELS[eq.layer]}`, layer: eq.layer },
+                { label: eq.name, to: `/equipment/${eq.id}` },
+              ] satisfies Crumb[])
+            : []),
+          { label: product.name },
+        ]}
+      />
 
       <section className="pg-hero" aria-labelledby="product-title">
         <div className="pg-hero__media">
@@ -84,17 +81,9 @@ export default function ProductPage() {
             {product.name}
           </h1>
           <div className="pg-badges">
-            {product.discontinued ? (
-              <span className="pg-badge pg-badge--off">단종</span>
-            ) : (
-              <span className="pg-badge pg-badge--ok">
-                <span aria-hidden="true" className="pg-badge__dot">
-                  ✓
-                </span>
-                판매 중
-              </span>
-            )}
-            <span className="pg-badge">{product.business === 'power' ? '전력 사업' : '자동화 사업'}</span>
+            {/* 판매 상태는 중립 Tag + 점 — ✓ 원 아이콘은 커버리지 '보유' 전용 */}
+            <Tag dot>{product.discontinued ? '단종' : '판매 중'}</Tag>
+            <Tag>{product.business === 'power' ? '전력 사업' : '자동화 사업'}</Tag>
           </div>
           <JumpChips productId={product.id} docs={docs} />
 
@@ -116,17 +105,17 @@ export default function ProductPage() {
 
           <div className="pg-actions">
             {node && (
-              <Link className="pg-btn pg-btn--primary" to={diagramHref(node.id)} onClick={requestPanelFocus}>
-                계통도에서 위치 보기
-              </Link>
+              <ButtonLink variant="primary" to={diagramHref(node.id)} onClick={requestPanelFocus}>
+                {DIAGRAM_CTA_LABEL}
+              </ButtonLink>
             )}
-            <ExternalLink className="pg-btn" href={product.url} testId="product-official-link">
+            <ButtonExternal variant="secondary" href={product.url} testId="product-official-link">
               공식 제품 페이지 ↗
-            </ExternalLink>
+            </ButtonExternal>
             {entry && (
-              <ExternalLink className="pg-btn" href={entry.deepLink}>
+              <ButtonExternal variant="secondary" href={entry.deepLink}>
                 자료실에서 전체 자료 보기 ↗
-              </ExternalLink>
+              </ButtonExternal>
             )}
             <CompareToggle kind="product" id={product.id} name={product.name} />
           </div>
@@ -176,23 +165,23 @@ function JumpChips({ productId, docs }: { productId: string; docs: DocRef[] }) {
     <ul className="pg-jumps" aria-label="자료 바로가기" data-testid="product-jump-chips">
       {showVariants && (
         <li>
-          <button type="button" className="pg-jump" data-testid="jump-specs" onClick={() => jumpTo(SPECS_VARIANTS_ANCHOR)}>
+          <Button size="sm" className="pg-jump" testId="jump-specs" onClick={() => jumpTo(SPECS_VARIANTS_ANCHOR)}>
             옵션별 사양
-          </button>
+          </Button>
         </li>
       )}
       {catalog > 0 && (
         <li>
-          <button type="button" className="pg-jump" data-testid="jump-catalog" onClick={() => jumpTo(docGroupAnchor('catalog'))}>
-            카탈로그 <b>{catalog}</b>
-          </button>
+          <Button size="sm" className="pg-jump" testId="jump-catalog" onClick={() => jumpTo(docGroupAnchor('catalog'))}>
+            카탈로그 <Count>{catalog}</Count>
+          </Button>
         </li>
       )}
       {manual > 0 && (
         <li>
-          <button type="button" className="pg-jump" data-testid="jump-manual" onClick={() => jumpTo(docGroupAnchor('manual'))}>
-            매뉴얼 <b>{manual}</b>
-          </button>
+          <Button size="sm" className="pg-jump" testId="jump-manual" onClick={() => jumpTo(docGroupAnchor('manual'))}>
+            매뉴얼 <Count>{manual}</Count>
+          </Button>
         </li>
       )}
     </ul>
@@ -338,7 +327,7 @@ function SiblingsCard({ eq, productId }: { eq: EquipmentType; productId: string 
   return (
     <section className="pg-card pg-card--tight" aria-labelledby="sib-h">
       <h2 id="sib-h">
-        같은 기기의 다른 제품 <span className="pg-count">· {siblings.length}</span>
+        같은 기기의 다른 제품 <Count>· {siblings.length}</Count>
       </h2>
       <ul className="pg-chips">
         {shown.map((p) => (

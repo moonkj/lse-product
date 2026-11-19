@@ -175,8 +175,9 @@ async function clickNode(page: Page, nodeId: string, layer: string) {
 //   헤더 모드 탭 = 제품·Gap, 옛 /learn 링크 → 계통도(/)로 replace 리디렉트, 옛 ?mode=learn → 제품 모드
 // ═════════════════════════════════════════════════════════════
 test.describe('E2E-1 교육 탭 제거', () => {
-  test('헤더에 교육 탭 없음 — 보기 모드 탭은 제품·Gap 2개', async ({ page }) => {
+  test('교육 탭 없음 — 도구줄 보기 세그먼트는 전체·공백만 2개 (헤더에는 없음)', async ({ page }) => {
     await gotoHome(page);
+    await expect(page.getByRole('banner').getByTestId(/^view-mode-/)).toHaveCount(0);
     await expect(tid(page, 'view-mode-product')).toBeVisible();
     await expect(tid(page, 'view-mode-gap')).toBeVisible();
     await expect(tid(page, 'view-mode-learn')).toHaveCount(0);
@@ -704,14 +705,15 @@ test.describe('E2E-6 계통도 개선 R3', () => {
     await expect(tid(page, 'detail-title')).toContainText(eq.name);
   });
 
-  test('택1 연결선: data-kind="alt" 가 데이터 개수만큼, 점선으로 그려진다', async ({ page }) => {
+  test('택1 연결선: data-kind="alt" 가 데이터 개수만큼, 실선(점선은 신호선만, P0-4) + "택1" 칩', async ({ page }) => {
     test.skip(altEdges.length === 0, 'alt 연결선 없음');
     await gotoHome(page);
     await expect(tid(page, 'diagram').locator('[data-testid^="diagram-edge-"][data-kind="alt"]')).toHaveCount(altEdges.length);
     const el = tid(page, `diagram-edge-${altEdges[0].id}`);
     await expect(el).toHaveAttribute('data-kind', 'alt');
     const dash = await el.evaluate((n) => getComputedStyle(n as Element).strokeDasharray);
-    expect(dash).not.toMatch(/^(none)?$/);
+    expect(dash === 'none' || dash === '').toBe(true);
+    await expect(tid(page, 'diagram').locator('[data-testid^="diagram-alt-badge-"]').first()).toBeAttached();
   });
 
   test('v0.8 계통 검수 배지: review.status=pending 이면 보이고, approved 면 없다 (데이터 기준)', async ({ page }) => {

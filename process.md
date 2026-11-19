@@ -212,3 +212,10 @@
 - ⚠ 수집 규칙 위반 기록: UPS·영문 확인 작업 중 영문 페이지 21회를 브라우저로 열어 부수 요청 604회가 1.2초 간격을 지키지 못함(hits·이미지 차단, 로그인 미접촉). 이후 실사이트 브라우저 열람 금지·순차 fetch만 허용으로 팀 공지.
 - 제품별 사진 1차(임시): 공식 제품 페이지 사진 124개(origin product-page), 나머지 107개 기기 대표 사진+'기기 공통' 표시. 제품 상세 히어로·패널 40px 썸네일·기기 카드·비교 열 적용. product-images.json(origin·catalogUrl·page). 요청 249회 순차(최소 1.346s). 카탈로그 전수 추출로 교체 예정(1단계 수집 진행 중). unit 513, E2E 140, axe 0.
 - 제품 사진 카탈로그 전수(2단계 4그룹, 오프라인): catalog 192 반영(쪽 기록), 너무 작은 1건은 제품 페이지 유지, 사진 없음 34·카탈로그 없음 4 → 제품 페이지 11·기기 공통 27. 검수 목록 docs/research/product-photo-review.md(확신 중간·낮음 23). unit 513, E2E 140.
+
+## 2026-11-19 디자이너 토론 합의안 P0·P1 + 전기 흐름·실시간 수급 (병렬 7개 담당)
+- 근거: docs/personas-design/DEBATE.md · IMPLEMENT.md(분담) · mockups/(시안, 사용자 선택: 일부 보유 황색 1.5px A안, 수급 위젯 도구줄 A안)
+- A1 헤더(계통도·공백 표 메뉴, 아이콘 버튼)·시작 띠 제거·도구줄 "보기 [전체｜공백만]" / A2 사이드바 계층 전용("10/13 ●3")·범례 카드(왼쪽 아래)·미니맵(오른쪽 위 접힘) / A3 빈 패널 레일·패널 순서(제품 먼저)·시트 3단 / B 타일 회색 1px·미보유 빨강 2px·일부 보유 황색 1.5px·선택 링·선 4종·밴드 2톤+이름표·semantic zoom / C Button·Badge·PageHeader·"✓ 담김 n/4"·공백 표→계통도 / D 전기 흐름(FlowLayer·⚡흐름, e075 flow:bi) / E 실시간 수급(SupplyPill, scripts/fetch-supply.mjs, deploy.yml 20분 예약 — DATA_GO_KR_KEY 있을 때만)
+- 리더 통합: FlowLayer·FlowToggle·SupplyPill 삽입, draft.ts canonicalEdge flow 보존, 패널 비교 버튼 공용화, 휴대폰 헤더 메뉴 숨김 → 칩 줄 끝 공백 표, 시트 손잡이 44px, 사이드바 224px, 미니맵 2톤, 토큰(control-h·focus-ring·page-w)
+- 검증: typecheck 0, unit 550, E2E 138 통과
+- 남은 일: DATA_GO_KR_KEY Secret 등록(사용자), 수급 경보 기준값 공식 확인, 응답 필드명 첫 실행 로그로 확인, AppLayout.css 미사용 사이드바 스타일 정리, '보유' 기기 25종 제품 연결 보강

@@ -9,6 +9,8 @@ import { MemoryRouter, useLocation, useNavigate, type NavigateFunction } from 'r
 import DetailPanel from '../../../src/components/panel/DetailPanel';
 import { getData, resolveCategories, resolveProducts } from '../../../src/data/load';
 import { getDiagramModel } from '../../../src/lib/diagram/model';
+import { resetUiStore, useUiStore } from '../../../src/store/useUiStore';
+import { useCompareStore } from '../../../src/store/useCompareStore';
 
 afterEach(cleanup);
 
@@ -65,9 +67,12 @@ describe('CT-04 DetailPanel', () => {
     expect(screen.getByTestId(`product-card-${resolveProducts(n.eq)[0].id}`)).toHaveAttribute('href', `/product/${resolveProducts(n.eq)[0].id}`);
   });
 
-  it('없는 ?node= → 빈 안내 패널 (detail-panel testid 없음), 오류 없음', () => {
+  it('없는 ?node= → 오른쪽 레일(detail-panel testid 없음), 레일 버튼 → 빈 안내 패널, 오류 없음', () => {
+    resetUiStore();
     renderAt('__no_such_node__');
     expect(screen.queryByTestId('detail-panel')).toBeNull();
+    expect(screen.queryByRole('complementary')).toBeNull();
+    fireEvent.click(screen.getByTestId('panel-rail-open'));
     expect(screen.getByRole('complementary')).toHaveTextContent('상세 정보');
   });
 });
@@ -146,5 +151,61 @@ describe('상세 설명 overview — DetailPanel', () => {
     renderAt(missingOvNode!.id);
     const dl = within(screen.getByTestId('detail-desc')).getByTestId('overview-points');
     expect([...dl.querySelectorAll('dt')].map((d) => d.textContent)).not.toContain('제품 설명');
+  });
+});
+
+// ── 디자이너 토론 P0-8 레일 · P1 패널 순서 · 비교 담기 n/4 ──
+describe('A3 상세 패널 — 레일·순서·비교 담기', () => {
+  it('P0-8 레일 → 펼치면 제목 포커스, 접기 → 레일 버튼으로 포커스 복귀', () => {
+    resetUiStore();
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <DetailPanel />
+      </MemoryRouter>,
+    );
+    const rail = screen.getByTestId('panel-rail-open');
+    expect(rail).toHaveAttribute('aria-expanded', 'false');
+    expect(rail).toHaveAccessibleName('상세 정보 창 열기');
+    fireEvent.click(rail);
+    expect(useUiStore.getState().emptyPanelOpen).toBe(true);
+    expect(document.activeElement).toHaveTextContent('상세 정보');
+    fireEvent.click(screen.getByTestId('panel-rail-close'));
+    expect(useUiStore.getState().emptyPanelOpen).toBe(false);
+    expect(document.activeElement).toBe(screen.getByTestId('panel-rail-open'));
+  });
+
+  it.skipIf(!withProducts)('P1 순서: 머리 → 고정 버튼 줄 → 자사 제품 → 설명', () => {
+    renderAt(withProducts!.id);
+    const panel = screen.getByTestId('detail-panel');
+    const order = ['detail-title', 'detail-actions', 'detail-product-list', 'detail-desc'].map((id) => screen.getByTestId(id));
+    for (let i = 1; i < order.length; i++) {
+      expect(order[i - 1].compareDocumentPosition(order[i]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    }
+    expect(panel.querySelector('.dp-head .dp-hero')).not.toBeNull(); // 썸네일은 머리 안
+  });
+
+  it.skipIf(!withOverview)('P1 설명: 기본 접힘(1줄 요약), 펼치기 → aria-expanded', () => {
+    renderAt(withOverview!.id);
+    const t = screen.getByTestId('detail-desc-toggle');
+    expect(t).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByTestId('detail-desc').parentElement).toHaveAttribute('data-collapsed', 'true');
+    fireEvent.click(t);
+    expect(t).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByTestId('detail-desc').parentElement).toHaveAttribute('data-collapsed', 'false');
+  });
+
+  it.skipIf(!withProducts)('P1 "비교에 담기" ↔ "✓ 담김 n/4" (aria-pressed, 다시 누르면 빼기)', () => {
+    useCompareStore.getState().clear('equipment');
+    const n = withProducts!;
+    renderAt(n.id);
+    const btn = within(screen.getByTestId('detail-actions')).getByTestId(`compare-toggle-${n.eq.id}`);
+    expect(btn).toHaveAttribute('aria-pressed', 'false');
+    expect(btn).toHaveTextContent('비교에 담기');
+    fireEvent.click(btn);
+    expect(btn).toHaveAttribute('aria-pressed', 'true');
+    expect(btn).toHaveTextContent('담김 1/4');
+    fireEvent.click(btn);
+    expect(btn).toHaveAttribute('aria-pressed', 'false');
+    expect(useCompareStore.getState().equipment).not.toContain(n.eq.id);
   });
 });

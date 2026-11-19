@@ -1,0 +1,281 @@
+<title>제품맵 화면 고도화 토론</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* 레이아웃: 단선결선도 문법 — 왼쪽 굵은 '모선' 선에 안건이 차례로 매달리는 한 단 문서, 넓은 화면에서 목차 고정 */
+:root {
+  --bg: #F4F6F9;
+  --surface: #FFFFFF;
+  --ink: #16202E;
+  --muted: #5B6573;
+  --line: #D9DFE7;
+  --navy: #00337F;
+  --blue: #0068B7;
+  --blue-soft: #E6F0FA;
+  --gap: #C2261C;
+  --gap-soft: #FCEBE9;
+  --warn: #92400E;
+  --warn-soft: #FEF3C7;
+  --ok: #1B7A3E;
+  --ok-soft: #E5F4EA;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F141B; --surface: #171D26; --ink: #E7ECF2; --muted: #9AA5B4; --line: #2A3340;
+    --navy: #8FB4F0; --blue: #6CB2F0; --blue-soft: #16263A; --gap: #F08A80; --gap-soft: #3A1E1C;
+    --warn: #F2C27A; --warn-soft: #372A12; --ok: #7FD39A; --ok-soft: #15301F; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F141B; --surface: #171D26; --ink: #E7ECF2; --muted: #9AA5B4; --line: #2A3340;
+  --navy: #8FB4F0; --blue: #6CB2F0; --blue-soft: #16263A; --gap: #F08A80; --gap-soft: #3A1E1C;
+  --warn: #F2C27A; --warn-soft: #372A12; --ok: #7FD39A; --ok-soft: #15301F; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body);
+  font-size: 15px; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere;
+}
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+  display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 40px;
+}
+@media (max-width: 860px) { .wrap { grid-template-columns: minmax(0, 1fr); gap: 16px; } .toc { position: static !important; } }
+.toc { position: sticky; top: 24px; align-self: start; font-size: 13px; }
+.toc b { display: block; color: var(--muted); font-weight: 500; letter-spacing: .04em; margin-bottom: 8px; }
+.toc a { display: block; padding: 4px 0 4px 12px; border-left: 2px solid var(--line); color: var(--ink); text-decoration: none; }
+.toc a:hover, .toc a:focus-visible { border-left-color: var(--blue); color: var(--blue); outline: none; }
+main { min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+header.hero { border-bottom: 3px solid var(--navy); padding-bottom: 20px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--blue); letter-spacing: .06em; }
+h1 { font-size: 30px; line-height: 1.3; margin: 6px 0 10px; text-wrap: balance; color: var(--navy); }
+h2 { font-size: 21px; margin: 0 0 14px; text-wrap: balance; color: var(--navy); }
+h3 { font-size: 16px; margin: 0 0 6px; }
+p { margin: 0 0 10px; max-width: 68ch; }
+.lede { color: var(--muted); }
+.people { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.who { display: inline-flex; gap: 6px; align-items: baseline; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; font-size: 13px; }
+.who code { font-family: var(--font-mono); color: var(--blue); }
+/* 모선 + 안건 */
+.bus { position: relative; padding-left: 22px; display: flex; flex-direction: column; gap: 12px; }
+.bus::before { content: ""; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 3px; background: var(--navy); border-radius: 2px; }
+.item { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.item::before { content: ""; position: absolute; left: -16px; top: 22px; width: 16px; height: 2px; background: var(--navy); }
+.item-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; margin-bottom: 6px; }
+.pri { font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border-radius: 4px; background: var(--blue-soft); color: var(--blue); }
+.vote { font-size: 12px; color: var(--muted); margin-left: auto; }
+.cmp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; font-size: 14px; }
+@media (max-width: 560px) { .cmp { grid-template-columns: minmax(0, 1fr); } }
+.cmp div { min-width: 0; }
+.cmp .now { color: var(--muted); }
+.cmp .lab { display: block; font-size: 11px; letter-spacing: .05em; color: var(--muted); }
+.cmp .to .lab { color: var(--blue); }
+.note { font-size: 13px; color: var(--warn); background: var(--warn-soft); border-radius: 4px; padding: 2px 8px; display: inline-block; margin-top: 8px; }
+ul.tight { margin: 0; padding-left: 18px; }
+ul.tight li { margin: 2px 0; }
+pre.wire { font-family: var(--font-mono); font-size: 12px; line-height: 1.45; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px; overflow-x: auto; color: var(--ink); margin: 0; }
+.tablebox { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; color: var(--muted); font-weight: 500; background: var(--bg); }
+td:first-child { font-weight: 700; white-space: nowrap; }
+.grade { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.g { font-size: 12px; padding: 1px 8px; border-radius: 4px; border: 1px solid var(--line); }
+.g0 { color: var(--muted); }
+.g1 { color: var(--warn); background: var(--warn-soft); border-color: transparent; }
+.g2 { color: #9A3412; background: #FFF1E8; border-color: transparent; }
+.g3 { color: var(--gap); background: var(--gap-soft); border-color: transparent; }
+:root[data-theme="dark"] .g2 { color: #F6B38A; background: #3A2416; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .g2 { color: #F6B38A; background: #3A2416; } }
+/* 토론 기록 */
+details.round { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+details.round + details.round { margin-top: 10px; }
+details.round summary { cursor: pointer; padding: 12px 16px; font-weight: 700; list-style: none; display: flex; gap: 10px; align-items: baseline; }
+details.round summary::-webkit-details-marker { display: none; }
+details.round summary::before { content: "▸"; color: var(--blue); }
+details.round[open] summary::before { content: "▾"; }
+details.round summary:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; border-radius: 8px; }
+.round-body { padding: 0 16px 14px; display: grid; gap: 14px; }
+.voice { border-left: 3px solid var(--line); padding-left: 12px; }
+.voice h3 { display: flex; gap: 8px; align-items: baseline; }
+.voice h3 small { font-weight: 400; color: var(--muted); font-size: 12px; }
+.chg { color: var(--blue); font-size: 13px; }
+.next { display: grid; gap: 8px; }
+.next div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
+a { color: var(--blue); }
+</style>
+
+<div class="wrap">
+  <nav class="toc" aria-label="목차">
+    <b>목차</b>
+    <a href="#p0">합의안 P0</a>
+    <a href="#wire">제안 화면 구성</a>
+    <a href="#p1">합의안 P1 · P2</a>
+    <a href="#flow">전기 흐름 애니메이션</a>
+    <a href="#supply">실시간 전력수급</a>
+    <a href="#log">토론 기록</a>
+    <a href="#next">결정이 필요한 것</a>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <div class="eyebrow">UX/UI 디자이너 5인 · 2라운드 · 2026-11-19</div>
+      <h1>전력계통 제품맵 화면 고도화 방안</h1>
+      <p class="lede">사이드바가 조잡하다는 지적에서 출발해, 현재 화면 11장을 놓고 디자이너 5명이 제안(1라운드)하고 서로 반박·절충(2라운드)했습니다. 코드는 아직 바꾸지 않았습니다.</p>
+      <div class="people">
+        <span class="who"><code>D1</code> 한서진 · 정보구조·메뉴</span>
+        <span class="who"><code>D2</code> 오유나 · 비주얼·CI</span>
+        <span class="who"><code>D3</code> 박도윤 · 계통도 시각화</span>
+        <span class="who"><code>D4</code> 이준호 · 인터랙션·모바일</span>
+        <span class="who"><code>D5</code> 정하린 · 디자인 시스템·접근성</span>
+      </div>
+    </header>
+
+    <section id="p0">
+      <h2>합의안 P0 — 조잡함을 바로 줄이는 9가지</h2>
+      <div class="bus">
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-1</span><h3>사이드바는 계층 목록만</h3><span class="vote">5명 합의</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>계층 목록 + 커버리지 범례 + 선 종류 범례 + 공백 표 버튼이 한 열에 세로로 쌓임</div><div class="to"><span class="lab">바꾸면</span>계층 목록만 남기고 숫자는 고정 열 <b>"10/13 ●3"</b>(보유/전체 + 공백 수). 모드를 바꿔도 같은 자리에 같은 뜻</div></div>
+        </article>
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-2</span><h3>범례는 계통도 왼쪽 아래 카드로</h3><span class="vote">5명 합의 · D2 '기본 접힘' 철회</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>사이드바 아래에 있어 1280×720 노트북에서 잘림</div><div class="to"><span class="lab">바꾸면</span>캔버스 왼쪽 아래 도킹. 커버리지 6종은 한 줄(✓59 ◐2 ◆2 ⊡3 ✕9 −1)로 늘 보이고 선 종류만 "선 ▾"로 접음. 항목을 누르면 그 상태만 강조. 모바일·넓게 보기에서만 기본 접힘</div></div>
+        </article>
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-3</span><h3>타일 테두리는 회색, 색은 공백에만</h3><span class="vote">5명 합의</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>커버리지 색 2px 테두리 + 배지로 같은 정보를 두 번 표시. 선택 상태도 테두리라 겹침</div><div class="to"><span class="lab">바꾸면</span>테두리 1px 회색 통일. 미보유만 2px 빨강 + 테두리 모양 변화 + ✕ 배지(색각 이상 대응). 선택은 바깥 CI 블루 링</div></div>
+          <span class="note">일부 보유를 황색 1.5px 테두리로 둘지(D1·D3), 배지만 둘지(D2·D5)는 시안으로 결정</span>
+        </article>
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-4</span><h3>선 종류 6개 → 4개</h3><span class="vote">5명 합의</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>실선·신호 점선·모선·청록 택1 점선·참조 점선이 섞여 점선만 4종</div><div class="to"><span class="lab">바꾸면</span>"점선 = 신호선만". 택1은 실선 + "택1" 칩, 청록 폐지. 참조 타일은 ↗ 아이콘</div></div>
+        </article>
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-5</span><h3>헤더는 전역 기능만</h3><span class="vote">5명 합의 · D4 '⋯ 메뉴' 철회</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>제품/Gap 토글 + 넓게 보기 + 다크 모드 텍스트 버튼이 헤더에 나란히</div><div class="to"><span class="lab">바꾸면</span>로고 · 서비스명 · 검색 · 아이콘 버튼 2개(넓게 보기·다크 모드, 터치 44px, 툴팁). <b>[제품|Gap]은 계통도 도구줄 맨 왼쪽 "보기: 전체 / 공백만"</b>으로 이동</div></div>
+        </article>
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-6</span><h3>계통도 위 두 줄 → 한 줄</h3><span class="vote">5명 합의</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>'처음이세요?' 띠 + 확대 도구줄 2단</div><div class="to"><span class="lab">바꾸면</span>44px 도구줄 한 줄로 통합, 시작 띠 제거. 계통도가 세로로 약 56px 넓어짐</div></div>
+        </article>
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-7</span><h3>Gap 보기에서 글자 대비 유지</h3><span class="vote">5명 합의</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>나머지 타일 전체를 투명하게 해 글자가 흐림</div><div class="to"><span class="lab">바꾸면</span>배경·테두리만 낮추고 글자 대비 4.5:1 유지</div></div>
+        </article>
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-8</span><h3>빈 상세 패널은 접어 두기</h3><span class="vote">5명 합의</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>기기를 고르기 전에도 빈 패널이 360px 차지</div><div class="to"><span class="lab">바꾸면</span>24px 레일("‹ 상세")만 남기고, 기기를 고르면 <b>마지막에 끌어 둔 폭</b>으로 열림. 포커스는 패널 제목으로, 닫으면 타일로 복귀</div></div>
+        </article>
+        <article class="item">
+          <div class="item-head"><span class="pri">P0-9</span><h3>미니맵은 오른쪽 위, 기본 접힘</h3><span class="vote">4명 찬성</span></div>
+          <div class="cmp"><div class="now"><span class="lab">지금</span>오른쪽 아래에서 타일·비교 바와 겹침</div><div class="to"><span class="lab">바꾸면</span>오른쪽 위로 옮기고 기본 접힘. 범례(왼쪽 아래)·비교 바(가운데 아래)와 자리 분리</div></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="wire">
+      <h2>제안 화면 구성 (데스크톱 1440)</h2>
+<pre class="wire" aria-label="제안 화면 와이어프레임">┌──────────────────────────────────────────────────────────────────────────────┐
+│ [LS ELECTRIC] 전력계통 제품맵   계통도 · 공백 표   [ 검색 ........... ]  ◐  ☾ │ ← 헤더 1줄
+├──────────────┬───────────────────────────────────────────────────────────┬───┤
+│ 계층         │ 보기 [전체|공백만]  − 94% +  전체 보기  인쇄  ⚡흐름   예비율 │ ‹ │
+│ L1 초고압 4/9│ ───────────────────────────────────────────── 12.3% · 정상 │ 상 │
+│ L2 송변전 4/4│  L4 수전설비 · 22.9kV · 10/13                      [미니맵▸]│ 세 │
+│ L3 특고압 2/5│   ┌────┐   ┌────┐   ┌────┐                                  │   │
+│▌L4 수전  10/13│   │ LA │───│LBS │   │ALTS│     ← 회색 1px 타일             │ 24 │
+│ L5 변압   2/2│   └────┘   └────┘   └────┘       미보유만 빨강·✕           │ px │
+│ L6 저압  9/12│                                                            │ 레 │
+│ L7 분전 15/18│ ┌─────────────────────────────┐                            │ 일 │
+│ 감시·제어 6/6│ │ ✓59 ◐2 ◆2 ⊡3 ✕9 −1   선 ▾ │ ← 범례 카드(왼쪽 아래)     │   │
+│ 신재생   7/7 │ └─────────────────────────────┘                            │   │
+└──────────────┴───────────────────────────────────────────────────────────┴───┘
+  기기를 누르면 오른쪽 레일이 상세 패널(마지막 폭)로 열림: 이름·상태 → 버튼 줄 → 자사 제품 → 설명</pre>
+    </section>
+
+    <section id="p1">
+      <h2>합의안 P1 · P2</h2>
+      <div class="bus">
+        <article class="item"><div class="item-head"><span class="pri">P1</span><h3>상세 패널 순서: 제품 먼저</h3></div><p>이름·상태·썸네일 → 고정 버튼 줄(비교 담기 등) → 자사 제품 목록 → 설명 1줄 요약(펼치기). 스크롤 없이 제품이 보이게 합니다.</p></article>
+        <article class="item"><div class="item-head"><span class="pri">P1</span><h3>컴포넌트 통일</h3></div><ul class="tight"><li>버튼 3변형(주·보조·텍스트) × 2크기, 배지 11종 → 4종(상태 배지·태그·필터 칩·숫자)</li><li>"비교에 담기" ↔ "✓ 담김 2/4"(누르면 빼기)로 한 모양</li><li>페이지 머리 + 브레드크럼 1종, 페이지 폭 1개, 최소 글자 12px, 포커스 링 1종</li></ul></article>
+        <article class="item"><div class="item-head"><span class="pri">P1</span><h3>계층 밴드 색 9색 → 3톤</h3></div><p>L1~L7은 흰색·연회색 교차, 감시·신재생은 옅은 블루 한 톤. 밴드 왼쪽에 고정 이름표 "L4 수전설비 · 22.9kV · 10/13".</p></article>
+        <article class="item"><div class="item-head"><span class="pri">P1</span><h3>제품 사진은 유지</h3></div><p>기본 확대에서는 실사진(흰 판 56~72px). 60% 미만으로 축소했을 때만 점 + 약칭으로 바뀝니다. D3의 "기본 줌에서 사진 빼기"는 4명이 반대해 철회했습니다.</p></article>
+        <article class="item"><div class="item-head"><span class="pri">P1</span><h3>공백 표 진입은 헤더 텍스트 메뉴</h3></div><p>40px 탭 줄은 만들지 않고 서비스명 옆에 "계통도 · 공백 표"(현재 위치 밑줄). 사이드바·시작 띠의 공백 표 버튼은 삭제. 공백 표의 행·열을 누르면 계통도의 그 계층으로 돌아옵니다.</p></article>
+        <article class="item"><div class="item-head"><span class="pri">P1</span><h3>모바일</h3></div><p>헤더 1줄, [전체|공백만]은 칩 줄 맨 앞, 칩 줄 끝 흐림 표시, 하단 시트 3단(요약·반·전체), 범례는 시트 손잡이 옆 버튼.</p></article>
+        <article class="item"><div class="item-head"><span class="pri">P2</span><h3>나중에</h3></div><p>검색 결과 묶음("기기 1 · 제품 6"), 제품을 패널 안에서 열기(공유 링크 문제로 보류), 비교 바를 가운데 알약으로, 인쇄본 하단 범례·흑백 구분.</p></article>
+      </div>
+    </section>
+
+    <section id="flow">
+      <h2>새 안건 1 — 계통도 전기 흐름 애니메이션</h2>
+      <div class="tablebox"><table>
+        <thead><tr><th>항목</th><th>합의</th></tr></thead>
+        <tbody>
+          <tr><td>켜기</td><td>기본 꺼짐. 도구줄 <b>[⚡흐름]</b> 토글, 켠 상태는 주소(<code>?flow=1</code>)로 공유</td></tr>
+          <tr><td>범위</td><td>기기를 고르면 <b>그 기기로 들어오는 경로(상류)와 나가는 경로(하류)만</b> 흐르고 나머지 선은 흐림. 기기 없이 켜면 전체 전력선(발표용)</td></tr>
+          <tr><td>대상</td><td>전력선 59개 + 모선. 신호선 23개는 흐르지 않음. 택1 7개는 그 경로를 골랐을 때만</td></tr>
+          <tr><td>방향</td><td>상류 → 하류. 태양광(PV→DC→PCS)은 반대 방향, ESS↔PCS는 ⇄ 표시. 연결선마다 흐름 방향 값을 넣는 데이터 작업이 필요</td></tr>
+          <tr><td>모양</td><td>원래 실선 위에 2px CI 블루 대시가 이동(CSS만 사용). 빛 번짐·빨강·노랑 없음. 속도는 초당 24px(D3)~48px(D2) 사이에서 시안으로 결정</td></tr>
+          <tr><td>꺼지는 때</td><td>공백만 보기에서는 끔. 인쇄·움직임 줄이기 설정은 멈춘 화살표 ▸로 대신. 화면 밖·끄는 중·탭 숨김이면 정지</td></tr>
+          <tr><td>소수 의견</td><td>D5: 흐름을 꺼도 선 위에 멈춘 화살표를 늘 표시 → D2가 화면이 다시 복잡해진다고 반대해 보류</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="supply">
+      <h2>새 안건 2 — 실시간 전력수급 현황</h2>
+      <div class="tablebox"><table>
+        <thead><tr><th>항목</th><th>합의</th></tr></thead>
+        <tbody>
+          <tr><td>데이터</td><td>전력거래소 공개 데이터(현재 수요·공급능력·공급예비력·예비율)를 GitHub Actions가 10~30분마다 받아 JSON으로 배포</td></tr>
+          <tr><td>위치</td><td><b>계통도 도구줄 오른쪽 알약</b> "예비율 12.3% · 정상 · 14:20"(D1·D2). 소수안: L1 밴드 이름표 옆(D3), 헤더 칩(D4). 모바일은 칩 줄 끝</td></tr>
+          <tr><td>누르면</td><td>작은 카드(모바일은 시트): 현재 수요·공급능력·공급예비력(GW)·예비율, 오늘 24시간 수요 그래프(공급능력 점선), 출처·기준 시각·다음 갱신</td></tr>
+          <tr><td>단계 색</td><td><span class="grade"><span class="g g0">정상 · 회색</span><span class="g g1">준비·관심</span><span class="g g2">주의·경계</span><span class="g g3">심각</span></span><br>단계 이름을 늘 글자로 함께 씀. CI 레드와 커버리지 초록·노랑은 쓰지 않고 이 위젯 전용 색만 사용</td></tr>
+          <tr><td>늦을 때</td><td>약 40분 넘게 갱신이 없으면 회색 + "지연 · 마지막 13:05". 실패하면 마지막 값 유지 + "갱신 실패 ↻". 오래된 값을 최신처럼 보이지 않게</td></tr>
+          <tr><td>화면낭독기</td><td>정기 갱신은 읽지 않고, 단계가 바뀔 때만 한 번 알림</td></tr>
+          <tr><td>확인 필요</td><td>경보 기준(준비 5.5 · 관심 4.5 · 주의 3.5 · 경계 2.5 · 심각 1.5 GW)은 페르소나 기억값이라 전력거래소 공식 기준으로 확인 후 적용</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="log">
+      <h2>토론 기록</h2>
+      <details class="round" open>
+        <summary>1라운드 — 각자 진단과 제안</summary>
+        <div class="round-body">
+          <div class="voice"><h3>D1 한서진 <small>정보구조·메뉴</small></h3><p>사이드바가 이동·범례·바로가기를 한꺼번에 떠안아 역할이 섞였다고 진단. 사이드바는 계층 이동만, 범례는 캔버스 왼쪽 아래 카드(기본 펼침)로. 헤더 아래 40px 보조 탭 [계통도][공백 표][비교]를 두고, [제품|Gap]은 도구줄 "보기: 전체/공백만"으로 내리자고 제안. 하위 페이지의 돌아가기 방식 3가지를 브레드크럼 하나로 통일.</p></div>
+          <div class="voice"><h3>D2 오유나 <small>비주얼·CI</small></h3><p>색이 너무 많은 곳에 쓰인다고 진단(커버리지 6색 테두리, 9색 밴드, 청록 택1선). 테두리는 회색, 밴드는 2톤, 선은 4종으로. 범례는 사이드바 아래에서 "범례 ▾"로 기본 접힘, 아이콘은 14px 원으로 통일. 상세 페이지의 카드 속 카드 3겹을 한 겹으로, 배지는 마켓뉴스 규칙(높이 20px·모서리 4px)으로.</p></div>
+          <div class="voice"><h3>D3 박도윤 <small>계통도 시각화</small></h3><p>커버리지를 테두리와 배지로 두 번 표시하고 선택도 테두리를 써서 신호가 묻힌다고 진단. 테두리 회색·미보유만 빨강·선택은 바깥 링. 점선은 신호선만. 줌 3단계(60% 미만 점+약칭, 기본 심볼·이름·배지, 120% 초과 실사진·정격)로 정보 밀도를 나누고, 기본 줌에서는 사진 대신 심볼을 쓰자고 제안.</p></div>
+          <div class="voice"><h3>D4 이준호 <small>인터랙션·모바일</small></h3><p>헤더 버튼 3개를 [보기] 세그먼트 + [⋯] 메뉴로 줄이고, 빈 상세 패널은 접었다가 기기를 고르면 400px로 열자고 제안. 패널은 제품 목록을 위로. 모바일은 헤더 1줄, 하단 시트 3단. 검색 결과를 "기기 1 · 제품 6"으로 묶고 비교 담기에 "✓ 담김 2/4"와 실행 취소 표시.</p></div>
+          <div class="voice"><h3>D5 정하린 <small>디자인 시스템·접근성</small></h3><p>같은 기능이 여러 모양이라고 진단("계통도에서 보기"가 버튼 2종·링크 1종, "비교에 담기"가 3모양). 버튼 1종 3변형, 칩·배지 11종 → 4종. 색만으로 구분하는 곳(Gap 흐림, 공백 숫자)을 고치고 포커스 링을 하나로. 9·11px 글자 폐지, 최소 12px.</p></div>
+        </div>
+      </details>
+      <details class="round">
+        <summary>2라운드 — 반박과 절충</summary>
+        <div class="round-body">
+          <div class="voice"><h3>D1 한서진</h3><p>D2의 범례 기본 접힘에 반대(이전 토론에서 "데스크톱 범례 기본 접기 금지"로 정함). 커버리지 1줄은 늘 보이고 선 종류만 접는 절충안을 냄. D3의 사진 빼기에 반대. <span class="chg">자기 안 수정: 40px 보조 탭 철회 → 헤더 서비스명 옆 텍스트 메뉴 "계통도 · 공백 표"</span></p></div>
+          <div class="voice"><h3>D2 오유나</h3><p>D3의 사진 빼기에 반대(카탈로그 실사진이 이 도구의 정체성). 흐름 애니메이션은 마켓뉴스 스플래시의 '전류' 연출을 이어받되 밝은 화면에 맞게 CI 블루로. 수급 위젯에 CI 레드 금지. <span class="chg">자기 안 수정: 범례 사이드바 접힘 철회 → 캔버스 왼쪽 아래 28px 한 줄 띠</span></p></div>
+          <div class="voice"><h3>D3 박도윤</h3><p>D2의 밴드 2톤 교차를 수정 제안(감시·신재생은 옅은 블루로 구분해야 전압 계층과 섞이지 않음). D4의 비교 담김 점은 배지와 겹치니 타일 밑줄로. 흐름 애니메이션 상세 설계: 전력선 59·모선만, 신호선 23 제외, 태양광 역방향. 데이터에 흐름 방향 값 추가 필요. <span class="chg">자기 안 수정: 기본 줌 사진 72px 절충 수용</span></p></div>
+          <div class="voice"><h3>D4 이준호</h3><p>D1의 보조 탭은 모바일에서 40px가 너무 크다고 반대. 빈 패널 계층 요약(D1)도 반대(밴드 이름표가 대신함). 방금 들어간 패널 폭 조절을 살려 "접힘 24px 레일 → 마지막 폭으로 열림"으로 보완. <span class="chg">자기 안 수정: ⋯ 메뉴 철회 → 아이콘 버튼 2개</span></p></div>
+          <div class="voice"><h3>D5 정하린</h3><p>테두리 회색 통일에는 찬성하되 빨강만 쓰면 적색맹 사용자에게 회색과 비슷하게 보인다며 미보유는 빨강 + 테두리 모양 + ✕ 배지 3중 표시를 조건으로 걺. 아이콘 버튼은 터치 44px·상태 이름·툴팁 필수. 흐름 애니메이션은 5초 넘게 움직이니 멈춤 버튼 필수(WCAG 2.2.2).</p></div>
+        </div>
+      </details>
+    </section>
+
+    <section id="next">
+      <h2>결정이 필요한 것</h2>
+      <div class="next">
+        <div><b>적용 방식</b> — P0 9건을 한 번에 적용할지, 시안 스크린샷을 먼저 보고 고를지</div>
+        <div><b>시안으로 고를 것 3가지</b> — 일부 보유 테두리(황색 vs 배지만), 흐름 속도(24 vs 48px/s), 수급 위젯 위치(도구줄 vs L1 밴드 vs 헤더)</div>
+        <div><b>실시간 수급 준비</b> — 공공데이터포털 '한국전력거래소 현재전력수급현황' API 키 발급 후 저장소 Secret 등록</div>
+      </div>
+      <p class="lede" style="margin-top:12px">전력시장·사업 전문가 10명의 토론(연간 시장 분석, 제품과 시장 연계, 유망 시장)은 별도로 진행 중입니다.</p>
+    </section>
+  </main>
+</div>

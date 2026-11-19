@@ -5,7 +5,6 @@ import { announce } from '../../lib/announce';
 import { getDiagramController, useView } from '../../lib/diagram/view';
 import { useViewMode } from '../../lib/diagram/url';
 import type { JumpState } from '../diagram/DiagramCanvas';
-import CoverageLegend from './CoverageLegend';
 import './LayerNav.css';
 
 /** 내비 짧은 이름 (디자인: "L1 초고압 765/345kV", "신재생·저장") */
@@ -17,8 +16,9 @@ const SHORT: Partial<Record<Layer, string>> = {
 };
 
 /**
- * 좌측 내비: 계층 바로가기(보유/전체 · Gap 모드면 공백 수) → 커버리지 범례 → 선 범례 → 공백 표 링크.
- * 모바일(≤900px)에서는 계층 칩 가로 스크롤만 보인다.
+ * 좌측 내비 = 계층 목록 전용 (디자인 토론 P0-1). 숫자는 모드와 무관한 고정 열 "보유/전체 ●공백"(예: 10/13 ●3).
+ * 범례는 계통도 왼쪽 아래 카드(DiagramLegend), 공백 표 진입은 헤더 메뉴가 맡는다.
+ * 모바일(≤900px)·압축 화면에서는 계층 칩 가로 스크롤만 보인다.
  */
 export default function LayerNav() {
   const model = getDiagramModel();
@@ -42,7 +42,11 @@ export default function LayerNav() {
     <nav className={`layer-nav${gap ? ' layer-nav--gap' : ''}`} aria-label="계층 바로가기" data-testid="layer-nav">
       <div className="nav-block">
         <h2 className="nav-section-title">
-          계층 바로가기 <span className="nav-section-title__sub">· {gap ? '공백 수' : '보유/전체'}</span>
+          계층 바로가기{' '}
+          <span className="nav-section-title__sub" title="공백 = 미보유 + 일부 보유">
+            · 보유/전체 <span className="layer-nav__gapmark" aria-hidden="true">●</span>
+            <span className="visually-hidden">, </span>공백
+          </span>
         </h2>
         <ul className="layer-nav__list">
           {model.layers.map((l) => {
@@ -70,51 +74,24 @@ export default function LayerNav() {
                     <span className="layer-nav__label">{name}</span>
                   </span>
                   <span className="visually-hidden">&nbsp;</span>
-                  <span className={`layer-nav__count${gap && s.gaps > 0 ? ' has-gap' : ''}`}>
-                    {gap ? s.gaps : `${s.owned}/${s.total}`}
+                  <span className="layer-nav__count">{`${s.owned}/${s.total}`}</span>
+                  {/* 공백 열 — 0이면 빈칸으로 자리만 유지(고정 열). 읽기는 아래 보조 설명이 맡음 */}
+                  <span className={`layer-nav__gap${s.gaps > 0 ? ' has-gap' : ''}`} aria-hidden="true">
+                    {s.gaps > 0 ? `●${s.gaps}` : ''}
                   </span>
                   <span className="visually-hidden">
-                    {` · ${l.label}, ${gap ? `공백 ${s.gaps}` : `보유 ${s.owned} / 전체 ${s.total}`}`}
+                    {` · ${l.label}, 보유 ${s.owned} / 전체 ${s.total}, 공백 ${s.gaps}`}
                   </span>
                 </button>
               </li>
             );
           })}
         </ul>
-        {gap && <p className="layer-nav__note">공백 수 = 미보유 + 일부 보유</p>}
+        {/* 휴대폰 세로: 헤더의 "계통도 · 공백 표" 메뉴는 검색창 자리를 위해 숨김 → 칩 줄 끝에서 공백 표로 */}
+        <Link to="/gap" className="layer-nav__gaplink" data-testid="gap-table-link-mobile">
+          공백 표 <span aria-hidden="true">→</span>
+        </Link>
       </div>
-
-      <div className="nav-block nav-block--desktop">
-        <CoverageLegend mode={mode} />
-        {!gap && (
-          <ul className="line-legend" aria-label="선 범례">
-            <li>
-              <span className="line-legend__swatch line-legend__swatch--power" aria-hidden="true" />
-              전력선
-            </li>
-            <li>
-              <span className="line-legend__swatch line-legend__swatch--signal" aria-hidden="true" />
-              신호선 (계측·보호·제어)
-            </li>
-            <li>
-              <span className="line-legend__swatch line-legend__swatch--bus" aria-hidden="true" />
-              모선
-            </li>
-            <li>
-              <span className="line-legend__swatch line-legend__swatch--alt" aria-hidden="true" />
-              택1 연결 (어느 하나)
-            </li>
-            <li>
-              <span className="line-legend__swatch line-legend__swatch--ref" aria-hidden="true" />
-              참조 타일 (같은 기기 재등장)
-            </li>
-          </ul>
-        )}
-      </div>
-
-      <Link to="/gap" className={`gap-table-link${gap ? ' gap-table-link--gap' : ''}`} data-testid="gap-table-link">
-        공백 표 보기 <span aria-hidden="true">→</span>
-      </Link>
     </nav>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import type { Coverage, Product } from '../../lib/schema';
 import { docsByProductId } from '../../data/load';
@@ -21,6 +21,8 @@ import {
 import { getDiagramController } from '../../lib/diagram/view';
 import { announce } from '../../lib/announce';
 import { useCompactState } from '../layout/shellLayout';
+import { useUiStore } from '../../store/useUiStore';
+import { overviewParts } from '../../lib/overview';
 import CoverageBadge from '../common/CoverageBadge';
 import CompareToggle from '../compare/CompareToggle';
 import DocsList from '../common/DocsList';
@@ -81,6 +83,122 @@ function representative(products: Product[]): Product | undefined {
 }
 
 /**
+ * 모바일 하단 시트 3단 (P1): peek = 요약(머리글·설명 1~2줄), half = 화면 반, full = 전체(88dvh).
+ * 기록 항목 state.sheet 에 남긴다 — 'half' | 'expanded'(= full, 기존 값 호환). 없으면 peek.
+ */
+type SheetSize = 'peek' | 'half' | 'full';
+type SheetHistoryState = Omit<PanelHistoryState, 'sheet'> & { sheet?: 'expanded' | 'half' };
+const SHEET_NEXT: Record<SheetSize, SheetSize> = { peek: 'half', half: 'full', full: 'peek' };
+const SHEET_TOGGLE_TEXT: Record<SheetSize, string> = { peek: '더 보기', half: '전체 보기', full: '시트 줄이기' };
+const SHEET_SIZE_NAME: Record<SheetSize, string> = { peek: '요약', half: '반', full: '전체' };
+
+/**
+ * 패널 고정 버튼 줄의 "비교에 담기 ↔ ✓ 담김 n/4" (P1). 누르면 빼기, 상태는 aria-pressed.
+ * testid 는 공용 CompareToggle 과 같은 compare-toggle-{기기id} (E2E 호환).
+ */
+function PanelCompareButton({ id, name, className = '' }: { id: string; name: string; className?: string }) {
+  // 공용 CompareToggle(C 담당, Button secondary)로 통일 — 모양·문구("✓ 담김 n/4")·testid 동일
+  return <CompareToggle kind="equipment" id={id} name={name} className={`cmp-toggle--sm dp-compare${className ? ` ${className}` : ''}`} />;
+}
+
+/** 설명: 기본 1줄 요약, "펼치기"로 요약 전문 + 항목 (P1 패널 순서 — 맨 아래) */
+function PanelDescription({ eq }: { eq: Parameters<typeof EquipmentOverview>[0]['eq'] }) {
+  const [open, setOpen] = useState(false);
+  const bodyId = useId();
+  const { summary, points } = overviewParts(eq);
+  const canExpand = points.length > 0 || summary.length > 40;
+  return (
+    <section className="dp-section dp-descsec" aria-labelledby="dp-desc-title">
+      <div className="dp-descsec__head">
+        <h3 id="dp-desc-title" className="dp-label">
+          설명
+        </h3>
+        {canExpand && (
+          <button
+            type="button"
+            className="dp-desc-toggle"
+            aria-expanded={open}
+            aria-controls={bodyId}
+            data-testid="detail-desc-toggle"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? '접기' : '펼치기'}
+          </button>
+        )}
+      </div>
+      <div className="dp-overview" id={bodyId} data-collapsed={canExpand && !open ? 'true' : 'false'}>
+        <EquipmentOverview eq={eq} className="dp-desc" testId="detail-desc" />
+      </div>
+    </section>
+  );
+}
+
+/**
+ * 빈 상세 패널 (넓은 화면). 기본은 오른쪽 레일("‹ 상세") — 누르면 빈 안내 패널을 펼치고 제목으로 포커스,
+ * 안내 패널의 "접기"는 레일로 되돌리고 포커스를 레일 버튼으로 (P0-8).
+ */
+function EmptyPanel() {
+  const open = useUiStore((s) => s.emptyPanelOpen);
+  const setOpen = useUiStore((s) => s.setEmptyPanelOpen);
+  const pending = useRef<'title' | 'rail' | null>(null);
+  useLayoutEffect(() => {
+    const target = pending.current;
+    pending.current = null;
+    if (target === 'title') focusPanelTitle();
+    else if (target === 'rail') document.querySelector<HTMLElement>('[data-testid="panel-rail-open"]')?.focus({ preventScroll: true });
+  }, [open]);
+
+  if (!open) {
+    return (
+      <div className="detail-panel-rail" data-testid="panel-rail">
+        <button
+          type="button"
+          className="detail-panel-rail__btn"
+          aria-expanded={false}
+          aria-label="상세 정보 창 열기"
+          title="상세 정보 창 열기"
+          data-testid="panel-rail-open"
+          onClick={() => {
+            pending.current = 'title';
+            setOpen(true);
+          }}
+        >
+          <span aria-hidden="true">‹</span>
+          <span className="detail-panel-rail__label" aria-hidden="true">
+            상세
+          </span>
+        </button>
+      </div>
+    );
+  }
+  return (
+    <aside className="detail-panel detail-panel--empty detail-panel--side" aria-labelledby={PANEL_TITLE_ID} data-testid="detail-panel-empty">
+      <div className="dp-head">
+        <h2 id={PANEL_TITLE_ID} className="dp-empty-title" tabIndex={-1}>
+          상세 정보
+        </h2>
+        <button
+          type="button"
+          className="dp-close"
+          aria-label="상세 정보 창 접기"
+          title="접기"
+          aria-expanded
+          data-testid="panel-rail-close"
+          onClick={() => {
+            pending.current = 'rail';
+            setOpen(false);
+          }}
+        >
+          ›
+        </button>
+      </div>
+      <p>계통도에서 기기를 누르면 역할·자사 제품·데이터시트가 여기에 표시됩니다.</p>
+      <p className="dp-muted">키보드: Tab 으로 기기 이동, Enter 로 선택, Esc 로 닫기</p>
+    </aside>
+  );
+}
+
+/**
  * 우측 상세 패널 (모바일 ≤900px 에서는 하단 시트). 선택은 URL `?node=` 가 원본.
  * Esc·닫기 → 선택 해제 + 포커스를 그 노드로 복귀.
  */
@@ -97,14 +215,16 @@ export default function DetailPanel() {
   // 항상 펼친 상태, 시트 핸들·펼치기 버튼·접힌 머리글 없음. 휴대폰 세로는 넓게 보기여도 하단 시트(리뷰 M2)
   const { compact: compactDensity } = useCompactState();
   const sideSheet = isMobile && compactDensity;
-  const expanded = sideSheet || (isMobile && (location.state as PanelHistoryState | null)?.sheet === 'expanded');
-  const setExpanded = (v: boolean) => {
+  const savedSheet = (location.state as SheetHistoryState | null)?.sheet;
+  const sheetSize: SheetSize = sideSheet ? 'full' : savedSheet === 'expanded' ? 'full' : savedSheet === 'half' ? 'half' : 'peek';
+  const expanded = sideSheet || (isMobile && sheetSize !== 'peek');
+  const setSheetSize = (v: SheetSize) => {
     const prev = (location.state ?? {}) as Record<string, unknown>;
-    navigate(
-      { pathname: location.pathname, search: location.search },
-      { replace: true, state: { ...prev, sheet: v ? 'expanded' : undefined } satisfies PanelHistoryState },
-    );
+    const sheet: SheetHistoryState['sheet'] = v === 'full' ? 'expanded' : v === 'half' ? 'half' : undefined;
+    navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: { ...prev, sheet } satisfies SheetHistoryState });
+    announce(`시트 크기: ${SHEET_SIZE_NAME[v]}`);
   };
+  const setEmptyPanelOpen = useUiStore((s) => s.setEmptyPanelOpen);
   const panelRef = useRef<HTMLElement>(null);
   const keyRef = useRef(location.key);
   keyRef.current = location.key;
@@ -115,6 +235,7 @@ export default function DetailPanel() {
   /** 닫기(Esc·×) → 포커스를 원래 타일로 돌려주고, 그 타일이 화면(보이는 영역) 안에 들어오도록 팬 (B4) */
   const close = () => {
     const id = selectedId;
+    setEmptyPanelOpen(false); // 닫으면 레일로 (빈 안내를 펼쳐 둔 채 기기를 골랐어도)
     selectNode(null);
     if (id)
       requestAnimationFrame(() => {
@@ -160,6 +281,18 @@ export default function DetailPanel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId]);
 
+  // 레일에서 패널이 열리면 계통도 폭이 줄어든다 → 고른 타일이 가려지지 않게 다시 맞춘다 (P0-8, 이미 보이면 그대로). 열기 애니메이션은 CSS — 움직임 줄이기면 없음
+  const hadNodeRef = useRef(false);
+  const hasNode = !!node;
+  useEffect(() => {
+    const was = hadNodeRef.current;
+    hadNodeRef.current = hasNode;
+    if (!hasNode || was || isMobile || !selectedId) return;
+    const id = selectedId;
+    const raf = requestAnimationFrame(() => getDiagramController()?.revealNode(id));
+    return () => cancelAnimationFrame(raf);
+  }, [hasNode, selectedId, isMobile]);
+
   // 스크린리더 안내 (앱 공용 live region)
   const openedName = node ? (node.eq.abbr ?? node.eq.name) : null;
   // 제목으로 포커스를 옮겼으면 제목 낭독과 겹치므로 생략 (리뷰 S3)
@@ -181,13 +314,7 @@ export default function DetailPanel() {
 
   if (!node) {
     if (isMobile) return null;
-    return (
-      <aside className="detail-panel detail-panel--empty" aria-labelledby="detail-panel-title">
-        <h2 id={PANEL_TITLE_ID}>상세 정보</h2>
-        <p>계통도에서 기기를 누르면 역할·자사 제품·데이터시트가 여기에 표시됩니다.</p>
-        <p className="dp-muted">키보드: Tab 으로 기기 이동, Enter 로 선택, Esc 로 닫기</p>
-      </aside>
-    );
+    return <EmptyPanel />;
   }
 
   const { eq } = node;
@@ -202,21 +329,37 @@ export default function DetailPanel() {
   const variant = isMobile ? 'sheet' : 'side';
   const compact = isMobile && !expanded;
 
+  const bottomSheet = isMobile && !sideSheet;
+
   return (
     <aside
       ref={panelRef}
-      className={`detail-panel detail-panel--${variant}${expanded ? ' is-expanded' : ''}`}
+      className={`detail-panel detail-panel--${variant}${expanded ? ' is-expanded' : ''}${bottomSheet ? ` is-${sheetSize}` : ''}`}
       data-testid="detail-panel"
       data-variant={variant}
-      data-sheet={isMobile ? (sideSheet ? "side" : "bottom") : undefined}
+      data-sheet={isMobile ? (sideSheet ? 'side' : 'bottom') : undefined}
+      data-sheet-size={bottomSheet ? sheetSize : undefined}
       role={isMobile ? 'dialog' : 'complementary'}
       aria-modal={isMobile ? false : undefined}
       aria-labelledby={PANEL_TITLE_ID}
       onScroll={onScroll}
     >
-      {isMobile && !sideSheet && <div className="dp-handle" aria-hidden="true" />}
+      {bottomSheet && (
+        // 손잡이 = 시트 크기 단계 버튼 (요약 → 반 → 전체 → 요약). 보이는 막대는 4px, 누르는 영역은 44px
+        <button
+          type="button"
+          className="dp-handle"
+          aria-label={`시트 크기 바꾸기 (지금: ${SHEET_SIZE_NAME[sheetSize]})`}
+          title="시트 크기 바꾸기"
+          data-testid="detail-sheet-handle"
+          onClick={() => setSheetSize(SHEET_NEXT[sheetSize])}
+        />
+      )}
+      {/* ① 머리: 썸네일 · 계층/전압 · 이름 · 상태 */}
       <div className={`dp-head${compact ? ' dp-head--compact' : ''}`}>
-        {compact && <PanelHero eq={eq} compact />}
+        <div className={`dp-head__thumb${compact ? '' : ' dp-head__thumb--side'}`}>
+          <PanelHero eq={eq} compact={compact} />
+        </div>
         <div className="dp-titlebox">
           <span className="dp-meta" data-testid="detail-meta">
             {layerTitle(node.layer)}
@@ -232,9 +375,8 @@ export default function DetailPanel() {
             label={pillText(eq.coverage, products.length, gapConfidence(eq) === 'confirmed')}
             testId="detail-coverage-badge"
           />
-          {!compact && <CompareToggle kind="equipment" id={eq.id} name={eq.name} className="cmp-toggle--sm dp-compare" />}
         </div>
-        <button type="button" className="dp-close" aria-label="상세 정보 닫기" data-testid="detail-panel-close" onClick={close}>
+        <button type="button" className="dp-close" aria-label="상세 정보 닫기" title="닫기 (Esc)" data-testid="detail-panel-close" onClick={close}>
           ×
         </button>
       </div>
@@ -246,7 +388,13 @@ export default function DetailPanel() {
         </p>
       ) : (
         <>
-          <PanelHero eq={eq} compact={false} />
+          {/* ② 고정 버튼 줄 — 스크롤해도 패널 위에 붙어 있음 */}
+          <div className="dp-actions" data-testid="detail-actions">
+            <PanelCompareButton id={eq.id} name={eq.name} />
+            <Link to={`/equipment/${eq.id}`} className="dp-eq-link">
+              기기 상세 페이지 →
+            </Link>
+          </div>
 
           {node.ref && (
             <div className="dp-refnote" data-testid="detail-ref-note" role="note">
@@ -267,27 +415,7 @@ export default function DetailPanel() {
             </div>
           )}
 
-          <div className="dp-overview">
-            <EquipmentOverview eq={eq} className="dp-desc" testId="detail-desc" />
-          </div>
-
-          {eq.affiliateName && (
-            <p className="dp-affiliate">
-              계열사: <strong data-testid="detail-affiliate-name">{eq.affiliateName}</strong>
-            </p>
-          )}
-
-          {eq.gapNote && (
-            <div className={`dp-gapnote${gapView ? ' dp-gapnote--strong' : ''}`}>
-              <span className="dp-gapnote__label">{NOTE_LABELS[eq.coverage] ?? '메모'}</span>
-              <span data-testid="detail-gap-note">{eq.gapNote}</span>
-            </div>
-          )}
-
-          <GapAssessmentSection eq={eq} />
-
-          {gapView && <GapSections node={node} onSelect={selectFromPanel} />}
-
+          {/* ③ 자사 제품 목록 */}
           <section className="dp-section" aria-labelledby="dp-products-title">
             <h3 id="dp-products-title" className="dp-label">
               자사 제품{products.length > 0 ? ` · ${products.length}개` : ''}
@@ -324,6 +452,26 @@ export default function DetailPanel() {
             )}
           </section>
 
+          {/* ④ 설명 — 1줄 요약, 펼치기 (기기가 바뀌면 다시 접힘) */}
+          <PanelDescription key={eq.id} eq={eq} />
+
+          {eq.affiliateName && (
+            <p className="dp-affiliate">
+              계열사: <strong data-testid="detail-affiliate-name">{eq.affiliateName}</strong>
+            </p>
+          )}
+
+          {eq.gapNote && (
+            <div className={`dp-gapnote${gapView ? ' dp-gapnote--strong' : ''}`}>
+              <span className="dp-gapnote__label">{NOTE_LABELS[eq.coverage] ?? '메모'}</span>
+              <span data-testid="detail-gap-note">{eq.gapNote}</span>
+            </div>
+          )}
+
+          <GapAssessmentSection eq={eq} />
+
+          {gapView && <GapSections node={node} onSelect={selectFromPanel} />}
+
           {rep && (
             <section className="dp-section" aria-labelledby="dp-docs-title">
               <h3 id="dp-docs-title" className="dp-label">
@@ -334,25 +482,26 @@ export default function DetailPanel() {
           )}
 
           <NeighborChips node={node} onSelect={selectFromPanel} />
-
-          <Link to={`/equipment/${eq.id}`} className="dp-eq-link">
-            기기 상세 페이지로 이동 →
-          </Link>
         </>
       )}
 
-      {isMobile && !sideSheet && (
-        // 접힌 시트: 비교 담기 + 전체 정보 보기 한 줄 (요약 높이를 줄여 지도 확보). 펼친 시트: 시트 줄이기만 (아래에 고정)
+      {bottomSheet && (
+        // 시트 아래 버튼 줄 (고정). 요약: 비교 담기 + 더 보기(→반) / 반: 줄이기 + 전체 보기 / 전체: 시트 줄이기(→요약)
         <div className="dp-sheet-actions">
-          {compact && <CompareToggle kind="equipment" id={eq.id} name={eq.name} className="cmp-toggle--sm dp-compare" />}
+          {compact && <PanelCompareButton id={eq.id} name={eq.name} />}
+          {sheetSize === 'half' && (
+            <button type="button" className="dp-shrink" data-testid="detail-sheet-shrink" onClick={() => setSheetSize('peek')}>
+              줄이기
+            </button>
+          )}
           <button
             type="button"
             className="dp-expand"
             aria-expanded={expanded}
             data-testid="detail-sheet-toggle"
-            onClick={() => setExpanded(!expanded)}
+            onClick={() => setSheetSize(SHEET_NEXT[sheetSize])}
           >
-            {expanded ? '시트 줄이기' : '전체 정보 보기'}
+            {SHEET_TOGGLE_TEXT[sheetSize]}
           </button>
         </div>
       )}

@@ -1,41 +1,14 @@
 /* 비교 담기 버튼 + 하단 비교 바 (2026-11-18 비교 기능) */
-.cmp-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-height: 44px;
-  padding: 0 16px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-link);
-  font: inherit;
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-}
-.cmp-toggle:hover:not(:disabled) { border-color: var(--color-brand); }
-.cmp-toggle.is-on {
-  border-color: var(--color-brand);
-  background: var(--node-selected-bg);
-  color: var(--color-brand-strong);
-  font-weight: var(--fw-bold);
-}
-.cmp-toggle:disabled { opacity: 0.5; cursor: not-allowed; }
+/* 모양은 공용 Button(secondary md, Button.css) — 여기서는 크기 변형·아이콘·담김 숫자만 */
 .cmp-toggle__icon { font-weight: var(--fw-bold); }
-.cmp-toggle--sm { min-height: 32px; padding: 0 12px; font-size: var(--fs-sm); }
-.cmp-toggle--icon {
+.cmp-toggle__count { font-variant-numeric: tabular-nums; }
+.btn.cmp-toggle--sm { min-height: var(--control-h-sm, 32px); padding: 0 var(--space-3); font-size: var(--fs-sm); }
+.btn.cmp-toggle--icon {
   min-height: 0;
   width: 36px;
   height: 36px;
   padding: 0;
   flex: none;
-}
-.cmp-toggle:focus-visible,
-.cmp-tray button:focus-visible,
-.cmp-tray a:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
 }
 
 /* 하단 고정 비교 바 — 데스크톱: 본문(좌측 내비 오른쪽) 왼쪽 아래, 계통도 미니맵(오른쪽 아래)을 피한다 */
@@ -180,8 +153,8 @@
 
 /* 터치 대상 44px (UX 토론 U1 — 모바일·터치 화면). 데스크톱 마우스 화면은 그대로 */
 @media (max-width: 900px), (pointer: coarse) {
-  .cmp-toggle--icon { width: 44px; height: 44px; }
-  .cmp-toggle--sm { min-height: 44px; }
+  .btn.cmp-toggle--icon { width: 44px; height: 44px; }
+  .btn.cmp-toggle--sm { min-height: 44px; }
   .cmp-tray__kind,
   .cmp-tray__clear,
   .cmp-tray__go { min-height: 44px; }

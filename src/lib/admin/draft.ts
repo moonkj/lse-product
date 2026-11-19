@@ -76,6 +76,7 @@ function canonicalEdge(e: DiagramEdge): DiagramEdge {
   if (e.kind) out.kind = e.kind;
   if (e.voltage) out.voltage = e.voltage;
   if (e.label) out.label = e.label;
+  if (e.flow) out.flow = e.flow;
   if (e.points) out.points = e.points.map((p) => ({ x: p.x, y: p.y }));
   return out as DiagramEdge;
 }

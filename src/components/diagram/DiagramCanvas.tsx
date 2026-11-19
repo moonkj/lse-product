@@ -27,6 +27,8 @@ import DiagramNode from './DiagramNode';
 import { AltBadges, BusNodes, EndpointNodes } from './DiagramExtras';
 import DiagramToolbar from './DiagramToolbar';
 import Minimap from './Minimap';
+import DiagramLegend from './DiagramLegend';
+import FlowLayer from './FlowLayer';
 import './DiagramCanvas.css';
 
 /** 다른 페이지에서 계층 점프 시 navigate state 로 넘기는 값 */
@@ -69,6 +71,9 @@ export const Edges = memo(function Edges({
   );
 });
 
+/** semantic zoom 경계 (P1): 이 배율 미만이면 개요 단계 — 타일 사진·보조 글자를 숨기고 점 + 약칭만 */
+export const OVERVIEW_SCALE = 0.6;
+
 export const Bands = memo(function Bands({
   model,
   mode,
@@ -81,25 +86,42 @@ export const Bands = memo(function Bands({
 }) {
   const focus = useView((s) => s.focus);
   const active = highlight ? focus : null;
+  // semantic zoom: 배율이 경계를 넘을 때만 다시 그림(불리언 구독) → 캔버스 안쪽 상자에 data-zoom 을 달아 CSS 로 전환.
+  // 타일 74개를 React 로 다시 그리지 않는다. 관리자 캔버스(view store 미사용, ready=false)는 늘 상세 단계.
+  const overview = useView((s) => s.ready && s.scale < OVERVIEW_SCALE);
+  const probeRef = useRef<HTMLSpanElement>(null);
+  useLayoutEffect(() => {
+    const host = probeRef.current?.parentElement;
+    if (!host) return;
+    host.dataset.zoom = overview ? 'overview' : 'detail';
+  }, [overview]);
   return (
     <>
+      <span ref={probeRef} hidden aria-hidden="true" />
       {model.layers.map((l) => {
         const r = model.layerRect.get(l.id)!;
-        const gaps = model.layerStats.get(l.id)?.gaps ?? 0;
-        const name = isMainLayer(l.id) ? `${l.id} ${l.label}` : l.label;
-        const suffix = mode === 'gap' ? (gaps > 0 ? `공백 ${gaps}` : '공백 없음') : l.voltage;
+        const s = model.layerStats.get(l.id);
+        const gaps = s?.gaps ?? 0;
+        const main = isMainLayer(l.id);
+        const name = main ? `${l.id} ${l.label}` : l.label;
+        // 이름표 "L4 수전설비 · 22.9kV · 10/13" (보유/전체). Gap 보기는 공백 수를 덧붙인다
+        const meta = [l.voltage, s && s.total > 0 ? `${s.owned}/${s.total}` : undefined, mode === 'gap' ? (gaps > 0 ? `공백 ${gaps}` : '공백 없음') : undefined]
+          .filter(Boolean)
+          .join(' · ');
+        // 2톤 교차: 주 계층 L1~L7 은 홀수 a · 짝수 b, 감시·신재생(사이드)은 옅은 블루 1톤
+        const tone = main ? (Number(l.id.slice(1)) % 2 === 1 ? 'a' : 'b') : 'side';
         return (
           <div
             key={l.id}
             id={`layer-band-${l.id}`}
             data-testid={`layer-band-${l.id}`}
-            className={`dband dband--${l.id.toLowerCase()}${active === l.id ? ' is-active' : ''}`}
+            className={`dband dband--${l.id.toLowerCase()} dband--tone-${tone}${active === l.id ? ' is-active' : ''}`}
             data-active={active === l.id ? 'true' : undefined}
             style={{ left: r.x, top: r.y, width: r.w, height: r.h }}
           >
             <span className="dband__label">
               {name}
-              {suffix && <span className="dband__suffix"> · {suffix}</span>}
+              {meta && <span className="dband__suffix"> · {meta}</span>}
             </span>
           </div>
         );
@@ -461,6 +483,7 @@ export default function DiagramCanvas() {
             <div ref={innerRef} className="diagram__inner" style={{ width: model.width, height: model.height }}>
               <Bands model={model} mode={mode} highlight />
               <Edges model={model} selectedEdges={selectedEdges} />
+              <FlowLayer />
               <BusNodes buses={model.busNodes} />
               <EndpointNodes endpoints={model.endpoints} />
               {model.nodes.map((n) => (
@@ -475,6 +498,7 @@ export default function DiagramCanvas() {
           </div>
         </div>
         {!isMobile && <Minimap mode={mode} />}
+        <DiagramLegend mode={mode} />
       </div>
     </section>
   );

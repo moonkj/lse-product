@@ -224,6 +224,11 @@ export const DiagramEdgeSchema = z.object({
   label: z.string().optional(),
   /** 기본 직교 경로가 다른 타일을 지나갈 때 생성기가 계산한 우회 경로(타일 가장자리→…→타일 가장자리). 있으면 그대로 그린다 */
   points: z.array(z.object({ x: z.number(), y: z.number() })).min(2).optional(),
+  /**
+   * 전기 흐름 방향 (계통도 흐름 애니메이션). 생략 = forward(from→to).
+   * reverse = to→from 으로 흐름, bi = 양방향(충·방전 — 움직이지 않고 ⇄ 표지만)
+   */
+  flow: z.enum(['forward', 'reverse', 'bi']).optional(),
 });
 export type DiagramEdge = z.infer<typeof DiagramEdgeSchema>;
 

@@ -315,14 +315,47 @@
   flex-direction: column;
 }
 
+/* 시트 손잡이 = 크기 단계 버튼 (요약 → 반 → 전체). 보이는 막대 40×4, 누르는 영역 44px 높이 */
 .dp-handle {
+  position: relative;
   flex: none;
   align-self: center;
+  width: 64px;
+  /* 누르는 영역 44px(터치 기준) — 실제 박스 높이로 둔다. 아래쪽 음수 여백으로 시트 높이는 그대로(4px) */
+  height: 44px;
+  margin: -4px 0 -36px;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.dp-handle::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 12px;
   width: 40px;
   height: 4px;
-  margin-bottom: -8px;
   border-radius: 2px;
   background: var(--sheet-handle);
+}
+.dp-handle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.dp-shrink {
+  flex: none;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
 }
 
 /* 시트 아래 버튼 줄 — 접힘: 비교 담기 + 전체 정보 보기, 펼침: 시트 줄이기 (스크롤해도 아래에 고정) */
@@ -373,6 +406,12 @@
   box-shadow: var(--shadow-sheet);
   gap: 12px;
   overscroll-behavior: contain;
+}
+
+/* 3단 시트(P1): 반 = 화면 절반, 전체 = 88dvh. 둘 다 전체 내용(스크롤) + 아래 고정 버튼 줄 */
+.detail-panel.detail-panel--sheet.is-expanded.is-half {
+  max-height: 50dvh;
+  height: 50dvh;
 }
 
 .detail-panel.detail-panel--sheet.is-expanded {
@@ -534,5 +573,170 @@
     width: max(100%, 44px);
     height: max(100%, 44px);
     transform: translate(-50%, -50%);
+  }
+}
+
+/* ── P0-8 빈 패널 = 오른쪽 레일 (넓은 화면). 폭은 셸의 --panel-w(레일일 때 28px, AppLayout.css) ── */
+.detail-panel-rail {
+  grid-area: panel;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  padding-top: var(--space-3);
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+}
+
+.detail-panel-rail__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 24px;
+  min-height: 72px;
+  padding: 8px 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.detail-panel-rail__btn:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}
+
+.detail-panel-rail__btn:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+.detail-panel-rail__label {
+  writing-mode: vertical-rl;
+  letter-spacing: 2px;
+  font-weight: var(--fw-bold);
+}
+
+.dp-empty-title {
+  flex: 1;
+  font-size: var(--fs-lg, 18px);
+}
+
+/* 열 때: 오른쪽에서 살짝 밀려 들어옴. 움직임 줄이기면 즉시 */
+.detail-panel--side {
+  animation: dp-open 160ms ease-out;
+}
+
+@keyframes dp-open {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail-panel--side {
+    animation: none;
+  }
+}
+
+/* ── P1 패널 순서: 머리(썸네일) → 고정 버튼 줄 → 자사 제품 → 설명 ── */
+.dp-head__thumb {
+  flex: none;
+}
+
+.dp-head__thumb--side .dp-hero {
+  width: 72px;
+  height: 72px;
+  min-height: 0;
+  padding: 4px;
+  border-radius: var(--radius-md);
+}
+
+.dp-head__thumb--side .dp-hero img {
+  width: 62px;
+  height: 62px;
+}
+
+.dp-head__thumb--side .dp-hero svg {
+  width: 52px;
+  height: 52px;
+}
+
+.dp-actions {
+  position: sticky;
+  top: calc(-1 * var(--space-5));
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 calc(-1 * var(--space-5));
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detail-panel--sheet .dp-actions {
+  top: -8px;
+  margin: 0 -16px;
+  padding: 8px 16px;
+}
+
+.dp-actions .dp-compare {
+  align-self: center;
+  margin-top: 0;
+}
+
+.dp-actions .dp-eq-link {
+  margin-left: auto;
+}
+
+.dp-descsec__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.dp-desc-toggle {
+  flex: none;
+  min-height: 28px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-link);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.dp-desc-toggle:hover {
+  background: var(--color-surface-2);
+}
+
+/* 접힌 설명 = 요약 1줄, 항목은 펼치면 */
+.dp-overview[data-collapsed='true'] .ov-summary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+}
+
+.dp-overview[data-collapsed='true'] .ov-points {
+  display: none;
+}
+
+@media (pointer: coarse), (max-width: 900px) {
+  .dp-desc-toggle {
+    min-height: 44px;
   }
 }

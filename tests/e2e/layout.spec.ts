@@ -3,9 +3,9 @@
  *  - C1 압축 화면 규칙: 창 높이 ≤600(200% 확대·모바일 가로) 자동 + 헤더 "넓게 보기" 토글(localStorage `lse-present-v1`)
  *       압축이면 헤더 한 줄, 사이드바(범례) 접고 계층 칩 한 줄, 빈 상세 패널 숨김, 모바일 가로는 오른쪽 사이드 패널
  *       데스크톱 기본(1280↑·높이 700↑)은 그대로. 사이드바는 계통도(/)에서만.
- *  - C4 첫 방문 시작 카드: 쿼리·경로 없는 첫 방문 1회, 닫기/Esc → localStorage `lse-start-card-dismissed`, 공유 링크는 미표시
+ *  - C4 첫 방문 시작 카드: 디자이너 토론 P0-6 으로 제거 — 첫 방문에도 띠 없음(회귀 검증만)
  *  - B10 live region(data-testid=live-region) 하나 + 라우트 이동 시 h1 포커스
- * 셀렉터: app-shell[data-density], present-toggle, start-card(-close|-device|-tour|-gap), live-region
+ * 셀렉터: app-shell[data-density], present-toggle, view-mode-*, live-region
  */
 import { test, expect, type Page } from '@playwright/test';
 
@@ -34,12 +34,12 @@ function visibleDiagram(page: Page) {
 }
 
 test.describe('C1 압축 화면 · 넓게 보기', () => {
-  test('데스크톱 기본(1440×900): 펼침 그대로 — 사이드바 범례·빈 상세 패널 표시, 넓게 보기 꺼짐', async ({ page }) => {
+  test('데스크톱 기본(1440×900): 범례 카드 표시, 빈 상세 패널은 오른쪽 레일로 접힘(P0-8), 넓게 보기 꺼짐', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await gotoHome(page);
     await expect(tid(page, 'app-shell')).toHaveAttribute('data-density', 'default');
     await expect(tid(page, 'legend')).toBeVisible();
-    await expect(page.locator('.detail-panel--empty')).toBeVisible();
+    await expect(tid(page, 'panel-rail-open')).toBeVisible();
     await expect(tid(page, 'present-toggle')).toHaveAttribute('aria-pressed', 'false');
     expect((await visibleDiagram(page)).w).toBeGreaterThan(800);
   });
@@ -48,7 +48,7 @@ test.describe('C1 압축 화면 · 넓게 보기', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await gotoHome(page);
     const before = (await visibleDiagram(page)).w;
-    expect(before).toBeLessThan(600); // 200 사이드바 + 360 빈 패널
+    expect(before).toBeLessThan(820); // 232 사이드바 + 28 레일 (빈 패널은 레일로 접힘)
 
     await tid(page, 'present-toggle').click();
     await expect(tid(page, 'present-toggle')).toHaveAttribute('aria-pressed', 'true');
@@ -56,7 +56,7 @@ test.describe('C1 압축 화면 · 넓게 보기', () => {
     await expect(page.locator('.detail-panel--empty')).toBeHidden();
     await expect(tid(page, 'legend')).toBeHidden();
     await expect(tid(page, 'layer-nav-L4')).toBeVisible(); // 계층 칩 한 줄은 남음
-    expect((await visibleDiagram(page)).w).toBeGreaterThanOrEqual(1000);
+    expect((await visibleDiagram(page)).w).toBeGreaterThanOrEqual(990); // 28px 레일만 남음
 
     await page.reload();
     await expect(tid(page, 'present-toggle')).toHaveAttribute('aria-pressed', 'true');
@@ -83,13 +83,16 @@ test.describe('C1 압축 화면 · 넓게 보기', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(720);
   });
 
-  test('390×844 세로: 압축 아님, 헤더 2줄(≤120px)·버튼 44px, 넓게 보기 버튼 숨김(M2)', async ({ page }) => {
+  test('390×844 세로: 압축 아님, 헤더 1줄(≤64px)·버튼 44px, 넓게 보기 버튼 숨김(M2)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await gotoHome(page);
     await expect(tid(page, 'app-shell')).toHaveAttribute('data-density', 'default');
     const header = await page.getByRole('banner').boundingBox();
-    expect(header!.height).toBeLessThanOrEqual(120);
-    for (const id of ['view-mode-gap', 'layer-nav-L4']) {
+    expect(header!.height).toBeLessThanOrEqual(64);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    for (const id of ['view-mode-gap', 'layer-nav-L4', 'theme-toggle', 'gap-table-link-mobile']) {
+      // 휴대폰 세로: 헤더 메뉴는 숨기고 공백 표는 칩 줄 끝 링크
+      if (id === 'gap-table-link-mobile') await tid(page, id).scrollIntoViewIfNeeded();
       expect((await tid(page, id).boundingBox())!.height, id).toBeGreaterThanOrEqual(44);
     }
     await expect(tid(page, 'present-toggle')).toBeHidden();
@@ -163,79 +166,19 @@ test.describe('C1 사이드바는 계통도 화면에서만', () => {
   }
 });
 
-test.describe('C4 첫 방문 시작 카드', () => {
+test.describe('C4 시작 카드 띠 제거 (디자이너 토론 P0-6)', () => {
   test.use({ storageState: EMPTY_STATE });
 
-  test('주소 파라미터 없는 첫 방문에만 1회 — 닫으면 다시 안 뜸, 계통도는 가리지 않음', async ({ page }) => {
+  test('주소 파라미터 없는 첫 방문에도 시작 카드 없음 — 도구줄 바로 아래 계통도', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('./');
-    const card = tid(page, 'start-card');
-    await expect(card).toBeVisible();
-    await expect(card.getByRole('link')).toHaveCount(2); // 기기·공백 표 (교육 투어 제거 2026-11-18)
-    await expect(tid(page, 'start-card-hint')).toContainText('TS250');
-    // 계통도 위 줄에 놓임 — 겹치지 않음
-    const c = (await card.boundingBox())!;
-    const vp = (await page.locator('#diagram-viewport').boundingBox())!;
-    expect(vp.y).toBeGreaterThanOrEqual(c.y + c.height - 1);
-
-    await tid(page, 'start-card-close').click();
-    await expect(card).toHaveCount(0);
-    expect(await page.evaluate(() => localStorage.getItem('lse-start-card-dismissed'))).toBe('1');
-    await page.reload();
-    await expect(tid(page, 'diagram')).toBeVisible();
-    await expect(card).toHaveCount(0);
-  });
-
-  test('Esc 로 닫힘 (비모달 — 포커스를 가두지 않음)', async ({ page }) => {
-    await page.goto('./#/');
-    await expect(tid(page, 'start-card')).toBeVisible();
-    await tid(page, 'start-card-device').focus();
-    await page.keyboard.press('Tab');
-    await expect(tid(page, 'start-card-gap')).toBeFocused();
-    await page.keyboard.press('Tab');
-    await expect(tid(page, 'start-card-close')).toBeFocused();
-    await page.keyboard.press('Tab'); // 카드 밖으로 나감
-    expect(await page.evaluate(() => !!document.activeElement?.closest('[data-testid="start-card"]'))).toBe(false);
-    await tid(page, 'start-card-close').focus();
-    await page.keyboard.press('Escape');
-    await expect(tid(page, 'start-card')).toHaveCount(0);
-  });
-
-  test('공유 링크(?node=·/gap 등)로 들어오면 띄우지 않음', async ({ page }) => {
-    await gotoHome(page, '?node=n-vcb');
-    await expect(tid(page, 'start-card')).toHaveCount(0);
-    await page.goto('./#/gap');
-    await expect(tid(page, 'gap-page')).toBeVisible();
-    await page.getByRole('link', { name: '← 계통도로 돌아가기' }).click();
     await expect(tid(page, 'diagram')).toBeVisible();
     await expect(tid(page, 'start-card')).toHaveCount(0);
-  });
-
-  test('안내 링크 2개(기기·공백 표, 교육 투어 없음) — 공백 표 → /gap (누르면 카드는 닫힌 것으로 기록)', async ({ page }) => {
-    await page.goto('./');
-    await expect(tid(page, 'start-card').getByRole('link')).toHaveCount(2);
-    await expect(tid(page, 'start-card-tour')).toHaveCount(0);
-    await tid(page, 'start-card-gap').click();
-    await expect(page).toHaveURL(/#\/gap/);
-    expect(await page.evaluate(() => localStorage.getItem('lse-start-card-dismissed'))).toBe('1');
-  });
-
-  test('R1 "기기를 눌러 보세요" Enter → 포커스가 상세 패널 제목으로 (body 로 사라지지 않음)', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('./');
-    await tid(page, 'start-card-device').focus();
-    await page.keyboard.press('Enter');
-    await expect(tid(page, 'detail-panel')).toBeVisible();
-    await expect(page.locator('#detail-panel-title')).toBeFocused();
-  });
-
-  test('모바일(390): 1줄 배너(≤50px), 계통도를 덮지 않음', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('./');
-    const c = (await tid(page, 'start-card').boundingBox())!;
-    expect(c.height).toBeLessThanOrEqual(50);
-    const vp = (await page.locator('#diagram-viewport').boundingBox())!;
-    expect(vp.y).toBeGreaterThanOrEqual(c.y + c.height - 1);
+    // 보기 세그먼트는 도구줄 맨 왼쪽
+    await expect(tid(page, 'view-mode-product')).toHaveAttribute('aria-pressed', 'true');
+    const seg = (await tid(page, 'view-mode-product').boundingBox())!;
+    const zoom = (await tid(page, 'zoom-out').boundingBox())!;
+    expect(seg.x).toBeLessThan(zoom.x);
   });
 });
 
@@ -258,10 +201,10 @@ test.describe('B10 live region · 라우트 포커스', () => {
     await expect(page.getByRole('heading', { level: 1, name: '공백 표' })).toBeFocused();
   });
 
-  test('R1 제품 화면 "계통도에서 위치 보기" Enter → 계통도 상세 패널 제목에 포커스', async ({ page }) => {
+  test('R1 제품 화면 "계통도에서 보기" Enter → 계통도 상세 패널 제목에 포커스', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('./#/product/P00206');
-    const link = page.getByRole('link', { name: '계통도에서 위치 보기' });
+    const link = page.getByRole('link', { name: '계통도에서 보기', exact: true });
     await link.focus();
     await page.keyboard.press('Enter');
     await expect(tid(page, 'detail-panel')).toBeVisible();

@@ -63,6 +63,13 @@ async function expectOverview(scope: Locator, eq: Eq) {
   await expect(scope).not.toContainText('일반 기술 설명');
 }
 
+
+/** 패널 설명은 기본 1줄 요약(P1 패널 순서) — "펼치기"를 눌러 요약 전문 + 항목을 연다 */
+async function openPanelDesc(scope: import('@playwright/test').Locator) {
+  const t = scope.getByTestId('detail-desc-toggle');
+  if ((await t.count()) && (await t.getAttribute('aria-expanded')) !== 'true') await t.click();
+}
+
 test.describe('상세 설명 overview', () => {
   test.skip(!pick || !pickNode, 'overview 기기 없음');
 
@@ -70,6 +77,7 @@ test.describe('상세 설명 overview', () => {
     await page.goto(`./#/?node=${pickNode!.id}`);
     const p = tid(page, 'detail-panel');
     await expect(p).toBeVisible();
+    await openPanelDesc(p);
     await expectOverview(p.getByTestId('detail-desc'), pick!);
     await expect(p.getByTestId('overview-sources')).toHaveCount(0);
   });
@@ -77,6 +85,7 @@ test.describe('상세 설명 overview', () => {
   test('자사 제품이 없는 기기(missing)에는 "제품 설명" 항목이 없다', async ({ page }) => {
     test.skip(!missingNode, 'missing 기기 없음');
     await page.goto(`./#/?node=${missingNode!.id}`);
+    await openPanelDesc(tid(page, 'detail-panel'));
     const dl = tid(page, 'detail-panel').getByTestId('overview-points');
     await expect(dl).toBeVisible();
     await expect(dl.locator('dt', { hasText: '제품 설명' })).toHaveCount(0);
@@ -134,6 +143,7 @@ test.describe('모바일 시트 390×844', () => {
     await expect(p.getByTestId('overview-points')).toHaveCount(0);
     await p.locator('.dp-expand').click();
     await expect(p).toHaveClass(/is-expanded/);
+    await openPanelDesc(p);
     await expectOverview(p.getByTestId('detail-desc'), pick!);
     // 좁은 화면 — 라벨 아래로 본문을 쌓는다
     const first = p.getByTestId('overview-points').locator('.ov-point').first();

@@ -1,0 +1,68 @@
+/*
+ * 공용 버튼 — 변형 3(primary·secondary·ghost) × 크기 2(sm 32 · md 40), 터치 44.
+ * 토큰(B 담당 tokens.css 에 추가 요청): --control-h-sm 32px · --control-h-md 40px · --control-h-touch 44px
+ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-h-md, 40px);
+  padding: 0 var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+.btn--sm {
+  min-height: var(--control-h-sm, 32px);
+  padding: 0 var(--space-3);
+  font-size: var(--fs-sm);
+}
+
+.btn--primary {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  font-weight: var(--fw-bold);
+}
+.btn--primary:hover { border-color: var(--color-brand-strong); background: var(--color-brand-strong); color: var(--color-on-brand); }
+
+.btn--secondary {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-link);
+}
+.btn--secondary:hover { border-color: var(--color-brand); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-link);
+  padding-inline: var(--space-2);
+}
+.btn--ghost:hover { background: var(--color-surface-2); }
+
+/* 켜짐 상태(토글) — aria-pressed=true */
+.btn--secondary[aria-pressed='true'] {
+  border-color: var(--color-brand);
+  background: var(--node-selected-bg);
+  color: var(--color-brand-strong);
+  font-weight: var(--fw-bold);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] { opacity: 0.45; cursor: not-allowed; }
+
+@media (max-width: 900px), (pointer: coarse) {
+  .btn,
+  .btn--sm { min-height: var(--control-h-touch, 44px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}

@@ -1,4 +1,5 @@
 import './Compare.css';
+import { buttonClass } from '../common/Button';
 import { COMPARE_MAX, compareIdInData, useCompareStore, type CompareKind } from '../../store/useCompareStore';
 import { useData } from '../../data/load';
 import { announce } from '../../lib/announce';
@@ -20,9 +21,12 @@ interface Props {
 
 /**
  * "비교에 담기" 토글 (aria-pressed). 기기·제품 목록은 따로, 각 최대 4개 — 가득 차면 비활성 + 안내.
- * 라벨은 상태와 무관하게 고정하고 상태는 aria-pressed 로 전달 (토글 버튼 관례).
+ * 디자인 토론 P1: 기본 글자일 때 담기면 "✓ 담김 n/4"(누르면 빼기)로 바뀐다 — 패널·기기·제품 페이지 같은 모양.
+ * 직접 지정한 글자(옵션 표 등)는 그대로 두고 아이콘만 ＋ → ✓. 상태는 늘 aria-pressed 로도 전달.
  */
-export default function CompareToggle({ kind, id, name, variant = 'full', className, label = '비교에 담기', ariaLabel }: Props) {
+const DEFAULT_LABEL = '비교에 담기';
+
+export default function CompareToggle({ kind, id, name, variant = 'full', className, label = DEFAULT_LABEL, ariaLabel }: Props) {
   const list = useCompareStore((s) => s[kind]);
   const toggle = useCompareStore((s) => s.toggle);
   const pressed = list.includes(id);
@@ -32,13 +36,19 @@ export default function CompareToggle({ kind, id, name, variant = 'full', classN
     list.length < COMPARE_MAX ? list.length : list.filter((x) => compareIdInData(kind, x, data)).length;
   const full = !pressed && validCount >= COMPARE_MAX;
   const what = kind === 'equipment' ? '기기' : '제품';
-  const title = full ? `${what} 비교 목록이 가득 찼습니다 (최대 ${COMPARE_MAX}${kind === 'equipment' ? '종' : '개'})` : pressed ? '비교 목록에서 빼기' : '비교 목록에 담기';
+  const count = list.filter((x) => compareIdInData(kind, x, data)).length;
+  const showCount = variant === 'full' && pressed && label === DEFAULT_LABEL;
+  const title = full ? `${what} 비교 목록이 가득 찼습니다 (최대 ${COMPARE_MAX}${kind === 'equipment' ? '종' : '개'})` : pressed ? '누르면 비교 목록에서 빼기' : '비교 목록에 담기';
   return (
     <button
       type="button"
-      className={`cmp-toggle cmp-toggle--${variant}${pressed ? ' is-on' : ''}${className ? ` ${className}` : ''}`}
+      className={buttonClass({
+        variant: 'secondary',
+        size: 'md',
+        className: `cmp-toggle cmp-toggle--${variant}${pressed ? ' is-on' : ''}${className ? ` ${className}` : ''}`,
+      })}
       aria-pressed={pressed}
-      aria-label={ariaLabel ? ariaLabel : variant === 'icon' ? `${name} 비교에 담기` : label !== '비교에 담기' ? `${name} ${label}` : undefined}
+      aria-label={ariaLabel ? ariaLabel : variant === 'icon' ? `${name} 비교에 담기` : label !== DEFAULT_LABEL ? `${name} ${label}` : undefined}
       disabled={full}
       title={title}
       data-testid={`compare-toggle-${id}`}
@@ -53,7 +63,14 @@ export default function CompareToggle({ kind, id, name, variant = 'full', classN
       <span aria-hidden="true" className="cmp-toggle__icon">
         {pressed ? '✓' : '＋'}
       </span>
-      {variant === 'full' && <span>{label}</span>}
+      {variant === 'full' &&
+        (showCount ? (
+          <span>
+            담김 <span className="cmp-toggle__count">{count}/{COMPARE_MAX}</span>
+          </span>
+        ) : (
+          <span>{label}</span>
+        ))}
     </button>
   );
 }

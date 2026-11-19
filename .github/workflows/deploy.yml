@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # 실시간 전력수급(dist/data/supply.json) 갱신: 20분마다 빌드·배포 (실행 1~2분, 테스트 단계 없음 — Actions 비용 최소화)
+  # 간격을 바꾸면 src/lib/supply.ts COLLECT_EVERY_MIN 도 같이 바꿀 것
+  schedule:
+    - cron: '*/20 * * * *'
 
 permissions:
   contents: read
@@ -15,7 +19,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # 예약 실행(20분)은 수급 키(DATA_GO_KR_KEY)가 등록돼 있을 때만 빌드·배포 — 키 등록 전에는 아무것도 하지 않음
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - id: check
+        env:
+          HAS_KEY: ${{ secrets.DATA_GO_KR_KEY != '' }}
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ] || [ "$HAS_KEY" = "true" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; fi
+
   build:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +43,17 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/configure-pages@v5
+      - id: pages
+        uses: actions/configure-pages@v5
+      # 전력거래소 공개 데이터 → dist/data/supply.json (커밋하지 않음). 키가 없거나 실패해도 배포는 계속 (스크립트가 늘 0으로 끝남)
+      - name: Fetch power supply (KPX)
+        continue-on-error: true
+        timeout-minutes: 2
+        run: node scripts/fetch-supply.mjs
+        env:
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          # 이번 수집이 실패하면 지금 배포된 값을 '갱신 실패'로 다시 씀
+          SUPPLY_PREV_URL: ${{ steps.pages.outputs.base_url }}/data/supply.json
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

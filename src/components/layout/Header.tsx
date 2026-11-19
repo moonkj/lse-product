@@ -1,27 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import type { ViewMode } from '../../lib/diagram/url';
-import { parseMode, useSetViewMode } from '../../lib/diagram/url';
 import SearchBox from './SearchBox';
 import BrandLogo from '../common/BrandLogo';
 import { useUiStore } from '../../store/useUiStore';
 import ThemeToggle from './ThemeToggle';
 
-const MODES: { value: ViewMode; label: string }[] = [
-  { value: 'product', label: '제품' },
-  { value: 'gap', label: 'Gap' },
-];
-
-/** 눌린 버튼: 계통도(/)는 ?mode= 쿼리, /gap(공백 표)은 Gap. 기기·제품·404 는 없음 (교육 탭 제거 — 2026-11-18 사용자 결정) */
-function activeMode(pathname: string, search: string): ViewMode | null {
-  if (pathname === '/') return parseMode(new URLSearchParams(search).get('mode'));
-  if (pathname.startsWith('/gap')) return 'gap';
-  return null;
-}
-
 export default function Header() {
-  const { pathname, search } = useLocation();
-  const setMode = useSetViewMode();
-  const active = activeMode(pathname, search);
+  const { pathname } = useLocation();
   const present = useUiStore((s) => s.present);
   const togglePresent = useUiStore((s) => s.togglePresent);
 
@@ -32,24 +16,24 @@ export default function Header() {
         <span className="app-header__title">전력계통 제품맵</span>
       </Link>
 
+      {/* 화면 메뉴 (디자이너 토론 P1): 계통도 · 공백 표. 제품/Gap 전환은 계통도 도구줄로 옮김 */}
+      <nav className="app-nav" aria-label="화면">
+        <Link to="/" className="app-nav__link" aria-current={pathname === '/' ? 'page' : undefined}>
+          계통도
+        </Link>
+        <Link
+          to="/gap"
+          className="app-nav__link"
+          data-testid="gap-table-link"
+          aria-current={pathname.startsWith('/gap') ? 'page' : undefined}
+        >
+          공백 표
+        </Link>
+      </nav>
+
       <SearchBox />
 
-      <div className="mode-toggle" role="group" aria-label="보기 모드">
-        {MODES.map((m) => (
-          <button
-            key={m.value}
-            type="button"
-            aria-pressed={active === m.value}
-            className="mode-toggle__btn"
-            data-testid={`view-mode-${m.value}`}
-            onClick={() => setMode(m.value)}
-          >
-            {m.label}
-          </button>
-        ))}
-      </div>
-
-      {/* 넓게 보기 (C1, 옛 이름 넓게 보기): 압축 화면을 손으로 켜는 토글 — 배치만 바꾸고 내용은 그대로 */}
+      {/* 넓게 보기 (C1): 압축 화면을 손으로 켜는 토글. 디자이너 토론 P0-5: 아이콘 버튼(글자는 화면낭독기용) */}
       <button
         type="button"
         className="present-toggle"

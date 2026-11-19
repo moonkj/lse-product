@@ -335,4 +335,18 @@ describe('UT-14 CompareToggle', () => {
     expect(dBtn).toHaveAttribute('aria-pressed', 'false');
     expect(eEq).not.toBeDisabled();
   });
+  it('(디자인 P1) 담기면 글자가 "✓ 담김 n/4", 다시 누르면 빼기 → "비교에 담기"', async () => {
+    const m = await freshStore();
+    const { default: CompareToggle } = await import('../../../src/components/compare/CompareToggle');
+    m.useCompareStore.getState().toggle('equipment', a);
+    render(<CompareToggle kind="equipment" id={b} name="B" />);
+    const btn = screen.getByTestId(`compare-toggle-${b}`);
+    expect(btn).toHaveTextContent('비교에 담기');
+    fireEvent.click(btn);
+    expect(btn).toHaveAttribute('aria-pressed', 'true');
+    expect(btn).toHaveTextContent('✓담김 2/4');
+    fireEvent.click(btn);
+    expect(btn).toHaveAttribute('aria-pressed', 'false');
+    expect(btn).toHaveTextContent('비교에 담기');
+  });
 });

@@ -44,7 +44,7 @@
   --radius-pill: 999px;
   --header-h: 56px;      /* 네이비 띠 높이 (아래 CI 레드 선 3px 별도) — 계통도 영역을 줄이지 않도록 기존과 같은 총높이 */
   --header-accent-w: 3px;
-  --nav-w: 200px;
+  --nav-w: 224px;
   --panel-w: 360px;
   --bp-mobile: 900px; /* 참고값 (미디어쿼리는 리터럴 사용) */
   --shadow-sm: 0 1px 2px rgb(20 23 28 / 0.08);
@@ -136,9 +136,32 @@
   --gap-glow-missing: rgb(217 58 58 / 0.22);
   --gap-glow-partial: rgb(166 124 0 / 0.25);
   --sheet-handle: #c3c9d1;
-  /* 택1(대체 관계) 연결선 — 전력선(진회색)·신호선(회색 점선)과 다른 청록 점선 */
-  --color-line-alt: #0f766e;
-  --color-line-alt-text: #0b5c55;
+  /* 택1(대체 관계) 연결선 — 2026-11-19 청록 폐지(P0-4): 전력선과 같은 실선 + "택1" 칩. 칩 테두리·글자만 이 토큰 */
+  --color-line-alt: #8a939f;
+  --color-line-alt-text: #3d4450;
+
+  /* 계통도 타일 테두리 (P0-3): 기본 회색 1px, 미보유 2px 빨강, 일부 보유 1.5px 황색(A안), 선택 = 바깥 블루 링 */
+  --color-node-border: #c3cad4;
+  --node-border-w: 1px;
+  --node-border-w-missing: 2px;
+  --node-border-w-partial: 1.5px;
+  --node-ring-w: 3px;        /* 선택 링 두께 (타일과 링 사이 2px 틈은 --node-bg) */
+  --color-node-ref-bg: #f7f9fc; /* 참조 타일 바탕 (점선 테두리 대신 ↗ 표시) */
+
+  /* 계통도 밴드 (P1): L1~L7 흰/연회색 2톤 교차 + 감시·신재생 옅은 블루 1톤.
+     기존 --band-l1~7·ren·mon(9색)은 공백 표·기기 페이지 계층 배지·미니맵이 아직 쓰므로 남겨 둔다 */
+  /* 컨트롤·페이지 공통 (디자이너 토론 P1, C 담당 요청) */
+  --control-h-sm: 32px;
+  --control-h-md: 40px;
+  --control-h-touch: 44px;
+  --focus-ring-w: 2px;
+  --focus-ring-offset: 2px;
+  --page-w: 1200px;
+  --band-tone-a: #ffffff;
+  --band-tone-b: #f2f4f7;
+  --band-side: #eaf1fa;
+  --band-label-bg: rgb(255 255 255 / 0.88);
+  --band-label-meta: #5b6270;
 
   /* 상세 페이지(제품·기기·공백 표) */
   --color-text-soft: #3d4450;
@@ -230,8 +253,17 @@
   --gap-glow-missing: rgb(240 90 90 / 0.35);
   --gap-glow-partial: rgb(242 194 48 / 0.3);
   --sheet-handle: #4a5563;
-  --color-line-alt: #2dd4bf;
-  --color-line-alt-text: #7eeadb;
+  --color-line-alt: #6b7585;
+  --color-line-alt-text: #c9ced6;
+
+  --color-node-border: #465061;
+  --color-node-ref-bg: #1b2029;
+
+  --band-tone-a: #12161c;
+  --band-tone-b: #181d25;
+  --band-side: #15202f;
+  --band-label-bg: rgb(15 18 23 / 0.85);
+  --band-label-meta: #a3abb8;
 
   --color-text-soft: #c9ced6;
   --color-alert-bg: #2a1717;

@@ -1270,7 +1270,8 @@
       "from": "n-ess",
       "to": "n-pcs",
       "kind": "power",
-      "voltage": "DC"
+      "voltage": "DC",
+      "flow": "bi"
     },
     {
       "id": "e076",

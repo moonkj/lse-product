@@ -37,9 +37,17 @@ input {
   color: inherit;
 }
 
+/*
+ * 포커스 링 1종 (디자인 토론 P1) — 모든 컴포넌트가 이 규칙을 그대로 쓴다(개별 outline 규칙 두지 않기).
+ * 토큰(B 담당 tokens.css 에 추가 요청): --focus-ring-w 2px · --focus-ring-offset 2px · 색 --color-focus.
+ * 링을 지우는 것은 마우스 포커스(:focus 이지만 :focus-visible 아님)일 때만.
+ */
 :focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
+  outline: var(--focus-ring-w, 2px) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* 제품 사진 (EquipmentVisual): 흰 판 위에 — 사각 배경 사진(pcs·pv·railway)도 모서리 r 6px.
