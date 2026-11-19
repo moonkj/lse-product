@@ -128,7 +128,8 @@ const listOf = <T extends string>(v: string | null, allowed: readonly T[]): T[] 
     .map((s) => s.trim())
     .filter((s): s is T => (allowed as readonly string[]).includes(s));
 
-export const STAGE_FILTER_IDS = [...STAGE_DEFS.map((d) => d.id), MONITORING_LAYER];
+// 필터 순서는 계통맵 층 순서 (L1~L7 → 신재생 → 감시·제어). 단계별 보기의 줄 배치와는 별개
+export const STAGE_FILTER_IDS = [...STAGE_DEFS.filter((d) => d.code).map((d) => d.id), ...STAGE_DEFS.filter((d) => !d.code).map((d) => d.id), MONITORING_LAYER];
 /** '단계' 필터 이름 = 단계별 보기 열 = 계통맵 층 이름 (예 'L1 초고압 발전·송전', 'L4~L7 수용가') */
 export const STAGE_FILTER_LABELS: Record<string, string> = Object.fromEntries([
   ...STAGE_DEFS.map((d) => [d.id, d.code ? `${d.code} ${d.label}` : d.label]),

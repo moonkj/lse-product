@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { getData } from '../../data/load';
 import { getDiagramModel } from '../../lib/diagram/model';
 import { requestPanelFocus, useSelectedNodeId, useSelectNode, useViewMode, useMediaQuery, MOBILE_QUERY } from '../../lib/diagram/url';
-import { buildStageBoard, type StageColumn } from '../../lib/stages';
+import { buildStageBoard, type StageColumn, type StageRow } from '../../lib/stages';
 import { COVERAGE_LABELS, type EquipmentType } from '../../lib/schema';
 import { isGapCoverage } from '../../lib/labels';
 import { usePresetStore } from '../../lib/market/presetStore';
@@ -81,10 +81,10 @@ function Column({ col, render }: { col: StageColumn; render: (eq: EquipmentType)
   return (
     <section className="scol" data-stage={col.id} aria-labelledby={`scol-${col.id}`} data-testid={`stage-col-${col.id}`}>
       <header className="scol__head">
-        <h2 id={`scol-${col.id}`} className="scol__title">
+        <h3 id={`scol-${col.id}`} className="scol__title">
           {col.code && <span className="scol__code">{col.code}</span>}
           {col.label}
-        </h2>
+        </h3>
         <span className="scol__count" title={`보유 ${col.owned}종 / 전체 ${col.total}종`}>
           보유 {col.owned}/{col.total}
         </span>
@@ -93,14 +93,14 @@ function Column({ col, render }: { col: StageColumn; render: (eq: EquipmentType)
       </header>
       <div className="scol__body">
         {col.groupsList.map((g) => (
-          <div key={g.layer || 'all'} className="scol__group">
+          <div key={g.key || 'all'} className="scol__group" data-category={g.key || undefined}>
             {g.label && (
-              <h3 className="scol__group-title">
-                <span className="scol__group-code">{g.layer}</span> {g.label}
+              <h4 className="scol__group-title">
+                {g.label}
                 <span className="scol__group-n" title={`보유 ${g.items.filter((e) => e.coverage === 'owned').length}종 / 전체 ${g.items.length}종`}>
                   {g.items.filter((e) => e.coverage === 'owned').length}/{g.items.length}
                 </span>
-              </h3>
+              </h4>
             )}
             <ul className="scol__list">{g.items.map(render)}</ul>
           </div>
@@ -110,8 +110,26 @@ function Column({ col, render }: { col: StageColumn; render: (eq: EquipmentType)
   );
 }
 
+/** 줄 제목 — 계통(L1~L3·신재생) / 수용가(L4~L7) */
+function RowHead({ row }: { row: StageRow }) {
+  return (
+    <header className="stage__row-head">
+      <h2 id={`srow-${row.id}`} className="stage__row-title">
+        {row.code && <span className="stage__row-code">{row.code}</span>}
+        {row.label}
+        <span className="stage__row-sub">{row.sub}</span>
+      </h2>
+      <span className="stage__row-n">
+        보유 {row.owned}/{row.total}
+        {row.gaps > 0 && <span className="stage__row-gaps"> · 보완 {row.gaps}</span>}
+      </span>
+    </header>
+  );
+}
+
 /**
- * 단계별 보기 (?view=stage) — 계통맵 층과 같은 열(L1·L2·L3·수용가 L4~L7·신재생) + 감시·제어 띠.
+ * 단계별 보기 (?view=stage) — 계통맵 층과 1:1 열을 두 줄로: 계통(L1·L2·L3·신재생) / 수용가(L4·L5·L6·L7) + 감시·제어 띠.
+ * 기기가 많은 열은 기능 분류(시스템·개폐·보호·계측·제어·부하…) 소제목으로 묶는다.
  * 같은 기기 데이터·같은 보유 색. 카드를 누르면 계통맵과 같은 상세 패널(?node=)이 열린다.
  * 공백만 보기(?mode=gap)면 공백 아닌 카드를 흐리게, 수요처 프리셋이 있으면 필수·이중화·선택 표시.
  * 휴대폰(≤900px)은 층 탭으로 한 열씩.
@@ -152,7 +170,10 @@ export default function StageView() {
     );
   };
   const total = board.columns.reduce((s, c) => s + c.total, 0) + board.monitoring.length;
-  const columns = isMobile ? board.columns.filter((c) => c.id === tab) : board.columns;
+  // 휴대폰: 고른 탭의 열 하나만 (그 열이 속한 줄 제목과 함께)
+  const rows: StageRow[] = isMobile
+    ? board.rows.map((r) => ({ ...r, columns: r.columns.filter((c) => c.id === tab) })).filter((r) => r.columns.length > 0)
+    : board.rows;
 
   return (
     <div className="stage" data-testid="stage-view">
@@ -194,11 +215,16 @@ export default function StageView() {
           </div>
         )}
 
-        <div className="stage__grid">
-          {columns.map((c) => (
-            <Column key={c.id} col={c} render={render} />
-          ))}
-        </div>
+        {rows.map((r) => (
+          <section key={r.id} className={`stage__row stage__row--${r.id}`} aria-labelledby={`srow-${r.id}`} data-testid={`stage-row-${r.id}`}>
+            <RowHead row={r} />
+            <div className="stage__grid">
+              {r.columns.map((c) => (
+                <Column key={c.id} col={c} render={render} />
+              ))}
+            </div>
+          </section>
+        ))}
 
         {board.monitoring.length > 0 && (
           <section className="stage__mon" aria-labelledby="stage-mon-title" data-testid="stage-monitoring">

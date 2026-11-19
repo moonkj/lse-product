@@ -14,7 +14,7 @@ test.describe('보기 전환 · 단계별 보기', () => {
     await tid(page, 'view-switch-stage').click();
     await expect(page).toHaveURL(/view=stage/);
     await expect(tid(page, 'stage-view')).toBeVisible();
-    for (const id of ['L1', 'L2', 'L3', 'customer', 'REN']) await expect(tid(page, `stage-col-${id}`)).toBeVisible();
+    for (const id of ['L1', 'L2', 'L3', 'REN', 'L4', 'L5', 'L6', 'L7']) await expect(tid(page, `stage-col-${id}`)).toBeVisible();
     await expect(tid(page, 'stage-monitoring')).toBeVisible();
     await expect(page.locator('.scard')).toHaveCount(76);
 
@@ -44,9 +44,9 @@ test.describe('보기 전환 · 단계별 보기', () => {
     await page.goto('./#/?view=stage');
     await expect(tid(page, 'stage-tab-L1')).toHaveAttribute('aria-selected', 'true');
     await expect(page.locator('.scol')).toHaveCount(1);
-    await tid(page, 'stage-tab-customer').click();
-    await expect(tid(page, 'stage-col-customer')).toBeVisible();
-    const box = await tid(page, 'stage-tab-customer').boundingBox();
+    await tid(page, 'stage-tab-L7').click();
+    await expect(tid(page, 'stage-col-L7')).toBeVisible();
+    const box = await tid(page, 'stage-tab-L7').boundingBox();
     expect(box!.height).toBeGreaterThanOrEqual(44);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });

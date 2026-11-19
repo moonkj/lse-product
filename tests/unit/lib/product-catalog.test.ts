@@ -27,7 +27,7 @@ describe('제품 조회', () => {
   it('UL67 패널보드는 분전반 기기·수용가 단계·저압·미국 법인·UL', () => {
     const r = rows.find((x) => x.product.id === 'US-1671')!;
     expect(r.equipment.map((e) => e.id)).toContain('panelboard');
-    expect(r.stages).toContain('customer');
+    expect(r.stages).toContain('L7');
     expect(r.voltages).toContain('lv');
     expect(r.source).toBe('us');
     expect(r.ul).toBe(true);
@@ -57,7 +57,7 @@ describe('제품 조회', () => {
   });
 
   it('주소 ↔ 필터 왕복, 모르는 값은 버림', () => {
-    const fl = f({ q: 'ACB', business: ['power'], stage: ['customer'], voltage: ['lv'], source: ['ko'], ul: true, specsOnly: true, sort: 'name' as const });
+    const fl = f({ q: 'ACB', business: ['power'], stage: ['L7'], voltage: ['lv'], source: ['ko'], ul: true, specsOnly: true, sort: 'name' as const });
     expect(parseProductFilters(productFiltersToParams(fl))).toEqual(fl);
     expect(parseProductFilters(new URLSearchParams('biz=x,power&volt=zz&sort=bad')).business).toEqual(['power']);
     expect(parseProductFilters(new URLSearchParams('sort=bad')).sort).toBe('system');

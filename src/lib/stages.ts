@@ -1,20 +1,19 @@
 /**
- * 단계별 보기 (?view=stage) — 기기를 계통맵 층과 같은 묶음의 열 + 감시·제어(MON) 띠로 보여 준다.
- * 열 = L1 초고압 발전·송전 · L2 송변전 · L3 특고압 배전 · 수용가(L4~L7) · 신재생·저장 연계 (src/data/stages.json).
- * 열·소구분 이름과 전압은 diagram.json 층 정의를 그대로 쓴다 → 계통맵 밴드·사이드바와 이름·숫자가 같다.
+ * 단계별 보기 (?view=stage) — 계통맵 층과 1:1 열을 두 줄로: 1행 계통(L1·L2·L3·신재생), 2행 수용가(L4·L5·L6·L7) + 감시·제어 띠.
+ * 열 이름·전압은 diagram.json 층 정의 그대로 → 계통맵 밴드·사이드바와 이름·숫자가 같다.
+ * 기기가 많은 열(groupByCategoryMin 이상)은 기능 분류 소제목(시스템·개폐·보호·계측·제어…)으로 묶는다.
  * 기기 순서는 equipment-types.json 순서(계통도와 같음).
  */
 import stagesFile from '../data/stages.json';
 import diagramFile from '../data/diagram.json';
-import type { Coverage, EquipmentType, Layer } from './schema';
+import type { Coverage, EquipmentCategory, EquipmentType, Layer } from './schema';
+import { CATEGORY_LABELS } from './labels';
 
-interface StageFileEntry {
+interface RowFileEntry {
   id: string;
-  layers: string[];
-  label?: string;
-  voltage?: string;
-  /** 여러 층을 묶은 열은 층별 소구분을 보인다 */
-  groups?: boolean;
+  label: string;
+  sub: string;
+  stages: string[];
 }
 
 export interface LayerInfo {
@@ -24,19 +23,21 @@ export interface LayerInfo {
 }
 
 export interface StageDef {
+  /** 열 id = 층 id (L1…L7·REN) */
   id: string;
-  /** 열 머리 층 번호 표시 (예 'L1', 'L4~L7', '' = 번호 없는 층) */
+  /** 열 머리 층 번호 (L1…L7, 번호 없는 층은 '') */
   code: string;
   label: string;
   voltage: string;
   layers: string[];
-  groups: boolean;
+  /** 속한 줄 id (grid·customer) */
+  row: string;
 }
 
 export interface StageGroup {
-  /** 소구분 층 id (없으면 '') */
-  layer: string;
-  /** 소구분 이름 — 계통맵 층 이름 (없으면 '') */
+  /** 기능 분류 id (묶지 않은 열은 '') */
+  key: string;
+  /** 소제목 (묶지 않은 열은 '') */
   label: string;
   items: EquipmentType[];
 }
@@ -46,11 +47,25 @@ export interface StageColumn extends StageDef {
   total: number;
   /** 보유(owned) 기기 수 */
   owned: number;
-  /** 공백(미보유·일부 보유) 기기 수 */
+  /** 보완 필요(미보유·일부 보유) 기기 수 */
+  gaps: number;
+}
+
+export interface StageRow {
+  id: string;
+  label: string;
+  sub: string;
+  /** 줄에 속한 층 번호 범위 (예 'L4~L7', 계통 줄은 'L1~L3') */
+  code: string;
+  columns: StageColumn[];
+  total: number;
+  owned: number;
   gaps: number;
 }
 
 export interface StageBoard {
+  rows: StageRow[];
+  /** 모든 열 (줄 순서대로) */
   columns: StageColumn[];
   /** 감시·제어 (모든 층에 걸침) */
   monitoring: EquipmentType[];
@@ -65,32 +80,59 @@ export const LAYER_INFO: Map<string, LayerInfo> = new Map(
 );
 const isMain = (l: string) => /^L[1-7]$/.test(l);
 
-function toDef(e: StageFileEntry): StageDef {
-  const first = LAYER_INFO.get(e.layers[0]);
-  const last = LAYER_INFO.get(e.layers[e.layers.length - 1]);
-  const code = !isMain(e.layers[0]) ? '' : e.layers.length > 1 ? `${first?.id}~${last?.id}` : (first?.id ?? '');
-  return {
-    id: e.id,
-    code,
-    label: e.label ?? first?.label ?? e.id,
-    voltage: e.voltage ?? first?.voltage ?? '',
-    layers: e.layers,
-    groups: !!e.groups,
-  };
-}
+const FILE = stagesFile as { groupByCategoryMin: number; rows: RowFileEntry[] };
+export const GROUP_BY_CATEGORY_MIN = FILE.groupByCategoryMin;
+export const STAGE_ROWS: RowFileEntry[] = FILE.rows;
 
-export const STAGE_DEFS: StageDef[] = (stagesFile as { stages: StageFileEntry[] }).stages.map(toDef);
+export const STAGE_DEFS: StageDef[] = FILE.rows.flatMap((r) =>
+  r.stages.map((id): StageDef => {
+    const info = LAYER_INFO.get(id);
+    return { id, code: isMain(id) ? id : '', label: info?.label ?? id, voltage: info?.voltage ?? '', layers: [id], row: r.id };
+  }),
+);
 export const MONITORING_LABEL = LAYER_INFO.get(MONITORING_LAYER)?.label ?? '감시·제어';
+
+/** 기능 소제목 순서 — 큰 묶음(배전반 등 시스템)을 먼저, 부하는 끝 */
+export const GROUP_CATEGORY_ORDER: EquipmentCategory[] = [
+  'system',
+  'switching',
+  'protection',
+  'transformation',
+  'measurement',
+  'control',
+  'generation',
+  'conductor',
+  'monitoring',
+  'load',
+];
 
 const GAP: readonly Coverage[] = ['missing', 'partial'];
 
-/** 기기 하나 → 열 id (MON 은 'MON', 못 찾으면 null). 기기 layer 로만 정한다 (예외 이동 없음) */
+/** 기기 하나 → 열 id (= 층 id, MON 은 'MON', 못 찾으면 null). 기기 layer 로만 정한다 (예외 이동 없음) */
 export function stageOf(eq: Pick<EquipmentType, 'layer'>, defs: StageDef[] = STAGE_DEFS): string | null {
   if (eq.layer === MONITORING_LAYER) return MONITORING_LAYER;
   return defs.find((d) => d.layers.includes(eq.layer))?.id ?? null;
 }
 
-export function buildStageBoard(equipment: readonly EquipmentType[], defs: StageDef[] = STAGE_DEFS): StageBoard {
+function groupItems(items: EquipmentType[], min: number): StageGroup[] {
+  if (items.length < min) return [{ key: '', label: '', items }];
+  return GROUP_CATEGORY_ORDER.map((c) => ({ key: c, label: CATEGORY_LABELS[c], items: items.filter((e) => e.category === c) })).filter(
+    (g) => g.items.length > 0,
+  );
+}
+
+const counts = (items: EquipmentType[]) => ({
+  total: items.length,
+  owned: items.filter((e) => e.coverage === 'owned').length,
+  gaps: items.filter((e) => GAP.includes(e.coverage)).length,
+});
+
+export function buildStageBoard(
+  equipment: readonly EquipmentType[],
+  defs: StageDef[] = STAGE_DEFS,
+  rowDefs: RowFileEntry[] = STAGE_ROWS,
+  groupMin: number = GROUP_BY_CATEGORY_MIN,
+): StageBoard {
   const byStage = new Map<string, EquipmentType[]>(defs.map((d) => [d.id, []]));
   const monitoring: EquipmentType[] = [];
   const unassigned: EquipmentType[] = [];
@@ -102,18 +144,13 @@ export function buildStageBoard(equipment: readonly EquipmentType[], defs: Stage
   }
   const columns = defs.map((d): StageColumn => {
     const items = byStage.get(d.id) ?? [];
-    const groupsList: StageGroup[] = d.groups
-      ? d.layers
-          .map((l) => ({ layer: l, label: LAYER_INFO.get(l)?.label ?? l, items: items.filter((e) => e.layer === l) }))
-          .filter((g) => g.items.length > 0)
-      : [{ layer: '', label: '', items }];
-    return {
-      ...d,
-      groupsList,
-      total: items.length,
-      owned: items.filter((e) => e.coverage === 'owned').length,
-      gaps: items.filter((e) => GAP.includes(e.coverage)).length,
-    };
+    return { ...d, groupsList: groupItems(items, groupMin), ...counts(items) };
   });
-  return { columns, monitoring, monitoringLabel: MONITORING_LABEL, unassigned };
+  const rows = rowDefs.map((r): StageRow => {
+    const cols = columns.filter((c) => c.row === r.id);
+    const main = cols.map((c) => c.code).filter(Boolean);
+    const code = main.length > 1 ? `${main[0]}~${main[main.length - 1]}` : (main[0] ?? '');
+    return { id: r.id, label: r.label, sub: r.sub, code, columns: cols, ...counts(cols.flatMap((c) => c.groupsList.flatMap((g) => g.items))) };
+  });
+  return { rows, columns, monitoring, monitoringLabel: MONITORING_LABEL, unassigned };
 }

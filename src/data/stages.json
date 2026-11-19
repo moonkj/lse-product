@@ -1,10 +1,8 @@
 {
-  "note": "단계별 보기(?view=stage) 열 구성 — 계통맵 층(diagram.json layers)과 1:1로 맞춘다 (2026-11-19 사용자: 계통맵과 구분 일치). 기기는 자기 layer 의 열에만 들어가고 예외 이동은 없다. 열 이름·전압은 diagram.json 층 이름·전압을 그대로 쓰고, 여러 층을 묶는 열(수용가)만 label·voltage 를 여기서 정한다. MON(감시·제어)은 모든 층에 걸치는 띠로 따로 보인다.",
-  "stages": [
-    { "id": "L1", "layers": ["L1"] },
-    { "id": "L2", "layers": ["L2"] },
-    { "id": "L3", "layers": ["L3"] },
-    { "id": "customer", "label": "수용가", "voltage": "22.9kV 수전 → 380/220V", "layers": ["L4", "L5", "L6", "L7"], "groups": true },
-    { "id": "REN", "layers": ["REN"] }
+  "note": "단계별 보기(?view=stage) — 계통맵 층(diagram.json layers)과 1:1 열. 두 줄로 나눈다: 1행 계통(L1·L2·L3·신재생), 2행 수용가(L4·L5·L6·L7). 열 이름·전압은 diagram.json 그대로. 기기는 자기 layer 열에만 (예외 이동 없음). 기기가 groupByCategoryMin 개 이상인 열은 기능 분류(개폐·보호·계측·제어…) 소제목으로 묶는다 (2026-11-19 사용자: L4~L7 한 열에 45종이 몰려 2행 + 기능별 묶음 안 채택). MON(감시·제어)은 맨 아래 띠.",
+  "groupByCategoryMin": 10,
+  "rows": [
+    { "id": "grid", "label": "계통", "sub": "발전 · 송변전 · 배전", "stages": ["L1", "L2", "L3", "REN"] },
+    { "id": "customer", "label": "수용가", "sub": "수전 22.9kV → 380/220V 분기", "stages": ["L4", "L5", "L6", "L7"] }
   ]
 }

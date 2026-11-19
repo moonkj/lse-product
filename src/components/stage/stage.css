@@ -67,15 +67,35 @@
   font-size: var(--fs-sm);
   color: var(--color-text-muted);
 }
+/* 두 줄: 계통(L1·L2·L3·신재생) / 수용가(L4·L5·L6·L7) — 줄마다 제목 + 4열 */
+.stage__row { display: flex; flex-direction: column; gap: var(--space-2); }
+.stage__row-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-3); padding: 0 2px; }
+.stage__row-title { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: var(--fs-lg); color: var(--color-text); }
+.stage__row-code {
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  color: var(--color-on-brand);
+  background: var(--color-brand);
+  border-radius: var(--radius-chip);
+  padding: 2px 7px;
+}
+.stage__row-sub { font-size: var(--fs-sm); font-weight: var(--fw-regular); color: var(--color-text-muted); }
+.stage__row-n { font-size: var(--fs-sm); color: var(--color-text-soft); font-variant-numeric: tabular-nums; }
+.stage__row-gaps { color: var(--cov-missing-text); font-weight: var(--fw-bold); }
 .stage__grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(180px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-3);
   align-items: start;
 }
-/* 상세 패널이 열려 본문이 좁아지면 가로 스크롤 대신 2줄로 */
-@container stagegrid (max-width: 980px) {
-  .stage__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* 수용가 줄: L5 변압(2종)은 좁게, L7(가장 많음)은 넓게 */
+.stage__row--customer .stage__grid { grid-template-columns: minmax(0, 1fr) minmax(185px, 0.55fr) minmax(0, 1fr) minmax(0, 1.6fr); }
+/* 카드 목록은 열 폭에 맞춰 자동 열 — 넓은 열(L7)은 2열로 놓여 세로 길이가 반쯤으로 */
+.stage__row--customer .scol__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+/* 상세 패널이 열리거나 창이 좁으면 가로 스크롤 대신 2열로 */
+@container stagegrid (max-width: 900px) {
+  .stage__grid,
+  .stage__row--customer .stage__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 .stage__scroll { container: stagegrid / inline-size; }
 
@@ -96,11 +116,15 @@
   background: var(--stage-color, var(--color-brand));
   color: #fff;
 }
-.scol[data-stage='L1'] { --stage-color: #00337f; }
-.scol[data-stage='L2'] { --stage-color: #0b4a9e; }
-.scol[data-stage='L3'] { --stage-color: #0060a8; }
-.scol[data-stage='customer'] { --stage-color: #3f5a73; }
-.scol[data-stage='REN'] { --stage-color: #18697a; }
+/* 열 머리 색 = 계통맵 사이드바 층 색 (같은 층은 어디서나 같은 색) */
+.scol[data-stage='L1'] { --stage-color: var(--band-accent-l1); }
+.scol[data-stage='L2'] { --stage-color: var(--band-accent-l2); }
+.scol[data-stage='L3'] { --stage-color: var(--band-accent-l3); }
+.scol[data-stage='L4'] { --stage-color: var(--band-accent-l4); }
+.scol[data-stage='L5'] { --stage-color: var(--band-accent-l5); }
+.scol[data-stage='L6'] { --stage-color: var(--band-accent-l6); }
+.scol[data-stage='L7'] { --stage-color: var(--band-accent-l7); }
+.scol[data-stage='REN'] { --stage-color: var(--band-accent-ren); }
 .scol__title { margin: 0; font-size: var(--fs-lg); display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
 /* 계통맵 층 번호 (L1·L4~L7) — 계통도 밴드 이름표와 같은 표기 */
 .scol__code {
@@ -110,8 +134,7 @@
   border-radius: var(--radius-chip);
   padding: 1px 6px;
 }
-.scol__group-code { color: var(--color-brand); }
-.scol__group-title { display: flex; align-items: baseline; gap: 4px; }
+.scol__group-title { display: flex; align-items: baseline; gap: 4px; padding-bottom: 2px; border-bottom: 1px solid var(--color-surface-2); }
 .scol__group-n { margin-left: auto; font-weight: var(--fw-regular); font-variant-numeric: tabular-nums; }
 .scol__count {
   font-size: 12px;
@@ -121,7 +144,7 @@
   padding: 2px 8px;
   white-space: nowrap;
 }
-.scol__volt { font-size: 12px; opacity: 0.92; }
+.scol__volt { font-size: 12px; } /* opacity 를 주면 신재생 초록 위 대비가 4.5:1 아래로 떨어짐 */
 .scol__gaps {
   justify-self: end;
   font-size: 12px;
@@ -245,7 +268,8 @@
 .stage__tab-n { font-size: 12px; opacity: 0.85; }
 @media (max-width: 900px) {
   .stage__scroll { padding: var(--space-3); }
-  .stage__grid { grid-template-columns: minmax(0, 1fr); }
+  .stage__grid,
+  .stage__row--customer .stage__grid { grid-template-columns: minmax(0, 1fr); }
   .scard { min-height: 60px; }
   .scard__name { font-size: 15px; }
 }
@@ -253,3 +277,8 @@
   .stage__tabs { display: none; }
   .stage__scroll { overflow: visible; }
 }
+
+/* 다크 모드: 층 색이 밝은 톤이라 열 머리 글자를 어둡게, 숫자 칩은 밝은 반투명 */
+:root[data-theme='dark'] .scol__head { color: #14171c; }
+:root[data-theme='dark'] .scol__count,
+:root[data-theme='dark'] .scol__code { background: rgb(255 255 255 / 0.45); }
