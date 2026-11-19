@@ -427,3 +427,31 @@ export const DOC_TYPE_LABELS: Record<DocRef['type'], string> = {
   cad: 'CAD',
   other: '기타',
 };
+
+/**
+ * src/data/families.json — 개별 제품 목록이 없는 시스템·솔루션 기기(변전소·GIS·HVDC·EMS 등)의 공식 제품군 정보.
+ * 공식 사이트 국문 제품 카테고리 페이지의 기본 설명·관련 제품·자료실 카탈로그 (2026-11-19 사용자 요청).
+ */
+export const FamilyProductSchema = z.object({
+  name: z.string(),
+  /** product = 개별 제품, model = 표 속 모델, category = 하위 제품군 */
+  kind: z.enum(['product', 'model', 'category']),
+  desc: z.string().optional(),
+  url: httpsUrl.optional(),
+  /** 저장소 안 사진 경로 (public/ 기준) */
+  image: z.string().optional(),
+  /** products.json 에 같은 제품이 있으면 그 id — 제품 페이지로 연결 */
+  productId: z.string().optional(),
+});
+export const EquipmentFamilySchema = z.object({
+  familyUrl: httpsUrl,
+  summary: z.string(),
+  products: z.array(FamilyProductSchema),
+  catalogs: z.array(z.object({ title: z.string(), url: httpsUrl })),
+});
+export type EquipmentFamily = z.infer<typeof EquipmentFamilySchema>;
+export const FamiliesFileSchema = z.object({
+  generatedAt: z.string(),
+  source: z.string(),
+  families: z.record(z.string(), EquipmentFamilySchema),
+});

@@ -16,6 +16,8 @@ import {
   type Product,
   type ProductDocs,
   type ProductSpecs,
+  type EquipmentFamily,
+  FamiliesFileSchema,
 } from '../lib/schema';
 import productsJson from './products.json';
 import categoriesJson from './categories.json';
@@ -24,6 +26,7 @@ import diagramJson from './diagram.json';
 import docsJson from './docs.json';
 import equipmentImagesJson from './equipment-images.json';
 import productImagesJson from './product-images.json';
+import familiesJson from './families.json';
 
 import { DataValidationError } from '../lib/errors';
 /** 호환용 재수출 — 새 코드는 '../lib/errors' 에서 import */
@@ -50,6 +53,8 @@ export interface AppData {
   equipmentImageById: Map<string, EquipmentImage>;
   /** product-images.json — 제품별 사진. products 에 있는 제품만 (고아 항목 제외). 없으면 기기 대표 사진으로 대체 */
   productImageById: Map<string, ProductImage>;
+  /** families.json — 시스템·솔루션 기기의 공식 제품군 정보(설명·관련 제품·카탈로그) */
+  familyByEquipmentId: Map<string, EquipmentFamily>;
 }
 
 let cache: AppData | undefined;
@@ -67,6 +72,7 @@ export function getData(): AppData {
   const docs = parseOrThrow(DocsFileSchema, docsJson, 'docs.json');
   const images = parseOrThrow(EquipmentImagesSchema, equipmentImagesJson, 'equipment-images.json');
   const productImages = parseOrThrow(ProductImagesSchema, productImagesJson, 'product-images.json');
+  const families = parseOrThrow(FamiliesFileSchema, familiesJson, 'families.json');
   const productIds = new Set(products.map((p) => p.id));
   cache = {
     products,
@@ -80,6 +86,7 @@ export function getData(): AppData {
     docsByProductId: new Map(Object.entries(docs.products)),
     equipmentImageById: new Map(Object.entries(images)),
     productImageById: new Map(Object.entries(productImages).filter(([id]) => productIds.has(id))),
+    familyByEquipmentId: new Map(Object.entries(families.families)),
   };
   return cache;
 }

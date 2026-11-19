@@ -1,0 +1,105 @@
+/* 공식 제품군 정보 (시스템·솔루션 기기) — 설명 · 관련 제품 카드 · 카탈로그 */
+.fam {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.fam__summary {
+  margin: 0;
+  line-height: 1.7;
+  color: var(--color-text);
+  word-break: keep-all;
+}
+.fam__title {
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-muted);
+}
+.fam__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-2);
+}
+.fam__card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 76px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+}
+a.fam__card:hover {
+  border-color: var(--color-brand-2);
+}
+.fam__img {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--color-text-muted);
+}
+.fam__img img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+.fam__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.fam__name {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-sm);
+  line-height: 1.35;
+  word-break: keep-all;
+}
+.fam__kind {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  vertical-align: 1px;
+}
+.fam__desc {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  word-break: keep-all;
+}
+.fam__ext {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+.fam__docs {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--fs-sm);
+}
+/* 좁은 상세 패널(≤420px)에서는 한 줄에 하나 */
+.detail-panel .fam__list {
+  grid-template-columns: minmax(0, 1fr);
+}

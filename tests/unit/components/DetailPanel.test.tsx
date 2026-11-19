@@ -30,20 +30,26 @@ function renderAt(nodeId: string) {
 }
 
 describe('CT-04 DetailPanel', () => {
-  it.skipIf(!ownedNoProducts)('제품 0개인 보유 기기 → 제품 목록 대신 카테고리 공식 페이지 링크(새 탭)', () => {
+  it.skipIf(!ownedNoProducts)('제품 0개인 보유 기기 → 공식 제품군 정보(설명·관련 제품) + 공식 페이지 링크(새 탭)', () => {
     const n = ownedNoProducts!;
     renderAt(n.id);
     expect(screen.getByTestId('detail-title')).toHaveTextContent(n.eq.name);
     expect(screen.queryByTestId('detail-product-list')).toBeNull();
     const empty = screen.getByTestId('detail-empty-products');
-    const links = within(empty).getAllByRole('link');
+    // 2026-11-19: 시스템·솔루션 기기는 공식 제품군 설명·관련 제품을 보여 준다 (families.json)
+    const family = getData().familyByEquipmentId.get(n.eq.id);
+    if (family) {
+      expect(within(empty).getByTestId('detail-family')).toHaveTextContent(family.summary.slice(0, 20));
+      if (family.products.length) expect(within(within(empty).getByTestId('detail-family-products')).getAllByRole('listitem')).toHaveLength(family.products.length);
+    }
+    const linkList = within(empty).getByTestId('detail-category-links');
+    const links = within(linkList).getAllByRole('link');
     const cats = resolveCategories(n.eq);
-    expect(links).toHaveLength(cats.length);
-    links.forEach((a, i) => {
-      expect(a).toHaveAttribute('href', cats[i].url);
+    const expected = [...(family ? [family.familyUrl] : []), ...cats.map((c) => c.url)];
+    expect(links.map((a) => a.getAttribute('href'))).toEqual(expected);
+    links.forEach((a) => {
       expect(a).toHaveAttribute('target', '_blank');
       expect(a.getAttribute('rel')).toMatch(/noopener/);
-      expect(a).toHaveTextContent(cats[i].name);
     });
     expect(empty).not.toHaveTextContent('미보유'); // 보유 기기를 공백으로 보이게 하지 않음
   });

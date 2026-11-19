@@ -1,0 +1,996 @@
+{
+  "generatedAt": "2026-11-19",
+  "source": "LS ELECTRIC 공식 사이트 국문 제품 카테고리 페이지·자료실 (순차 요청 101건, 이미지 82건)",
+  "families": {
+    "step-up-tr": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA009005",
+      "summary": "LS ELECTRIC 초고압 변압기는 투자율이 높고 히스테리시스 손실이 적은 Non-aging 방향성 규소강판 철심을 얇게 성층하고, Joint부는 Step-lap 방식으로 만들어 손실과 소음을 줄입니다. IEC·ANSI(IEEE)·한전 규격에 따라 최대 550kV, 3상 최대 800MVA(단상 500MVA)까지 생산하며, 옥내·옥외용과 ONAN/ONAF/OFAF/OFWF 냉각방식을 지원합니다.",
+      "products": [
+        {
+          "name": "Oil-immersed Transformer (유입변압기)",
+          "kind": "product",
+          "desc": "관련 제품 — 유입변압기",
+          "url": "https://www.ls-electric.com/ko/product/view/P01109",
+          "image": "images/families/step-up-tr-0.png",
+          "productId": "P01109"
+        },
+        {
+          "name": "Cast Resin Transformer (몰드변압기)",
+          "kind": "product",
+          "desc": "관련 제품 — 몰드변압기",
+          "url": "https://www.ls-electric.com/ko/product/view/P01110",
+          "image": "images/families/step-up-tr-1.png",
+          "productId": "P01110"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Power Transformer] 초고압 변압기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BPower_Transformer%5D_KO_C84501-10-201812.pdf"
+        }
+      ]
+    },
+    "ehv-gis": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA009004",
+      "summary": "GIS(Gas Insulated Switchgear)는 옥내·외 발전소와 변전소에서 부하전류는 물론 사고·단락전류 같은 이상 상태에서도 선로를 안전하게 개폐해 전력계통을 보호하는 개폐장치입니다. 정격전압 25.8kV~420kV의 최신 사양을 만족하며, 동급 중 가장 Compact한 공간절약형 Modular Design으로 경제적인 해법을 제시합니다. 주요 부품이 절연가스(SF6 또는 친환경 가스)로 밀봉된 접지 금속외함 안에 있어 오염·기후 영향과 접촉 사고 우려가 적습니다.",
+      "products": [
+        {
+          "name": "GIS 25.8/36~420kV",
+          "kind": "model",
+          "desc": "정격전압 25.8~420kV, 정격차단전류 최대 63kA (카테고리 Description 표)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009004"
+        },
+        {
+          "name": "C-GIS",
+          "kind": "product",
+          "desc": "관련 제품 — Cubicle형 가스절연개폐장치",
+          "url": "https://www.ls-electric.com/ko/product/view/P02201",
+          "image": "images/families/ehv-gis-1.png",
+          "productId": "P02201"
+        },
+        {
+          "name": "Power Transformer (초고압 변압기)",
+          "kind": "category",
+          "desc": "최대 550kV·800MVA 초고압 유입변압기",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009005",
+          "image": "images/families/ehv-gis-2.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[GIS] Total Solution",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIS%5D_Total_Solution_KO_C81001-08-202206.pdf"
+        },
+        {
+          "title": "[GIS] 170kV",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIS%5D_170kV_KO_C81021-04-202606.pdf"
+        }
+      ]
+    },
+    "hvdc": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA009003",
+      "summary": "HVDC(High Voltage Direct Current)는 발전소의 교류전력을 직류로 변환해 송전한 뒤 수전지역에서 다시 교류로 재변환해 공급하는 초고압 직류송전 시스템입니다. 300km 이상 가공 송전이나 40km 이상 해저·지중 송전에서 교류보다 경제적이고, 철탑 면적·수량이 줄어 친환경적입니다. 대규모 전력을 부하 집중 지역에 직접 보내 기존 AC 계통의 과부하 영향을 최소화합니다.",
+      "products": [
+        {
+          "name": "FACTS (유연송전시스템)",
+          "kind": "category",
+          "desc": "SVC·STATCOM 등 전력반도체 기반 유연송전 설비",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009002",
+          "image": "images/families/hvdc-0.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "LS Solution Overview (송전 공통, HVDC 전용 아님)",
+          "url": "https://www.ls-electric.com/ko/cat/LS_Solution_Overview_KO_CZZZ01-01-202508.pdf"
+        }
+      ]
+    },
+    "facts": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA009002",
+      "summary": "FACTS(Flexible AC Transmission System)는 교류 송전선로에 전력용 반도체 스위칭 소자 제어기술을 적용해 계통 유연성을 높이고 교류 계통의 단점을 보완하는 전력시스템 기술입니다. LS ELECTRIC은 기계식 차단기·커패시터·리액터 기반 1세대를 넘어 전력반도체를 접목한 SVC와 STATCOM을 생산합니다. Building·Container·Panel 타입으로 345kV 연계, 1Bank 최대 150Mvar까지 대응합니다.",
+      "products": [
+        {
+          "name": "SVC",
+          "kind": "model",
+          "desc": "사이리스터 기반 병렬 정지형 무효전력 보상설비(TSC·TCR로 커패시터·리액터 뱅크 대체)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009002"
+        },
+        {
+          "name": "STATCOM",
+          "kind": "model",
+          "desc": "고전압·대전력 IGBT 전압형 MMC 기술, SVC 대비 빠른 응동속도·작은 부지·낮은 고조파",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009002"
+        },
+        {
+          "name": "Building Type",
+          "kind": "model",
+          "desc": "PCC 기준 345kV 연계 실적, 1Bank 최대 150Mvar",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009002",
+          "image": "images/families/facts-2.png"
+        },
+        {
+          "name": "Container Type",
+          "kind": "model",
+          "desc": "45ft 컨테이너 1Bank 최대 50Mvar, 트레일러 모바일·E-house 적용 가능",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009002",
+          "image": "images/families/facts-3.png"
+        },
+        {
+          "name": "Panel Type",
+          "kind": "model",
+          "desc": "380/440V 직결(변압기 사용 시 12kV), 90kVar~2Mvar, 병렬 최대 24Mvar",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009002",
+          "image": "images/families/facts-4.png"
+        },
+        {
+          "name": "HVDC (초고압 직류송전)",
+          "kind": "category",
+          "desc": "교류→직류 변환 송전 후 수전지역에서 재변환하는 초고압 직류송전 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009003",
+          "image": "images/families/facts-5.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[FACTS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BFACTS%5D_KO_C84611-02-202602.pdf"
+        },
+        {
+          "title": "[FACTS] Beyond X PQUP",
+          "url": "https://www.ls-electric.com/ko/cat/%5BFACTS%5D_Beyond_X_PQUP_KO_C84621-06-202610.pdf"
+        }
+      ]
+    },
+    "substation": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA009001",
+      "summary": "초고압 전력설비의 Turn-key 기반 프로젝트와 종합 엔지니어링을 수행하며, 송전선로 공사·변전소 공사·변전소 시공설계·전력계통해석을 제공합니다. 22.9/154/345kV 변전소 시공과 지중·가공 선로 공사, 배치·기초·접지망 설계, 단락전류·계전기 정정·고조파·안정도 해석까지 다룹니다. 상위 송전 사업(Power Transmission)은 변전소·FACTS·HVDC 등 초고압 설비의 EPC와 O&M을 아우르는 Total Solution입니다.",
+      "products": [
+        {
+          "name": "GIS (가스절연개폐장치)",
+          "kind": "category",
+          "desc": "25.8~420kV 발전소·변전소용 가스절연개폐장치",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009004",
+          "image": "images/families/substation-0.png"
+        },
+        {
+          "name": "Power Transformer (초고압 변압기)",
+          "kind": "category",
+          "desc": "최대 550kV·800MVA 초고압 유입변압기",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009005",
+          "image": "images/families/substation-1.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "초고압 수변전 설비 지명원",
+          "url": "https://www.ls-electric.com/ko/cat/%EC%B4%88%EA%B3%A0%EC%95%95_%EC%88%98%EB%B3%80%EC%A0%84_%EC%84%A4%EB%B9%84_%EC%A7%80%EB%AA%85%EC%9B%90_KO_C84521-03-202602.pdf"
+        },
+        {
+          "title": "초고압 제안서 (2018)",
+          "url": "https://www.ls-electric.com/ko/cat/%EC%B4%88%EA%B3%A0%EC%95%95_%EC%A0%9C%EC%95%88%EC%84%9C_KO_C84511-01-201808.pdf"
+        }
+      ]
+    },
+    "gis-154": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA009004",
+      "summary": "GIS(Gas Insulated Switchgear)는 발전소·변전소에서 정상 부하전류와 사고·단락전류를 모두 안전하게 개폐해 계통을 보호하는 가스절연 개폐장치입니다. LS ELECTRIC GIS는 25.8kV~420kV 전 사양을 갖추며, 154kV 계통에 쓰이는 170kV 등급은 정격전류 1250~4000A, 정격차단전류 50kA입니다. 절연가스로 밀봉된 접지 외함과 가스구획 분리로 사고 확산을 막고 설치·유지보수가 쉽습니다.",
+      "products": [
+        {
+          "name": "GIS 25.8/36~420kV",
+          "kind": "model",
+          "desc": "정격전압 25.8~420kV, 정격차단전류 최대 63kA (카테고리 Description 표)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009004"
+        },
+        {
+          "name": "C-GIS",
+          "kind": "product",
+          "desc": "관련 제품 — Cubicle형 가스절연개폐장치",
+          "url": "https://www.ls-electric.com/ko/product/view/P02201",
+          "image": "images/families/gis-154-1.png",
+          "productId": "P02201"
+        },
+        {
+          "name": "Power Transformer (초고압 변압기)",
+          "kind": "category",
+          "desc": "최대 550kV·800MVA 초고압 유입변압기",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009005",
+          "image": "images/families/gis-154-2.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[GIS] 170kV",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIS%5D_170kV_KO_C81021-04-202606.pdf"
+        },
+        {
+          "title": "[GIS] Total Solution",
+          "url": "https://www.ls-electric.com/ko/cat/%5BGIS%5D_Total_Solution_KO_C81001-08-202206.pdf"
+        }
+      ]
+    },
+    "main-tr": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA009005",
+      "summary": "LS ELECTRIC 초고압 변압기는 Non-aging 방향성 규소강판 철심을 얇게 성층하고 Step-lap 접합으로 손실과 소음을 줄입니다. IEC·ANSI(IEEE)·한전 규격 기준 최대 550kV, 3상 800MVA까지 생산하며 옥내·옥외용과 다양한 냉각방식(ONAN/ONAF/OFAF/OFWF)을 지원합니다. 100MVA 기준 연 150대 규모의 자체 생산 체계를 갖추고 있습니다.",
+      "products": [
+        {
+          "name": "Oil-immersed Transformer (유입변압기)",
+          "kind": "product",
+          "desc": "관련 제품 — 유입변압기",
+          "url": "https://www.ls-electric.com/ko/product/view/P01109",
+          "image": "images/families/main-tr-0.png",
+          "productId": "P01109"
+        },
+        {
+          "name": "Cast Resin Transformer (몰드변압기)",
+          "kind": "product",
+          "desc": "관련 제품 — 몰드변압기",
+          "url": "https://www.ls-electric.com/ko/product/view/P01110",
+          "image": "images/families/main-tr-1.png",
+          "productId": "P01110"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Power Transformer] 초고압 변압기 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BPower_Transformer%5D_KO_C84501-10-201812.pdf"
+        }
+      ]
+    },
+    "sas": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA003003",
+      "summary": "SAS(Substation Automation System, 변전소 종합보호 시스템)는 변전소별로 디지털 계전기를 적용한 변전설비와 보안장치를 구축해 운전정보를 신속·정확하게 취득하고 실시간 감시제어하는 시스템입니다. 자동운전 프로그램으로 무인화된 디지털 변전소를 구현하며, 다양한 디지털 복합계전기 통신·사고분석·원방정정 기능을 지원합니다. 상위 제품군 SCADA의 하위 솔루션입니다.",
+      "products": [
+        {
+          "name": "SAS Station",
+          "kind": "model",
+          "desc": "CSD와 TCP/IP 통신으로 현장 정보 수집, 변전소 전 설비 실시간 처리·사고 인지·자동절체·역률제어",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003003"
+        },
+        {
+          "name": "CSD (Communication Server Device)",
+          "kind": "model",
+          "desc": "상위 급전소 시스템과 연계해 운전정보 제공·지령 수행하는 종합자동화용 통신제어장치",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003003"
+        },
+        {
+          "name": "RTU",
+          "kind": "model",
+          "desc": "IED 미적용 차단기·보안장비 운전정보를 취득해 CSD로 전송하고 명령 수행",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003003"
+        },
+        {
+          "name": "보호계전기반",
+          "kind": "model",
+          "desc": "GIS·TR 보호용 디지털 복합계전기(IED)를 수용해 CSD와 고속통신",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003003"
+        },
+        {
+          "name": "SCADA (원방감시제어시스템)",
+          "kind": "category",
+          "desc": "RTU로 현장 데이터를 수집해 중앙에서 온라인 감시·제어하는 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003",
+          "image": "images/families/sas-4.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[SCADA] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSCADA%5D_KO_C87511-01-202010.pdf"
+        },
+        {
+          "title": "[Solution] Power IT",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSolution%5D_Power_IT_KO_C87501-02-202104.pdf"
+        },
+        {
+          "title": "RTU350i",
+          "url": "https://www.ls-electric.com/ko/cat/RTU350i_KO_C875A1-01-202603.pdf"
+        }
+      ]
+    },
+    "fcl": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA010005",
+      "summary": "전류제한기(FCL, Fault Current Limiter)는 지락·단락 사고 시 발생하는 고장전류를 수 ms 이내 고속으로 한류해 전력계통을 보호하는 기기입니다. 고장전류에 의한 기계적·열적 스트레스를 줄이고 계통·분산전원 연계, 초전도 케이블 보호, 인접 선로 Voltage sag 파급 방지 등에 활용됩니다. 초전도 한류소자와 고속스위치·한류저항을 적용해 동작 후 수분 내 자동 회복·반복 사용이 가능합니다.",
+      "products": [
+        {
+          "name": "초전도 전류제한기 22.9kV / 2000A",
+          "kind": "model",
+          "desc": "정격단락전류 25kA/0.4s, 임피던스 6.0Ω(협의), 5,000×3,250×3,000mm",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA010005"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[FCL] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BFCL%5D_KO_C800Q1-02-202212.pdf"
+        }
+      ]
+    },
+    "pf": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA015004",
+      "summary": "한류형 전력퓨즈(PF, Power Fuse)는 고압계통 선로에 단락사고가 발생하면 계통을 차단해 전력기기와 선로를 보호하는 기기입니다. 단락전류를 회로 고유 단락전류보다 훨씬 작게 제한하고, 동작표시장치(Striker)로 동작 상태를 육안 확인할 수 있습니다. 차단용량이 크고 밀폐구조라 큐비클처럼 좁은 곳에도 적합하며, 접속부 크기 단일화로 호환·유지보수가 쉽습니다.",
+      "products": [
+        {
+          "name": "한류형 전력퓨즈 (DIN 규격)",
+          "kind": "model",
+          "desc": "3.6/7.2kV 5~200A·24kV 5~200A, 정격차단 40kA(24kV 일부 25kA)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015004"
+        },
+        {
+          "name": "G형 퓨즈 (KS, 일반부하용)",
+          "kind": "model",
+          "desc": "3.6/7.2kV, G/T/C 특성, 정격차단 40kA",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015004",
+          "image": "images/families/pf-1.png"
+        },
+        {
+          "name": "M형 퓨즈 (KS, 전동기용)",
+          "kind": "model",
+          "desc": "3.6/7.2kV, M 50~400A·C 35~300A, 정격차단 40kA",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015004",
+          "image": "images/families/pf-2.png"
+        },
+        {
+          "name": "P형/J형 퓨즈 (KS, PT용)",
+          "kind": "model",
+          "desc": "3.6/7.2kV(P1)·24kV(J1), 정격차단 40kA",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015004",
+          "image": "images/families/pf-3.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[PF] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BPF%5D_KO_C09511-18-202303.pdf"
+        },
+        {
+          "title": "[PF] 기종선정 조견표",
+          "url": "https://www.ls-electric.com/ko/cat/%5BPF%5D_%EA%B8%B0%EC%A2%85%EC%84%A0%EC%A0%95_%EC%A1%B0%EA%B2%AC%ED%91%9C_KO_C09521-03-202510.pdf"
+        }
+      ]
+    },
+    "vc-vi": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA015002",
+      "summary": "고압전자접촉기(VC)는 자체 생산 진공 인터럽터를 채택해 공인기관 개발시험에 합격한 제품으로, 단락차단내력과 정격 단시간 전류를 높이고 다양한 크래들(고정형·인출형·콤비네이션형)과 부속장치를 갖췄습니다. 진공 인터럽터(VI)는 세라믹관·고정/가동전극·아크실드·벨로우즈로 구성되며 약 5×10⁻⁵ Torr 진공을 유지합니다. 20년 이상 축적한 진공 기술로 소형·경량, 고속 차단, 긴 수명을 구현하고 IEC·ANSI·KEMA 규격에 적합합니다.",
+      "products": [
+        {
+          "name": "Susol VCS 3.6/7.2kV 고정형(Z)",
+          "kind": "model",
+          "desc": "고압전자접촉기 3.6/7.2kV 고정형(Z), 정격전류 200/400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-0.png"
+        },
+        {
+          "name": "Susol VCS 3.6/7.2kV 단독인출형(Z)",
+          "kind": "model",
+          "desc": "고압전자접촉기 3.6/7.2kV 단독인출형(Z), 정격전류 200/400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-1.png"
+        },
+        {
+          "name": "Susol VCS 3.6/7.2kV 단독 외부인출형(K, P)",
+          "kind": "model",
+          "desc": "고압전자접촉기 3.6/7.2kV 단독 외부인출형(K, P), 정격전류 200/400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-2.png"
+        },
+        {
+          "name": "Susol VCS 3.6/7.2kV 콤비네이션 인출형(G)",
+          "kind": "model",
+          "desc": "고압전자접촉기 3.6/7.2kV 콤비네이션 인출형(G), 정격전류 200/400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-3.png"
+        },
+        {
+          "name": "Susol VCS 3.6/7.2kV 콤비네이션 외부 인출형(B, T)",
+          "kind": "model",
+          "desc": "고압전자접촉기 3.6/7.2kV 콤비네이션 외부 인출형(B, T), 정격전류 200/400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-4.png"
+        },
+        {
+          "name": "Susol VCS 3.6/7.2kV 단독 외부인출형(K, P)",
+          "kind": "model",
+          "desc": "고압전자접촉기 3.6/7.2kV 단독 외부인출형(K, P), 정격전류 200/400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-5.png"
+        },
+        {
+          "name": "Susol VCS 12kV 고정형(Z)",
+          "kind": "model",
+          "desc": "고압전자접촉기 12kV 고정형(Z), 정격전류 400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-6.png"
+        },
+        {
+          "name": "Susol VCS 12kV 단독 외부인출형(K)",
+          "kind": "model",
+          "desc": "고압전자접촉기 12kV 단독 외부인출형(K), 정격전류 400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-7.png"
+        },
+        {
+          "name": "Susol VCS 12kV 콤비네이션 외부 인출형(B)",
+          "kind": "model",
+          "desc": "고압전자접촉기 12kV 콤비네이션 외부 인출형(B), 정격전류 400A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+          "image": "images/families/vc-vi-8.png"
+        },
+        {
+          "name": "진공 인터럽터 LV2",
+          "kind": "model",
+          "desc": "정격전압 7.2kV, 정격전류 400/630A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-9.png"
+        },
+        {
+          "name": "진공 인터럽터 LV3",
+          "kind": "model",
+          "desc": "정격전압 7.2kV, 정격전류 630/1250A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-10.png"
+        },
+        {
+          "name": "진공 인터럽터 LV4-E",
+          "kind": "model",
+          "desc": "정격전압 24/25.8kV, 정격전류 630A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-11.png"
+        },
+        {
+          "name": "진공 인터럽터 LV5-P",
+          "kind": "model",
+          "desc": "정격전압 12/17.5kV, 정격전류 630/1250A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-12.png"
+        },
+        {
+          "name": "진공 인터럽터 LV5A",
+          "kind": "model",
+          "desc": "정격전압 12/17.5kV, 정격전류 2000A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-13.png"
+        },
+        {
+          "name": "진공 인터럽터 LV7-P1",
+          "kind": "model",
+          "desc": "정격전압 24/25.8kV, 정격전류 2500A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-14.png"
+        },
+        {
+          "name": "진공 인터럽터 LV8",
+          "kind": "model",
+          "desc": "정격전압 17.5/36kV, 정격전류 ~3150A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-15.png"
+        },
+        {
+          "name": "진공 인터럽터 LV8-P",
+          "kind": "model",
+          "desc": "정격전압 7.2/12kV, 정격전류 ~3150~4000A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-16.png"
+        },
+        {
+          "name": "진공 인터럽터 LV10404",
+          "kind": "model",
+          "desc": "정격전압 25.8kV, 정격전류 3150A",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+          "image": "images/families/vc-vi-17.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Susol VCS] 국문",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCS%5D_KO_C05061-09-202510.pdf"
+        },
+        {
+          "title": "[Susol VCS] 영문",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCS%5D_EN_C05062-11-202510.pdf"
+        },
+        {
+          "title": "[Susol VI]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VI%5D_KO_C05091-01-202309.pdf"
+        }
+      ]
+    },
+    "mv-drive": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/BBB006",
+      "summary": "LS ELECTRIC 고압드라이브는 최신 기술을 적용한 Compact 통합 시스템으로 고효율·고역률을 통한 최적의 에너지 절감 솔루션을 구현합니다. 사용자 중심 인터페이스로 운전 조작이 쉽고, 가스·수처리·조선·발전·시멘트 등 다양한 산업에 적용됩니다. 대표 제품 M1000은 입출력 필터가 필요 없는 간결한 구성과 컴팩트 사이즈로 고객 TCO를 줄입니다.",
+      "products": [
+        {
+          "name": "M1000 고압 인버터",
+          "kind": "model",
+          "desc": "3kV급 200~3,700kVA 등 고압 드라이브 (입출력 필터 불필요, 컴팩트 설계)",
+          "url": "https://www.ls-electric.com/ko/product/category/BBB006001"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "M1000 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17488260949970/M1000_Catalog_KR_202505.pdf"
+        }
+      ]
+    },
+    "sag-protector": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA014009",
+      "summary": "송·변전망 사고의 대부분은 1초 이내의 순간전압강하(Voltage Sag)이지만, 이 짧은 정전으로도 제조 설비가 멈출 수 있습니다. 순간전압보상장치는 100% 정전 시에도 2ms 이내 초고속 스위칭으로 전력을 공급해 부하와 장비를 보호합니다. 15년 장수명 커패시터와 98% 고효율, 7\" TFT LCD를 갖췄습니다.",
+      "products": [
+        {
+          "name": "순간전압보상장치 VSP (Sag Protector)",
+          "kind": "model",
+          "desc": "2ms 이내 무정전 절체, 98% 고효율, 15년 장수명 커패시터",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA014009"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[VSP] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BVSP%5D_KO_C16051-02-202604.pdf"
+        }
+      ]
+    },
+    "aps": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA010006",
+      "summary": "APS(Arc Protection System)는 수배전반에서 발생하는 아크 사고를 감지해 단시간에 소호함으로써 사람을 보호하고 기기 파손과 2차 피해를 최소화하는 능동형 솔루션입니다. Arc Eliminator 적용 시 4ms 이내에 아크를 제거하며, KOEMA 0930~0932 기준 KERI 성적서를 취득했습니다. APR 간 광통신(OptoLink)으로 다중전원 계통을 보호하고 1 set로 최대 25면까지 보호하며, APR/AEC/AE를 1개 Panel에 구성할 수 있습니다.",
+      "products": [
+        {
+          "name": "APS (APR·AEC·Arc Eliminator)",
+          "kind": "model",
+          "desc": "7.2/12kV·24kV, 40kA/1s, 사고전류 우회 4ms 이내, Cradle 방식 Arc Eliminator",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA010006",
+          "image": "images/families/aps-0.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[APS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BAPS%5D_KO_C800F1-04-202601.pdf"
+        }
+      ]
+    },
+    "ev-charger": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA007",
+      "summary": "LS ELECTRIC은 축적된 기술력으로 안전하고 경제적인 전기차 충전기와 편리하고 효율적인 관리 시스템을 제공합니다. 50~100kW 급속(직류) 충전기와 7/14kW 완속(교류) 충전기를 갖추고 있으며, 관리 시스템은 충전기 상태·충전단가·충전 이력·사용자 관리 기능으로 아파트·지식산업센터 같은 독립 환경에 적합합니다.",
+      "products": [
+        {
+          "name": "급속 충전기 100kW (LECF100-2M15S)",
+          "kind": "model",
+          "desc": "직류 2mode, DC 200~600V·최대 200A, 효율 최대 94%",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA007002",
+          "image": "images/families/ev-charger-0.png"
+        },
+        {
+          "name": "급속 충전기 50kW (LECF050-1M10S)",
+          "kind": "model",
+          "desc": "직류 1mode, DC 200~600V·최대 120A, 효율 최대 96%",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA007002",
+          "image": "images/families/ev-charger-1.png"
+        },
+        {
+          "name": "완속 충전기 14kW (LECS014-2CH07BS)",
+          "kind": "model",
+          "desc": "교류 220V, 2CH×32A, 스탠드형",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA007003",
+          "image": "images/families/ev-charger-2.png"
+        },
+        {
+          "name": "완속 충전기 7kW (LECS007-1CH07BS)",
+          "kind": "model",
+          "desc": "교류 220V, 32A, 스탠드형",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA007003",
+          "image": "images/families/ev-charger-3.png"
+        },
+        {
+          "name": "EV-CHARGER Solution (충전 관리 시스템)",
+          "kind": "category",
+          "desc": "충전기 상태·정보·사용자·단가·이력·통계 관리",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA007001",
+          "image": "images/families/ev-charger-4.png"
+        },
+        {
+          "name": "DC Meter",
+          "kind": "product",
+          "desc": "관련 제품 — 직류 전력량계",
+          "url": "https://www.ls-electric.com/ko/product/view/P02214",
+          "image": "images/families/ev-charger-5.png",
+          "productId": "P02214"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[EV CHARGER] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BEV_CHARGER%5D_KO_C12031-12-202601.pdf"
+        }
+      ]
+    },
+    "mms": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA014006",
+      "summary": "모터보호용 배선용차단기(MMS, Manual Motor Starter)는 높은 성능과 신뢰성을 갖춘 모터 보호용 제품으로 단락·과부하·결상 보호 기능을 제공하며 IEC·UL 규격에 적합합니다. 45/55/70mm 폭의 컴팩트한 치수, 부속장치 공용화, Rotary형 핸들과 OFF 위치 잠금, 주위온도 자동보상, Finger safe 단자커버를 갖췄습니다.",
+      "products": [
+        {
+          "name": "MMS-32 (32S/32H/32HI)",
+          "kind": "model",
+          "desc": "정격전류 0.1~40A, 690V, Class10, 표준·고차단·순시형",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA014006",
+          "image": "images/families/mms-0.png"
+        },
+        {
+          "name": "MMS-63 (63S/63H/63HI)",
+          "kind": "model",
+          "desc": "정격전류 6~65A, 690V, Class10, 표준·고차단·순시형",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA014006",
+          "image": "images/families/mms-1.png"
+        },
+        {
+          "name": "MMS-100 (100S/100H/100HI)",
+          "kind": "model",
+          "desc": "정격전류 11~100A, 690V, Class10, 표준·고차단·순시형",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA014006",
+          "image": "images/families/mms-2.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Metasol MMS] 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_MMS%5D_KO_C01821-06-202609.pdf"
+        }
+      ]
+    },
+    "dmc": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA014011",
+      "summary": "DMC(Digital Metering and Controller)는 MCCB(MOP) 제어와 계측·모니터링을 수행하는 기기로, 저압 배전반·분전반·MCC반을 스마트화합니다. MCU 내장으로 실시간 고정밀 처리가 가능하며, 전압·전류·전력량 계측과 과전류·지락·저전압 고장원인 저장, Modbus RS-485 통신을 지원합니다.",
+      "products": [
+        {
+          "name": "DMC (Digital Metering and Controller)",
+          "kind": "model",
+          "desc": "OCR·GR·UVR 알람, 전류·전압·THD·역률·전력량 계측, MOP 차단기 제어, RS-485",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA014011"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[DMC] 카탈로그 (국문)",
+          "url": "https://www.ls-electric.com/ko/cat/DMC_Catalog_KO_202212.pdf"
+        }
+      ]
+    },
+    "pv": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA012",
+      "summary": "LS ELECTRIC은 발전·송전·배전 기술력을 바탕으로 컨설팅부터 설계, 설치시공, A/S까지 One-stop 태양광발전 토탈 솔루션을 제공합니다. 고효율 모듈과 고신뢰성 인버터로 발전소를 시공하며, 국내 최대 규모 태양광·수상 태양광 실적을 보유하고 자체 O&M Center로 발전소 운영을 지원합니다.",
+      "products": [
+        {
+          "name": "태양광 모듈",
+          "kind": "model",
+          "desc": "단결정 단면·양면, 고효율 하프컷, DC 1,500V 제품",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA012",
+          "image": "images/families/pv-0.png"
+        },
+        {
+          "name": "태양광 인버터",
+          "kind": "model",
+          "desc": "유틸리티 규모, 염해지역용 Outdoor, Multi MPPT",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA012",
+          "image": "images/families/pv-1.png"
+        },
+        {
+          "name": "PV O&M",
+          "kind": "model",
+          "desc": "Cloud 기반 O&M Center 모니터링, 빅데이터 발전량 예측, 모바일·SNS 알람",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA012",
+          "image": "images/families/pv-2.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[PV] 카탈로그 (2018)",
+          "url": "https://www.ls-electric.com/ko/cat/%5BPV%5D_Catalog_KO_201809.pdf"
+        }
+      ]
+    },
+    "microgrid": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA006",
+      "summary": "마이크로그리드는 다양한 분산자원과 부하 Controller를 활용해 전력 공급과 수요를 관리하는 전력망으로, 계통 연계 또는 독립 운전이 가능합니다. 분산전원·에너지저장장치로 운영비용을 줄이고, 재생에너지를 직접 공급해 온실가스를 줄이며, 안정적이고 균일한 고품질 전력을 제공합니다.",
+      "products": [
+        {
+          "name": "SCADA (원방감시제어시스템)",
+          "kind": "category",
+          "desc": "RTU로 현장 데이터를 수집해 중앙에서 온라인 감시·제어하는 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003",
+          "image": "images/families/microgrid-0.png"
+        },
+        {
+          "name": "ESS (에너지저장장치)",
+          "kind": "category",
+          "desc": "관련 제품 — 에너지 저장 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA013",
+          "image": "images/families/microgrid-1.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Solution] Power IT",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSolution%5D_Power_IT_KO_C87501-02-202104.pdf"
+        }
+      ]
+    },
+    "railway": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA019",
+      "summary": "LS ELECTRIC은 철도 전력 송배전 분야에서 초고압부터 배전까지 통합 전력 솔루션을 제공합니다. AC System은 GIS·초고압/Scott 변압기, C-GIS·MCSG·APS 등 고압 제품, 저압 배전반과 SCADA·PQMS·SAS 같은 감시제어 시스템으로 구성되고, DC System은 DC 배전반과 DC 정류기로 안정적 철도 운영을 지원합니다.",
+      "products": [
+        {
+          "name": "AC System",
+          "kind": "category",
+          "desc": "초고압 GIS·변압기부터 고압·저압 배전반, 감시제어 시스템까지 철도 AC 전력설비",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA019001",
+          "image": "images/families/railway-0.png"
+        },
+        {
+          "name": "DC System",
+          "kind": "category",
+          "desc": "DC 배전반·DC 정류기 등 철도 직류 전력설비",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA019002",
+          "image": "images/families/railway-1.png"
+        },
+        {
+          "name": "DC 배전반 (DC Switchgear)",
+          "kind": "model",
+          "desc": "DC 900(750)/1800(1500)V, 4000/6000A, 차단 100kA, IEC 61992/EN 50123",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA019002"
+        },
+        {
+          "name": "DC 정류기 (DC Rectifier)",
+          "kind": "model",
+          "desc": "실리콘 기반 AC→DC 정류기, 대용량·간소화 설계",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA019002"
+        },
+        {
+          "name": "GIS (가스절연개폐장치)",
+          "kind": "category",
+          "desc": "25.8~420kV 발전소·변전소용 가스절연개폐장치",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009004",
+          "image": "images/families/railway-4.png"
+        },
+        {
+          "name": "Power Transformer (초고압 변압기)",
+          "kind": "category",
+          "desc": "최대 550kV·800MVA 초고압 유입변압기",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA009005",
+          "image": "images/families/railway-5.png"
+        },
+        {
+          "name": "MV SWGR (고압 배전반)",
+          "kind": "category",
+          "desc": "관련 제품",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA010001",
+          "image": "images/families/railway-6.png"
+        },
+        {
+          "name": "LV SWGR & MCC (저압 배전반)",
+          "kind": "category",
+          "desc": "관련 제품",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA010002",
+          "image": "images/families/railway-7.png"
+        }
+      ],
+      "catalogs": []
+    },
+    "ems": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA002",
+      "summary": "EMS(Energy Management System, 전력계통 운영 시스템)는 전력계통을 안정적·효율적으로 운영하기 위해 발전기·송전설비 특성에 맞는 제어기법을 적용하고 대규모 발전·송전·배전 시스템을 감시·제어합니다. 개방형 구조와 범용 DB, Realtime OS 기반 실시간 데이터 취득, 경제급전·자동발전제어, 사고 파급 분석과 시나리오 재구성 기능을 지원합니다.",
+      "products": [
+        {
+          "name": "SCADA (원방감시제어시스템)",
+          "kind": "category",
+          "desc": "RTU로 현장 데이터를 수집해 중앙에서 온라인 감시·제어하는 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003",
+          "image": "images/families/ems-0.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Solution] Power IT",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSolution%5D_Power_IT_KO_C87501-02-202104.pdf"
+        }
+      ]
+    },
+    "dms": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA004",
+      "summary": "DMS(Distribution Management System, 배전관리시스템)는 배전선로 가스개폐기의 운전상태를 컴퓨터·통신기술로 원방 감시·제어하는 시스템입니다. 고장 발생 시 고장구간을 자동 구분·분리하고 건전 정전구간을 신속히 복구하며, 중앙시스템·DAU·유무선 통신장치·FRTU·지중/가공 개폐기로 구성됩니다.",
+      "products": [
+        {
+          "name": "SCADA (원방감시제어시스템)",
+          "kind": "category",
+          "desc": "RTU로 현장 데이터를 수집해 중앙에서 온라인 감시·제어하는 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003",
+          "image": "images/families/dms-0.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Solution] Power IT",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSolution%5D_Power_IT_KO_C87501-02-202104.pdf"
+        }
+      ]
+    },
+    "xems": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA005",
+      "summary": "xEMS는 에너지 생성·저장·소비를 위한 맞춤형 솔루션(FEMS·BEMS·HEMS)으로 에너지 절약, 효율적 운영, 수요 관리 등 다양한 고객 가치를 제공합니다. BEMS는 건물의 에너지 부하 저감과 고효율 설비 운영으로 낭비를 줄이고, FEMS는 ICT로 공장 공정·설비의 에너지 사용과 가동현황을 파악해 수요를 예측하고 비용을 최적화합니다.",
+      "products": [
+        {
+          "name": "BEMS (스마트 빌딩 에너지관리 시스템)",
+          "kind": "category",
+          "desc": "건물 에너지 모니터링·목표 관리·피크 제어·ESS 운영·발전량 예측",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA005001",
+          "image": "images/families/xems-0.png"
+        },
+        {
+          "name": "FEMS (스마트 공장 에너지관리 시스템)",
+          "kind": "category",
+          "desc": "공장 에너지 사용·가동현황 기반 수요 예측과 최적 제어",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA005002",
+          "image": "images/families/xems-1.png"
+        },
+        {
+          "name": "SCADA (원방감시제어시스템)",
+          "kind": "category",
+          "desc": "RTU로 현장 데이터를 수집해 중앙에서 온라인 감시·제어하는 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003",
+          "image": "images/families/xems-2.png"
+        },
+        {
+          "name": "ESS (에너지저장장치)",
+          "kind": "category",
+          "desc": "관련 제품 — 에너지 저장 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA013",
+          "image": "images/families/xems-3.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Solution] Power IT",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSolution%5D_Power_IT_KO_C87501-02-202104.pdf"
+        },
+        {
+          "title": "Beyond X FEMS",
+          "url": "https://www.ls-electric.com/ko/cat/Beyond_X_FEMS_C87571-02-202505.pdf"
+        }
+      ]
+    },
+    "care": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA001",
+      "summary": "CARE는 모든 전력설비에 IoT 기반 스마트 기기와 AI·빅데이터·클라우드 등 DX 기술을 접목해 신뢰성·안전성·편의성·효율성을 강화한 디지털 전력설비 통합관리 플랫폼입니다. 설비를 연결해 데이터를 수집(Connectivity)하고 정밀 분석(Analysis)해 신뢰성(Reliability)과 효율(Efficiency)을 높입니다. Smart MV·Smart LV·Smart Diagnosis(송배전 광역감시 진단)·AMS(ISO 55000 기반 자산관리)로 구성됩니다.",
+      "products": [
+        {
+          "name": "Smart MV (스마트 고압 배전반)",
+          "kind": "category",
+          "desc": "내장 센서·디지털 기술로 계통 모니터링·예방 관리를 강화한 배전반 솔루션",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA001001",
+          "image": "images/families/care-0.png"
+        },
+        {
+          "name": "Smart LV (스마트 저압 배전반/분전반)",
+          "kind": "category",
+          "desc": "IoT로 ACB~MCB 원격 감시·제어와 측정·모니터링을 강화한 배전반 솔루션",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA001002",
+          "image": "images/families/care-1.png"
+        },
+        {
+          "name": "Smart Diagnosis (송배전 통합 광역감시 진단시스템)",
+          "kind": "category",
+          "desc": "부분방전 등 고장요소를 사전 감시·진단, 최대 200개 사이트 통합 감시",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA001003",
+          "image": "images/families/care-2.png"
+        },
+        {
+          "name": "AMS (전력설비 자산 관리 솔루션)",
+          "kind": "category",
+          "desc": "ISO 55000 기반 APM·WP·AIP 모듈로 유지보수·투자 우선순위 도출",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA001004",
+          "image": "images/families/care-3.png"
+        },
+        {
+          "name": "Smart MCCB",
+          "kind": "product",
+          "desc": "Smart LV 관련 제품",
+          "url": "https://www.ls-electric.com/ko/product/view/P01900",
+          "image": "images/families/care-4.png",
+          "productId": "P01900"
+        },
+        {
+          "name": "GIMAC-B",
+          "kind": "product",
+          "desc": "Smart LV 관련 제품",
+          "url": "https://www.ls-electric.com/ko/product/view/P01214",
+          "image": "images/families/care-5.png",
+          "productId": "P01214"
+        },
+        {
+          "name": "스마트 기기",
+          "kind": "category",
+          "desc": "관련 제품",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA018",
+          "image": "images/families/care-6.png"
+        },
+        {
+          "name": "SCADA (원방감시제어시스템)",
+          "kind": "category",
+          "desc": "RTU로 현장 데이터를 수집해 중앙에서 온라인 감시·제어하는 시스템",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA003",
+          "image": "images/families/care-7.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[Smart MV Solution]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_MV_Solution%5D_KO_C800X1-04-202309.pdf"
+        },
+        {
+          "title": "[Smart LV Solution]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_LV_Solution%5D_KO_C800R1-06-202604.pdf"
+        },
+        {
+          "title": "Beyond X 송배전 통합 광역감시 진단시스템",
+          "url": "https://www.ls-electric.com/ko/cat/Beyond_X_%EC%86%A1%EB%B0%B0%EC%A0%84_%ED%86%B5%ED%95%A9_%EA%B4%91%EC%97%AD%EA%B0%90%EC%8B%9C_%EC%A7%84%EB%8B%A8%EC%8B%9C%EC%8A%A4%ED%85%9C_KO_C87541-02-202212.pdf"
+        },
+        {
+          "title": "Beyond X AMS",
+          "url": "https://www.ls-electric.com/ko/cat/Beyond_X_AMS_KO_C87581-02-202507.pdf"
+        },
+        {
+          "title": "Smart Panel Safeguard",
+          "url": "https://www.ls-electric.com/ko/cat/Smart%20Panel%20Safeguard_Catalog_KO_202202.pdf"
+        }
+      ]
+    },
+    "amrs": {
+      "familyUrl": "https://www.ls-electric.com/ko/product/category/AAA008",
+      "summary": "원격검침시스템(AMRS)은 공동주택·사무실의 전기·가스·수도·온수·열량 계량기 사용량을 검침원 방문 없이 관리사무소 검침센터에서 자동 검침하고, 검침 데이터를 컴퓨터로 검색·출력하는 시스템입니다. 소프트웨어 Amos Plus, 통신 단말기(HCUM), 회전형 전력량계, 설비미터로 구성되며, KS 인증 전력량계와 홈넷 연동 호환성을 갖췄습니다.",
+      "products": [
+        {
+          "name": "Amos Plus",
+          "kind": "model",
+          "desc": "원격검침 소프트웨어 (MS-SQL/로컬 DB)",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA008"
+        },
+        {
+          "name": "통신 단말기 (HCUM)",
+          "kind": "model",
+          "desc": "원격검침 통신 단말기",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA008"
+        },
+        {
+          "name": "Digital Electricity Meter (회전형 전력량계)",
+          "kind": "product",
+          "desc": "원격검침 구성 제품 — 전력량계",
+          "url": "https://www.ls-electric.com/ko/product/view/P02213",
+          "productId": "P02213"
+        },
+        {
+          "name": "설비미터",
+          "kind": "model",
+          "desc": "원격검침 구성 제품",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA008"
+        },
+        {
+          "name": "계량기 (Meter)",
+          "kind": "category",
+          "desc": "관련 제품",
+          "url": "https://www.ls-electric.com/ko/product/category/AAA016",
+          "image": "images/families/amrs-4.png"
+        }
+      ],
+      "catalogs": [
+        {
+          "title": "[AMR] 전력량계 & 원격검침시스템",
+          "url": "https://www.ls-electric.com/ko/cat/Electric_Meter_Reading_System_KO_C11551-04-202611.pdf"
+        },
+        {
+          "title": "[AMR] 설비미터",
+          "url": "https://www.ls-electric.com/ko/cat/%5BAMR%5D_%EC%84%A4%EB%B9%84%EB%AF%B8%ED%84%B0_KO_C12011-02-202111.pdf"
+        }
+      ]
+    }
+  }
+}
