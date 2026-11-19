@@ -72,6 +72,9 @@ export const Edges = memo(function Edges({
 });
 
 /** semantic zoom 경계 (P1): 이 배율 미만이면 개요 단계 — 타일 사진·보조 글자를 숨기고 점 + 약칭만 */
+/** 이름표 왼쪽 여백·이름표가 차지하는 밴드 위쪽 높이(두 줄 포함) — 계통도 좌표 */
+const LABEL_LEFT = 14;
+const LABEL_ZONE_H = 84;
 export const OVERVIEW_SCALE = 0.35; // 2026-11-19 사용자: 35% 아래에서만 점+약칭
 
 export const Bands = memo(function Bands({
@@ -106,6 +109,25 @@ export const Bands = memo(function Bands({
   // 타일 74개를 React 로 다시 그리지 않는다. 관리자 캔버스(view store 미사용, ready=false)는 늘 상세 단계.
   const overview = useView((s) => s.ready && s.scale < OVERVIEW_SCALE);
   const probeRef = useRef<HTMLSpanElement>(null);
+  // 이름표가 쓸 수 있는 최대 폭: 이름표 줄(밴드 위쪽 ~84px)에 걸린 가장 왼쪽 타일 앞까지 (2026-11-19 사용자: 이름표·타일 겹침)
+  const labelMax = useMemo(() => {
+    const m = new Map<string, number>();
+    const tiles = [...model.nodes, ...model.refs];
+    for (const l of model.layers) {
+      const r = model.layerRect.get(l.id)!;
+      const left = r.x + LABEL_LEFT;
+      let max = r.w - LABEL_LEFT * 2;
+      for (const t of tiles) {
+        const tl = t.x - TILE_W / 2 - 14; // 배지·여백
+        const tt = t.y - TILE_H / 2 - 12;
+        const tb = t.y + TILE_H / 2;
+        if (tl < r.x || tl > r.x + r.w || tb < r.y || tt > r.y + LABEL_ZONE_H) continue;
+        if (tl > left) max = Math.min(max, tl - left);
+      }
+      m.set(l.id, Math.max(120, max));
+    }
+    return m;
+  }, [model]);
   useLayoutEffect(() => {
     const host = probeRef.current?.parentElement;
     if (!host) return;
@@ -136,9 +158,9 @@ export const Bands = memo(function Bands({
             style={{ left: r.x, top: r.y, width: r.w, height: r.h }}
             {...bandEvents(l.id)}
           >
-            <span className="dband__label">
-              {name}
-              {meta && <span className="dband__suffix"> · {meta}</span>}
+            <span className="dband__label" style={{ maxWidth: labelMax.get(l.id) }}>
+              <span className="dband__name">{name}</span>
+              {meta && <span className="dband__suffix">· {meta}</span>}
             </span>
           </div>
         );
