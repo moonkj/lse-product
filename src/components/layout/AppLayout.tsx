@@ -8,6 +8,7 @@ import CompareTray, { useCompareTrayVisible } from '../compare/CompareTray';
 import { useData } from '../../data/load';
 import { MOBILE_QUERY, useMediaQuery, useSelectedNodeId } from '../../lib/diagram/url';
 import LiveRegion from './LiveRegion';
+import PanelResizer from './PanelResizer';
 import StartCard, { useStartCardVisible } from './StartCard';
 import { shellGrid, useCompactDensity } from './shellLayout';
 import { useRouteFocus } from './useRouteFocus';
@@ -88,6 +89,7 @@ export default function AppLayout() {
         </PageErrorBoundary>
       </main>
       {showPanel && <DetailPanel />}
+      {panelCol && <PanelResizer />}
       <CompareTray />
       <LiveRegion />
     </div>

@@ -56,6 +56,18 @@
   background: var(--color-surface);
   -webkit-overflow-scrolling: touch;
 }
+/*
+ * 넓은 화면: 표 안쪽 스크롤 상자를 없애고 본문(.app-main) 스크롤 하나로 — "창 안의 창" 해소 (2026-11-19 사용자).
+ * 열 머리글은 본문 스크롤 기준으로 위에 붙는다. 좁은 화면(≤900px)은 가로 스크롤과 첫 열 고정 때문에 안쪽 상자 유지.
+ */
+@media (min-width: 901px) {
+  .cmp-scroll {
+    overflow: visible;
+    max-height: none;
+    overscroll-behavior: auto;
+  }
+  .cmp-table { min-width: 0; }
+}
 .cmp-table {
   width: 100%;
   min-width: calc(150px + var(--cmp-cols, 2) * 200px);

@@ -271,20 +271,22 @@ test.describe('E2E-7 비교 기능', () => {
     await expect(page.getByText('서로 다른 기기의 제품')).toHaveCount(0);
   });
 
-  test('(v1.0 M5) 열 머리글 sticky: 표를 세로로 스크롤해도 열 머리글이 스크롤 박스 위에 붙어 있음', async ({ page }) => {
+  test('(v1.0 M5 · 2026-11-19) 넓은 화면: 표 안쪽 스크롤 없음(본문 스크롤 하나), 세로로 내려도 열 머리글이 본문 위에 붙어 있음', async ({ page }) => {
     test.skip(!productCompareReady, '지정 제품 없음');
     await page.setViewportSize({ width: 1280, height: 600 });
     await page.goto(`./#/compare?type=product&ids=${PRODUCT_IDS.join(',')}`);
     const col = tid(page, `compare-col-${PRODUCT_IDS[0]}`);
     await expect(col).toBeVisible();
     expect(await col.evaluate((el) => getComputedStyle(el).position)).toBe('sticky');
-    const scrolled = await page.locator('.cmp-scroll').evaluate((el) => {
+    // 표 상자는 스크롤 상자가 아니다 (창 안의 창 없음)
+    expect(await page.locator('.cmp-scroll').evaluate((el) => getComputedStyle(el).overflowY)).toBe('visible');
+    const scrolled = await page.locator('#main').evaluate((el) => {
       el.scrollTop = el.scrollHeight;
       return el.scrollTop;
     });
-    expect(scrolled, '표가 세로로 스크롤되지 않음 (측정 불가)').toBeGreaterThan(0);
+    expect(scrolled, '본문이 세로로 스크롤되지 않음 (측정 불가)').toBeGreaterThan(0);
     const gap = await page.evaluate((id) => {
-      const box = document.querySelector('.cmp-scroll')!.getBoundingClientRect();
+      const box = document.getElementById('main')!.getBoundingClientRect();
       const th = document.querySelector(`[data-testid="compare-col-${id}"]`)!.getBoundingClientRect();
       return Math.abs(th.top - box.top);
     }, PRODUCT_IDS[0]);

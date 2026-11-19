@@ -34,3 +34,26 @@ test('인쇄: 버튼이 있고, 인쇄 배율이 계통도를 A4 한 장에 맞�
   const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length;
   expect(pages).toBe(1);
 });
+
+test('상세 정보 창 폭: 손잡이를 끌면 늘고 줄며, 새로고침해도 유지, 두 번 누르면 기본 폭', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  const panel = page.locator('.detail-panel');
+  const handle = page.getByTestId('panel-resizer');
+  await expect(handle).toBeVisible();
+  const w0 = (await panel.boundingBox())!.width;
+  const hb = (await handle.boundingBox())!;
+  await page.mouse.move(hb.x + hb.width / 2, hb.y + 200);
+  await page.mouse.down();
+  await page.mouse.move(hb.x + hb.width / 2 - 150, hb.y + 200, { steps: 5 });
+  await page.mouse.up();
+  const w1 = (await panel.boundingBox())!.width;
+  expect(w1 - w0).toBeGreaterThan(130);
+  await page.reload();
+  await expect.poll(async () => (await panel.boundingBox())!.width).toBeGreaterThan(w0 + 130);
+  await handle.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect.poll(async () => Number(await handle.getAttribute('aria-valuenow'))).toBeLessThan(w1);
+  await handle.dblclick();
+  await expect.poll(async () => Math.round((await panel.boundingBox())!.width)).toBe(Math.round(w0));
+});

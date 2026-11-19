@@ -973,3 +973,37 @@
 .app-shell--compact .start-card__hint {
   display: none;
 }
+
+/* 상세 패널 폭 조절 손잡이 — 패널 왼쪽 테두리 위 8px 띠. 마우스를 올리거나 끌면 파란 선 */
+.panel-resizer {
+  grid-area: panel;
+  justify-self: start;
+  position: relative;
+  z-index: 5;
+  width: 10px;
+  margin-left: -5px;
+  cursor: col-resize;
+  touch-action: none;
+}
+.panel-resizer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 2px;
+  background: transparent;
+  transition: background 120ms;
+}
+.panel-resizer:hover::after,
+.panel-resizer.is-active::after,
+.panel-resizer:focus-visible::after {
+  background: var(--color-brand-2);
+}
+.panel-resizer:focus-visible {
+  outline: none;
+}
+/* 끄는 동안 글자 선택·계통도 끌기 방지 */
+.panel-resizer.is-active {
+  cursor: col-resize;
+}

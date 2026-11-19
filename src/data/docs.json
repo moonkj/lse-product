@@ -6449,6 +6449,483 @@
           "updatedAt": "2025-04-30"
         }
       ]
+    },
+    "D421413": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/ko/cat/LV_CTTS_KO_C800%E2%93%961-01-202610.pdf",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "LV CTTS 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/LV_CTTS_KO_C800%E2%93%961-01-202610.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "D420271": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/ko/cat/MV_CTTS_KO_C800%E2%93%931-01-202606.pdf",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "MV CTTS 카탈로그",
+          "url": "https://www.ls-electric.com/ko/cat/MV_CTTS_KO_C800%E2%93%931-01-202606.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "EN-P00003": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Power_Distribution/MV_SWGR/SIS",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "Smart MV Solution",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_MV_Solution%5D_EN_C800X2-02-202209.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00009": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Power_Distribution/LV_SWGR/Solution_Power_MCC",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[Solution Power MCC]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCC%5D_EN_C80002-01-201809.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P01811": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Power_Distribution/LV_SWGR/LS_EK60",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "Smart LV Solution",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSmart_LV_Solution%5D_EN_C800R2-06-202604.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00037": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Medium_Voltage/VCB/Metasol_VCB",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "Metasol VCB",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_VCB%5D_EN_C050B2-01-202210.pdf",
+          "lang": "en"
+        },
+        {
+          "type": "catalog",
+          "title": "[Metasol VCB] Leaflet",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_VCB%5D_Leaflet_EN_C050A2-02-201910.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00039": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Medium_Voltage/VCB/Susol_VCB_for_special_purpose",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[Susol VCB] for generator VCB",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_for_Generator_EN_C050H2-03-202610.pdf",
+          "lang": "en"
+        },
+        {
+          "type": "catalog",
+          "title": "[Susol VCB]Side Mount VCB",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_Side_Mount_EN_C050K2-01-202307.pdf",
+          "lang": "en"
+        },
+        {
+          "type": "catalog",
+          "title": "[Susol VCB] Retrofit VCB",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_Retrofit_EN_C05012-01-202209.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00041": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Medium_Voltage/VCB/Susol_VCB_for_ANSI_type",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[Device] Electric Product_UL type",
+          "url": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Electric_Product_Leaflet_UL_EN_C19922-16-202507.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00051": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Protection!Measurement!Meter/Protection/GIPAM2000",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[Device] Digital Protection_Measurement_EN",
+          "url": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Digital_Protection_Measurement_EN_C16902-26-202607.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00062": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Protection!Measurement!Meter/Measurement/GIMAC-i",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[Device] Digital Protection_Measurement_EN",
+          "url": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Digital_Protection_Measurement_EN_C16902-26-202607.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00024": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Low_Voltage/MCB_%26_CP/MCB",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[MCB] BK63H,BK63HU for Americas",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_BK63HBK63HU_for_Americas_EN_C015E2-07-202609.pdf",
+          "lang": "en"
+        },
+        {
+          "type": "catalog",
+          "title": "[MCB] MCB_RCD",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_MCB_RCD_EN_C01502-50-202609.pdf",
+          "lang": "en"
+        },
+        {
+          "type": "catalog",
+          "title": "[MCB]BK63S",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCB%5DBK63S_EN_C015O2-01-202303.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00025": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Low_Voltage/MCB_%26_CP/UL_MCB",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[Device] Electric Product_UL type",
+          "url": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Electric_Product_Leaflet_UL_EN_C19922-16-202507.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P01260": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/DC_Component/DC_Compact_Switch-Disconnector/IEC_Compact_Susol_DC_Switch-_Disconnector",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[DC Compact DSU] up to 1500Vdc",
+          "url": "https://www.ls-electric.com/ko/cat/%5BDC_Compact_DSU%5D_up_to_1500Vdc_EN_C06012-01-202405.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P01265": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/DC_Component/DC_Compact_Switch-Disconnector/UL_Compact_Susol_DC_Switch-_Disconnector",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[DC Compact DSU] UL type",
+          "url": "https://www.ls-electric.com/ko/cat/%5BDC_Compact_DSU%5D_UL_type_EN_C060A2-04-202512.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-P00217": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/view/Smart_Automation_Solution/Servo!Motion/DD_Motor/DD_Motor_Flange_Type",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "Xmotion 서보 시스템 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "EN-AAA016008": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/category/Smart_Power_Solution/DC_Component/DC_UL_Switch-Disconnector",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[DC UL DSU]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BDC_UL_DSU%5D_EN_C06032-05-202512.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-AAA010002": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/category/Smart_Power_Solution/Modular_Substation/Mobile_Substation",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[Mobile Substation]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMobile_Substation%5D_EN_C19992-03-201905.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-AAA012001": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/category/Smart_Power_Solution/ESS/EnGather_PCS",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[ESS] Energy Storage System",
+          "url": "https://www.ls-electric.com/ko/cat/%5BESS%5D_Energy_Storage_System_EN_C820F2-01-202209.pdf",
+          "lang": "en"
+        }
+      ]
+    },
+    "EN-AAA012002": {
+      "source": "www",
+      "deepLink": "https://www.ls-electric.com/products/category/Smart_Power_Solution/ESS/Modular_Scalable_Platform",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[ESS] Modular Scalable String Platform",
+          "url": "https://www.ls-electric.com/ko/cat/%5BESS%5D_Modular_Scalable_String_Platform_KO_C820A1-01-202302.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-846": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/846",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "LXP 시리즈 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17200542065850/LXP_Catalog_KR_202407.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-828": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/828",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "mPC 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17730206374430/Mobile%20PC_K_202407.pdf"
+        }
+      ]
+    },
+    "SSQ-860": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/860",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "LXP 시리즈 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17200542065850/LXP_Catalog_KR_202407.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-685": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/685",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "iX7M 다축 서보 드라이브 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17162668947510/%EB%8B%A4%EC%B6%95%20%EB%93%9C%EB%9D%BC%EC%9D%B4%EB%B8%8C%20iX7M%EB%B8%8C%EB%A1%9C%EC%85%94%20final0816.pdf"
+        }
+      ]
+    },
+    "SSQ-878": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/878",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "Factory Automation 종합 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866626280/Factory%20Automaion_KO_202607.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-877": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/877",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "Factory Automation 종합 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17878866626280/Factory%20Automaion_KO_202607.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-216": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/216",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "Xmotion 서보 시스템 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17425165064480/Xmotion_Mecapion_Catalog_KR_240903%201.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-324": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/324",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "X-Trak 무빙마그넷 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-323": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/323",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "X-Trak 무빙마그넷 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-325": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/325",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "X-Trak 무빙마그넷 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/16735688226570/X-Trak%20Solution_Catalog_KR_202111.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-167-SSR": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/167",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "유성감속기 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+          "lang": "ko"
+        },
+        {
+          "type": "catalog",
+          "title": "유성감속기 리플렛",
+          "url": "https://ssq.ls-electric.com/uploads/document/17490117582030/Precision%20Planetary%20Gearbox%20Leaflet_K_202502.pdf"
+        }
+      ]
+    },
+    "SSQ-167-SAR": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/167",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "유성감속기 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17490109497440/Precision%20Planetary%20Gearbox_Catalog_KR_202502.pdf",
+          "lang": "ko"
+        },
+        {
+          "type": "catalog",
+          "title": "유성감속기 리플렛",
+          "url": "https://ssq.ls-electric.com/uploads/document/17490117582030/Precision%20Planetary%20Gearbox%20Leaflet_K_202502.pdf"
+        }
+      ]
+    },
+    "SSQ-858": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/858",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "IE5 모터 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17720587610380/IE5%20Motor_K_20250801.pdf"
+        }
+      ]
+    },
+    "SSQ-849": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/849",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "진동 센서 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17521982065790/LSLVSS%20Series_K_Leaflet_202502.pdf"
+        }
+      ]
+    },
+    "SSQ-420": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/420",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "EdgeHub 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17857364136280/EDGE%20Hub_KO_202608.pdf",
+          "lang": "ko"
+        }
+      ]
+    },
+    "SSQ-423": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/423",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "Smart Workbench 제품 카탈로그",
+          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/16780633741940/Smart%20Workbench_catalog_K_202212.pdf"
+        }
+      ]
+    },
+    "SSQ-863": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/863",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "NTS & NPS 시리즈 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17527915575550/NTS%20_%20NPS%20Series_K_202507.pdf"
+        }
+      ]
+    },
+    "SSQ-864": {
+      "source": "ssq",
+      "deepLink": "https://sol.ls-electric.com/kr/ko/product/category/864",
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "NTS & NPS 시리즈 카탈로그",
+          "url": "https://ssq.ls-electric.com/uploads/document/17527915575550/NTS%20_%20NPS%20Series_K_202507.pdf"
+        }
+      ]
     }
   }
 }
