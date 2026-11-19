@@ -1,0 +1,2748 @@
+{
+ "schema": 1,
+ "fetchedAt": "2026-11-19T02:48:33.063Z",
+ "source": {
+  "title": "LSE 마켓뉴스 대시보드",
+  "url": "https://lse-market-news.pages.dev/",
+  "bidsUrl": "https://lse-market-news.pages.dev/bids"
+ },
+ "bids": [
+  {
+   "kind": "나라장터",
+   "title": "(가칭)남동1초 신축 전기공사 관급자재(수배전반 등) 구매",
+   "org": "경기도교육청 경기도용인교육지원청",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01822810&bidPbancOrd=000",
+   "posted": "2026-11-11",
+   "deadline": "2026-11-19T11:30"
+  },
+  {
+   "kind": "나라장터",
+   "title": "장흥 관산 송촌지구 배수개선사업 관급자재[수배전반]구입",
+   "org": "전남광주통합특별시 장흥군",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01837949&bidPbancOrd=000",
+   "posted": "2026-11-18",
+   "deadline": "2026-11-19T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "강현어울림복합센터 건립공사(전기) 관급자재(수배전반, 전동기제어반, 분전반) 구입",
+   "org": "강원특별자치도 양양군 농업기술센터",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01838273&bidPbancOrd=000",
+   "posted": "2026-11-18",
+   "deadline": "2026-11-19T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "서거차도발전소 노후변압기 교체공사 관급자재 구매",
+   "org": "전남광주통합특별시 진도군",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01830065&bidPbancOrd=000",
+   "posted": "2026-11-13",
+   "deadline": "2026-11-19T14:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "가사도발전소 노후변압기 교체공사 관급자재 구매",
+   "org": "전남광주통합특별시 진도군",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01829998&bidPbancOrd=000",
+   "posted": "2026-11-13",
+   "deadline": "2026-11-19T14:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "청도소싸움경기장 수변전설비 교체(전기공사)",
+   "org": "청도공영사업공사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01816131&bidPbancOrd=000",
+   "posted": "2026-11-13",
+   "deadline": "2026-11-20T14:00"
+  },
+  {
+   "kind": "K-apt 입찰",
+   "title": "원격검침시스템 유지, 보수 용역사업자 선정 입찰 재공고",
+   "org": "신동탄포레자이 · KG2B",
+   "url": "https://www.k-apt.go.kr/bid/bidDetail.do?bidNum=kg2b_143266",
+   "posted": "2026-11-11",
+   "deadline": "2026-11-23T17:00"
+  },
+  {
+   "kind": "K-apt 입찰",
+   "title": "원격검침 시스템 및 계량기 교체 업체 선정",
+   "org": "공덕삼성래미안3차(입대의)",
+   "url": "https://www.k-apt.go.kr/bid/bidDetail.do?bidNum=20261109143002333",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-23T17:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "(재공고)25.8KV 내염형 ECO-부하개폐기(일반,자동) 9대 - 남부산 외",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606378",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-23T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "(재공고)765kV 전력용변압기 1Bank(3대) - 신안성S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606379",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-23T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고속도 다회로 차단기(지중용),44-2B-A-125 1EA-대전세종충남본부",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606382",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-23T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "2026년 신양재S/S 362kV GIS 정밀점검공사(강남전력지사)",
+   "org": "남서울본부 재무관리부",
+   "url": "https://srm.kepco.net/index.do#bid=E012608135",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-23T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154KV 변압기 보호 IED 2EA (호포SS)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606373",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-23T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "태양광 연계용 몰드변압기(3,500kVA) - 에너지신사업처",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606361",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-23T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "장수초 수배전반 및 화장실 개선 전기공사",
+   "org": "서울특별시교육청 서울특별시강서양천교육지원청",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834402&bidPbancOrd=000",
+   "posted": "2026-11-18",
+   "deadline": "2026-11-24T10:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "상용화 FAT용 수배전반 시험장비",
+   "org": "한국생산기술연구원",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834474&bidPbancOrd=000",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-24T10:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "디지털 트윈 P-HILS용 전력변환장치",
+   "org": "한국생산기술연구원",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834470&bidPbancOrd=000",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-24T10:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "횡간도 자가발전시설 ESS 축전지 구매설치 (민간입찰대행- 횡간도자가발전시설운영위원회)",
+   "org": "제주특별자치도",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834011&bidPbancOrd=000",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-24T10:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "홍성교도소 서산지소 수용동 증축 전기공사 관급자재(배전반(MCC포함), 분전반)",
+   "org": "법무부",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834538&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-24T11:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "전기실 변압기 용량 증설 전기 공사",
+   "org": "리뉴어스 주식회사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01831754&bidPbancOrd=002",
+   "posted": "2026-11-18",
+   "deadline": "2026-11-24T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "을지로3가 변전소 고압배전용 몰드변압기 제작구매 설치",
+   "org": "서울교통공사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01826694&bidPbancOrd=000",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-24T12:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "GIS(170KV,2000A,50KA) 1식 - 기장S/S(종단BAY)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606397",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-24T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "GIS(170KV,1250A,50KA) 1식 - 한라S/S(종단BAY)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606398",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-24T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "GIS(170KV,1250A,50KA) 1식 - 송강S/S (종단BAY)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606399",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-24T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "지하철 2호선 신림역 등 2개역 환기시스템 개량 동력제어반 제작구매 설치",
+   "org": "서울교통공사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01830881&bidPbancOrd=000",
+   "posted": "2026-11-18",
+   "deadline": "2026-11-26T10:00"
+  },
+  {
+   "kind": "K-apt 입찰",
+   "title": "원격검침시스템 재구축 사업자 선정 입찰 공고",
+   "org": "판교봇들마을9단지금호어울림아파트(입대의)",
+   "url": "https://www.k-apt.go.kr/bid/bidDetail.do?bidNum=20261113094903765",
+   "posted": "2026-11-13",
+   "deadline": "2026-11-26T17:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "전등분전반,L-1,변전소 제어용,옥내,매입형 외 3면 (동해안CS)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606192",
+   "posted": "2026-11-06",
+   "deadline": "2026-11-26T18:00"
+  },
+  {
+   "kind": "세계은행",
+   "title": "Acquisition du banc d’essai des BESS pour le compte de MASEN - MAROC.",
+   "org": "Morocco · Morocco Energy Storage Testbed Project · 물품 · Request for Bids · 마감은 현지 시각",
+   "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00475205",
+   "posted": "2026-10-14",
+   "deadline": "2026-11-27T14:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "(재공고) 보호배전반,SHUNT REACTOR용,345/154/23KV 1면 (서서울2SS) - 지역제한",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606388",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-30T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "완주삼봉 S-1BL 및 익산송학 아파트 전기공사 폐쇄형배전반, 전동기제어반 제작 및 설치",
+   "org": "한국토지주택공사 전북지역본부",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01833461&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-12-02T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "한국외국어대학교 연수평가원 수변전설비 용량 증설 및 개선공사",
+   "org": "한국외국어대학교 서울캠퍼스",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01836004&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-12-03T15:00"
+  },
+  {
+   "kind": "세계은행",
+   "title": "Construction of Mandalgobi-Arvaikheer 220kV Double-Circuit Transmission Line (287 km) - (Three lots)",
+   "org": "Mongolia · Fourth Energy Sector Project · 공사 · Request for Proposals · 마감은 현지 시각",
+   "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00477669",
+   "posted": "2026-10-29",
+   "deadline": "2026-12-11T14:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "GIS(170KV,1250A,50KA) 2식 - 신마산S/S(부품)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606229",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-14T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "전등분전반,L-B,변전소 제어용,옥내,노출형 등 48면 (남양주SS)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606215",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-14T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "GIS(362KV,6300A/4000A) 23식 - 서화성S/S (신설)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606182",
+   "posted": "2026-11-06",
+   "deadline": "2026-12-16T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -서창(#2)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606291",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -구포S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606290",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED미포함) 1Bank -내당S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606289",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV 전력용변압기(20MVAx3,송유풍냉,106831) 1조 - 삼호S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606310",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 10대 - 서평택S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606236",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(송가스수냉,124434,IED포함) 2Bank -서일산S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606300",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 4대 - 신김해S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606263",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 6대 - 신광산S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606241",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(송가스수냉,124434,IED포함) 2Bank -북과천S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606301",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -북포항S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606287",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "전력용변압기(154/23KV 20MVA×3,송유수냉,IED미포함)1조-율량S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606312",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -명장S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606296",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 2Bank - 배곧S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606265",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 2Bank -신장S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606278",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -위례S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606276",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED미포함) 1Bank -왕십리S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606269",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED미포함) 1Bank -서창(#3)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606292",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -동제주(#2)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606299",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(20MVAx3,송가스풍냉,127598)2조-세종로(#3,4)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606308",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 신강진(#5)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606252",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -상계S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606268",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 2Bank -달서S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606288",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -장유S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606297",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(20MVAx3,송가스풍냉,127595)1조-동대전S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606306",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 4대 - 신영주S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606255",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 7대 - 선산(#2,3)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606258",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED미포함) 1Bank -신림S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606274",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(송가스수냉,124434,IED미포함) 1Bank -화정S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606303",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV 전력용변압기(20MVAx3,송유풍냉,106831) 1조 - 사직S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606309",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 9대 - 서화성S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606240",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(송가스수냉,124434,IED포함) 1Bank -덕포S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606304",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 북부산S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606261",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 신양산S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606257",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -신평S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606295",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 양주S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606245",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED미포함) 1Bank -오류S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606277",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 신강서S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606262",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 새만금S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606251",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED미포함) 1Bank -쌍문S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606270",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 10대 - 고덕(#3)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606237",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 신강진(#2)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606254",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 신기흥S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606246",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 10대 - 신고양S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606234",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 2Bank -문산(#2,3)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606286",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 2Bank - 와부S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606264",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -송파S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606280",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 동울산S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606260",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 신남원S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606250",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -송월S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606285",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(송가스수냉,124434,IED미포함) 1Bank -중계S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606302",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 2Bank - 검암S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606266",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 1대 - 신문래S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606242",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 남청주S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606248",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 1대 - 신광명S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606243",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 2Bank - 당하S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606267",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV 전력용변압기(20MVAx3,송유풍냉,106831) 1조 - 장암S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606311",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 9대 - 신광명(#2)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606239",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 신김포S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606244",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -동제주(#1)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606298",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 신강진(#1)S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606253",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 울주S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606259",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 2Bank -부개S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606284",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 6대 - 서이동S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606238",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED미포함) 1Bank -휘경S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606272",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -정왕S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606282",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED포함) 1Bank -송현S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606283",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(송가스수냉,124435,IED포함) 1Bank -탄천S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606305",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 3대 - 세종S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606249",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154kV가스절연변압기(송가스수냉,127597,IED미포함) 1Bank -영오S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606307",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율전력용변압기(15/20MVAX3,식물유,IED미포함) 1Bank -미남S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606293",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345kV단상단권변압기(166.7MVA) 6대 - 신원삼S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606235",
+   "posted": "2026-11-10",
+   "deadline": "2026-12-22T18:00"
+  },
+  {
+   "kind": "세계은행",
+   "title": "Design, Supply and Installation of high voltage substations (total number of transformers as follows: 3x300 MVA 400/230 kV, 9x125 MVA 230/66 kV and 17x30 MVA 66/20 kV of combined transformation capacity), including the Supply of necessary spare parts",
+   "org": "Syrian Arab Republic · Syria Electricity Emergency Project · 공사 · Request for Bids · 마감은 현지 시각",
+   "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00480092",
+   "posted": "2026-11-08",
+   "deadline": "2027-02-03T12:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율 주상변압기(50KVA(광유),단상3선식)외5종 - 광주전남본부 등",
+   "org": "상생조달처 계약실",
+   "url": "https://srm.kepco.net/index.do#bid=G012606315",
+   "posted": "2026-11-11",
+   "deadline": "2026-11-18T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "덕림S/S 154kV GIS 신규수용공사(전문)",
+   "org": "광주전남본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012608079",
+   "posted": "2026-11-11",
+   "deadline": "2026-11-18T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "덕림S/S 154kV GIS 신규수용공사(일반)",
+   "org": "광주전남본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012608070",
+   "posted": "2026-11-11",
+   "deadline": "2026-11-18T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "청남권역 농업에너지이용효율화사업 배전반 제조 구매",
+   "org": "한국농어촌공사 충남지역본부 청양지사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01839968&bidPbancOrd=000",
+   "posted": "2026-11-18",
+   "deadline": "2026-11-18T17:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "대봉지구 배수개선사업 지급자재(폐쇄형배전반) 제조구매",
+   "org": "한국농어촌공사 경북지역본부",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01832726&bidPbancOrd=000",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-18T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "서북병원 EHP 실외기 간선포설 및 수배전반 부대 전기공사",
+   "org": "서울특별시 서북병원",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01821739&bidPbancOrd=000",
+   "posted": "2026-11-10",
+   "deadline": "2026-11-18T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "(가칭)월암초 신축 전기공사 관급자재(분전반) 구매",
+   "org": "경기도교육청 경기도군포의왕교육지원청",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01822586&bidPbancOrd=000",
+   "posted": "2026-11-11",
+   "deadline": "2026-11-18T11:30"
+  },
+  {
+   "kind": "나라장터",
+   "title": "전동차용 고속도차단기 등 7종 구매(채무)",
+   "org": "서울교통공사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01827784&bidPbancOrd=000",
+   "posted": "2026-11-12",
+   "deadline": "2026-11-18T10:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "초당동주민센터 신축공사(전기) 2차분 관급(분전반)",
+   "org": "강원특별자치도 강릉시",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01827420&bidPbancOrd=000",
+   "posted": "2026-11-12",
+   "deadline": "2026-11-18T10:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "(재공고)고효율소내건식변압기(150KVA,외함제외)외 1종 2대 - 통영지사",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606337",
+   "posted": "2026-11-12",
+   "deadline": "2026-11-17T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "2026년 남서울본부 직할 362kV GIS 정밀점검공사(변전운영부)",
+   "org": "남서울본부 재무관리부",
+   "url": "https://srm.kepco.net/index.do#bid=E012608016",
+   "posted": "2026-11-10",
+   "deadline": "2026-11-17T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "마산지구 양수장 시설개선사업 폐쇄형배전반 구매",
+   "org": "한국농어촌공사 경남지역본부 의령지사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01836703&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-17T16:40"
+  },
+  {
+   "kind": "나라장터",
+   "title": "남원지사 방동2지구 배수개선사업 폐쇄형배전반 제조구매",
+   "org": "한국농어촌공사 전북지역본부",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834760&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-17T16:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "(전주시MOU) 2026년 전주권역 한해대비 수중펌프용 동력분전반 제조·구매",
+   "org": "한국농어촌공사 전북지역본부 전주.완주.임실지사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01833864&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-17T15:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "현내면 사랑해 어촌활력 생활SOC 복합화사업 관급자재(통합배전반)",
+   "org": "강원특별자치도 고성군",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834752&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-17T11:30"
+  },
+  {
+   "kind": "나라장터",
+   "title": "용방면 기초생활거점조성사업(농촌협약) 전기공사 지급자재(분전반) 제조구매",
+   "org": "한국농어촌공사 전남지역본부 구례지사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834814&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-17T11:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "토지면 기초생활거점조성사업(농촌협약) 전기공사 지급자재(분전반) 제조구매",
+   "org": "한국농어촌공사 전남지역본부 구례지사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834758&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-17T11:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "관급자재(수배전반) [중리지구 다목적실내체육관 건립(전기공사)]",
+   "org": "경기도 이천시",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01834492&bidPbancOrd=000",
+   "posted": "2026-11-17",
+   "deadline": "2026-11-17T11:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "우수조달물품(2026057, 폐쇄형배전반) 제3자단가계약",
+   "org": "각 수요기관",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01824369&bidPbancOrd=000",
+   "posted": "2026-11-16",
+   "deadline": "2026-11-17T11:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "디지털농업 첨단온실 개선 전기공사 관급자재(전동기제어반) 구입",
+   "org": "경기도 경기도농업기술원",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01823073&bidPbancOrd=000",
+   "posted": "2026-11-11",
+   "deadline": "2026-11-17T10:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "여수캠퍼스 교양관외 1동 수배전반 교체 전기공사",
+   "org": "전남대학교",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01819713&bidPbancOrd=000",
+   "posted": "2026-11-10",
+   "deadline": "2026-11-17T10:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율유입형변압기(옥외유입형 / 2,000kVA) 1대 - 당진T/P",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606177",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-16T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율소내건식변압기(100KVA,외함) 2대 - 동면S/S",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606175",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-16T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "Compact형 지상변압기(100kVA,1P,광유 외 1종) 11EA - 대구본부 등",
+   "org": "상생조달처 계약실",
+   "url": "https://srm.kepco.net/index.do#bid=G012606199",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-16T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "Compact형 지상변압기(50kVA,1P,난연 외 3종) 8EA-경기본부 등",
+   "org": "상생조달처 계약실",
+   "url": "https://srm.kepco.net/index.do#bid=G012606200",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-16T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "25.8KV 내염형 ECO-부하개폐기(일반,자동) 9대 - 남부산 외",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606209",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-16T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고속도 다회로 차단기(지중용),44-2B-A-125 1EA-대전세종충남본부",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606179",
+   "posted": "2026-11-06",
+   "deadline": "2026-11-16T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "계통안정화 ESS기자재(논공S/S) 1식 - 대구경북건설지사",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606162",
+   "posted": "2026-11-05",
+   "deadline": "2026-11-16T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "백련배수지 외 3개소 분전반 제작구매",
+   "org": "서울특별시 서울아리수본부 서부수도사업소",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01830672&bidPbancOrd=000",
+   "posted": "2026-11-14",
+   "deadline": "2026-11-16T14:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "2026년 변전소 직류차단기반 보호계전기 구매설치",
+   "org": "서울교통공사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01827540&bidPbancOrd=000",
+   "posted": "2026-11-13",
+   "deadline": "2026-11-16T12:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "2026년 동해전력지사 170kV GIS 정밀점검공사",
+   "org": "강원본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012607971",
+   "posted": "2026-11-06",
+   "deadline": "2026-11-13T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "서거차도발전소 노후변압기 교체공사 관급자재 구매",
+   "org": "전남광주통합특별시 진도군",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01819111&bidPbancOrd=000",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-13T14:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "가사도발전소 노후변압기 교체공사 관급자재 구매",
+   "org": "전남광주통합특별시 진도군",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01819069&bidPbancOrd=000",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-13T14:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "K6 가스절연 부하개폐기 시제품 구매",
+   "org": "한국전기연구원",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01826271&bidPbancOrd=000",
+   "posted": "2026-11-12",
+   "deadline": "2026-11-13T13:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "갈남1리 농어촌 마을하수도 증설사업-전기기자재(분전반)",
+   "org": "강원특별자치도 삼척시 하수도사업소",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01827151&bidPbancOrd=001",
+   "posted": "2026-11-13",
+   "deadline": "2026-11-13T11:30"
+  },
+  {
+   "kind": "나라장터",
+   "title": "금승2지구 태양광발전사업 지급자재(배전반) 제조·구매",
+   "org": "한국농어촌공사 경기지역본부 파주지사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01824540&bidPbancOrd=000",
+   "posted": "2026-11-12",
+   "deadline": "2026-11-12T11:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "남음성S/S 170kV GIS 차단부 정밀점검 긴급공사",
+   "org": "충북본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012607912",
+   "posted": "2026-11-04",
+   "deadline": "2026-11-11T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "고효율소내건식변압기(150KVA,외함제외)외 1종 2대 - 통영지사",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606156",
+   "posted": "2026-11-04",
+   "deadline": "2026-11-11T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "'26년 자기제애자 및 가스개폐기 부분방전시각화 진단용역(1권역)",
+   "org": "경남본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012607898",
+   "posted": "2026-11-04",
+   "deadline": "2026-11-11T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "'26년 자기제애자 및 가스개폐기 부분방전시각화 진단용역(2권역)",
+   "org": "경남본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012607901",
+   "posted": "2026-11-04",
+   "deadline": "2026-11-11T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "26년 경기 DAS개폐기 자가 광통신망 시설공사(2차)",
+   "org": "경기본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012607916",
+   "posted": "2026-11-04",
+   "deadline": "2026-11-11T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "'26년 자기제애자 및 가스개폐기 부분방전시각화 진단용역(3권역)",
+   "org": "경남본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012607903",
+   "posted": "2026-11-04",
+   "deadline": "2026-11-11T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "(장애인표준사업장 대상) 충남도청이전도시 RH15BL 아파트 전기공사 3공구 분전반 제작 및 납품",
+   "org": "한국토지주택공사 대전충남지역본부",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01817204&bidPbancOrd=000",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-11T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "국립공주대 대학본부 변압기 및 수배전반 교체공사 관급자재(수배전반) 구입",
+   "org": "국립공주대학교",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01817234&bidPbancOrd=000",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-11T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "칠산3지구 배수장 성능개선사업 수배전반 제조·구매",
+   "org": "한국농어촌공사 충남지역본부",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01817101&bidPbancOrd=000",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-11T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "동흥배수펌프장 전기시설 교체공사 관급자재(수배전반) 구입",
+   "org": "충청남도 논산시",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01815099&bidPbancOrd=000",
+   "posted": "2026-11-07",
+   "deadline": "2026-11-11T12:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "고사지구 배수장성능개선사업 폐쇄형배전반 구매",
+   "org": "한국농어촌공사 경남지역본부",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01822619&bidPbancOrd=000",
+   "posted": "2026-11-11",
+   "deadline": "2026-11-11T10:40"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "신마산S/S 345kV #1Sh.R 증설공사(GIS)",
+   "org": "경남본부 기획관리실",
+   "url": "https://srm.kepco.net/index.do#bid=E012607839",
+   "posted": "2026-11-03",
+   "deadline": "2026-11-10T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "내염형(스테인레스)주상변압기 3EA - 경남본부",
+   "org": "상생조달처 계약실",
+   "url": "https://srm.kepco.net/index.do#bid=G012606111",
+   "posted": "2026-11-03",
+   "deadline": "2026-11-10T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "학포2지구 배수장성능개선사업 폐쇄형배전반 구매",
+   "org": "한국농어촌공사 경남지역본부",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01821654&bidPbancOrd=000",
+   "posted": "2026-11-10",
+   "deadline": "2026-11-10T17:50"
+  },
+  {
+   "kind": "나라장터",
+   "title": "대당배수장 배전반 보수공사",
+   "org": "한국농어촌공사 경기지역본부 여주.이천지사",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01821199&bidPbancOrd=000",
+   "posted": "2026-11-10",
+   "deadline": "2026-11-10T17:30"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "GIS(170KV,1250A/2000A) 13식 - 청하S/S(종단BAY)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606140",
+   "posted": "2026-11-04",
+   "deadline": "2026-11-09T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "(재공고)Dry air 절연부하개폐기(44-D-A-125-P,자동) 9대 - 경기북부/경남",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606115",
+   "posted": "2026-11-03",
+   "deadline": "2026-11-09T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "(재공고)25.8KV 내염형 ECO-부하개폐기(일반,자동) 14대 - 제주 외",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606114",
+   "posted": "2026-11-03",
+   "deadline": "2026-11-09T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "GIS(170KV,1250A,50KA) 1식 - 동부안S/S (종단BAY)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606106",
+   "posted": "2026-11-03",
+   "deadline": "2026-11-09T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "154KV 변압기 보호 IED 1EA (동부안SS) - 지역제한",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606098",
+   "posted": "",
+   "deadline": "2026-11-09T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345KV 모선 보호배전반 1set (서대구SS) - 지역제한",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606096",
+   "posted": "",
+   "deadline": "2026-11-09T18:00"
+  },
+  {
+   "kind": "한전 입찰",
+   "title": "345KV 이하 차단기 동작실패보호배전반 7set (서대구SS 외)",
+   "org": "상생조달처",
+   "url": "https://srm.kepco.net/index.do#bid=G012606101",
+   "posted": "",
+   "deadline": "2026-11-09T18:00"
+  },
+  {
+   "kind": "나라장터",
+   "title": "탄천센터 저압 전기설비(MCC반) 예방점검 및 종합진단 용역",
+   "org": "서울물재생시설공단",
+   "url": "https://www.g2b.go.kr/link/PNPE027_01/single/?bidPbancNo=R26BK01818308&bidPbancOrd=000",
+   "posted": "2026-11-09",
+   "deadline": "2026-11-09T16:50"
+  }
+ ],
+ "news": [
+  {
+   "id": "2755df303da7824c",
+   "title": "EU 이사회, '신재생에너지·전력망·BESS 인허가 기간 단축 법안' 잠정 합의",
+   "media": "글로벌이코노믹",
+   "at": "2026-11-19T06:15",
+   "url": "https://lse-market-news.pages.dev/go/2755df303da7824c.html"
+  },
+  {
+   "id": "e7a05faa2dc72016",
+   "title": "[총수 신년공약 성적표③] AI·로봇·ESS에 베팅한 구광모, 발빠른 실행력 'A+'…안정적 수익화는 숙제",
+   "media": "소비자가 만드는 신문",
+   "at": "2026-11-19T06:12",
+   "url": "https://lse-market-news.pages.dev/go/e7a05faa2dc72016.html"
+  },
+  {
+   "id": "4a1f81cbbe563edf",
+   "title": "[스타트UP] 델타엑스 “소프트뱅크 ESS 생태계 파트너 선정…세계 에너지 시장 공략”",
+   "media": "Chosunbiz",
+   "at": "2026-11-19T06:04",
+   "url": "https://lse-market-news.pages.dev/go/4a1f81cbbe563edf.html"
+  },
+  {
+   "id": "2c53f76a9cf98ac8",
+   "title": "OCI파워, IPS와 손잡고 북미 태양광 인버터 O&M 시장 공략 본격화",
+   "media": "전기신문",
+   "at": "2026-11-19T06:03",
+   "url": "https://lse-market-news.pages.dev/go/2c53f76a9cf98ac8.html"
+  },
+  {
+   "id": "7a7a41702de23868",
+   "title": "SK온 대만 1.2GWh ESS 수주전 뛰어든다…12월 입찰 - 머니투데이",
+   "media": "머니투데이",
+   "at": "2026-11-19T05:50",
+   "url": "https://lse-market-news.pages.dev/go/7a7a41702de23868.html"
+  },
+  {
+   "id": "922c99b25c19b644",
+   "title": "변압기 호황에 실적 웃는데…효성중공업, 전력기기 3사 중 R&D 투자 최저",
+   "media": "이투데이",
+   "at": "2026-11-19T05:00",
+   "url": "https://lse-market-news.pages.dev/go/922c99b25c19b644.html"
+  },
+  {
+   "id": "ca525d3ddac42d86",
+   "title": "AI 성장의 그림자 된 전력난…전력기기·ESS 기업에 대박 기회 오나",
+   "media": "핀포인트뉴스",
+   "at": "2026-11-19T04:56",
+   "url": "https://lse-market-news.pages.dev/go/ca525d3ddac42d86.html"
+  },
+  {
+   "id": "f7a17a85adebcbb3",
+   "title": "Cambrian, Eaton이 지하 전기차 충전기 개발을 위해 30만 달러를 받았습니다.",
+   "media": "Canadian Mining Journal",
+   "at": "2026-11-19T00:12",
+   "url": "https://lse-market-news.pages.dev/go/f7a17a85adebcbb3.html"
+  },
+  {
+   "id": "0c0dee2feced9970",
+   "title": "National Grid, 4,500개 이상의 신규 일자리를 지원하는 서머싯 변전소 건설 착공",
+   "media": "National Grid Group",
+   "at": "2026-11-18T23:21",
+   "url": "https://lse-market-news.pages.dev/go/0c0dee2feced9970.html"
+  },
+  {
+   "id": "3d98c2dc91bde8ba",
+   "title": "Power Grid의 Tuticorin 송전선로에 대한 송전 요금이 대법원 판결로 복구되었습니다.",
+   "media": "LawChakra",
+   "at": "2026-11-18T21:58",
+   "url": "https://lse-market-news.pages.dev/go/3d98c2dc91bde8ba.html"
+  },
+  {
+   "id": "8adf2536fa2ac7c3",
+   "title": "15개월 반대 부딪힌 SK이노베이션 E&S 미국 ESS 사업 표결 임박",
+   "media": "한국신용신문",
+   "at": "2026-11-18T21:30",
+   "url": "https://lse-market-news.pages.dev/go/8adf2536fa2ac7c3.html"
+  },
+  {
+   "id": "89956ec58b54501c",
+   "title": "대전 재생에너지 사업에 한전KDN ICT 기술 접목…가상발전소·ESS 활용 추진",
+   "media": "베타뉴스",
+   "at": "2026-11-18T21:30",
+   "url": "https://lse-market-news.pages.dev/go/89956ec58b54501c.html"
+  },
+  {
+   "id": "8584ebe1f29bf246",
+   "title": "2035년까지의 중전압 상업용 배전반 시장 전망: 데이터센터 수요와 전력망 고도화가 성장을 이끈다",
+   "media": "IndexBox",
+   "at": "2026-11-18T21:26",
+   "url": "https://lse-market-news.pages.dev/go/8584ebe1f29bf246.html"
+  },
+  {
+   "id": "7bf268925d408f1e",
+   "title": "‘자산에서 가치를 한 푼도 남김없이 끌어내기’: LG에너지솔루션 버텍 CPO, RE+ 2026에서 데이터센터·BESS·소프트웨어 통합 이야기",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-18T21:06",
+   "url": "https://lse-market-news.pages.dev/go/7bf268925d408f1e.html"
+  },
+  {
+   "id": "1b06f78ba1d30380",
+   "title": "ESS Inc, 챕터 7 파산 신청… Stem Inc, Athena 최적화 플랫폼 매각 속 '계속기업' 의구심 표명",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-18T20:50",
+   "url": "https://lse-market-news.pages.dev/go/1b06f78ba1d30380.html"
+  },
+  {
+   "id": "c7e016fcaf3d7ea9",
+   "title": "Tesla Powercore: 변압기, 개폐장치, 인버터를 통합한 플랫폼 - 뉴스 및 통계",
+   "media": "IndexBox",
+   "at": "2026-11-18T20:13",
+   "url": "https://lse-market-news.pages.dev/go/c7e016fcaf3d7ea9.html"
+  },
+  {
+   "id": "a846dbd92c28c919",
+   "title": "GE Vernova launches compact SF₆-free 145 kV switchgear",
+   "media": "Engineering.com",
+   "at": "2026-11-18T18:53",
+   "url": "https://lse-market-news.pages.dev/go/a846dbd92c28c919.html"
+  },
+  {
+   "id": "91ebb2aa1d190131",
+   "title": "중국 후베이성 이창에서 첫 500kV 송전선로 이설 사업이 완공되었습니다.",
+   "media": "Xinhua",
+   "at": "2026-11-18T18:11",
+   "url": "https://lse-market-news.pages.dev/go/91ebb2aa1d190131.html"
+  },
+  {
+   "id": "5cad2bdb4783efc9",
+   "title": "지역 공급망 제약 속 전력용 변압기 조달의 세계화",
+   "media": "Transformer Magazine",
+   "at": "2026-11-18T18:10",
+   "url": "https://lse-market-news.pages.dev/go/5cad2bdb4783efc9.html"
+  },
+  {
+   "id": "5fbec81a71fd044e",
+   "title": "태양전지 장비·이동형 ESS...국내기업 북미 판로 모색",
+   "media": "에너지신문",
+   "at": "2026-11-18T17:29",
+   "url": "https://lse-market-news.pages.dev/go/5fbec81a71fd044e.html"
+  },
+  {
+   "id": "3c251b063708aace",
+   "title": "디와이덕양, 배터리 재사용 ESS 공략...\"제조·검사 공정 내재화\"",
+   "media": "팍스경제TV",
+   "at": "2026-11-18T16:42",
+   "url": "https://lse-market-news.pages.dev/go/3c251b063708aace.html"
+  },
+  {
+   "id": "1e144012ee3712e8",
+   "title": "[단독] \"中배터리도 몰려온다\"…'CATL' 이어 '고션'도 韓ESS 시장 상륙 채비",
+   "media": "뉴시스",
+   "at": "2026-11-18T16:36",
+   "url": "https://lse-market-news.pages.dev/go/1e144012ee3712e8.html"
+  },
+  {
+   "id": "9c2edf4fa37ab65e",
+   "title": "美 ESS 시장 20% 성장…LG엔솔 가동률 회복 탄력",
+   "media": "한국아이닷컴",
+   "at": "2026-11-18T16:15",
+   "url": "https://lse-market-news.pages.dev/go/9c2edf4fa37ab65e.html"
+  },
+  {
+   "id": "d490e477e77063a7",
+   "title": "ESS 투자 재미본 K-배터리…수익성 확보 본격화 예고",
+   "media": "더팩트",
+   "at": "2026-11-18T16:04",
+   "url": "https://lse-market-news.pages.dev/go/d490e477e77063a7.html"
+  },
+  {
+   "id": "c0b74d2734acd747",
+   "title": "신재생에너지에 AI 전력 수요까지… ESS 산업 성장판 열릴 가능성",
+   "media": "핀포인트뉴스",
+   "at": "2026-11-18T15:45",
+   "url": "https://lse-market-news.pages.dev/go/c0b74d2734acd747.html"
+  },
+  {
+   "id": "7ec0a8c4c3486989",
+   "title": "전기차 넘어 ESS까지…배터리 설비업체 투자 기회 커진다",
+   "media": "핀포인트뉴스",
+   "at": "2026-11-18T14:46",
+   "url": "https://lse-market-news.pages.dev/go/7ec0a8c4c3486989.html"
+  },
+  {
+   "id": "a04315ae7b689c88",
+   "title": "25년 보증·화재 안전성으로 차별화…삼성SDI, 북미 ESS 시장 정조준",
+   "media": "한경매거진",
+   "at": "2026-11-18T14:34",
+   "url": "https://lse-market-news.pages.dev/go/a04315ae7b689c88.html"
+  },
+  {
+   "id": "f0f350e221bbda37",
+   "title": "Alfanar Projects wins Saudi Energy contract for Al-Aqiq substation",
+   "media": "Utilities Middle East",
+   "at": "2026-11-18T14:30",
+   "url": "https://lse-market-news.pages.dev/go/f0f350e221bbda37.html"
+  },
+  {
+   "id": "931cdee4fe32e5a3",
+   "title": "NTPC Green, 600MW BESS EPC 계약을 Pace Digitek에 발주",
+   "media": "Powerline",
+   "at": "2026-11-18T13:50",
+   "url": "https://lse-market-news.pages.dev/go/931cdee4fe32e5a3.html"
+  },
+  {
+   "id": "fc6bc68ca9e8b3d2",
+   "title": "배전반 4사 3분기 실적 ‘희비’…지투파워 독주 속 서전·선도 반등 불씨",
+   "media": "전기신문",
+   "at": "2026-11-18T13:26",
+   "url": "https://lse-market-news.pages.dev/go/fc6bc68ca9e8b3d2.html"
+  },
+  {
+   "id": "fbb70ff57e5243dc",
+   "title": "“AI의 상상, 배터리가 현실로”..삼성SDI, ‘RE+’에 ESS·UPS·BBU 출격",
+   "media": "데일리카",
+   "at": "2026-11-18T12:50",
+   "url": "https://lse-market-news.pages.dev/go/fbb70ff57e5243dc.html"
+  },
+  {
+   "id": "1d1537f9781b8562",
+   "title": "북미 ESS 시장 '뭉칫돈'…삼성SDI, 16GWh 공급 계약",
+   "media": "데일리메이커",
+   "at": "2026-11-18T11:18",
+   "url": "https://lse-market-news.pages.dev/go/1d1537f9781b8562.html"
+  },
+  {
+   "id": "b1c828715b183d1e",
+   "title": "LG엔솔, AI 데이터센터 통합 전력 인프라 · 차세대 ESS 공개",
+   "media": "투데이에너지",
+   "at": "2026-11-18T11:02",
+   "url": "https://lse-market-news.pages.dev/go/b1c828715b183d1e.html"
+  },
+  {
+   "id": "5702ac37d22ef5c7",
+   "title": "[生기업TALK] 신한금융, 아일랜드 ESS 공동개발하고 국내 생산적금융펀드로 에너지 투자 확대",
+   "media": "시사캐스트",
+   "at": "2026-11-18T10:46",
+   "url": "https://lse-market-news.pages.dev/go/5702ac37d22ef5c7.html"
+  },
+  {
+   "id": "cd39a205421ace6b",
+   "title": "배터리 최대전시 RE+ 2026서 본 ESS 북미 위축 신호에도 국내 3사 강화한다",
+   "media": "중소기업신문",
+   "at": "2026-11-18T10:33",
+   "url": "https://lse-market-news.pages.dev/go/cd39a205421ace6b.html"
+  },
+  {
+   "id": "ef0b62f30ba32d20",
+   "title": "[기업탐방] LS에코에너지, “초고압 케이블과 HVDC, AI 데이터센터용 전력 설비, 에너지 소재 사업의 비중을 확대하면 전사 수익성도 구조적으로 개선”",
+   "media": "네이버 프리미엄콘텐츠",
+   "at": "2026-11-18T10:30",
+   "url": "https://lse-market-news.pages.dev/go/ef0b62f30ba32d20.html"
+  },
+  {
+   "id": "5b37bb929392b37c",
+   "title": "삼성SDI, 통합형 ESS 솔루션에 25년 장기 보증 제공",
+   "media": "디일렉",
+   "at": "2026-11-18T10:16",
+   "url": "https://lse-market-news.pages.dev/go/5b37bb929392b37c.html"
+  },
+  {
+   "id": "3b69cbcf711cd6a1",
+   "title": "고양도시관리공사, 공유형 ESS 실증사업 성과로 장관 표창",
+   "media": "신아일보",
+   "at": "2026-11-18T10:11",
+   "url": "https://lse-market-news.pages.dev/go/3b69cbcf711cd6a1.html"
+  },
+  {
+   "id": "ba512f51100157e3",
+   "title": "디와이덕양, 사용후 배터리 ESS 사업 추진",
+   "media": "뉴스핌",
+   "at": "2026-11-18T10:10",
+   "url": "https://lse-market-news.pages.dev/go/ba512f51100157e3.html"
+  },
+  {
+   "id": "e3ed8298e764c420",
+   "title": "ESS부터 서버 백업까지…삼성SDI, 북미서 배터리 총력전 : 기업·산업",
+   "media": "재경일보",
+   "at": "2026-11-18T09:02",
+   "url": "https://lse-market-news.pages.dev/go/e3ed8298e764c420.html"
+  },
+  {
+   "id": "b12ec3a3be395362",
+   "title": "[사이테크+] AI 데이터센터 급증에…\"미국 변압기·전력설비 공급난 경고\"",
+   "media": "연합뉴스",
+   "at": "2026-11-18T08:16",
+   "url": "https://lse-market-news.pages.dev/go/b12ec3a3be395362.html"
+  },
+  {
+   "id": "ed55b20552df90ab",
+   "title": "중국 주요 마이크로그리드 에너지저장시스템 공급사들, 늘어나는 시장 수요에 대응",
+   "media": "WBOC TV",
+   "at": "2026-11-18T08:00",
+   "url": "https://lse-market-news.pages.dev/go/ed55b20552df90ab.html"
+  },
+  {
+   "id": "c03bd058501055a3",
+   "title": "AGL의 Abermain BESS, 환경 승인 확보",
+   "media": "Energy Source & Distribution",
+   "at": "2026-11-18T07:56",
+   "url": "https://lse-market-news.pages.dev/go/c03bd058501055a3.html"
+  },
+  {
+   "id": "ecfdfb2c39e0e703",
+   "title": "데이터 센터∙ESS 시장 노리는 테슬라, 7.4MW급 고체변압기 '파워코어' 공개",
+   "media": "엠투데이",
+   "at": "2026-11-18T07:55",
+   "url": "https://lse-market-news.pages.dev/go/ecfdfb2c39e0e703.html"
+  },
+  {
+   "id": "cab1c9bc93c77fde",
+   "title": "[종목 주요지표&DATA] 26년 10월 변압기 수출액 추이 (경기도 안산시)",
+   "media": "네이버 프리미엄콘텐츠",
+   "at": "2026-11-18T07:20",
+   "url": "https://lse-market-news.pages.dev/go/cab1c9bc93c77fde.html"
+  },
+  {
+   "id": "8b11062eea6f5786",
+   "title": "Gaffney 인근에 3억 2800만 달러 규모 변압기 공장 신설 예정",
+   "media": "SC Daily Gazette",
+   "at": "2026-11-18T06:45",
+   "url": "https://lse-market-news.pages.dev/go/8b11062eea6f5786.html"
+  },
+  {
+   "id": "159f7fd32199516a",
+   "title": "세자에너지, 중기부 TIPS 선정… AI·ESS 결합 차세대 분산에너지 관리기술 개발 속도",
+   "media": "쿠키뉴스",
+   "at": "2026-11-18T06:01",
+   "url": "https://lse-market-news.pages.dev/go/159f7fd32199516a.html"
+  },
+  {
+   "id": "fbd0df1c86097585",
+   "title": "북미 에너지저장 기업들, BESS 보급 가속 위한 '볼터스 배터리 네트워크' 출범",
+   "media": "글로벌이코노믹",
+   "at": "2026-11-18T05:35",
+   "url": "https://lse-market-news.pages.dev/go/fbd0df1c86097585.html"
+  },
+  {
+   "id": "f377b4c95ae77928",
+   "title": "CATL, 장주기 나트륨이온 BESS '테너 소듐' 제원 공개… 2027년 여름 출하",
+   "media": "글로벌이코노믹",
+   "at": "2026-11-18T05:25",
+   "url": "https://lse-market-news.pages.dev/go/f377b4c95ae77928.html"
+  },
+  {
+   "id": "a1a6243b40e43502",
+   "title": "투르크메니스탄과 파키스탄, TAP 송전선로 사업 속도를 높이고 있습니다",
+   "media": "Arzuw news",
+   "at": "2026-11-18T04:39",
+   "url": "https://lse-market-news.pages.dev/go/a1a6243b40e43502.html"
+  },
+  {
+   "id": "e6c71dac7e9dd028",
+   "title": "Veto Switchgear 투자자 분석 | StockIQ",
+   "media": "The Economic Times",
+   "at": "2026-11-18T01:02",
+   "url": "https://lse-market-news.pages.dev/go/e6c71dac7e9dd028.html"
+  },
+  {
+   "id": "7a9370f4d28706ba",
+   "title": "美 ESS 설치량, 2026년 1~3분기 전년 동기 대비 20% 증가",
+   "media": "시드원",
+   "at": "2026-11-18T00:00",
+   "url": "https://lse-market-news.pages.dev/go/7a9370f4d28706ba.html"
+  },
+  {
+   "id": "b9ac6f8a4009e55d",
+   "title": "‘최적화 장치를 직접 살피되, 세세하게 간섭하지는 말라’고 BESS 소유·운영사들이 말합니다",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-17T23:40",
+   "url": "https://lse-market-news.pages.dev/go/b9ac6f8a4009e55d.html"
+  },
+  {
+   "id": "19c60e4a0c33b4e1",
+   "title": "Advait Energy Transitions, GETCO로부터 220 kV 송전선로 재가설(reconductoring) 공사 수주 130 cr 루피 규모",
+   "media": "IndiaIPO",
+   "at": "2026-11-17T23:31",
+   "url": "https://lse-market-news.pages.dev/go/19c60e4a0c33b4e1.html"
+  },
+  {
+   "id": "83dabc8c6a4d8df8",
+   "title": "대전 전력 공급체계 ‘지역 생산·지역 소비’로 전환…태양광·ESS·가상발전소 구축 시동",
+   "media": "녹색경제신문",
+   "at": "2026-11-17T23:25",
+   "url": "https://lse-market-news.pages.dev/go/83dabc8c6a4d8df8.html"
+  },
+  {
+   "id": "bef573f45c6cc4d1",
+   "title": "2026년 첫 9개월 미국 에너지 저장장치 설치량, 전년 대비 20% 증가",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-17T21:44",
+   "url": "https://lse-market-news.pages.dev/go/bef573f45c6cc4d1.html"
+  },
+  {
+   "id": "c5401857ebc55a29",
+   "title": "Waaree Energy Storage, 구자라트 5.15GWh 배터리 팩 제조 라인은 '메이크 인 인디아' 전략의 이정표",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-17T21:37",
+   "url": "https://lse-market-news.pages.dev/go/c5401857ebc55a29.html"
+  },
+  {
+   "id": "8842654bc652ee19",
+   "title": "이탈리아, 운영 중인 계통 규모 BESS 6GWh 달성…10GWh 건설 중",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-17T21:01",
+   "url": "https://lse-market-news.pages.dev/go/8842654bc652ee19.html"
+  },
+  {
+   "id": "68fc24a1f955b83b",
+   "title": "리믹스포인트, 시마네현 ESS 6호 수급조정시장 가동",
+   "media": "비건뉴스",
+   "at": "2026-11-17T20:40",
+   "url": "https://lse-market-news.pages.dev/go/68fc24a1f955b83b.html"
+  },
+  {
+   "id": "d82b7738adf5d23e",
+   "title": "지멘스, 모듈형 WATTBLOC 태양광 발전 플랫폼 공개",
+   "media": "Engineering.com",
+   "at": "2026-11-17T18:45",
+   "url": "https://lse-market-news.pages.dev/go/d82b7738adf5d23e.html"
+  },
+  {
+   "id": "6e0040d8feeb47b6",
+   "title": "West Arthur Energy, 호주에 736 MW 풍력 및 BESS 프로젝트 제출",
+   "media": "Enerdata",
+   "at": "2026-11-17T17:46",
+   "url": "https://lse-market-news.pages.dev/go/6e0040d8feeb47b6.html"
+  },
+  {
+   "id": "8d418ddca86fc520",
+   "title": "Megatherm, $7.5 M 변압기 증설 착수",
+   "media": "Transformer Magazine",
+   "at": "2026-11-17T17:20",
+   "url": "https://lse-market-news.pages.dev/go/8d418ddca86fc520.html"
+  },
+  {
+   "id": "00ab4e58bad283f0",
+   "title": "베트남 점유율 35% 쥔 구자균…배전·ESS로 3.5억달러 도전",
+   "media": "아시아투데이",
+   "at": "2026-11-17T17:11",
+   "url": "https://lse-market-news.pages.dev/go/00ab4e58bad283f0.html"
+  },
+  {
+   "id": "5b49423443029611",
+   "title": "Pace Digitek, NTPC Green Energy로부터 ₹2,691 crore 규모 BESS 수주",
+   "media": "ET EnergyWorld",
+   "at": "2026-11-17T17:10",
+   "url": "https://lse-market-news.pages.dev/go/5b49423443029611.html"
+  },
+  {
+   "id": "3eef7d9d4dae0de9",
+   "title": "산업통상부는 제8차 전력개발계획에서 바티엔 220kV 변전소 변압기 설치 일정을 조정했습니다.",
+   "media": "Vietnam.vn",
+   "at": "2026-11-17T17:03",
+   "url": "https://lse-market-news.pages.dev/go/3eef7d9d4dae0de9.html"
+  },
+  {
+   "id": "656b43c8339920be",
+   "title": "ESS 잘나가니 '본진' 전기차는 중국산 차지…K배터리 전열 재정비 - 머니투데이",
+   "media": "머니투데이",
+   "at": "2026-11-17T17:00",
+   "url": "https://lse-market-news.pages.dev/go/656b43c8339920be.html"
+  },
+  {
+   "id": "13ce1f87a54c3a64",
+   "title": "우즈베키스탄, 5,000MVA 변압기 공장 계획",
+   "media": "Transformer Magazine",
+   "at": "2026-11-17T16:57",
+   "url": "https://lse-market-news.pages.dev/go/13ce1f87a54c3a64.html"
+  },
+  {
+   "id": "1c4f63b7fc0dc88c",
+   "title": "에너지노·스탠다드에너지, AI 기반 VIB ESS 사업화 업무협약 체결",
+   "media": "대한경제",
+   "at": "2026-11-17T16:08",
+   "url": "https://lse-market-news.pages.dev/go/1c4f63b7fc0dc88c.html"
+  },
+  {
+   "id": "5869f868bb4a8fa6",
+   "title": "[전력망에 갇힌 재생e] 전력망 확충만으론 부족…AI·ESS 활용한 수급 조절 해법 부상",
+   "media": "아주경제",
+   "at": "2026-11-17T16:03",
+   "url": "https://lse-market-news.pages.dev/go/5869f868bb4a8fa6.html"
+  },
+  {
+   "id": "5a675dcf354baa9d",
+   "title": "한온시스템, ESS·데이터센터 정조준…열관리 사업 확대",
+   "media": "한국아이닷컴",
+   "at": "2026-11-17T15:51",
+   "url": "https://lse-market-news.pages.dev/go/5a675dcf354baa9d.html"
+  },
+  {
+   "id": "93c86bff033484ad",
+   "title": "화재보험협회, “ESS·전기차 화재 는 국가적 재난…AI 통해 예방”",
+   "media": "대한경제",
+   "at": "2026-11-17T15:38",
+   "url": "https://lse-market-news.pages.dev/go/93c86bff033484ad.html"
+  },
+  {
+   "id": "087f90ced62cfb54",
+   "title": "GE Vernova, PGCIL로부터 라자스탄과 South Kalamb을 잇는 6 GW HVDC 송전 프로젝트 확보",
+   "media": "SolarQuarter",
+   "at": "2026-11-17T15:36",
+   "url": "https://lse-market-news.pages.dev/go/087f90ced62cfb54.html"
+  },
+  {
+   "id": "4401d960f4982c33",
+   "title": "우즈베키스탄 NURA Electric과 오만 Voltamp Energy, 전력용 변압기 공장 설립에 합의",
+   "media": "Trend News Agency",
+   "at": "2026-11-17T15:26",
+   "url": "https://lse-market-news.pages.dev/go/4401d960f4982c33.html"
+  },
+  {
+   "id": "241c818b04bb6a78",
+   "title": "K-전력 삼총사, 북미 ESS 시장 공략 ... “5년뒤 시장 규모 50% 이상 증가”",
+   "media": "매일경제",
+   "at": "2026-11-17T15:24",
+   "url": "https://lse-market-news.pages.dev/go/241c818b04bb6a78.html"
+  },
+  {
+   "id": "0b5f3e28f47657ae",
+   "title": "LG엔솔 빠진 2조원 ESS 수주전… `단가 정상화` vs `가동률 방어` 기로",
+   "media": "디지털데일리",
+   "at": "2026-11-17T14:45",
+   "url": "https://lse-market-news.pages.dev/go/0b5f3e28f47657ae.html"
+  },
+  {
+   "id": "3fda34cfee1d69a2",
+   "title": "Accord Transformer & Switchgear, FY27 상반기 매출 91% 증가",
+   "media": "Machine Maker",
+   "at": "2026-11-17T14:12",
+   "url": "https://lse-market-news.pages.dev/go/3fda34cfee1d69a2.html"
+  },
+  {
+   "id": "58a8a6d18aadadaa",
+   "title": "나주, 반도체 전력망 컨트롤타워 역할 모색…ESS 등 제안",
+   "media": "진일보 | 전남일보",
+   "at": "2026-11-17T13:41",
+   "url": "https://lse-market-news.pages.dev/go/58a8a6d18aadadaa.html"
+  },
+  {
+   "id": "c613dfbb03687b06",
+   "title": "美 ESS 2028년까지 '완판'…K배터리, 2029년 물량 선점 나섰다",
+   "media": "아시아경제",
+   "at": "2026-11-17T13:05",
+   "url": "https://lse-market-news.pages.dev/go/c613dfbb03687b06.html"
+  },
+  {
+   "id": "d9ef0368c63d2559",
+   "title": "소네일 스파크, RE+ 2026에서 견인식 축전지 유닛 모바일 BESS 공개 - 뉴스 및 통계",
+   "media": "IndexBox",
+   "at": "2026-11-17T13:03",
+   "url": "https://lse-market-news.pages.dev/go/d9ef0368c63d2559.html"
+  },
+  {
+   "id": "716ecdd7724b08ad",
+   "title": "[에너지 고속도로] 철도전력망 ‘에너지 고속도로’ 혁신에 답 찾아야-①",
+   "media": "철도경제신문",
+   "at": "2026-11-17T12:16",
+   "url": "https://lse-market-news.pages.dev/go/716ecdd7724b08ad.html"
+  },
+  {
+   "id": "f6dc32525961c558",
+   "title": "트리나스토리지, BloombergNEF ESS Tier 1 명단 12분기 연속 선정",
+   "media": "산업일보",
+   "at": "2026-11-17T12:05",
+   "url": "https://lse-market-news.pages.dev/go/f6dc32525961c558.html"
+  },
+  {
+   "id": "0896e628c99b64f4",
+   "title": "Trina Storage Named to BloombergNEF ESS Tier 1 List for 12 Consecutive Quarters",
+   "media": "산업일보",
+   "at": "2026-11-17T12:05",
+   "url": "https://lse-market-news.pages.dev/go/0896e628c99b64f4.html"
+  },
+  {
+   "id": "3a36009264ebe7a5",
+   "title": "[대미투자 리셋②] 현대차 美 증설…배터리 ESS행",
+   "media": "자본시장뉴스",
+   "at": "2026-11-17T12:00",
+   "url": "https://lse-market-news.pages.dev/go/3a36009264ebe7a5.html"
+  },
+  {
+   "id": "5c86c9c9e3def252",
+   "title": "LG엔솔·삼성SDI, 올해 설비투자 5.7조 '돌파'…\"생산 확대로 ESS 수요 선점\"",
+   "media": "뉴시스",
+   "at": "2026-11-17T11:34",
+   "url": "https://lse-market-news.pages.dev/go/5c86c9c9e3def252.html"
+  },
+  {
+   "id": "04347bd4730c7132",
+   "title": "LG엔솔·삼성SDI, ESS 앞세워 가동률 올렸다…SK온은 36.4% 제자리",
+   "media": "중소기업신문",
+   "at": "2026-11-17T10:36",
+   "url": "https://lse-market-news.pages.dev/go/04347bd4730c7132.html"
+  },
+  {
+   "id": "178ea4b7803098d3",
+   "title": "(품질경영 No.1) 케이디파워, 에너지 하베스팅 수배전반으로 예방형 품질경영 강화",
+   "media": "전기신문",
+   "at": "2026-11-17T09:47",
+   "url": "https://lse-market-news.pages.dev/go/178ea4b7803098d3.html"
+  },
+  {
+   "id": "e500ba41a86857de",
+   "title": "더블유씨피, 북미 LFP ESS 성장에 '외형 회복'…\"헝가리 공장 양산으로 실적 정상화 기대\"",
+   "media": "프라임경제",
+   "at": "2026-11-17T08:21",
+   "url": "https://lse-market-news.pages.dev/go/e500ba41a86857de.html"
+  },
+  {
+   "id": "10730042302d950d",
+   "title": "[CEO Effect] 구자은의 선제 투자, 변압기 호황으로 돌아오다…다음 승부수는 '메탈플러스'",
+   "media": "녹색경제신문",
+   "at": "2026-11-17T08:00",
+   "url": "https://lse-market-news.pages.dev/go/10730042302d950d.html"
+  },
+  {
+   "id": "059ac259955196ef",
+   "title": "AI 데이터센터 전력시장, 버스덕트 이어 UC 부상…LS 계열사 사업 본격화",
+   "media": "파이낸셜뉴스",
+   "at": "2026-11-17T07:29",
+   "url": "https://lse-market-news.pages.dev/go/059ac259955196ef.html"
+  },
+  {
+   "id": "e5de0df1222a7858",
+   "title": "비머젠 에너지, 3분기 순이익 244만 달러로 흑자 전환…BESS 프로젝트 거래 실적 반영",
+   "media": "데이터투자",
+   "at": "2026-11-17T06:57",
+   "url": "https://lse-market-news.pages.dev/go/e5de0df1222a7858.html"
+  },
+  {
+   "id": "7757cc89990f7a29",
+   "title": "[사설] 결국 없던 일 된 ‘대구변압기 호남행’ 논란이 남긴 교훈",
+   "media": "영남일보",
+   "at": "2026-11-17T06:00",
+   "url": "https://lse-market-news.pages.dev/go/7757cc89990f7a29.html"
+  },
+  {
+   "id": "170f523613785fd2",
+   "title": "북미 청정에너지 박람회 'RE+ 2026' 개막… BESS·스마트그리드 수주 대전",
+   "media": "글로벌이코노믹",
+   "at": "2026-11-17T05:45",
+   "url": "https://lse-market-news.pages.dev/go/170f523613785fd2.html"
+  },
+  {
+   "id": "8c5122f5991f65c2",
+   "title": "Hec Infra Projects, CESC Limited로부터 전력용 변압기 공급을 위한 6.75 크로르 루피 규모 수주를 따냈습니다.",
+   "media": "scanx.trade",
+   "at": "2026-11-17T04:43",
+   "url": "https://lse-market-news.pages.dev/go/8c5122f5991f65c2.html"
+  },
+  {
+   "id": "fccf824525984093",
+   "title": "Kwara 주정부, 변압기 8대와 5MVA 전력 변압기 조달",
+   "media": "Nigerian NewsDirect",
+   "at": "2026-11-17T02:31",
+   "url": "https://lse-market-news.pages.dev/go/fccf824525984093.html"
+  },
+  {
+   "id": "d789ecc361ea1931",
+   "title": "일본 유틸리티, PJM에 전력을 공급하는 버지니아 BESS 프로젝트 지분 취득",
+   "media": "POWER Magazine",
+   "at": "2026-11-17T01:51",
+   "url": "https://lse-market-news.pages.dev/go/d789ecc361ea1931.html"
+  },
+  {
+   "id": "8d4ed4513ce1bb83",
+   "title": "신한자산운용, 아일랜드 장주기 ESS 사업 참여 추진",
+   "media": "글로벌뉴스통신GNA",
+   "at": "2026-11-17T01:02",
+   "url": "https://lse-market-news.pages.dev/go/8d4ed4513ce1bb83.html"
+  },
+  {
+   "id": "3d7ae4e95291fad5",
+   "title": "Flower, 베를린 인근 독일에 2GWh BESS 계획",
+   "media": "ESS News",
+   "at": "2026-11-17T00:49",
+   "url": "https://lse-market-news.pages.dev/go/3d7ae4e95291fad5.html"
+  },
+  {
+   "id": "5bb0b20722fd8007",
+   "title": "Hitachi Energy, 확장된 변압기 공장 개소",
+   "media": "the Electrical Distributor magazine",
+   "at": "2026-11-17T00:27",
+   "url": "https://lse-market-news.pages.dev/go/5bb0b20722fd8007.html"
+  },
+  {
+   "id": "4f57eabbd04a13ae",
+   "title": "Flatiron Energy, 매사추세츠 1.2GWh BESS 착공",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-16T23:50",
+   "url": "https://lse-market-news.pages.dev/go/4f57eabbd04a13ae.html"
+  },
+  {
+   "id": "7282785ba293013a",
+   "title": "NeoVolta, US$116 million 규모 BESS 계약으로 미국 생산 확대 뒷받침... 분기 손실 축소",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-16T23:46",
+   "url": "https://lse-market-news.pages.dev/go/7282785ba293013a.html"
+  },
+  {
+   "id": "4949ae6bbe7795d3",
+   "title": "전력망 이어 변압기 병목⋯ ‘속도전 메가프로젝트’ 발목잡나",
+   "media": "국민일보",
+   "at": "2026-11-16T23:20",
+   "url": "https://lse-market-news.pages.dev/go/4949ae6bbe7795d3.html"
+  },
+  {
+   "id": "6f30dec4dce5b3ed",
+   "title": "Atlas, 칠레 태양광 프로젝트에 US$160mn 규모 에너지 저장장치·계통 공사 계획",
+   "media": "BNamericas",
+   "at": "2026-11-16T20:51",
+   "url": "https://lse-market-news.pages.dev/go/6f30dec4dce5b3ed.html"
+  },
+  {
+   "id": "33c03014f21becb8",
+   "title": "두고의 그리드 포밍 ESS, 인도네시아의 외딴섬 2000가구에 약 24시간 전력 공급",
+   "media": "서프라이즈뉴스",
+   "at": "2026-11-16T20:01",
+   "url": "https://lse-market-news.pages.dev/go/33c03014f21becb8.html"
+  },
+  {
+   "id": "c7c5a88e2553a1eb",
+   "title": "주간 요약: 오하이오 검토 이후 주가 반등, 인도 6 GW HVDC 주문",
+   "media": "TradingView",
+   "at": "2026-11-16T20:00",
+   "url": "https://lse-market-news.pages.dev/go/c7c5a88e2553a1eb.html"
+  },
+  {
+   "id": "96f89b1516236dd6",
+   "title": "£11억 파운드 규모 태양광 발전소를 위한 변전소 위치가 공개되었습니다. 롱 스트래튼 일대를 포함하는 사업입니다.",
+   "media": "Diss Express",
+   "at": "2026-11-16T19:19",
+   "url": "https://lse-market-news.pages.dev/go/96f89b1516236dd6.html"
+  },
+  {
+   "id": "8aafd6847ec20c20",
+   "title": "ESS 부품 매출 5배 넘게 뛰었다…삼기에너지솔루션즈 외형 성장",
+   "media": "파이낸셜뉴스",
+   "at": "2026-11-16T19:03",
+   "url": "https://lse-market-news.pages.dev/go/8aafd6847ec20c20.html"
+  },
+  {
+   "id": "6bfb6886f8ffb9d9",
+   "title": "‘시장이 어려워지고 있다’: 호주는 Wärtsilä 합작사 Valo의 임원이 말한 대로 BESS의 수익 안정성을 무엇보다 중시합니다",
+   "media": "Energy-Storage.news",
+   "at": "2026-11-16T17:38",
+   "url": "https://lse-market-news.pages.dev/go/6bfb6886f8ffb9d9.html"
+  },
+  {
+   "id": "b561d4c88b494825",
+   "title": "AI발 배터리 판도 변화⋯ “ESS 넘어 이젠 UPS·BBU ‘백업전원’이다”",
+   "media": "브릿지경제",
+   "at": "2026-11-16T16:41",
+   "url": "https://lse-market-news.pages.dev/go/b561d4c88b494825.html"
+  },
+  {
+   "id": "11f6488cddc1920a",
+   "title": "전기공사협회, 한전과 국산 HVDC 기술교류…차세대 전력망 시공역량 강화 모색",
+   "media": "전기신문",
+   "at": "2026-11-16T16:03",
+   "url": "https://lse-market-news.pages.dev/go/11f6488cddc1920a.html"
+  },
+  {
+   "id": "85aa672c93a590ff",
+   "title": "변압기 이어 차단기·HVDC까지…전력기기 3사, 성장축 다변화",
+   "media": "미디어펜",
+   "at": "2026-11-16T16:00",
+   "url": "https://lse-market-news.pages.dev/go/85aa672c93a590ff.html"
+  },
+  {
+   "id": "12265800a86437f5",
+   "title": "벌써 2031년 ESS 물량도 확보한 삼성SDI..내년엔 전고체 배터리 승부 - 머니투데이",
+   "media": "머니투데이",
+   "at": "2026-11-16T15:50",
+   "url": "https://lse-market-news.pages.dev/go/12265800a86437f5.html"
+  },
+  {
+   "id": "787fa96a7454eaae",
+   "title": "삼성SDI, 북미 유일 非중국계 각형 ESS용 배터리 생산…현지 에너지 기업 신뢰 확보",
+   "media": "한국재난안전뉴스",
+   "at": "2026-11-16T15:33",
+   "url": "https://lse-market-news.pages.dev/go/787fa96a7454eaae.html"
+  },
+  {
+   "id": "f429847d15d9362c",
+   "title": "SK온, AIDC용 ESS 글로벌 시장 공략…美 GE버노바·대만 시텔과 맞손",
+   "media": "KPI뉴스",
+   "at": "2026-11-16T15:09",
+   "url": "https://lse-market-news.pages.dev/go/f429847d15d9362c.html"
+  },
+  {
+   "id": "f4630fdde6782922",
+   "title": "“풍력·ESS 부진에 수익성 ‘경고등’…SK이터닉스, ‘태양광·AI 전력’으로 뼈 깎는 체질 개선”",
+   "media": "뉴스퀘스트",
+   "at": "2026-11-16T14:37",
+   "url": "https://lse-market-news.pages.dev/go/f4630fdde6782922.html"
+  },
+  {
+   "id": "01d75518ed81b91f",
+   "title": "태양광·ESS로 연 4억 절감…대전시설관리공단 '한국에너지대상' 국무총리 표창",
+   "media": "뉴데일리 충청세종",
+   "at": "2026-11-16T14:25",
+   "url": "https://lse-market-news.pages.dev/go/01d75518ed81b91f.html"
+  },
+  {
+   "id": "1c58afa5de9578ab",
+   "title": "윤재옥 의원 지적에 정부 ‘대구 신달성변전소 변압기 전용’ 철회… 신규 발주 결정",
+   "media": "웹플러스뉴스",
+   "at": "2026-11-16T14:15",
+   "url": "https://lse-market-news.pages.dev/go/1c58afa5de9578ab.html"
+  },
+  {
+   "id": "febfa4dcb569497c",
+   "title": "화웨이, 20kW 가정용 배터리(ESS) ‘루테라 S2’ 공개",
+   "media": "기계설비신문",
+   "at": "2026-11-16T14:02",
+   "url": "https://lse-market-news.pages.dev/go/febfa4dcb569497c.html"
+  },
+  {
+   "id": "4d72b3d460a4042a",
+   "title": "나인테크, 3분기 흑자전환...ESS 전환 장비 수요 확대",
+   "media": "디일렉",
+   "at": "2026-11-16T13:57",
+   "url": "https://lse-market-news.pages.dev/go/4d72b3d460a4042a.html"
+  },
+  {
+   "id": "08b671afd91ff033",
+   "title": "서진시스템, 3분기 영업이익 387억원…반도체·ESS 성장 견인",
+   "media": "디지털데일리",
+   "at": "2026-11-16T13:51",
+   "url": "https://lse-market-news.pages.dev/go/08b671afd91ff033.html"
+  },
+  {
+   "id": "7a258f4a3c258849",
+   "title": "삼성SDI, 탈중국 공급망 앞세워 미국 ESS 공략…현지 생산 수익성 시험대",
+   "media": "S저널",
+   "at": "2026-11-16T13:09",
+   "url": "https://lse-market-news.pages.dev/go/7a258f4a3c258849.html"
+  },
+  {
+   "id": "f08a0f66bb85854f",
+   "title": "HD현대, 태양광·ESS·송배전 기술 총출동…북미시장 정조준",
+   "media": "아시아경제",
+   "at": "2026-11-16T11:44",
+   "url": "https://lse-market-news.pages.dev/go/f08a0f66bb85854f.html"
+  },
+  {
+   "id": "f1fe8ff74c9224bb",
+   "title": "HD현대, 태양광·BESS·전력망 기술 앞세워 북미 에너지시장 공략",
+   "media": "뉴스1",
+   "at": "2026-11-16T11:30",
+   "url": "https://lse-market-news.pages.dev/go/f1fe8ff74c9224bb.html"
+  },
+  {
+   "id": "6244b791bd5cf109",
+   "title": "HD현대, 美 'RE+ 26' 참가…태양광·BESS 공개 - 머니투데이",
+   "media": "머니투데이",
+   "at": "2026-11-16T11:30",
+   "url": "https://lse-market-news.pages.dev/go/6244b791bd5cf109.html"
+  },
+  {
+   "id": "8a82f5af81a27568",
+   "title": "삼성SDI, 美 블랙록 계열사서 '수조원 잭팟'…ESS 날개 달았다",
+   "media": "비즈워치",
+   "at": "2026-11-16T11:22",
+   "url": "https://lse-market-news.pages.dev/go/8a82f5af81a27568.html"
+  },
+  {
+   "id": "d071b974d0ab512e",
+   "title": "[리포트 브리핑]LG에너지솔루션, 'NDR 후기: 2027년엔 ESS 수익 보여줄 예정' 목표가 570,000원 - DB증권",
+   "media": "뉴스핌",
+   "at": "2026-11-16T11:21",
+   "url": "https://lse-market-news.pages.dev/go/d071b974d0ab512e.html"
+  },
+  {
+   "id": "7d49b5fc8364953f",
+   "title": "345kV 변전설비부터 직류배전까지…AI 인프라 협력 : 기업·산업",
+   "media": "재경일보",
+   "at": "2026-11-16T11:13",
+   "url": "https://lse-market-news.pages.dev/go/7d49b5fc8364953f.html"
+  },
+  {
+   "id": "3367e659f85041e3",
+   "title": "김동명 LG에너지솔루션 사장, 美 버테크 통해 ESS 데이터 분석 플랫폼 '에어로스 인텔리전스' 출시",
+   "media": "CEO저널",
+   "at": "2026-11-16T10:52",
+   "url": "https://lse-market-news.pages.dev/go/3367e659f85041e3.html"
+  },
+  {
+   "id": "878aed623b0a2edc",
+   "title": "가격 올리고 입찰 포기…ESS 특수에 전력비용 부담 커지나",
+   "media": "KB Think",
+   "at": "2026-11-16T10:21",
+   "url": "https://lse-market-news.pages.dev/go/878aed623b0a2edc.html"
+  },
+  {
+   "id": "1ca78767dfdfd40e",
+   "title": "【ESG Deal】가게나우, 아연브롬 배터리 투자 확보·캘리브런트, 데이터센터 BESS 금융·슈퍼시드, 재활용 건축소재 투자",
+   "media": "임팩트온",
+   "at": "2026-11-16T10:01",
+   "url": "https://lse-market-news.pages.dev/go/1ca78767dfdfd40e.html"
+  },
+  {
+   "id": "03df1623a6796e11",
+   "title": "주간 요약: 6GW HVDC 회랑 계약과 270루피 저항선",
+   "media": "TradingView",
+   "at": "2026-11-16T10:00",
+   "url": "https://lse-market-news.pages.dev/go/03df1623a6796e11.html"
+  },
+  {
+   "id": "32f402cac4434e7e",
+   "title": "[특징주] 삼성SDI 장 초반 강세..美 LFP ESS 성과 가시화",
+   "media": "포쓰저널",
+   "at": "2026-11-16T09:53",
+   "url": "https://lse-market-news.pages.dev/go/32f402cac4434e7e.html"
+  },
+  {
+   "id": "dfa8753a94305d9b",
+   "title": "LS ELECTRIC, 빅테크 기업의 하이퍼스케일 AI 데이터센터 대상 9,383만 달러 규모 배전반 계약 수주",
+   "media": "헤럴드경제",
+   "at": "2026-11-16T09:39",
+   "url": "https://lse-market-news.pages.dev/go/dfa8753a94305d9b.html"
+  },
+  {
+   "id": "d4054145be630db9",
+   "title": "[특징주] 삼성SDI, 대규모 ESS 공급 소식에 5% '급등'",
+   "media": "아이뉴스24",
+   "at": "2026-11-16T09:13",
+   "url": "https://lse-market-news.pages.dev/go/d4054145be630db9.html"
+  },
+  {
+   "id": "20472e346b3bcc99",
+   "title": "삼성SDI, 미국 ESS 개발사와 수조원대 계약…양사 누적 공급 27GWh",
+   "media": "마켓잉크",
+   "at": "2026-11-16T08:43",
+   "url": "https://lse-market-news.pages.dev/go/20472e346b3bcc99.html"
+  },
+  {
+   "id": "be47ca6720c0ab9d",
+   "title": "수요와 HVDC 제약으로 2026년 11월 초 뉴질랜드 현물가격 상승 - 뉴스 및 통계",
+   "media": "IndexBox",
+   "at": "2026-11-16T06:20",
+   "url": "https://lse-market-news.pages.dev/go/be47ca6720c0ab9d.html"
+  },
+  {
+   "id": "ac6876bea75e0c2a",
+   "title": "전력망 다음은 변압기… 메가프로젝트 전력 ‘기자재 병목’ 경고등",
+   "media": "국민일보",
+   "at": "2026-11-16T06:05",
+   "url": "https://lse-market-news.pages.dev/go/ac6876bea75e0c2a.html"
+  },
+  {
+   "id": "4fae18e34e6c6d3d",
+   "title": "재생에너지 늘리는데 전력망은 부족…ESS로 ‘길’ 넓힌다",
+   "media": "쿠키뉴스",
+   "at": "2026-11-16T02:58",
+   "url": "https://lse-market-news.pages.dev/go/4fae18e34e6c6d3d.html"
+  },
+  {
+   "id": "2087fb4ce8c76c35",
+   "title": "마이크로그리드 컨트롤러 시장 2035년 전망: 회복력 수요와 분산 에너지 자원 통합이 성장 견인 - 뉴스 및 통계",
+   "media": "IndexBox",
+   "at": "2026-11-16T01:46",
+   "url": "https://lse-market-news.pages.dev/go/2087fb4ce8c76c35.html"
+  },
+  {
+   "id": "999ebac925ee240d",
+   "title": "태양광·ESS로 개도국 전력·물 문제 해결…'에너지 팀코리아' 녹색 해외 진출 시동",
+   "media": "technovalue.com",
+   "at": "2026-11-16T00:10",
+   "url": "https://lse-market-news.pages.dev/go/999ebac925ee240d.html"
+  },
+  {
+   "id": "eeae0dddd7824b96",
+   "title": "[오늘의 창] 동서울 HVDC 또 원점되나",
+   "media": "경인일보",
+   "at": "2026-11-15T20:14",
+   "url": "https://lse-market-news.pages.dev/go/eeae0dddd7824b96.html"
+  },
+  {
+   "id": "dbcbf7e4a809bcc9",
+   "title": "전기차 캐즘 길어지자…지역 양극재업계, LFP·ESS서 돌파구 모색",
+   "media": "kyongbuk.co.kr",
+   "at": "2026-11-15T18:21",
+   "url": "https://lse-market-news.pages.dev/go/dbcbf7e4a809bcc9.html"
+  },
+  {
+   "id": "b633d43b3efbbf42",
+   "title": "지멘스 Desigo CC, 건물 에너지 관리 시스템 1위",
+   "media": "Energy Digital Magazine",
+   "at": "2026-11-15T17:15",
+   "url": "https://lse-market-news.pages.dev/go/b633d43b3efbbf42.html"
+  },
+  {
+   "id": "409226e54eb7b430",
+   "title": "대구 등 강한 반발에…'변압기 호남 반도체 위해 전용' 철회될 듯",
+   "media": "뉴스1",
+   "at": "2026-11-15T16:36",
+   "url": "https://lse-market-news.pages.dev/go/409226e54eb7b430.html"
+  },
+  {
+   "id": "7dc695c6399b2cae",
+   "title": "보령시 “서해안 에너지고속도로 신규 송전선로 건설 원칙적 반대”",
+   "media": "중부매일",
+   "at": "2026-11-15T14:22",
+   "url": "https://lse-market-news.pages.dev/go/7dc695c6399b2cae.html"
+  },
+  {
+   "id": "40314bc730da0e00",
+   "title": "전북도, ESS 활용 전력망 포화 해소방안 모색",
+   "media": "전민일보",
+   "at": "2026-11-15T11:59",
+   "url": "https://lse-market-news.pages.dev/go/40314bc730da0e00.html"
+  },
+  {
+   "id": "cb18d9d1f415789d",
+   "title": "LG에너지솔루션, 미국서 ESS 신기술 공개⋯북미 에너지 시장 공략",
+   "media": "이투데이",
+   "at": "2026-11-15T09:42",
+   "url": "https://lse-market-news.pages.dev/go/cb18d9d1f415789d.html"
+  },
+  {
+   "id": "530b01c58a9e1344",
+   "title": "베트남, 태양광 발전가격 상한 최대 16.9% 인상…ESS 결합형 우대 유지",
+   "media": "AI타임스",
+   "at": "2026-11-15T09:10",
+   "url": "https://lse-market-news.pages.dev/go/530b01c58a9e1344.html"
+  },
+  {
+   "id": "d4c3253ad3138d19",
+   "title": "[분석] 삼성 각형 vs SK 파우치…ESS 2조원 시장 '쟁탈전'",
+   "media": "파이낸셜포스트",
+   "at": "2026-11-15T08:08",
+   "url": "https://lse-market-news.pages.dev/go/d4c3253ad3138d19.html"
+  },
+  {
+   "id": "a1e3eb8dcbb4490a",
+   "title": "전기차에서 ESS·선박·로봇으로…포항 배터리 엑스포",
+   "media": "데일리안",
+   "at": "2026-11-15T06:21",
+   "url": "https://lse-market-news.pages.dev/go/a1e3eb8dcbb4490a.html"
+  },
+  {
+   "id": "deaf017eeea45300",
+   "title": "글로벌 변압기 부족의 내막 | 변화하는 비즈니스",
+   "media": "Modern Ghana",
+   "at": "2026-11-14T20:50",
+   "url": "https://lse-market-news.pages.dev/go/deaf017eeea45300.html"
+  },
+  {
+   "id": "a2f68025f7c8bc09",
+   "title": "[경제] 中, 2030년까지 신형 ESS 설비용량 3억㎾ 목표...시장화 단계로 전환",
+   "media": "내외뉴스통신",
+   "at": "2026-11-14T17:35",
+   "url": "https://lse-market-news.pages.dev/go/a2f68025f7c8bc09.html"
+  },
+  {
+   "id": "20560664b7a4144e",
+   "title": "구리값 뛰자 KBI메탈 영업이익 308억…변압기 효과는",
+   "media": "자본시장뉴스",
+   "at": "2026-11-14T13:40",
+   "url": "https://lse-market-news.pages.dev/go/20560664b7a4144e.html"
+  },
+  {
+   "id": "23512c2436014dc8",
+   "title": "TEİAŞ와 Hitachi Energy, HVDC 모색",
+   "media": "megaproject.com",
+   "at": "2026-11-14T05:16",
+   "url": "https://lse-market-news.pages.dev/go/23512c2436014dc8.html"
+  },
+  {
+   "id": "159e91f64e01a5b8",
+   "title": "Vertiv Holdings Co, 고밀도 AI 데이터센터용 분전반 출시",
+   "media": "Investing.com 한국어",
+   "at": "2026-11-13T22:41",
+   "url": "https://lse-market-news.pages.dev/go/159e91f64e01a5b8.html"
+  },
+  {
+   "id": "d636a6b5364462aa",
+   "title": "보호 계전기 시험 장치 시장 2035년 전망: 전력망 현대화와 재생에너지 연계가 성장 견인",
+   "media": "IndexBox",
+   "at": "2026-11-13T20:46",
+   "url": "https://lse-market-news.pages.dev/go/d636a6b5364462aa.html"
+  },
+  {
+   "id": "57342bba0eec47da",
+   "title": "태국은 태양광 발전을 장려하고 스마트 그리드 개발 정책을 개선하고 있습니다.",
+   "media": "Vietnam.vn",
+   "at": "2026-11-13T20:38",
+   "url": "https://lse-market-news.pages.dev/go/57342bba0eec47da.html"
+  },
+  {
+   "id": "9b4f87c75ead0b5e",
+   "title": "전기철도, AI·에너지 융합으로 철도안전·탄소중립 해법 모색",
+   "media": "전기신문",
+   "at": "2026-11-13T19:22",
+   "url": "https://lse-market-news.pages.dev/go/9b4f87c75ead0b5e.html"
+  },
+  {
+   "id": "584a7ffc19240dda",
+   "title": "검사관리부터 ESS 진단까지…전기안전 혁신 관통하는 키워드 ‘AI’",
+   "media": "전기신문",
+   "at": "2026-11-13T19:11",
+   "url": "https://lse-market-news.pages.dev/go/584a7ffc19240dda.html"
+  },
+  {
+   "id": "be7232fb7e53ee46",
+   "title": "제주에너지공사, 남는 재생전력은 수소로…수전해·ESS 통합 실증 착수",
+   "media": "에너지데일리",
+   "at": "2026-11-13T17:15",
+   "url": "https://lse-market-news.pages.dev/go/be7232fb7e53ee46.html"
+  },
+  {
+   "id": "851e8725fc37b0ce",
+   "title": "블루웨이브 충격 속 '반사이익'…증권가, 풍력·ESS 주목",
+   "media": "서울경제TV",
+   "at": "2026-11-13T14:49",
+   "url": "https://lse-market-news.pages.dev/go/851e8725fc37b0ce.html"
+  },
+  {
+   "id": "3cd605dc16f3c430",
+   "title": "LG엔솔, 북미 ESS 사업 고도화… AI 기반 운영 플랫폼 출시",
+   "media": "Korea IT Times",
+   "at": "2026-11-13T13:57",
+   "url": "https://lse-market-news.pages.dev/go/3cd605dc16f3c430.html"
+  },
+  {
+   "id": "9b2f5d10b033730b",
+   "title": "히타치 에너지 경영진, 2035년까지 전력망 투자와 4~5건의 HVDC 프로젝트 기대",
+   "media": "Sahi",
+   "at": "2026-11-13T13:04",
+   "url": "https://lse-market-news.pages.dev/go/9b2f5d10b033730b.html"
+  },
+  {
+   "id": "1e0a9e421784475e",
+   "title": "최근 2년來 연평균 1116c-km씩 송전선로 증가",
+   "media": "이투뉴스",
+   "at": "2026-11-13T11:33",
+   "url": "https://lse-market-news.pages.dev/go/1e0a9e421784475e.html"
+  },
+  {
+   "id": "0b2d4de22b24345f",
+   "title": "라트비아에 1만 헥타르 태양광단지 가동…대규모 에너지저장장치도 건설",
+   "media": "AI타임스",
+   "at": "2026-11-13T11:25",
+   "url": "https://lse-market-news.pages.dev/go/0b2d4de22b24345f.html"
+  },
+  {
+   "id": "5beaa4e44204c88a",
+   "title": "크로아티아, 농업용 태양광·ESS에 3000만유로 지원…규모별 최대 65% 차등 지원",
+   "media": "AI타임스",
+   "at": "2026-11-13T11:25",
+   "url": "https://lse-market-news.pages.dev/go/5beaa4e44204c88a.html"
+  },
+  {
+   "id": "220aa0d23decf485",
+   "title": "현장 시험에서 하이브리드 물리 학습이 전력 변압기 핫스팟 모니터링을 개선",
+   "media": "Bioengineer.org",
+   "at": "2026-11-13T10:52",
+   "url": "https://lse-market-news.pages.dev/go/220aa0d23decf485.html"
+  },
+  {
+   "id": "d4978025d1e77e27",
+   "title": "삼성물산, 호주 800MWh 대형 BESS 사업 본격화…주정부 인허가 돌입",
+   "media": "더구루",
+   "at": "2026-11-13T09:11",
+   "url": "https://lse-market-news.pages.dev/go/d4978025d1e77e27.html"
+  },
+  {
+   "id": "db8ae5f46724b565",
+   "title": "(월요객석)배전망 ESS, 전력망 공간에서 시간을 사는 법",
+   "media": "전기신문",
+   "at": "2026-11-13T07:53",
+   "url": "https://lse-market-news.pages.dev/go/db8ae5f46724b565.html"
+  },
+  {
+   "id": "f7eabfaf670f450e",
+   "title": "中 저가공세 맞서는 배터리3社…美 EV 라인 ESS로 전환해 '돌파구'",
+   "media": "뉴스톱",
+   "at": "2026-11-13T06:20",
+   "url": "https://lse-market-news.pages.dev/go/f7eabfaf670f450e.html"
+  },
+  {
+   "id": "6cf8fb052c6a24b4",
+   "title": "재생에너지 급증 속 전력망 안정화 해법 제시… 트리나 스토리지·TUV 라인란드, 그리드 포밍 ESS 백서 발간",
+   "media": "2news.co.kr",
+   "at": "2026-11-13T05:40",
+   "url": "https://lse-market-news.pages.dev/go/6cf8fb052c6a24b4.html"
+  },
+  {
+   "id": "c8f7bde02b72f9ff",
+   "title": "Siemens, Emerson, IDEC, Weidmuller가 SCADA를 현대화하는 방법",
+   "media": "MarketScale",
+   "at": "2026-11-12T20:55",
+   "url": "https://lse-market-news.pages.dev/go/c8f7bde02b72f9ff.html"
+  },
+  {
+   "id": "030a5ba507e734ec",
+   "title": "추경호 \"대구 배정 변압기 호남권 전용 중단해야\"…전력 인프라 사수 총력",
+   "media": "폴리뉴스 Polinews",
+   "at": "2026-11-12T20:50",
+   "url": "https://lse-market-news.pages.dev/go/030a5ba507e734ec.html"
+  },
+  {
+   "id": "b444719e2df7d7b9",
+   "title": "한전, 호남 반도체 산단 변압기 신규 발주…”2028년 전력공급 차질 없게\"",
+   "media": "뉴시스",
+   "at": "2026-11-12T17:42",
+   "url": "https://lse-market-news.pages.dev/go/b444719e2df7d7b9.html"
+  },
+  {
+   "id": "62ad32e009f22eea",
+   "title": "[K배터리 새 출구 열리나 ③] '중국 텃밭' LFP에 뛰어든 K배터리…전기차 라인을 ESS로 바꾼다",
+   "media": "S저널",
+   "at": "2026-11-12T16:52",
+   "url": "https://lse-market-news.pages.dev/go/62ad32e009f22eea.html"
+  },
+  {
+   "id": "a424e3a388f51e13",
+   "title": "에기평, 태양광 인버터 R&D 실증 강화 방안 모색",
+   "media": "에너지데일리",
+   "at": "2026-11-12T16:06",
+   "url": "https://lse-market-news.pages.dev/go/a424e3a388f51e13.html"
+  },
+  {
+   "id": "63e7536ec289a0b8",
+   "title": "Smart Switchgear Market to Reach US$ 34.96 Billion by 2035 | Smart",
+   "media": "openPR.com",
+   "at": "2026-11-12T16:03",
+   "url": "https://lse-market-news.pages.dev/go/63e7536ec289a0b8.html"
+  },
+  {
+   "id": "aeac9e815a47bda3",
+   "title": "ESS 성장 가속, 김동명 대표 연임 발판 되나",
+   "media": "톱데일리",
+   "at": "2026-11-12T15:53",
+   "url": "https://lse-market-news.pages.dev/go/aeac9e815a47bda3.html"
+  },
+  {
+   "id": "472d67b8b81640c4",
+   "title": "GE 버노바, 미국 슈리브포트 변압기 공장 증설에 3450만 달러 투자… 북미 전력망 수요 폭증 정조준",
+   "media": "2news.co.kr",
+   "at": "2026-11-12T15:32",
+   "url": "https://lse-market-news.pages.dev/go/472d67b8b81640c4.html"
+  },
+  {
+   "id": "e4958a9312481402",
+   "title": "태양광 인버터, 발전 효율 넘어 계통 안정·보안까지",
+   "media": "에너지신문",
+   "at": "2026-11-12T15:32",
+   "url": "https://lse-market-news.pages.dev/go/e4958a9312481402.html"
+  },
+  {
+   "id": "de85d2e84dd52091",
+   "title": "[클릭 e종목]\"석경에이티, 데이터센터 소음 규제 수혜 기대…변압기 제진소재 주목\"",
+   "media": "아시아경제",
+   "at": "2026-11-12T15:11",
+   "url": "https://lse-market-news.pages.dev/go/de85d2e84dd52091.html"
+  },
+  {
+   "id": "eeab713168ba8c63",
+   "title": "“햇빛소득마을 ESS 사업 차질 없이 추진하겠다”",
+   "media": "에너지데일리",
+   "at": "2026-11-12T15:10",
+   "url": "https://lse-market-news.pages.dev/go/eeab713168ba8c63.html"
+  },
+  {
+   "id": "e39a7be02b7bf239",
+   "title": "멀리 보낼 전기는 왜 직류로 바꿀까…HVDC 변환소의 역할",
+   "media": "비건뉴스",
+   "at": "2026-11-12T15:02",
+   "url": "https://lse-market-news.pages.dev/go/e39a7be02b7bf239.html"
+  },
+  {
+   "id": "c8645f619df67aeb",
+   "title": "[2026 에너지포럼] 반도체·AI 메가프로젝트에 ESS 수요 커진다…삼성SDI, 국내외 ESS 수주 확대 주목",
+   "media": "메트로신문",
+   "at": "2026-11-12T14:56",
+   "url": "https://lse-market-news.pages.dev/go/c8645f619df67aeb.html"
+  },
+  {
+   "id": "6986b6d659fb68f8",
+   "title": "피아이이, 3분기 매출 130억 원 달성…ESS 시장 선제 전환으로 적자폭 축소",
+   "media": "와이드경제",
+   "at": "2026-11-12T14:01",
+   "url": "https://lse-market-news.pages.dev/go/6986b6d659fb68f8.html"
+  },
+  {
+   "id": "7c43f4bba3c02ffd",
+   "title": "태양광 발전 막던 `전력망 부족`… 정부, ESS로 햇빛소득마을 지원",
+   "media": "에너지프로슈머",
+   "at": "2026-11-12T12:43",
+   "url": "https://lse-market-news.pages.dev/go/7c43f4bba3c02ffd.html"
+  },
+  {
+   "id": "5ad321ab165cb1b9",
+   "title": "노후 대학시설·ESS 안전관리 강화…전국 시설관리자 150명 제주 집결",
+   "media": "에너지안전신문",
+   "at": "2026-11-12T12:19",
+   "url": "https://lse-market-news.pages.dev/go/5ad321ab165cb1b9.html"
+  },
+  {
+   "id": "9356ea0f86ed375b",
+   "title": "삼성SDI·SK온, ESS 생산기반 재편…한·미 거점 활용 차별화",
+   "media": "PRESS9",
+   "at": "2026-11-12T12:00",
+   "url": "https://lse-market-news.pages.dev/go/9356ea0f86ed375b.html"
+  },
+  {
+   "id": "0dd48eb7c718c093",
+   "title": "삼성물산 건설부문 자회사, 호주 주정부에 ESS 설비 환경영향평가 신청",
+   "media": "비즈니스포스트",
+   "at": "2026-11-12T11:53",
+   "url": "https://lse-market-news.pages.dev/go/0dd48eb7c718c093.html"
+  },
+  {
+   "id": "2074748ca61eac78",
+   "title": "전기차 수주 가뭄, ESS도 변수 … K-배터리도 美 '블루웨이브' 직격탄",
+   "media": "뉴데일리",
+   "at": "2026-11-12T11:05",
+   "url": "https://lse-market-news.pages.dev/go/2074748ca61eac78.html"
+  },
+  {
+   "id": "0869e5572651ed3c",
+   "title": "S&E GLOBAL MGL, 몽골 아그로시티 특구와 54MW 태양광·BESS 사업 MOU… 특구 측도 사업 협의 공개",
+   "media": "하이몽골리아뉴스",
+   "at": "2026-11-12T10:33",
+   "url": "https://lse-market-news.pages.dev/go/0869e5572651ed3c.html"
+  },
+  {
+   "id": "81e58e188a036752",
+   "title": "이랜텍, 미국 법인 설립…\"ESS향 프로젝트 수주 확대\"",
+   "media": "지디넷코리아",
+   "at": "2026-11-12T10:27",
+   "url": "https://lse-market-news.pages.dev/go/81e58e188a036752.html"
+  },
+  {
+   "id": "f28de9ccb128fee5",
+   "title": "판 커진 3차 ESS 입찰 마감...출혈 경쟁 대신 실속 수주 전망",
+   "media": "아시아에이",
+   "at": "2026-11-12T10:26",
+   "url": "https://lse-market-news.pages.dev/go/f28de9ccb128fee5.html"
+  },
+  {
+   "id": "7b899528eeb44794",
+   "title": "거제 사등변전소 변압기 전용 안 한다…호남 산단용 신규 발주",
+   "media": "거제타임즈",
+   "at": "2026-11-12T10:13",
+   "url": "https://lse-market-news.pages.dev/go/7b899528eeb44794.html"
+  },
+  {
+   "id": "6faa2e1a60297571",
+   "title": "(파워인터뷰) 임익순 대한전선 에너지부문장 “동해안~동서울 HVDC 수주는 글로벌 영토 확장 디딤돌”",
+   "media": "전기신문",
+   "at": "2026-11-12T10:06",
+   "url": "https://lse-market-news.pages.dev/go/6faa2e1a60297571.html"
+  },
+  {
+   "id": "1658f4cbc72789e1",
+   "title": "[B트렌드] K-배터리, ESS 전환 ‘실적’으로… 북미 공백 속 반등 경로 찾는다",
+   "media": "솔라투데이",
+   "at": "2026-11-12T10:05",
+   "url": "https://lse-market-news.pages.dev/go/1658f4cbc72789e1.html"
+  },
+  {
+   "id": "08f9a42b8b1d7b09",
+   "title": "영광, 블룸에너지 SOFC 공급망 넘어 HD현대일렉트릭 초고압 변압기 외함 공급까지‥글로벌 전력 인프라 대응",
+   "media": "데이터투자",
+   "at": "2026-11-12T10:03",
+   "url": "https://lse-market-news.pages.dev/go/08f9a42b8b1d7b09.html"
+  },
+  {
+   "id": "ba33e1b2e313beae",
+   "title": "[모닝 리포트] \"일진전기, 북미 변압기 호황에 중전기 영업익 급증…성장 지속\"",
+   "media": "뉴스핌",
+   "at": "2026-11-12T09:45",
+   "url": "https://lse-market-news.pages.dev/go/ba33e1b2e313beae.html"
+  },
+  {
+   "id": "f7d8fc583385b8a5",
+   "title": "에기평, 차세대 태양광 인버터 기술개발·실증 협력 모색",
+   "media": "데일리안",
+   "at": "2026-11-12T09:18",
+   "url": "https://lse-market-news.pages.dev/go/f7d8fc583385b8a5.html"
+  },
+  {
+   "id": "482a438424efec04",
+   "title": "[에너지 백문백답] ESS(Energy Storage System, 에너지저장장치)란? - 전기를 어떻게 저장하고, 왜 지금 주목받을까? 저장 원리부터 활용처까지",
+   "media": "ASK Inno",
+   "at": "2026-11-12T09:07",
+   "url": "https://lse-market-news.pages.dev/go/482a438424efec04.html"
+  },
+  {
+   "id": "a9946af385354bb4",
+   "title": "미래어우름·건양, 베트남 태양광·ESS 시장 공략 본격화...금융·기술 협력 확대",
+   "media": "더밸류뉴스",
+   "at": "2026-11-12T09:03",
+   "url": "https://lse-market-news.pages.dev/go/a9946af385354bb4.html"
+  },
+  {
+   "id": "ff21969c7bc301d7",
+   "title": "신한운용, 아일랜드 장주기 ESS 사업 참여",
+   "media": "아시아경제",
+   "at": "2026-11-12T08:45",
+   "url": "https://lse-market-news.pages.dev/go/ff21969c7bc301d7.html"
+  }
+ ]
+}

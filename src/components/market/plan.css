@@ -1,0 +1,339 @@
+/*
+ * 계획 파이프라인 레이어 (토론 P0-2) — 계통도 좌표(.diagram__inner 안)에 얹는 카드.
+ * 크기는 계통도 px 기준. 축소 단계는 Bands 가 .diagram__inner 에 다는 data-zoom(overview/mid/detail)으로 전환.
+ * 색은 토큰만 (라이트·다크 자동).
+ */
+.mplan-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mplan {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  overflow: hidden;
+  border: 1.5px dashed var(--color-chip-active-bg);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  color: var(--color-text);
+  font-size: 13px;
+  line-height: 1.45;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.mplan__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 10px;
+}
+.mplan__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: var(--fw-bold);
+  color: var(--color-brand);
+}
+.mplan__layer {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+.mplan__editions {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+.mplan__editions b {
+  color: var(--color-text);
+}
+
+.mplan__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mplan__item {
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+}
+.mplan__item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.mplan__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 8px;
+}
+.mplan__label {
+  font-weight: var(--fw-bold);
+}
+/* 개요 단계에서만 — 칩 대신 미보유·일부 개수 */
+.mplan__warncount {
+  display: none;
+  color: var(--cov-missing-text);
+}
+.mplan__main {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+}
+.mplan__ed {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+.mplan__val {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.mplan__val small {
+  margin-left: 1px;
+  font-size: 0.85em;
+}
+.mplan__val--main {
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  color: var(--color-brand);
+}
+.mplan__year {
+  margin-left: 3px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+.mplan__sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  font-size: 12px;
+  color: var(--color-text-soft, var(--color-text-muted));
+}
+.mplan__sub:empty {
+  display: none;
+}
+.mplan__cmp {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+}
+.mplan__delta {
+  font-variant-numeric: tabular-nums;
+}
+.mplan__delta--up {
+  color: var(--cov-owned-text);
+}
+.mplan__delta--down {
+  color: var(--cov-missing-text);
+}
+.mplan__delta--same,
+.mplan__nocmp {
+  color: var(--color-text-muted);
+}
+.mplan__note {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+/* 보유 상태 겹쳐 보기 — 미보유·일부 보유만 칩으로 강조, 나머지는 개수 */
+.mplan__cov {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 3px;
+}
+.mplan__chip {
+  padding: 0 6px;
+  border-radius: var(--radius-chip, 4px);
+  font-size: 11px;
+  line-height: 18px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.mplan__chip--missing {
+  background: var(--cov-missing-bg);
+  color: var(--cov-missing-text);
+  border-color: var(--cov-missing);
+  font-weight: var(--fw-bold);
+}
+.mplan__chip--partial {
+  background: var(--cov-partial-bg);
+  color: var(--cov-partial-text);
+  border-color: var(--cov-partial);
+  font-weight: var(--fw-bold);
+}
+.mplan__chip--rest {
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+/* 사업 일정 — 10차(속 빈 표지) → 11차(찬 표지), 사이 막대 = 변동 구간 */
+.mplan__tl {
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+  font-size: 12px;
+}
+.mplan__tl ul {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.mplan__tl-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: var(--fw-bold);
+}
+.mplan__tl-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+.mplan__tl-legend .mplan__mk {
+  position: static;
+  transform: none;
+}
+.mplan__tl-row {
+  display: grid;
+  grid-template-columns: minmax(0, 9.5em) minmax(80px, 1fr) auto auto;
+  align-items: center;
+  gap: 6px;
+}
+.mplan__tl-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mplan__tl-track {
+  position: relative;
+  height: 14px;
+  border-bottom: 1px solid var(--color-border-strong);
+}
+.mplan__tl-bar {
+  position: absolute;
+  top: 5px;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--cov-missing) 45%, transparent);
+}
+.mplan__mk {
+  position: absolute;
+  top: 7px;
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+}
+.mplan__mk--prev {
+  border: 2px solid var(--color-text-muted);
+  background: var(--color-surface);
+}
+.mplan__mk--next {
+  background: var(--color-chip-active-bg);
+  border: 2px solid var(--color-chip-active-bg);
+}
+.mplan__tl-shift {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.mplan__tl-phase {
+  margin-left: 4px;
+  color: var(--color-text-muted);
+}
+.mplan__tl-axis {
+  position: relative;
+  height: 14px;
+  margin-left: calc(9.5em + 6px);
+  margin-right: 150px;
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+.mplan__tl-axis span {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.mplan__foot {
+  margin: 0;
+  font-size: 10.5px;
+  color: var(--color-text-muted);
+}
+
+/* 출처 배지는 카드 글자 크기를 따라감 (SourceBadge 자체는 수정하지 않음) */
+.mplan .msrc {
+  font-size: 10px;
+  line-height: 14px;
+}
+
+/* ── 중간 단계: 값·보유 요약만, 글자 키움 ── */
+.diagram__inner[data-zoom='mid'] .mplan {
+  font-size: 17px;
+}
+.diagram__inner[data-zoom='mid'] .mplan :is(.mplan__sub, .mplan__note, .mplan__tl, .mplan__foot, .mplan__ed, .mplan__year) {
+  display: none;
+}
+.diagram__inner[data-zoom='mid'] .mplan__title {
+  font-size: 20px;
+}
+.diagram__inner[data-zoom='mid'] .mplan__val--main {
+  font-size: 21px;
+}
+.diagram__inner[data-zoom='mid'] .mplan__chip {
+  font-size: 14px;
+  line-height: 22px;
+}
+.diagram__inner[data-zoom='mid'] .mplan .msrc {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/* ── 개요 단계: 대표 값만 큰 글자 (--label-k = 0.8/배율, 화면에서 약 12px) ── */
+.diagram__inner[data-zoom='overview'] .mplan {
+  font-size: min(calc(14px * var(--label-k, 1)), 44px);
+  gap: 0.3em;
+  padding: 0.5em 0.6em;
+  border-width: 3px;
+}
+.diagram__inner[data-zoom='overview'] .mplan :is(.mplan__sub, .mplan__note, .mplan__tl, .mplan__foot, .mplan__ed, .mplan__year, .mplan__editions, .mplan__layer, .msrc, .mplan__chip--rest) {
+  display: none;
+}
+.diagram__inner[data-zoom='overview'] .mplan :is(.mplan__title, .mplan__val--main) {
+  font-size: 1em;
+}
+.diagram__inner[data-zoom='overview'] .mplan__item {
+  padding-top: 0.2em;
+}
+.diagram__inner[data-zoom='overview'] .mplan__cov {
+  display: none;
+}
+.diagram__inner[data-zoom='overview'] .mplan__warncount {
+  display: inline;
+}
+
+@media print {
+  .mplan {
+    background: var(--color-surface);
+    box-shadow: none;
+  }
+}

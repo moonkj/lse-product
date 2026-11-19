@@ -29,6 +29,7 @@ import { AltBadges, BusNodes, EndpointNodes } from './DiagramExtras';
 import DiagramToolbar from './DiagramToolbar';
 import DiagramLegend from './DiagramLegend';
 import FlowLayer from './FlowLayer';
+import PlanLayer from '../market/PlanLayer';
 import './DiagramCanvas.css';
 import './sheet.css';
 
@@ -211,15 +212,26 @@ const FocusOverlay = memo(function FocusOverlay({ model }: { model: DiagramModel
   if (!r) return null;
   const W = model.width;
   const H = model.height;
+  // 덮개는 선택 영역 둘레 G 만큼 띄움 — 밴드 바깥 테두리(outline 3px)·그림자가 덮이지 않고 튀어나와 보이게
+  const G = 4;
+  const x0 = Math.max(0, r.x - G);
+  const y0 = Math.max(0, r.y - G);
+  const x1 = Math.min(W, r.x + r.w + G);
+  const y1 = Math.min(H, r.y + r.h + G);
   const veils = [
-    { left: 0, top: 0, width: W, height: r.y },
-    { left: 0, top: r.y + r.h, width: W, height: Math.max(0, H - r.y - r.h) },
-    { left: 0, top: r.y, width: r.x, height: r.h },
-    { left: r.x + r.w, top: r.y, width: Math.max(0, W - r.x - r.w), height: r.h },
+    { left: 0, top: 0, width: W, height: y0 },
+    { left: 0, top: y1, width: W, height: Math.max(0, H - y1) },
+    { left: 0, top: y0, width: x0, height: y1 - y0 },
+    { left: x1, top: y0, width: Math.max(0, W - x1), height: y1 - y0 },
   ];
   return (
     <div className="dfocus" data-testid="layer-focus" data-layer={focus} aria-hidden="true">
       {veils.map((v, i) => (v.width > 0 && v.height > 0 ? <div key={i} className="dfocus__veil" style={v} /> : null))}
+      <div
+        className="dfocus__frame"
+        data-testid="layer-focus-frame"
+        style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0, '--band-accent': `var(--band-accent-${focus!.toLowerCase()})` } as React.CSSProperties}
+      />
     </div>
   );
 });
@@ -604,6 +616,7 @@ export default function DiagramCanvas() {
                 <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} />
               ))}
               <AltBadges badges={model.altBadges} activeEdges={selectedEdges} />
+              <PlanLayer model={model} />
               <FocusOverlay model={model} />
             </div>
           </div>

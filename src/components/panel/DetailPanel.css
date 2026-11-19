@@ -580,6 +580,7 @@
   grid-area: panel;
   display: flex;
   justify-content: center;
+  align-items: flex-start; /* 버튼이 화면 높이로 늘어나지 않게 (38×120) */
   min-width: 0;
   padding-top: var(--space-3);
   background: var(--color-surface);

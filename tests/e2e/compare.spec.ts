@@ -326,7 +326,10 @@ test.describe('E2E-7 비교 기능', () => {
       const v = getComputedStyle(document.documentElement).getPropertyValue('--cmp-tray-h').trim();
       const main = document.querySelector<HTMLElement>('.app-main')!;
       main.scrollTop = main.scrollHeight;
-      const links = [...main.querySelectorAll<HTMLElement>('a, button')].filter((el) => el.offsetParent !== null);
+      // 접힌 <details> 안의 링크는 화면에 없음 (Chrome 은 offsetParent 를 남김) — 제외
+      const links = [...main.querySelectorAll<HTMLElement>('a, button')].filter(
+        (el) => el.offsetParent !== null && !el.closest('details:not([open]) > :not(summary)'),
+      );
       const last = links[links.length - 1].getBoundingClientRect();
       const trayAfter = document.querySelector('[data-testid="compare-tray"]')!.getBoundingClientRect();
       return { v, trayH: tray.height, lastBottom: last.bottom, trayTop: trayAfter.top };

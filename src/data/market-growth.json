@@ -1,0 +1,375 @@
+{
+  "asof": "2026-11-19",
+  "rule": "↑↑ 공식 계획 물량이 기준연도 대비 2배 이상이고 기기와 직접 연결 · ↑ 계획 물량 증가(2배 미만·기준 물량 미확인) 또는 수요처를 거친 간접 연결 · → 유지·감소 · 근거 없음 = 공식 계획 물량을 찾지 못한 기기. 원화 금액은 판정에 쓰지 않습니다.",
+  "items": [
+    {
+      "id": "renewable",
+      "label": "재생에너지 설비 보급",
+      "direction": "up2",
+      "indirect": false,
+      "equipment": [
+        "pv",
+        "pcs"
+      ],
+      "reason": "재생에너지 설비 보급전망이 2023년 대비 2038년 약 4.1배. 태양광 설비와 그 전력변환장치에 직접 연결.",
+      "basis": [
+        {
+          "label": "재생에너지 설비(2023)",
+          "role": "base",
+          "year": 2023,
+          "value": 30.0,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "원문 수치 — 계획 문서 설비용량 표(연말·정격)",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        },
+        {
+          "label": "재생에너지 설비 보급전망(2038)",
+          "role": "target",
+          "year": 2038,
+          "value": 121.9,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 — 설비용량 전망 표(연말·정격)",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ess",
+      "label": "장주기 ESS 확보",
+      "direction": "up",
+      "indirect": false,
+      "equipment": [
+        "ess"
+      ],
+      "reason": "2038년까지 장주기 ESS 23GW 필요(신규 확보 물량). 현재 설비량을 같은 자료에서 확인하지 못해 ↑↑ 판정은 보류.",
+      "basis": [
+        {
+          "label": "장주기 ESS 필요량(2038)",
+          "role": "target",
+          "year": 2038,
+          "value": 23.0,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 — 육지 22.5GW + 제주 0.5GW",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        }
+      ]
+    },
+    {
+      "id": "hvdc",
+      "label": "HVDC 송전선로",
+      "direction": "up",
+      "indirect": false,
+      "equipment": [
+        "hvdc"
+      ],
+      "reason": "2038년 HVDC 송전선로 3,818C-km, 호남~수도권 2GW급 4개 루트로 단계 건설. 현재 물량을 원문으로 확인하지 못해 ↑↑ 판정은 보류.",
+      "basis": [
+        {
+          "label": "HVDC 송전선로(2038)",
+          "role": "target",
+          "year": 2038,
+          "value": 3818,
+          "unit": "C-km",
+          "kind": "forecast",
+          "method": "원문 수치(보도 인용)",
+          "source": {
+            "title": "서울경제(다음 게재) 보도 — 한전 「제11차 장기 송·변전설비계획」",
+            "url": "https://v.daum.net/v/20250527174311494",
+            "asof": "2025-05-27",
+            "confidence": "secondary"
+          },
+          "needsCheck": true
+        },
+        {
+          "label": "호남~수도권 HVDC 루트",
+          "role": "context",
+          "year": 2038,
+          "value": 4,
+          "unit": "루트(2GW급)",
+          "kind": "forecast",
+          "method": "원문 수치(보도 인용) — 기존 4GW급 2개 루트에서 변경",
+          "source": {
+            "title": "뉴시스 보도 — 한전 「제11차 장기 송·변전설비계획」 공개",
+            "url": "https://www.newsis.com/view/NISX20250527_0003191486",
+            "asof": "2025-05-27",
+            "confidence": "secondary"
+          },
+          "needsCheck": true
+        }
+      ]
+    },
+    {
+      "id": "transmission",
+      "label": "송전선로 확충",
+      "direction": "up",
+      "indirect": false,
+      "equipment": [
+        "transmission-line",
+        "ehv-gis",
+        "relay-tx",
+        "la-ehv",
+        "ct-pt-ehv"
+      ],
+      "reason": "2038년 송전선로 총 61,183C-km, 2023년 대비 약 1.7배(2배 미만).",
+      "basis": [
+        {
+          "label": "송전선로 총연장(2038)",
+          "role": "target",
+          "year": 2038,
+          "value": 61183,
+          "unit": "C-km",
+          "kind": "forecast",
+          "method": "원문 수치(보도 인용)",
+          "source": {
+            "title": "서울경제(다음 게재) 보도 — 한전 「제11차 장기 송·변전설비계획」",
+            "url": "https://v.daum.net/v/20250527174311494",
+            "asof": "2025-05-27",
+            "confidence": "secondary"
+          },
+          "needsCheck": true
+        },
+        {
+          "label": "2023년 대비 배수",
+          "role": "context",
+          "year": 2038,
+          "value": 1.7,
+          "unit": "배",
+          "kind": "forecast",
+          "method": "원문 수치(보도 인용) — \"약 1.7배\"",
+          "source": {
+            "title": "서울경제(다음 게재) 보도 — 한전 「제11차 장기 송·변전설비계획」",
+            "url": "https://v.daum.net/v/20250527174311494",
+            "asof": "2025-05-27",
+            "confidence": "secondary"
+          },
+          "needsCheck": true
+        }
+      ]
+    },
+    {
+      "id": "substation",
+      "label": "변전소 확충",
+      "direction": "up",
+      "indirect": false,
+      "equipment": [
+        "substation",
+        "gis-154",
+        "main-tr",
+        "sas"
+      ],
+      "reason": "2038년 변전소 1,297개, 2023년 말 대비 43.2%(391개) 증가.",
+      "basis": [
+        {
+          "label": "변전소(2038)",
+          "role": "target",
+          "year": 2038,
+          "value": 1297,
+          "unit": "개소",
+          "kind": "forecast",
+          "method": "원문 수치(보도 인용)",
+          "source": {
+            "title": "아시아경제 보도 — 제11차 장기 송·변전설비계획 물량",
+            "url": "https://view.asiae.co.kr/article/2025112611491358543",
+            "asof": "2025-11-27",
+            "confidence": "secondary"
+          },
+          "needsCheck": true
+        },
+        {
+          "label": "2023년 말 대비 증가",
+          "role": "context",
+          "year": 2038,
+          "value": 391,
+          "unit": "개소",
+          "kind": "forecast",
+          "method": "원문 수치(보도 인용) — 43.2% 증가",
+          "source": {
+            "title": "아시아경제 보도 — 제11차 장기 송·변전설비계획 물량",
+            "url": "https://view.asiae.co.kr/article/2025112611491358543",
+            "asof": "2025-11-27",
+            "confidence": "secondary"
+          },
+          "needsCheck": true
+        }
+      ]
+    },
+    {
+      "id": "conventional",
+      "label": "전통전원(원전·LNG·석탄) 설비",
+      "direction": "up",
+      "indirect": false,
+      "equipment": [
+        "generator",
+        "step-up-tr"
+      ],
+      "reason": "원전 24.7→35.2GW, LNG 43.2→69.2GW 증가, 석탄 39.2→22.2GW 감소. 세 전원 합계는 2023년 대비 약 18% 증가.",
+      "basis": [
+        {
+          "label": "원전·석탄·LNG 설비 합계(2023)",
+          "role": "base",
+          "year": 2023,
+          "value": 107.1,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "원문 수치 합산 — 원전 24.7 + 석탄 39.2 + LNG 43.2",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        },
+        {
+          "label": "원전·석탄·LNG 설비 합계(2038)",
+          "role": "target",
+          "year": 2038,
+          "value": 126.6,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 합산 — 원전 35.2 + 석탄 22.2 + LNG 69.2",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        }
+      ]
+    },
+    {
+      "id": "der",
+      "label": "배전망 연계 분산전원",
+      "direction": "up",
+      "indirect": true,
+      "equipment": [
+        "dist-line",
+        "recloser",
+        "auto-switch",
+        "pole-tr"
+      ],
+      "reason": "배전망 연계 분산전원 26GW → 2028년 36GW(약 40% 증가) 전망. 배전 기기 물량과는 간접 연결.",
+      "basis": [
+        {
+          "label": "배전망 연계 분산전원(현재)",
+          "role": "base",
+          "year": 2025,
+          "value": 26,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "원문 수치(보도 인용) — 한전 보고서",
+          "source": {
+            "title": "아시아경제 보도 — 한전 배전망 연계 분산전원 전망",
+            "url": "https://view.asiae.co.kr/article/2025072110020375187",
+            "asof": "2025-07-22",
+            "confidence": "secondary"
+          },
+          "needsCheck": true
+        },
+        {
+          "label": "배전망 연계 분산전원(2028)",
+          "role": "target",
+          "year": 2028,
+          "value": 36,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치(보도 인용) — 한전 보고서",
+          "source": {
+            "title": "아시아경제 보도 — 한전 배전망 연계 분산전원 전망",
+            "url": "https://view.asiae.co.kr/article/2025072110020375187",
+            "asof": "2025-07-22",
+            "confidence": "secondary"
+          },
+          "needsCheck": true
+        }
+      ]
+    },
+    {
+      "id": "datacenter",
+      "label": "데이터센터 전력수요",
+      "direction": "up",
+      "indirect": true,
+      "equipment": [
+        "ups",
+        "emergency-gen"
+      ],
+      "reason": "데이터센터 추가수요(추세 대비 증분) 2025년 0.5GW → 2038년 4.4GW. 데이터센터 필수 설비와 간접 연결이라 ↑까지만 판정.",
+      "basis": [
+        {
+          "label": "데이터센터 추가수요(2025)",
+          "role": "base",
+          "year": 2025,
+          "value": 0.5,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 — 기준수요 전망 표(최대전력 기준)",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        },
+        {
+          "label": "데이터센터 추가수요(2038)",
+          "role": "target",
+          "year": 2038,
+          "value": 4.4,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 — 기준수요 전망 표(최대전력 기준)",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ev",
+      "label": "전기차 전기화 수요",
+      "direction": "up",
+      "indirect": true,
+      "equipment": [
+        "ev-charger"
+      ],
+      "reason": "2038년 전기화 추가수요 11.0GW 중 전기차 3.5GW. 충전기 물량과는 간접 연결.",
+      "basis": [
+        {
+          "label": "전기차 추가수요(2038)",
+          "role": "target",
+          "year": 2038,
+          "value": 3.5,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 — 전기화 추가수요 내역(최대전력 기준)",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        }
+      ]
+    }
+  ]
+}

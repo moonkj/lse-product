@@ -1,0 +1,918 @@
+{
+  "asof": "2026-11-19",
+  "note": "공식 통계(실적)와 공식 계획(전망)만 싣습니다. 전망은 정부 계획의 목표·전망치이며 사내 전망이 아닙니다. 계획 문서의 기준연도 값은 EPSIS 실적과 집계 범위가 달라 서로 맞지 않을 수 있습니다.",
+  "indicators": [
+    {
+      "id": "consumption",
+      "label": "전력 소비량",
+      "unit": "TWh",
+      "desc": "한전 판매전력량(최종 소비자에게 판매된 전력량)",
+      "actual": [
+        {
+          "year": 2016,
+          "value": 497.0,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2017,
+          "value": 507.7,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2018,
+          "value": 526.1,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2019,
+          "value": 520.5,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2020,
+          "value": 509.3,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2021,
+          "value": 533.4,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2022,
+          "value": 547.9,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2023,
+          "value": 546.0,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2024,
+          "value": 549.8,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2025,
+          "value": 549.4,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "판매전력량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        }
+      ],
+      "forecast": [],
+      "refs": [
+        {
+          "year": 2038,
+          "value": 129.3,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 — 하계 최대전력 기준 목표수요(기준수요 145.6GW − 수요관리 16.3GW)",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          },
+          "label": "11차 전기본 2038년 목표수요(최대전력)"
+        }
+      ],
+      "gapNote": "11차 전기본은 연간 소비량(TWh) 전망을 공개 자료에 싣지 않아 전망선이 없습니다. 최대전력(GW) 전망만 참고로 둡니다."
+    },
+    {
+      "id": "generation",
+      "label": "발전량",
+      "unit": "TWh",
+      "desc": "총발전량(사업자 + 상용자가, 발전단)",
+      "actual": [
+        {
+          "year": 2016,
+          "value": 561.0,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2017,
+          "value": 576.4,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2018,
+          "value": 592.9,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2019,
+          "value": 586.8,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2020,
+          "value": 577.1,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2021,
+          "value": 607.8,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2022,
+          "value": 622.6,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2023,
+          "value": 621.0,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2024,
+          "value": 632.0,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2025,
+          "value": 634.5,
+          "unit": "TWh",
+          "kind": "actual",
+          "method": "총발전량(GWh) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        }
+      ],
+      "planBase": {
+        "year": 2023,
+        "value": 588.0,
+        "unit": "TWh",
+        "kind": "actual",
+        "method": "원문 수치 — 계획 문서의 2023년 발전량(EPSIS 총발전량과 집계 범위 다름)",
+        "source": {
+          "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+          "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+          "asof": "2025-02-21",
+          "confidence": "official-plan"
+        }
+      },
+      "forecast": [
+        {
+          "year": 2030,
+          "value": 642.6,
+          "unit": "TWh",
+          "kind": "forecast",
+          "method": "원문 수치 — 전원별 발전량 전망 합계",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        },
+        {
+          "year": 2038,
+          "value": 704.5,
+          "unit": "TWh",
+          "kind": "forecast",
+          "method": "원문 수치 — 전원별 발전량 전망 합계",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        }
+      ],
+      "refs": []
+    },
+    {
+      "id": "capacity",
+      "label": "발전 설비용량",
+      "unit": "GW",
+      "desc": "발전설비 총계(연말, 정격)",
+      "actual": [
+        {
+          "year": 2016,
+          "value": 109.8,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2017,
+          "value": 120.8,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2018,
+          "value": 122.9,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2019,
+          "value": 129.7,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2020,
+          "value": 133.7,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2021,
+          "value": 139.4,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2022,
+          "value": 143.8,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2023,
+          "value": 150.6,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2024,
+          "value": 159.7,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2025,
+          "value": 163.2,
+          "unit": "GW",
+          "kind": "actual",
+          "method": "발전설비 총계(MW) 원문 ÷1000, 소수 첫째 자리 반올림 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS 전력통계정보시스템 — 전력지표(연도별)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkesKepChart.do?menuId=010100",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        }
+      ],
+      "planBase": {
+        "year": 2023,
+        "value": 144.4,
+        "unit": "GW",
+        "kind": "actual",
+        "method": "원문 수치 — 계획 문서의 2023년 설비용량(연말·정격, EPSIS 총계와 집계 범위 다름)",
+        "source": {
+          "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+          "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+          "asof": "2025-02-21",
+          "confidence": "official-plan"
+        }
+      },
+      "forecast": [
+        {
+          "year": 2030,
+          "value": 206.1,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 — 설비용량 전망 합계(연말·정격)",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        },
+        {
+          "year": 2038,
+          "value": 268.1,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "원문 수치 — 설비용량 전망 합계(연말·정격, 무탄소시장·유보 4.6GW 포함)",
+          "source": {
+            "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+            "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+            "asof": "2025-02-21",
+            "confidence": "official-plan"
+          }
+        }
+      ],
+      "refs": []
+    },
+    {
+      "id": "smp",
+      "label": "SMP 연평균",
+      "unit": "원/kWh",
+      "desc": "가중평균 계통한계가격(육지·제주 통합)",
+      "actual": [
+        {
+          "year": 2016,
+          "value": 77.06,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2017,
+          "value": 81.77,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2018,
+          "value": 95.16,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2019,
+          "value": 90.74,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2020,
+          "value": 68.87,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2021,
+          "value": 94.34,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2022,
+          "value": 196.65,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2023,
+          "value": 167.11,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2024,
+          "value": 128.39,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        },
+        {
+          "year": 2025,
+          "value": 112.72,
+          "unit": "원/kWh",
+          "kind": "actual",
+          "method": "원문 수치 — 연도별 가중평균 SMP 통합값 (2026-11-19 조회)",
+          "source": {
+            "title": "전력거래소 EPSIS — 가중평균 SMP(연도별, 통합)",
+            "url": "https://epsis.kpx.or.kr/epsisnew/selectEkmaSmpSmpChart.do?menuId=040201",
+            "asof": "2026-11-19",
+            "confidence": "official-stat"
+          }
+        }
+      ],
+      "forecast": [],
+      "refs": [],
+      "gapNote": "SMP는 공식 전망이 없어 실적만 표시합니다."
+    }
+  ],
+  "mix": {
+    "label": "전원믹스",
+    "desc": "발전량 비중(%)",
+    "actual": [
+      {
+        "year": 2016,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 28.9,
+          "coal": 37.3,
+          "lng": 17.3,
+          "renewable": 3.4,
+          "other": 13.1
+        }
+      },
+      {
+        "year": 2017,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 25.8,
+          "coal": 40.2,
+          "lng": 17.3,
+          "renewable": 4.2,
+          "other": 12.5
+        }
+      },
+      {
+        "year": 2018,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 22.5,
+          "coal": 39.1,
+          "lng": 19.7,
+          "renewable": 4.6,
+          "other": 14.1
+        }
+      },
+      {
+        "year": 2019,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 24.9,
+          "coal": 37.3,
+          "lng": 18.7,
+          "renewable": 5.2,
+          "other": 13.9
+        }
+      },
+      {
+        "year": 2020,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 27.8,
+          "coal": 32.5,
+          "lng": 19.5,
+          "renewable": 5.4,
+          "other": 14.8
+        }
+      },
+      {
+        "year": 2021,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 26.3,
+          "coal": 31.4,
+          "lng": 21.8,
+          "renewable": 6.5,
+          "other": 14.0
+        }
+      },
+      {
+        "year": 2022,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 28.2,
+          "coal": 29.9,
+          "lng": 20.0,
+          "renewable": 7.6,
+          "other": 14.3
+        }
+      },
+      {
+        "year": 2023,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 29.2,
+          "coal": 29.0,
+          "lng": 19.3,
+          "renewable": 8.2,
+          "other": 14.3
+        }
+      },
+      {
+        "year": 2024,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 30.1,
+          "coal": 25.8,
+          "lng": 19.7,
+          "renewable": 9.0,
+          "other": 15.4
+        }
+      },
+      {
+        "year": 2025,
+        "unit": "%",
+        "kind": "actual",
+        "method": "전원별 발전량(MWh)에서 비중 계산 — 석탄=무연탄+유연탄, LNG=가스 기력+복합(유류 제외), 신재생=사업자 신재생, 기타=수력·집단에너지·내연력·상용자가 등 나머지 (2026-11-19 조회)",
+        "source": {
+          "title": "전력거래소 EPSIS — 발전량 전원별(연도별)",
+          "url": "https://epsis.kpx.or.kr/epsisnew/selectEkgeGepTotChart.do?menuId=060101",
+          "asof": "2026-11-19",
+          "confidence": "official-stat"
+        },
+        "shares": {
+          "nuclear": 29.1,
+          "coal": 26.1,
+          "lng": 18.5,
+          "renewable": 9.8,
+          "other": 16.5
+        }
+      }
+    ],
+    "planBase": {
+      "year": 2023,
+      "unit": "%",
+      "kind": "actual",
+      "method": "계획 문서의 2023년 비중 원문 합산 — 신재생=재생e 8.4+신e 1.2, 기타=1.4 (EPSIS 실적과 집계 범위 다름)",
+      "source": {
+        "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+        "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+        "asof": "2025-02-21",
+        "confidence": "official-plan"
+      },
+      "shares": {
+        "nuclear": 30.7,
+        "coal": 31.4,
+        "lng": 26.8,
+        "renewable": 9.6,
+        "other": 1.4
+      }
+    },
+    "forecast": [
+      {
+        "year": 2030,
+        "unit": "%",
+        "kind": "forecast",
+        "method": "원문 비중 합산 — 신재생=재생e 18.8+신e 2.9, 기타=청정수소·암모니아 2.4+기타 1.8",
+        "source": {
+          "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+          "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+          "asof": "2025-02-21",
+          "confidence": "official-plan"
+        },
+        "shares": {
+          "nuclear": 31.8,
+          "coal": 17.2,
+          "lng": 25.1,
+          "renewable": 21.7,
+          "other": 4.2
+        }
+      },
+      {
+        "year": 2038,
+        "unit": "%",
+        "kind": "forecast",
+        "method": "원문 비중 합산 — 신재생=재생e 29.2+신e 3.8, 기타=청정수소·암모니아 6.2+기타 5.0",
+        "source": {
+          "title": "산업통상자원부 보도참고자료·별첨 「제11차 전력수급기본계획(2024~2038)」 주요내용",
+          "url": "https://www.motir.go.kr/kor/article/ATCL3f49a5a8c/170183/view",
+          "asof": "2025-02-21",
+          "confidence": "official-plan"
+        },
+        "shares": {
+          "nuclear": 35.2,
+          "coal": 10.1,
+          "lng": 10.6,
+          "renewable": 33.0,
+          "other": 11.2
+        }
+      }
+    ]
+  }
+}

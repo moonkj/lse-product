@@ -1,0 +1,309 @@
+{
+  "asof": "2026-11-19",
+  "note": "유형별 기기·등급은 공개 설계 기준(아래 출처)을 바탕으로 한 편집 정리입니다. 실제 사이트 구성은 계약전력·수전 전압·설계 기준에 따라 달라집니다. 보유 상태는 제품맵 커버리지 값을 그대로 씁니다.",
+  "sources": {
+    "kec": {
+      "title": "기후에너지환경부, 한국전기설비규정(KEC) 공고 제2025-227호",
+      "url": "https://www.law.go.kr/%ED%96%89%EC%A0%95%EA%B7%9C%EC%B9%99/%ED%95%9C%EA%B5%AD%EC%A0%84%EA%B8%B0%EC%84%A4%EB%B9%84%EA%B7%9C%EC%A0%95",
+      "asof": "2026-01-05",
+      "confidence": "official-plan"
+    },
+    "uptime": {
+      "title": "Uptime Institute, Tier Classification System (Tier I~IV 정의)",
+      "url": "https://uptimeinstitute.com/tiers",
+      "asof": "2026-11",
+      "confidence": "secondary"
+    },
+    "semiF47": {
+      "title": "SEMI, SEMI F47 반도체 공정장비 순간전압강하 내성 규격 재승인 안내",
+      "url": "https://www.semi.org/en/semi-f47-voltage-sag-immunity-standard-reapproved",
+      "asof": "2026-11",
+      "confidence": "secondary"
+    },
+    "eba": {
+      "title": "국가법령정보센터, 전기사업법 (법률 제21467호, 시행 2026-09-18)",
+      "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EC%A0%84%EA%B8%B0%EC%82%AC%EC%97%85%EB%B2%95",
+      "asof": "2026-09-18",
+      "confidence": "official-plan"
+    },
+    "dera": {
+      "title": "국가법령정보센터, 분산에너지 활성화 특별법 (시행 2026-09-18)",
+      "url": "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EB%B6%84%EC%82%B0%EC%97%90%EB%84%88%EC%A7%80%ED%99%9C%EC%84%B1%ED%99%94%ED%8A%B9%EB%B3%84%EB%B2%95",
+      "asof": "2026-09-18",
+      "confidence": "official-plan"
+    },
+    "zones": {
+      "title": "헤럴드경제, 기후부 분산에너지 특화지역 경북·울산·충남 추가 지정 (1차 경기·부산·전남·제주)",
+      "url": "https://www.heraldk.com/article/2025122514531460752",
+      "asof": "2025-12-25",
+      "confidence": "secondary"
+    },
+    "plan11": {
+      "title": "쿠키뉴스, 제11차 전력수급기본계획 확정 보도 (2038년 신규 수요: 데이터센터 4.4GW·첨단산업 1.4GW)",
+      "url": "https://www.kukinews.com/article/view/kuk202502210120",
+      "asof": "2025-02-21",
+      "confidence": "secondary"
+    }
+  },
+  "presets": [
+    {
+      "id": "datacenter",
+      "label": "데이터센터",
+      "basis": "Tier 정의(UPS·비상발전기 기본, Tier III 이상 이중 경로·동시 유지보수) + KEC 수변전 일반",
+      "sourceKeys": ["uptime", "kec"],
+      "scenarios": true,
+      "demand": {
+        "label": "제11차 전기본 2038년 데이터센터 신규 수요",
+        "value": {
+          "value": 4.4,
+          "unit": "GW",
+          "kind": "forecast",
+          "method": "보도 인용 수치(산업부 원문 대조 전)",
+          "source": "plan11",
+          "needsCheck": true
+        }
+      },
+      "items": [
+        { "id": "mv-swgr", "tier": "required" },
+        { "id": "vcb", "tier": "required" },
+        { "id": "protection-relay", "tier": "required" },
+        { "id": "la", "tier": "required" },
+        { "id": "ct-pt", "tier": "required" },
+        { "id": "mof", "tier": "required", "note": "한전 수전 계량" },
+        { "id": "meter", "tier": "required" },
+        { "id": "cast-tr", "tier": "required" },
+        { "id": "lv-swgr", "tier": "required" },
+        { "id": "acb", "tier": "required" },
+        { "id": "busway", "tier": "required" },
+        { "id": "ups", "tier": "required", "note": "Tier I부터 UPS 필요" },
+        { "id": "emergency-gen", "tier": "required", "note": "Tier I부터 발전기 필요" },
+        { "id": "lv-ats", "tier": "required", "note": "상용↔발전기 절환" },
+        { "id": "spd", "tier": "required" },
+        { "id": "power-meter", "tier": "required" },
+        { "id": "panelboard", "tier": "required" },
+        { "id": "branch-mccb", "tier": "required" },
+        { "id": "scada", "tier": "required", "note": "전력 감시(EPMS)" },
+        { "id": "alts", "tier": "redundant", "note": "특고압 2회선 수전 절환" },
+        { "id": "mccb", "tier": "redundant", "note": "이중 분배 경로(Tier III 이상)" },
+        { "id": "sag-protector", "tier": "optional" },
+        { "id": "capacitor", "tier": "optional", "note": "부하 역률에 따라" },
+        { "id": "aps", "tier": "optional" },
+        { "id": "ess", "tier": "optional" },
+        { "id": "xems", "tier": "optional" },
+        { "id": "care", "tier": "optional" }
+      ]
+    },
+    {
+      "id": "fab",
+      "label": "반도체 팹",
+      "basis": "SEMI F47(순간전압강하 내성) + KEC 수변전 일반, 대형 부하는 154kV 수전 가능",
+      "sourceKeys": ["semiF47", "kec"],
+      "scenarios": true,
+      "items": [
+        { "id": "mv-swgr", "tier": "required" },
+        { "id": "vcb", "tier": "required" },
+        { "id": "protection-relay", "tier": "required" },
+        { "id": "la", "tier": "required" },
+        { "id": "ct-pt", "tier": "required" },
+        { "id": "mof", "tier": "required" },
+        { "id": "meter", "tier": "required" },
+        { "id": "cast-tr", "tier": "required" },
+        { "id": "lv-swgr", "tier": "required" },
+        { "id": "acb", "tier": "required" },
+        { "id": "mccb", "tier": "required" },
+        { "id": "busway", "tier": "required" },
+        { "id": "sag-protector", "tier": "required", "note": "SEMI F47 순간전압강하 대응" },
+        { "id": "ups", "tier": "required", "note": "핵심 공정·제어 부하" },
+        { "id": "emergency-gen", "tier": "required" },
+        { "id": "lv-ats", "tier": "required" },
+        { "id": "capacitor", "tier": "required", "note": "전동기 부하 역률 보상" },
+        { "id": "spd", "tier": "required" },
+        { "id": "power-meter", "tier": "required" },
+        { "id": "mcc", "tier": "required" },
+        { "id": "lv-drive", "tier": "required" },
+        { "id": "panelboard", "tier": "required" },
+        { "id": "branch-mccb", "tier": "required" },
+        { "id": "scada", "tier": "required" },
+        { "id": "alts", "tier": "redundant", "note": "2회선 수전 절환" },
+        { "id": "main-tr", "tier": "redundant", "note": "154kV 수전 시 주변압기 복수 구성" },
+        { "id": "gis-154", "tier": "optional", "note": "154kV 수전 시" },
+        { "id": "mv-drive", "tier": "optional" },
+        { "id": "aps", "tier": "optional" },
+        { "id": "ess", "tier": "optional" },
+        { "id": "xems", "tier": "optional", "note": "FEMS" },
+        { "id": "care", "tier": "optional" }
+      ]
+    },
+    {
+      "id": "building",
+      "label": "상업빌딩",
+      "basis": "KEC 수변전·저압 배전·비상전원 일반",
+      "sourceKeys": ["kec"],
+      "scenarios": false,
+      "items": [
+        { "id": "mv-swgr", "tier": "required" },
+        { "id": "vcb", "tier": "required" },
+        { "id": "lbs", "tier": "required" },
+        { "id": "pf", "tier": "required" },
+        { "id": "la", "tier": "required" },
+        { "id": "ct-pt", "tier": "required" },
+        { "id": "mof", "tier": "required" },
+        { "id": "meter", "tier": "required" },
+        { "id": "protection-relay", "tier": "required" },
+        { "id": "cast-tr", "tier": "required" },
+        { "id": "lv-swgr", "tier": "required" },
+        { "id": "acb", "tier": "required" },
+        { "id": "mccb", "tier": "required" },
+        { "id": "emergency-gen", "tier": "required", "note": "비상·예비 전원" },
+        { "id": "lv-ats", "tier": "required" },
+        { "id": "spd", "tier": "required" },
+        { "id": "mcc", "tier": "required", "note": "급배수·공조 동력" },
+        { "id": "panelboard", "tier": "required" },
+        { "id": "branch-mccb", "tier": "required" },
+        { "id": "elcb", "tier": "required" },
+        { "id": "mcb-rcbo", "tier": "required" },
+        { "id": "alts", "tier": "redundant", "note": "2회선 수전 시" },
+        { "id": "power-meter", "tier": "optional" },
+        { "id": "ups", "tier": "optional", "note": "전산실·방재실" },
+        { "id": "capacitor", "tier": "optional" },
+        { "id": "busway", "tier": "optional", "note": "고층 간선" },
+        { "id": "xems", "tier": "optional", "note": "BEMS" },
+        { "id": "ev-charger", "tier": "optional" },
+        { "id": "pv", "tier": "optional" },
+        { "id": "smart-device", "tier": "optional" }
+      ]
+    },
+    {
+      "id": "factory",
+      "label": "공장",
+      "basis": "KEC 수변전·전동기 회로 일반",
+      "sourceKeys": ["kec"],
+      "scenarios": true,
+      "items": [
+        { "id": "mv-swgr", "tier": "required" },
+        { "id": "vcb", "tier": "required" },
+        { "id": "pf", "tier": "required" },
+        { "id": "la", "tier": "required" },
+        { "id": "ct-pt", "tier": "required" },
+        { "id": "mof", "tier": "required" },
+        { "id": "meter", "tier": "required" },
+        { "id": "protection-relay", "tier": "required" },
+        { "id": "cast-tr", "tier": "required" },
+        { "id": "lv-swgr", "tier": "required" },
+        { "id": "acb", "tier": "required" },
+        { "id": "mccb", "tier": "required" },
+        { "id": "capacitor", "tier": "required", "note": "전동기 부하 역률 보상" },
+        { "id": "spd", "tier": "required" },
+        { "id": "mcc", "tier": "required" },
+        { "id": "ms", "tier": "required" },
+        { "id": "mms", "tier": "required" },
+        { "id": "lv-drive", "tier": "required" },
+        { "id": "motor", "tier": "required" },
+        { "id": "panelboard", "tier": "required" },
+        { "id": "branch-mccb", "tier": "required" },
+        { "id": "elcb", "tier": "required" },
+        { "id": "plc", "tier": "required" },
+        { "id": "alts", "tier": "redundant", "note": "2회선 수전 시" },
+        { "id": "lv-ats", "tier": "redundant", "note": "발전기 설치 시" },
+        { "id": "emergency-gen", "tier": "optional" },
+        { "id": "ups", "tier": "optional" },
+        { "id": "sag-protector", "tier": "optional" },
+        { "id": "oil-tr", "tier": "optional" },
+        { "id": "mv-drive", "tier": "optional" },
+        { "id": "vc-vi", "tier": "optional" },
+        { "id": "empr", "tier": "optional" },
+        { "id": "soft-starter", "tier": "optional" },
+        { "id": "servo", "tier": "optional" },
+        { "id": "hmi", "tier": "optional" },
+        { "id": "power-meter", "tier": "optional" },
+        { "id": "busway", "tier": "optional" },
+        { "id": "xems", "tier": "optional", "note": "FEMS" },
+        { "id": "care", "tier": "optional" }
+      ]
+    },
+    {
+      "id": "pv-ess",
+      "label": "태양광+ESS",
+      "basis": "KEC 분산형전원(태양광·전기저장장치) 설비 + 계통 연계 수변전",
+      "sourceKeys": ["kec"],
+      "scenarios": false,
+      "items": [
+        { "id": "pv", "tier": "required" },
+        { "id": "pcs", "tier": "required" },
+        { "id": "ess", "tier": "required" },
+        { "id": "dc-devices", "tier": "required" },
+        { "id": "mv-swgr", "tier": "required" },
+        { "id": "vcb", "tier": "required" },
+        { "id": "protection-relay", "tier": "required", "note": "계통 연계 보호" },
+        { "id": "la", "tier": "required" },
+        { "id": "ct-pt", "tier": "required" },
+        { "id": "mof", "tier": "required" },
+        { "id": "meter", "tier": "required", "note": "송전·수전 양방향 계량" },
+        { "id": "oil-tr", "tier": "required", "note": "연계 승압" },
+        { "id": "lv-swgr", "tier": "required" },
+        { "id": "acb", "tier": "required" },
+        { "id": "mccb", "tier": "required" },
+        { "id": "spd", "tier": "required" },
+        { "id": "ems", "tier": "required" },
+        { "id": "scada", "tier": "redundant", "note": "원격 감시·출력 제어" },
+        { "id": "modular-substation", "tier": "optional" },
+        { "id": "cast-tr", "tier": "optional" },
+        { "id": "microgrid", "tier": "optional" },
+        { "id": "power-meter", "tier": "optional" },
+        { "id": "care", "tier": "optional" }
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "kepco",
+      "label": "한전 수전",
+      "summary": "한전 계통에서 전기를 받는 기본 구성. 수전 계량·보호 설비가 중심입니다.",
+      "sourceKeys": ["eba"],
+      "items": [
+        { "id": "mof" },
+        { "id": "meter" },
+        { "id": "protection-relay" }
+      ]
+    },
+    {
+      "id": "ppa",
+      "label": "직접 PPA",
+      "summary": "재생에너지 발전사업자와 직접 전력 거래 계약을 맺고 한전 망을 이용해 받는 구성. 수전 설비는 그대로이고 거래·실적 확인용 계량과 에너지 관리가 더해집니다.",
+      "sourceKeys": ["eba"],
+      "items": [
+        { "id": "meter" },
+        { "id": "amrs", "note": "거래 실적 원격 검침" },
+        { "id": "xems", "note": "재생에너지 사용량 관리" }
+      ]
+    },
+    {
+      "id": "zone",
+      "label": "분산에너지 특구",
+      "summary": "분산에너지 특화지역에서 지역 안 분산 전원과 거래하는 구성. 지역 발전·저장 설비와 연계 운영 설비가 더해집니다.",
+      "sourceKeys": ["dera", "zones"],
+      "items": [
+        { "id": "pv" },
+        { "id": "pcs" },
+        { "id": "ess" },
+        { "id": "microgrid" },
+        { "id": "ems" },
+        { "id": "amrs" }
+      ]
+    },
+    {
+      "id": "self",
+      "label": "자가발전+ESS",
+      "summary": "사업장 안에 자가 발전기(CHP 등)와 ESS를 두고 한전 수전과 병행하는 구성. 발전·저장 설비와 연계 보호·제어가 더해집니다.",
+      "sourceKeys": ["dera", "kec"],
+      "items": [
+        { "id": "generator", "note": "자가용 발전기(CHP 등)" },
+        { "id": "ess" },
+        { "id": "pcs" },
+        { "id": "microgrid" },
+        { "id": "ems" },
+        { "id": "protection-relay", "note": "계통 연계 보호" }
+      ]
+    }
+  ]
+}

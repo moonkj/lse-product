@@ -21,6 +21,10 @@ export default function FlowLayer() {
   const data = useData();
   const model = getDiagramModel(data);
   const scale = useView((s) => Math.max(SCALE_STEP, Math.round(s.scale / SCALE_STEP) * SCALE_STEP));
+  // 정지 판정은 반올림 전 실제 배율로 — 반올림 값은 0.15 아래로 내려가지 않아 최소 축소에서도 흐름이 계속 돌며 화면이 떨려 보였다
+  // (2026-11-19 사용자: 최소로 축소하면 화면이 계속 떨림). 기기 미선택 전체 흐름은 20% 미만, 선택 경로는 12% 미만에서 멈춤
+  const tinyAll = useView((s) => s.scale < 0.2);
+  const tinyNode = useView((s) => s.scale < 0.12);
   const [hidden, setHidden] = useState(() => typeof document !== 'undefined' && document.hidden);
 
   useEffect(() => {
@@ -84,7 +88,7 @@ export default function FlowLayer() {
       style={style}
       data-testid="flow-layer"
       data-scope={selectedId ? 'node' : 'all'}
-      data-tiny={scale < 0.15 ? 'true' : undefined}
+      data-tiny={(selectedId ? tinyNode : tinyAll) ? 'true' : undefined}
       data-paused={hidden ? 'true' : undefined}
     >
       {/* 3겹 (E1 P0-2·E4 P0): 흰 바탕선(casing) → 연한 트랙 → 진한 펄스. 바탕선이 밴드·선과 흐름을 떼어 놓아 한눈에 보이게 */}

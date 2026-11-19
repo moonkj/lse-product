@@ -29,6 +29,8 @@ import {
   nodeForEquipment,
   ownedRate,
 } from '../lib/pages/catalog';
+import GapMatrix from '../components/market/GapMatrix';
+import AnnualIndicators from '../components/market/AnnualIndicators';
 import './pages.css';
 import './GapPage.css';
 
@@ -312,6 +314,9 @@ export default function GapPage() {
           </table>
         </div>
       </section>
+      {/* 전력시장 연계 (10인 토론 P1): 성장 방향 × 보유 매트릭스, 연간 지표는 접힌 섹션 하나 */}
+      <GapMatrix />
+      <AnnualIndicators />
     </div>
   );
 }

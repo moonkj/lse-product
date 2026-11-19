@@ -9,6 +9,8 @@ import { announce } from '../../lib/announce';
 import { printDiagram } from '../../lib/diagram/print';
 import FlowToggle from './FlowToggle';
 import SupplyPill from './SupplyPill';
+import PresetPicker from '../market/PresetPicker';
+import PlanToggle from '../market/PlanToggle';
 
 interface Props {
   mode: ViewMode;
@@ -211,6 +213,7 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
       )}
       <div className="dtool__row dtool__main">
         <ViewSegment mode={mode} />
+        <PresetPicker />
         <ZoomControls total={total} />
         <PrintButton />
         <ReviewBadge review={review} />
@@ -218,6 +221,7 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
         {/* 오른쪽 끝 슬롯 — 리더 통합 시 <FlowToggle />(D 담당, ⚡ 흐름)·<SupplyPill />(E 담당, 수급 알약)을 이 안에 넣는다 */}
         <div className="dtool__end" data-testid="dtool-end">
           <FlowToggle />
+          <PlanToggle />
           <SupplyPill />
         </div>
       </div>

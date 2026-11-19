@@ -1,0 +1,21 @@
+/* 시장 연계 공통 — 출처 배지 */
+.msrc {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-chip, 4px);
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.msrc:hover { color: var(--color-text); border-color: var(--color-border-strong); }
+.msrc__level { font-weight: var(--fw-bold); }
+.msrc--official-stat .msrc__level { color: var(--cov-owned, #1a7f37); }
+.msrc--official-plan .msrc__level { color: var(--color-brand); }
+.msrc--secondary .msrc__level { color: var(--cov-partial, #a67c00); }
+.msrc__check { color: var(--cov-missing, #c62d1f); font-weight: var(--fw-bold); }

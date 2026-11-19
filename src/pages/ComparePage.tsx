@@ -768,6 +768,8 @@ export default function ComparePage() {
     anyUnreviewed = r.anyUnreviewed;
     if (r.mixed) notices.push('서로 다른 기기의 제품을 함께 비교하고 있습니다 — "소속 기기" 행으로 구분하세요.');
   }
+  /** 옵션 선택 칸이 있는 열이 하나라도 있으면 없는 열에도 같은 높이의 빈 자리 (머리 정렬) */
+  const anyVariantCol = columns.some((c) => c.product && hasVariants(c.specs));
   if (specsState.status === 'error' && columns.length >= 2) notices.push(`${SPECS_ERROR_TEXT} — 사양 외 정보만 비교합니다. 새로고침하면 다시 시도합니다.`);
 
   const sameAll = (r: Row) => r.cells.every((c) => c.text === r.cells[0].text);
@@ -862,8 +864,17 @@ export default function ComparePage() {
                         </div>
                         <span className="cmp-colhead__name">{c.name}</span>
                         {c.sub && <span className="cmp-colhead__sub">{c.sub}</span>}
-                        {c.product && hasVariants(c.specs) && (
+                        {c.product && hasVariants(c.specs) ? (
                           <VariantSelect col={c} specs={c.specs} usedIds={effectiveIds} onChange={changeVariant} />
+                        ) : (
+                          anyVariantCol && (
+                            <div className="cmp-variant cmp-variant--placeholder" aria-hidden="true">
+                              <span className="cmp-variant__label">&nbsp;</span>
+                              <select className="cmp-variant__select" tabIndex={-1} disabled>
+                                <option>&nbsp;</option>
+                              </select>
+                            </div>
+                          )
                         )}
                         <div className="cmp-colhead__actions">
                           <Link to={c.href} className="cmp-colhead__link">

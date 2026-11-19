@@ -1,0 +1,429 @@
+/*
+ * 수요처 프리셋 (PresetPicker) — 도구줄 버튼·패널 + 계통도 강조.
+ * 강조: html[data-preset] 일 때 타일 [data-preset-tier] 는 등급 표시, 나머지는 흐리게.
+ * 공백만 보기(data-dimmed)로 흐려진 타일도 프리셋 기기면 되살린다 (프리셋이 우선).
+ * 색은 토큰만 (라이트·다크 자동).
+ */
+
+/* ── 도구줄 버튼·패널 ───────────────────────── */
+.mpre {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.mpre__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  color: var(--color-text);
+}
+.mpre__trigger[aria-pressed='true'] {
+  border-color: var(--color-brand);
+}
+.mpre__cur {
+  color: var(--color-brand);
+}
+.mpre__warnbadge {
+  margin-left: 4px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--cov-missing-bg);
+  color: var(--cov-missing-text);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+
+.mpre__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 40;
+  width: min(440px, calc(100vw - 32px));
+  max-height: min(72vh, 640px);
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.mpre__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+.mpre__close {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.mpre__close:hover {
+  background: var(--color-surface-2);
+}
+
+.mpre__seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mpre__seg button {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.mpre__seg button:hover {
+  background: var(--color-surface-2);
+}
+.mpre__seg button[aria-pressed='true'] {
+  border-color: var(--color-chip-active-bg);
+  background: var(--color-chip-active-bg);
+  color: var(--color-chip-active-text);
+}
+.mpre__seg--sm {
+  align-items: center;
+}
+.mpre__seg--sm button {
+  min-height: 28px;
+  font-size: var(--fs-xs);
+}
+.mpre__seglabel {
+  margin-right: 2px;
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+.mpre__seg button:focus-visible,
+.mpre__close:focus-visible,
+.mpre__list summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.mpre__basis,
+.mpre__demand,
+.mpre__scen-sum,
+.mpre__foot,
+.mpre__ok {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-soft, var(--color-text-muted));
+}
+.mpre__srcs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.mpre__scen {
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+.mpre__foot {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+/* 등급 범례·개수 — 계통도 타일 표시와 같은 모양 */
+.mpre__counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: var(--space-3) 0 0;
+}
+.mpre__count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.mpre__count i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 2px solid var(--preset-ring);
+}
+.mpre__count--required i,
+.mpre__tier--required {
+  --preset-ring: var(--color-brand);
+}
+.mpre__count--redundant i,
+.mpre__tier--redundant {
+  --preset-ring: var(--color-brand-2);
+}
+.mpre__count--redundant i {
+  border-style: double;
+  border-width: 3px;
+}
+.mpre__count--optional i,
+.mpre__tier--optional {
+  --preset-ring: var(--color-text-muted);
+}
+.mpre__count--optional i {
+  border-style: dotted;
+}
+.mpre__count--scenario i,
+.mpre__tier--scenario {
+  --preset-ring: var(--cov-sourced);
+}
+.mpre__count--scenario i {
+  border-style: dashed;
+}
+
+.mpre__warns {
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-alert-border, var(--cov-missing));
+  border-radius: var(--radius-md);
+  background: var(--color-alert-bg, var(--cov-missing-bg));
+}
+.mpre__warns b {
+  color: var(--cov-missing-text);
+}
+.mpre__warns ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+.mpre__cov {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+.mpre__cov--missing { color: var(--cov-missing-text); }
+.mpre__cov--partial { color: var(--cov-partial-text); }
+.mpre__cov--owned { color: var(--cov-owned-text); }
+.mpre__cov--affiliate { color: var(--cov-affiliate-text); }
+.mpre__cov--sourced { color: var(--cov-sourced-text); }
+.mpre__cov--na { color: var(--cov-na-text); }
+
+.mpre__list {
+  margin-top: var(--space-3);
+}
+.mpre__list summary {
+  cursor: pointer;
+  font-weight: var(--fw-bold);
+}
+.mpre__table {
+  width: 100%;
+  margin-top: var(--space-2);
+  border-collapse: collapse;
+  font-size: var(--fs-xs);
+}
+.mpre__table th,
+.mpre__table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+.mpre__table th {
+  color: var(--color-text-muted);
+  font-weight: var(--fw-bold);
+}
+.mpre__table tr[data-warn='true'] td {
+  background: var(--cov-missing-bg);
+}
+.mpre__tier {
+  color: var(--preset-ring);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+.mpre__plus,
+.mpre__note {
+  color: var(--color-text-muted);
+}
+
+.mpre__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: var(--space-3);
+}
+.mpre__actions .dtool__btn {
+  color: var(--color-text);
+}
+
+@media (pointer: coarse) {
+  .mpre__seg button,
+  .mpre__close,
+  .mpre__actions .dtool__btn {
+    min-height: 44px;
+  }
+}
+
+/* 모바일: 하단 시트 */
+@media (max-width: 900px) {
+  .mpre__panel {
+    position: fixed;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-height: 75vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    box-shadow: var(--shadow-sheet);
+    padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  }
+  .mpre__cur {
+    display: inline-block;
+    max-width: 7em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+  }
+}
+
+/* ── 계통도 강조 ───────────────────────────── */
+/* 프리셋 밖 타일: 흐리게 (공백만 보기의 흐림과 같은 방식 — 글자는 muted 로 읽히게) */
+html[data-preset] .diagram__inner .dnode:not([data-preset-tier]) {
+  background: color-mix(in srgb, var(--node-bg) 40%, transparent);
+  border-color: color-mix(in srgb, var(--node-border, var(--color-node-border)) 35%, transparent);
+  color: var(--color-text-muted);
+}
+html[data-preset] .diagram__inner .dnode:not([data-preset-tier]) :is(.dnode__plate, .dnode__ref) {
+  opacity: 0.25;
+}
+html[data-preset] .diagram__inner .dnode:not([data-preset-tier]) .dnode__badge {
+  opacity: 0.4;
+}
+html[data-preset] .diagram__inner .dnode:not([data-preset-tier]) .dnode__caption {
+  color: var(--color-text-muted);
+}
+
+/* 프리셋 기기: 공백만 보기로 흐려졌어도 되살림 */
+html[data-preset] .diagram__inner .dnode[data-preset-tier][data-dimmed='true'] {
+  background: var(--node-bg);
+  border-color: var(--node-border, var(--color-node-border));
+  color: var(--color-text);
+}
+html[data-preset] .diagram__inner .dnode[data-preset-tier][data-dimmed='true'] :is(.dnode__plate, .dnode__ref, .dnode__badge) {
+  opacity: 1;
+}
+
+/* 등급 테두리(바깥 outline — 선택 링 box-shadow·포커스 outline 과 겹치지 않게 포커스 때는 양보) */
+html[data-preset] .diagram__inner .dnode[data-preset-tier]:not(:focus-visible) {
+  outline: 3px solid var(--preset-ring);
+  outline-offset: 3px;
+}
+html[data-preset] .dnode[data-preset-tier='required'] { --preset-ring: var(--color-brand); }
+html[data-preset] .dnode[data-preset-tier='redundant'] { --preset-ring: var(--color-brand-2); }
+html[data-preset] .dnode[data-preset-tier='optional'] { --preset-ring: var(--color-text-muted); }
+html[data-preset] .dnode[data-preset-tier='scenario'] { --preset-ring: var(--cov-sourced); }
+html[data-preset] .diagram__inner .dnode[data-preset-tier='redundant']:not(:focus-visible) {
+  outline-style: double;
+  outline-width: 5px;
+}
+html[data-preset] .diagram__inner .dnode[data-preset-tier='optional']:not(:focus-visible) {
+  outline-style: dotted;
+  outline-width: 2px;
+}
+html[data-preset] .diagram__inner .dnode[data-preset-tier='scenario']:not(:focus-visible) {
+  outline-style: dashed;
+}
+html[data-preset] .diagram__inner .dnode[data-preset-warn='true']:not(:focus-visible) {
+  outline-color: var(--cov-missing);
+}
+
+/* 등급 이름표 — 타일 왼쪽 위 */
+html[data-preset] .diagram__inner .dnode[data-preset-tier]::after {
+  position: absolute;
+  top: -10px;
+  left: 6px;
+  z-index: 3;
+  padding: 0 5px;
+  border: 1px solid var(--preset-ring);
+  border-radius: var(--radius-chip);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  line-height: 16px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+html[data-preset] .dnode[data-preset-tier='required']::after { content: '필수'; }
+html[data-preset] .dnode[data-preset-tier='redundant']::after { content: '이중화'; }
+html[data-preset] .dnode[data-preset-tier='optional']::after { content: '선택'; }
+html[data-preset] .dnode[data-preset-tier='scenario']::after { content: '수전 방식'; }
+html[data-preset] .dnode[data-preset-scenario='true'][data-preset-tier='required']::after { content: '필수 +수전'; }
+html[data-preset] .dnode[data-preset-scenario='true'][data-preset-tier='redundant']::after { content: '이중화 +수전'; }
+html[data-preset] .dnode[data-preset-scenario='true'][data-preset-tier='optional']::after { content: '선택 +수전'; }
+html[data-preset] .diagram__inner .dnode[data-preset-warn='true']::after {
+  border-color: var(--cov-missing);
+  background: var(--cov-missing-bg);
+  color: var(--cov-missing-text);
+}
+html[data-preset] .dnode[data-preset-warn='true'][data-preset-tier='required']::after { content: '⚠ 필수'; }
+html[data-preset] .dnode[data-preset-warn='true'][data-preset-tier='scenario']::after { content: '⚠ 수전 방식'; }
+html[data-preset] .dnode[data-preset-warn='true'][data-preset-scenario='true']:not([data-preset-tier='required'])::after { content: '⚠ 수전 방식'; }
+html[data-preset] .dnode[data-preset-warn='true'][data-preset-scenario='true'][data-preset-tier='required']::after { content: '⚠ 필수 +수전'; }
+
+/* 개요 배율(35% 미만): 이름표가 겹치지 않게 테두리만 */
+html[data-preset] .diagram__inner[data-zoom='overview'] .dnode[data-preset-tier]::after {
+  display: none;
+}
+
+/* ── A4 체크리스트 인쇄 ─────────────────────── */
+.mpre-print {
+  display: none;
+}
+@media print {
+  html[data-print-preset] body > *:not(.mpre-print) {
+    display: none !important;
+  }
+  html[data-print-preset] .mpre-print,
+  html[data-print-preset] .mpre-print * {
+    visibility: visible !important;
+  }
+  html[data-print-preset] .mpre-print {
+    display: block !important;
+    position: static !important;
+    color: #000;
+    font-size: 9.5pt;
+    line-height: 1.4;
+  }
+  .mpre-print h1 {
+    margin: 0 0 4px;
+    font-size: 14pt;
+  }
+  .mpre-print p {
+    margin: 2px 0;
+  }
+  .mpre-print table {
+    width: 100%;
+    margin: 6px 0;
+    border-collapse: collapse;
+  }
+  .mpre-print th,
+  .mpre-print td {
+    padding: 2px 4px;
+    border: 0.5pt solid #888;
+    text-align: left;
+    vertical-align: top;
+  }
+  .mpre-print tr {
+    break-inside: avoid;
+  }
+  .mpre-print__src {
+    margin: 4px 0;
+    padding-left: 16px;
+    font-size: 8pt;
+    word-break: break-all;
+  }
+  .mpre-print__note {
+    font-size: 8pt;
+    color: #333;
+  }
+}

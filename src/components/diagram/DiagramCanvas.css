@@ -52,8 +52,20 @@
 /* ── 레이어 밴드 ─────────────────────────────── */
 .dband {
   position: absolute;
-  box-shadow: inset 0 -1px 0 var(--band-divider), inset -1px 0 0 var(--band-divider);
-  background: var(--band-bg);
+  /* 2026-11-19 사용자: 영역 바탕색은 없애고 왼쪽 색상바만 — 바탕은 시트와 같은 면, 경계는 옅은 구분선 */
+  box-shadow: inset 0 -1px 0 var(--color-border), inset -1px 0 0 var(--color-border);
+  background: var(--color-surface);
+}
+/* 왼쪽 계층 색상바 — 가상 요소라 마우스오버·선택의 box-shadow 와 섞이지 않음 */
+.dband::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--band-accent);
+  pointer-events: none;
 }
 
 /* 이름표 "L4 수전설비 · 22.9kV · 10/13" — 밴드 왼쪽 위, 옅은 판 위에 (선·타일과 겹쳐도 읽히게) */
@@ -108,12 +120,14 @@
 .dband--ren { --band-bg: var(--band-ren); --band-accent: var(--band-accent-ren); }
 .dband--mon { --band-bg: var(--band-mon); --band-accent: var(--band-accent-mon); }
 
-/* 선택 영역(계층 칩·영역 클릭·기기 선택): 영역 자체를 활성화 — 배경을 진하게 + 왼쪽 CI 블루 띠.
-   경계에 테두리를 그리면 경계에 붙은 타일의 ✓ 배지와 겹치므로 테두리 상자는 쓰지 않는다 */
+/* 선택 영역: 그 색상바 색의 채도를 낮춘 투명한 바탕 + 튀어나온 카드처럼(바깥 테두리·그림자, 2026-11-19 사용자 — 마켓뉴스 정당 카드 선택 방식).
+   테두리는 밴드 바깥(outline)에 그려 타일 안쪽의 ✓ 배지와 겹치지 않는다. 나머지 영역은 FocusOverlay 덮개로 흐림 */
 .dband.is-active {
-  /* D2 색 재검토: 영역 고유색은 그대로(블루를 섞지 않음), 왼쪽 띠만. 위·아래 테두리는 타일 배지와 겹치므로 쓰지 않음 */
-  /* 띠·라벨은 그 영역 고유색의 진한 색 (2026-11-19 사용자: 전부 파란색 → 영역색에 맞게) */
-  box-shadow: inset 6px 0 0 var(--band-accent, var(--color-brand-2)), inset 0 -1px 0 var(--band-divider), inset -1px 0 0 var(--band-divider);
+  background: color-mix(in srgb, color-mix(in srgb, var(--band-accent) 55%, var(--color-text-muted)) 13%, var(--color-surface));
+}
+.dband.is-active::before {
+  width: 8px;
+  border-radius: 6px 0 0 6px;
 }
 @media (prefers-reduced-motion: reduce) {
   .dband.is-active { transition: none; }
@@ -1034,7 +1048,7 @@
   position: absolute;
   /* 나머지 영역: 흐림을 줄여(40%) 영역 색조가 남게 — D2 색 재검토 */
   background: var(--color-surface);
-  opacity: 0.4;
+  opacity: 0.55;
   animation: dfocus-in 220ms ease-out both;
 }
 .dfocus__box {
@@ -1048,6 +1062,15 @@
     0 4px 18px color-mix(in srgb, var(--color-brand-2) 28%, transparent);
   animation: dfocus-in 220ms ease-out both;
 }
+/* 선택 영역 둘레 '튀어나온 카드' 테두리·그림자 — 밴드 바깥 4px 띄운 자리(타일·✓ 배지와 겹치지 않음) */
+.dfocus__frame {
+  position: absolute;
+  box-sizing: border-box;
+  border: 3px solid var(--band-accent, var(--color-brand-2));
+  border-radius: 8px;
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--band-accent, var(--color-brand-2)) 32%, transparent), 0 2px 8px rgb(0 0 0 / 0.14);
+  animation: dfocus-in 220ms ease-out both;
+}
 @keyframes dfocus-in {
   from { opacity: 0; }
 }
@@ -1058,6 +1081,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .dfocus__veil,
+  .dfocus__frame,
   .dfocus__box { animation: none; }
 }
 
@@ -1234,4 +1258,35 @@
 @media (max-width: 600px) {
   [data-testid='zoom-fit-width'] { display: none; }
   .dnode__caption { font-size: 15px; }
+}
+
+/* 도구줄은 화면 폭이 아니라 '도구줄 자체 폭'으로 줄인다 — 기기를 고르면 상세 패널이 열려 계통도 칸이 좁아지는데,
+   이때 버튼이 둘째 줄로 내려가 계통도가 42px 아래로 밀리며 흔들렸다 (2026-11-19 사용자: 선택 시 위아래로 움직임) */
+.dtool { container: dtool / inline-size; }
+@container dtool (max-width: 1100px) {
+  .dtool__clear-label,
+  .dtool__count { display: none; }
+}
+@container dtool (max-width: 960px) {
+  .dtool__view-label,
+  [data-testid='diagram-print'] { display: none; }
+}
+@container dtool (max-width: 820px) {
+  .dtool__pct { min-width: 44px; padding: 0 4px; }
+  .dtool__main { column-gap: 6px; }
+}
+@container dtool (max-width: 600px) {
+  /* 배율 숫자는 화면에서만 숨김(읽기·테스트용 글자는 유지), 해제 칩은 '해제 ✕'만 */
+  .dtool__pct { position: absolute; width: 1px; height: 1px; min-width: 0; padding: 0; overflow: hidden; clip: rect(0 0 0 0); border: 0; }
+  .dtool__clear b { display: none; }
+}
+@container dtool (max-width: 500px) {
+  [data-testid='zoom-fit-width'] { display: none; }
+  .dtool__main { column-gap: 4px; padding-left: var(--space-3); padding-right: var(--space-3); }
+}
+@container dtool (min-width: 400px) {
+  .dtool__main { flex-wrap: nowrap; }
+  .dtool__main > * { flex-shrink: 0; }
+  .dtool__main > .dtool__clear { flex-shrink: 1; min-width: 0; }
+  .dtool__clear b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 }

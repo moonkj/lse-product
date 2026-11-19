@@ -33,6 +33,7 @@ import GapSections from './GapSections';
 import NeighborChips from './NeighborChips';
 import PanelHero from './PanelHero';
 import EquipmentOverview from '../common/EquipmentOverview';
+import MarketCard from '../market/MarketCard';
 import ProductVisual, { hasProductPhoto } from '../pages/ProductVisual';
 import './DetailPanel.css';
 
@@ -477,6 +478,8 @@ export default function DetailPanel() {
               <DocsList product={rep} max={5} testIdPrefix="detail-doc" />
             </section>
           )}
+
+          <MarketCard equipmentId={eq.id} />
 
           <NeighborChips node={node} onSelect={selectFromPanel} />
         </>

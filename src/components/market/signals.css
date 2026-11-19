@@ -1,0 +1,48 @@
+/* 기기 단위 시장 신호 (EquipmentSignals) — 신호등 점 + 한 줄 + 출처 배지 */
+.esig { margin-top: var(--space-2); font-size: var(--fs-sm); color: var(--color-text); }
+.esig__summary {
+  cursor: pointer;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-muted);
+  list-style-position: inside;
+}
+.esig__group + .esig__group { margin-top: var(--space-2); }
+.esig__title {
+  margin: var(--space-2) 0 var(--space-1);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-muted);
+}
+.esig__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1); }
+.esig__row {
+  --esig-tone: var(--cov-na);
+  --esig-tone-text: var(--color-text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+  line-height: var(--lh-normal);
+}
+.esig__row--good { --esig-tone: var(--cov-owned); --esig-tone-text: var(--cov-owned-text); }
+.esig__row--warn { --esig-tone: var(--cov-partial); --esig-tone-text: var(--cov-partial-text); }
+.esig__row--bad { --esig-tone: var(--cov-missing); --esig-tone-text: var(--cov-missing-text); }
+.esig__row--info { --esig-tone: var(--color-brand-2); --esig-tone-text: var(--color-link); }
+.esig__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--esig-tone);
+  align-self: center;
+}
+.esig__tag {
+  flex: none;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--esig-tone-text);
+  white-space: nowrap;
+}
+.esig__text { flex: 1 1 200px; min-width: 0; }
+.esig__clause { font-weight: var(--fw-semibold); }
+.esig__meta { display: block; font-size: var(--fs-xs); color: var(--color-text-muted); }

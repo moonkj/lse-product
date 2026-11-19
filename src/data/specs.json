@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T00:00:00+09:00",
+  "generatedAt": "2026-11-19T00:00:00+09:00",
   "products": {
     "P00206": {
       "items": [
@@ -187,6 +187,27 @@
           "label": "통신",
           "value": "RS485 (MODBUS)",
           "page": 10
+        },
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "690 (Ue, AC)",
+          "unit": "V",
+          "page": 36
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "1000",
+          "unit": "V",
+          "page": 36
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "8",
+          "unit": "kV",
+          "page": 36
         }
       ],
       "variantAxis": "시리즈·프레임",
@@ -209,6 +230,13 @@
               "value": "50 / 85 / 150 (415Vac, N/H/L)",
               "unit": "kA",
               "page": 6
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3, 4",
+              "unit": "P",
+              "page": 36
             }
           ]
         },
@@ -230,6 +258,13 @@
               "value": "50 / 85 / 150 (415Vac, N/H/L)",
               "unit": "kA",
               "page": 6
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3, 4",
+              "unit": "P",
+              "page": 36
             }
           ]
         },
@@ -251,6 +286,13 @@
               "value": "65 / 85 / 150 (415Vac, N/H/L)",
               "unit": "kA",
               "page": 7
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3, 4",
+              "unit": "P",
+              "page": 37
             }
           ]
         },
@@ -272,6 +314,13 @@
               "value": "65 / 100 / 150 (415Vac, N/H/L)",
               "unit": "kA",
               "page": 7
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3, 4",
+              "unit": "P",
+              "page": 37
             }
           ]
         },
@@ -293,6 +342,13 @@
               "value": "50 / 70 / 150 (415Vac, N/H/L)",
               "unit": "kA",
               "page": 7
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3, 4",
+              "unit": "P",
+              "page": 132
             }
           ]
         }
@@ -302,9 +358,9 @@
         "url": "https://www.ls-electric.com/ko/cat/%5BSusol_MCCB%5D_KO_C01091-24-202509.pdf",
         "page": 6
       },
-      "extractedAt": "2026-11-18",
+      "extractedAt": "2026-11-19",
       "reviewed": false,
-      "note": "표준 [Susol MCCB] 카탈로그 개요(p5~7) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 차단용량은 Ics=100% Icu, 415Vac 기준(p6). 정격사용전압·극수는 정격표 페이지를 받지 않아 미기재. 이전 값은 [Susol MCCB] Up to 1000Vac 카탈로그(UTV250/400)였음"
+      "note": "표준 [Susol MCCB] 카탈로그 개요(p5~7)와 전기적특성 표(p36~37 TD100~TS800, p132 TS1600) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 차단용량은 Ics=100% Icu, 415Vac 기준(p6). 정격전압 AC 690V·정격절연전압 1000V·임펄스 8kV는 전 프레임 공통(p36~37, p132). 이전 값은 [Susol MCCB] Up to 1000Vac 카탈로그(UTV250/400)였음"
     },
     "P01900": {
       "items": [
@@ -5252,6 +5308,34 @@
           "label": "적용 규격",
           "value": "IEC60947-2 (CE 인증)",
           "page": 3
+        },
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "690 (Ue)",
+          "unit": "V",
+          "page": 18
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "1000",
+          "unit": "V",
+          "page": 18
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 18
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "3/4",
+          "unit": "P",
+          "page": 18
         }
       ],
       "variantAxis": "형식·프레임",
@@ -5274,13 +5358,6 @@
               "value": "65 (500Vac, Icu=Ics)",
               "unit": "kA",
               "page": 4
-            },
-            {
-              "key": "ratedVoltage",
-              "label": "정격전압",
-              "value": "690 (Ue)",
-              "unit": "V",
-              "page": 18
             },
             {
               "key": "ratedCurrent",
@@ -5309,6 +5386,13 @@
               "value": "70 (500Vac, Icu=Ics)",
               "unit": "kA",
               "page": 4
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "200~2000 (In max)",
+              "unit": "A",
+              "page": 19
             }
           ]
         },
@@ -5330,13 +5414,6 @@
               "value": "70 (500Vac, Icu=Ics)",
               "unit": "kA",
               "page": 4
-            },
-            {
-              "key": "ratedVoltage",
-              "label": "정격전압",
-              "value": "690 (Ue)",
-              "unit": "V",
-              "page": 18
             },
             {
               "key": "ratedCurrent",
@@ -5365,6 +5442,13 @@
               "value": "85 (500Vac, Icu=Ics)",
               "unit": "kA",
               "page": 4
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "200~4000 (In max)",
+              "unit": "A",
+              "page": 19
             }
           ]
         },
@@ -5386,6 +5470,13 @@
               "value": "100 (500Vac, Icu=Ics)",
               "unit": "kA",
               "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "2000~5000 (In max)",
+              "unit": "A",
+              "page": 19
             }
           ]
         },
@@ -5407,6 +5498,13 @@
               "value": "120 (500Vac, Icu=Ics)",
               "unit": "kA",
               "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "2000~6300 (In max)",
+              "unit": "A",
+              "page": 19
             }
           ]
         }
@@ -5416,9 +5514,9 @@
         "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_ACB%5D_KO_C06091-28-202607.pdf",
         "page": 4
       },
-      "extractedAt": "2026-11-18",
+      "extractedAt": "2026-11-19",
       "reviewed": false,
-      "note": "Overview(p3~5) 기종별 차단용량(Icu=Ics, 500Vac)과 AN형 정격표(p18) 기준 (HTTP Range로 필요한 페이지만 받아 추출). AS형 상세 정격표는 받지 않음"
+      "note": "Overview(p3~5) 기종별 차단용량(Icu=Ics, 500Vac)과 정격표(p18 AN형, p19 AS형) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 정격사용전압 690V·정격절연전압 1000V·주파수 50/60Hz·극수 3/4P는 AN·AS 전 기종 공통(p18~19). AS-F 정격전류는 AS-40F·50F 열을 합침"
     },
     "P02206": {
       "items": [
@@ -5427,6 +5525,27 @@
           "label": "적용 규격",
           "value": "IEC 60947-2 (DEKRA CB인증), GB 14048.2 (CCC 인증)",
           "page": 5
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "3P/4P",
+          "unit": "P",
+          "page": 9
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "1000",
+          "unit": "V",
+          "page": 9
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "12",
+          "unit": "kV",
+          "page": 9
         }
       ],
       "variantAxis": "형식",
@@ -5456,6 +5575,20 @@
               "value": "400~1600",
               "unit": "A",
               "page": 5
+            },
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "690 (Ue)",
+              "unit": "V",
+              "page": 9
+            },
+            {
+              "key": "frequency",
+              "label": "정격주파수",
+              "value": "50/60",
+              "unit": "Hz",
+              "page": 9
             }
           ]
         },
@@ -5491,6 +5624,20 @@
               "value": "50 (1초)",
               "unit": "kA",
               "page": 5
+            },
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "690 (Ue)",
+              "unit": "V",
+              "page": 9
+            },
+            {
+              "key": "frequency",
+              "label": "정격주파수",
+              "value": "50/60",
+              "unit": "Hz",
+              "page": 9
             }
           ]
         },
@@ -5526,6 +5673,13 @@
               "value": "40 (1초)",
               "unit": "kA",
               "page": 5
+            },
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "~ 800 (Ue)",
+              "unit": "Vac",
+              "page": 13
             }
           ]
         },
@@ -5554,6 +5708,20 @@
               "value": "400~1000",
               "unit": "A",
               "page": 5
+            },
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "500 (Ue)",
+              "unit": "V",
+              "page": 9
+            },
+            {
+              "key": "frequency",
+              "label": "정격주파수",
+              "value": "50/60",
+              "unit": "Hz",
+              "page": 9
             }
           ]
         }
@@ -5563,9 +5731,9 @@
         "url": "https://www.ls-electric.com/ko/cat/%5BSusol_Compact_ACB%5D_KO_C06001-04-202201.pdf",
         "page": 5
       },
-      "extractedAt": "2026-11-18",
+      "extractedAt": "2026-11-19",
       "reviewed": false,
-      "note": "주요특징(p5) 기준 (HTTP Range로 필요한 페이지만 받아 추출). AN형 차단용량: 그림 표기는 42kA/690Vac, 본문은 \"Cat.B 차단기(AH, AN형) 50kA/690Vac\" — 그림 값을 넣음, 검수 필요"
+      "note": "주요특징(p5)·정격표(p9 AN/AH/AR, p13 AW) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 정격사용전압은 p9 공통사항 \"690V\" 의 주1) \"AN, AH 유형에서 690V, AR 유형에서 500V\" 에 따라 형식별로 나눔. AW 정격표(p13)에는 주파수 표기 없음. AN형 차단용량: p9 정격표 AC 690V 행 AN 42kA로 p5 그림값(42kA)과 일치 — 본문 \"Cat.B(AH, AN형) 50kA/690Vac\" 는 AH형 값"
     },
     "P03078": {
       "items": [
@@ -5806,6 +5974,3651 @@
       "extractedAt": "2026-11-18",
       "reviewed": false,
       "note": "VCB Ratings 차트(p10) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 전압별 Isc는 차트 행 순서로 읽음 — 정격전류와 전압·Isc 조합은 차트라 매핑하지 않음, 검수 필요"
+    },
+    "P02207": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "3/4",
+          "unit": "P",
+          "page": 21
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "Draw-out type / Fixed type",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "UL 489 (C-Frame), UL 1066 / ANSI C37.13 (D/E/G-Frame)",
+          "page": 4
+        }
+      ],
+      "variantAxis": "프레임",
+      "variants": [
+        {
+          "id": "c-frame",
+          "label": "C-Frame (UAN/UAS-08·12C)",
+          "page": 21,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "800 / 1200",
+              "unit": "AF",
+              "page": 21
+            },
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "AC 800 (Rated operational voltage)",
+              "unit": "V",
+              "page": 21
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "400~1200 (In Max.)",
+              "unit": "A",
+              "page": 21
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "UAN 42 (600V) / 50 (480V) / 50 (240V), UAS 42 (800V) / 50 (600V) / 65 (480V) / 65 (240V) (UL489)",
+              "unit": "kA",
+              "page": 21
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "42",
+              "unit": "kA",
+              "page": 21
+            }
+          ]
+        },
+        {
+          "id": "d-frame",
+          "label": "D-Frame (UAS-08·16D)",
+          "page": 35,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "800 / 1600",
+              "unit": "AF",
+              "page": 35
+            },
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "254/508/635 (Rated maximum voltage)",
+              "unit": "V",
+              "page": 35
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "400~1600",
+              "unit": "A",
+              "page": 35
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "65 (635V) / 85 (508V) / 85 (254V) (Sym., with instantaneous)",
+              "unit": "kA",
+              "page": 35
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "65",
+              "unit": "kA",
+              "page": 35
+            }
+          ]
+        },
+        {
+          "id": "e-frame",
+          "label": "E-Frame (UAH/UAW-08~40E)",
+          "page": 51,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "800/1600/2000/2500/3200/4000",
+              "unit": "AF",
+              "page": 51
+            },
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "254/508/635/847 (UAW) (Rated maximum voltage)",
+              "unit": "V",
+              "page": 51
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "400~4000",
+              "unit": "A",
+              "page": 51
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "85 (847V) / 85 (635V) / 100 (508V) / 100 (254V) (Sym., with instantaneous)",
+              "unit": "kA",
+              "page": 51
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "85",
+              "unit": "kA",
+              "page": 51
+            }
+          ]
+        },
+        {
+          "id": "g-frame",
+          "label": "G-Frame (UAH-32~60G)",
+          "page": 77,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "3200/4000/5000/6000",
+              "unit": "AF",
+              "page": 77
+            },
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "254/ 508/ 635 (Rated maximum voltage)",
+              "unit": "V",
+              "page": 77
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1600~6000",
+              "unit": "A",
+              "page": 77
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "100 (635V) / 130 (508V) / 130 (254V) (Sym., with instantaneous)",
+              "unit": "kA",
+              "page": 77
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "100",
+              "unit": "kA",
+              "page": 77
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[Susol UL ACB] Catalog",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSusol_UL_ACB%5D_EN_C06072-27-202608.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "영문 카탈로그 Overview(p4)·Ratings overview(p6)와 프레임별 Rating 표(p21 C, p35 D, p51 E, p77 G) 기준 (HTTP Range로 필요한 페이지만 받아 추출). C-Frame은 UL 489(MCCB형) 정격으로 \"Rated operational voltage\", D/E/G-Frame은 UL 1066 정격으로 \"Rated maximum voltage\". C-Frame 차단전류는 표 열(UAN/UAS)을 텍스트 순서로 읽음 — 검수 필요. 정격전류는 Rating plug 최소~최대"
+    },
+    "P01022": {
+      "items": [
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "UL489, CSA, IEC60947-2",
+          "page": 7
+        },
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "ATU, FMU, FTU (열동전자식), ETS, ETM (전자식), OCR (전자식 트립릴레이)",
+          "page": 7
+        }
+      ],
+      "variantAxis": "프레임",
+      "variants": [
+        {
+          "id": "ute100",
+          "label": "UTE100",
+          "page": 15,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "100",
+              "unit": "AF",
+              "page": 14
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "15-100",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3",
+              "unit": "P",
+              "page": 15
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "25 / 35 / 65 (480V, E/N/H), 14 / 18 / 35 (600Y/347V) (UL489)",
+              "unit": "kA",
+              "page": 15
+            },
+            {
+              "key": "insulationVoltage",
+              "label": "정격절연전압",
+              "value": "750 (Ui)",
+              "unit": "Vac",
+              "page": 15
+            }
+          ]
+        },
+        {
+          "id": "uts150",
+          "label": "UTS150",
+          "page": 20,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "150",
+              "unit": "AF",
+              "page": 19
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "40-150",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3",
+              "unit": "P",
+              "page": 20
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "35 / 65 / 100 (480V, N/H/L), 18 / 35 / 50 (600V) (UL489)",
+              "unit": "kA",
+              "page": 20
+            },
+            {
+              "key": "insulationVoltage",
+              "label": "정격절연전압",
+              "value": "750 (Ui)",
+              "unit": "V",
+              "page": 20
+            }
+          ]
+        },
+        {
+          "id": "uts250",
+          "label": "UTS250",
+          "page": 27,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "250",
+              "unit": "AF",
+              "page": 26
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "150-250",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3",
+              "unit": "P",
+              "page": 27
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "35 / 65 / 100 (480V, N/H/L), 18 / 35 / 50 (600V) (UL489)",
+              "unit": "kA",
+              "page": 27
+            },
+            {
+              "key": "insulationVoltage",
+              "label": "정격절연전압",
+              "value": "750 (Ui)",
+              "unit": "V",
+              "page": 27
+            }
+          ]
+        },
+        {
+          "id": "uts400",
+          "label": "UTS400",
+          "page": 34,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "400",
+              "unit": "AF",
+              "page": 33
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "250-400",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3",
+              "unit": "P",
+              "page": 34
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "35 / 65 / 100 (480V, N/H/L), 18 / 35 / 50 (600V) (UL489)",
+              "unit": "kA",
+              "page": 34
+            },
+            {
+              "key": "insulationVoltage",
+              "label": "정격절연전압",
+              "value": "750 (Ui)",
+              "unit": "VAC",
+              "page": 34
+            }
+          ]
+        },
+        {
+          "id": "uts600",
+          "label": "UTS600",
+          "page": 41,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "600",
+              "unit": "AF",
+              "page": 40
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "500-600",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2, 3",
+              "unit": "P",
+              "page": 41
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "35 / 65 / 100 (480V, N/H/L), 18 / 35 / 50 (600V) (UL489)",
+              "unit": "kA",
+              "page": 41
+            },
+            {
+              "key": "insulationVoltage",
+              "label": "정격절연전압",
+              "value": "750 (Ui)",
+              "unit": "V",
+              "page": 41
+            }
+          ]
+        },
+        {
+          "id": "uts800",
+          "label": "UTS800",
+          "page": 55,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "800",
+              "unit": "AF",
+              "page": 54
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "400-800",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3",
+              "unit": "P",
+              "page": 55
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "35 / 65 / 100 (480V, N/H/L), 18 / 35 / 50 (600V) (UL489)",
+              "unit": "kA",
+              "page": 55
+            },
+            {
+              "key": "insulationVoltage",
+              "label": "정격절연전압",
+              "value": "1000 (Ui)",
+              "unit": "V",
+              "page": 55
+            }
+          ]
+        },
+        {
+          "id": "uts1200",
+          "label": "UTS1200",
+          "page": 61,
+          "items": [
+            {
+              "key": "frame",
+              "label": "프레임",
+              "value": "1200",
+              "unit": "AF",
+              "page": 60
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "800-1200",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3",
+              "unit": "P",
+              "page": 61
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "35 / 65 / 50 / 100 (480V, N/H/P/L), 18 / 25 / 50 / 35 (600V) (UL489)",
+              "unit": "kA",
+              "page": 61
+            },
+            {
+              "key": "insulationVoltage",
+              "label": "정격절연전압",
+              "value": "1000 (Ui)",
+              "unit": "V",
+              "page": 61
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[Susol UL MCCB]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSusol_UL_MCCB%5D_KO_C01081-17-202607.pdf",
+        "page": 7
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "국문 [Susol UL MCCB] 카탈로그 개요(p5~7)와 프레임별 MCCB 선정 표(p15·20·27·34·41·55·61, UL489 기준 정격) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 정격전류는 p5 프레임별 범위. 차단전류는 UL489 AC 50/60Hz 표의 480V·600V 열. 카탈로그에 정격(사용)전압 단독 표기는 없어 비워 둠"
+    },
+    "EN-P00024": {
+      "items": [
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "Overload and short circuit",
+          "page": 4
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "On 35mm DIN rail",
+          "page": 4
+        }
+      ],
+      "variantAxis": "형식",
+      "variants": [
+        {
+          "id": "bkj63n",
+          "label": "BKJ63N / BKJ63Nd",
+          "page": 4,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1, 2, 3, 4, 6, 10, 13, 16, 20, 25, 32, 40, 50, 63",
+              "unit": "A",
+              "page": 4
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 1P+N, 2P, 3P, 3P+N, 4P",
+              "page": 4
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "6 at 240/415VAC (1pole), 6 at 415VAC (2~4pole)",
+              "unit": "kA",
+              "page": 4
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "IEC 60898-1, IEC 60947-2",
+              "page": 4
+            }
+          ]
+        },
+        {
+          "id": "bkn-b",
+          "label": "BKN-b",
+          "page": 4,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1, 2, 3, 4, 6, 10, 16, 20, 25, 32, 40, 50, 63",
+              "unit": "A",
+              "page": 4
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 1P+N, 2P, 3P, 3P+N, 4P",
+              "page": 4
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "10 at 240/415VAC (1pole), 10 at 415VAC (2~4pole)",
+              "unit": "kA",
+              "page": 4
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "IEC 60898-1, IEC 60947-2",
+              "page": 4
+            }
+          ]
+        },
+        {
+          "id": "bkh",
+          "label": "BKH",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "63, 80, 100, 125",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P, 3P+N, 4P",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "10 at 230VAC (1pole), 10 at 400VAC (2~4pole)",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "IEC 60947-2",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "bkp",
+          "label": "BKP",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "3, 6, 10, 16, 20, 25, 32",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P+N",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "4.5 at 230VAC",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "IEC 60898-1",
+              "page": 5
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[MCB] MCB_RCD",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_MCB_RCD_EN_C01502-50-202609.pdf",
+        "page": 4
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "[MCB] MCB_RCD 영문 카탈로그 MCB 개요 표(p4~5) 기준, 대표 MCB 형식만(RK 계열 RCBO·BF·BS 형식 제외). BKJ63N·BKJ63Nd는 표에서 한 열을 공유해 한 옵션으로 묶음 — 열 구분 검수 필요"
+    },
+    "EN-P00025": {
+      "items": [
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "1, 2, 3, 4, 5, 6, 8, 10, 15, 16, 20, 25, 30, 32, 40, 50, 63",
+          "unit": "A",
+          "page": 21
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 21
+        },
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "Overload, Short circuit",
+          "page": 21
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "Mounting on 35 mm Din rail",
+          "page": 21
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IP20",
+          "page": 21
+        }
+      ],
+      "variantAxis": "규격",
+      "variants": [
+        {
+          "id": "ul489",
+          "label": "UL489 MCB (BK63HU)",
+          "page": 21,
+          "items": [
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P",
+              "page": 21
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "AC 1P: 10 @ 120/240 VAC, 10 @ 277 VAC (1 - 25 A); 2 - 3P: 10 @ 240 VAC, 480 Y/277 VAC (1 - 25 A)",
+              "unit": "kA",
+              "page": 21
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "UL489, UL486E(Lug)",
+              "page": 21
+            }
+          ]
+        },
+        {
+          "id": "ul1077",
+          "label": "UL1077 MCB (BK63H-UL)",
+          "page": 21,
+          "items": [
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P, 4P",
+              "page": 21
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "AC 1P: 10 @ 120/240 VAC, 6 @ 277 VAC; 2 - 4P: 10 @ 120/240 VAC, 6 @ 480 Y/277 VAC",
+              "unit": "kA",
+              "page": 21
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "UL 1077",
+              "page": 21
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[Device] Electric Product_UL type",
+        "url": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Electric_Product_Leaflet_UL_EN_C19922-16-202507.pdf",
+        "page": 21
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "[Device] Electric Product_UL type 영문 리플렛 UL MCB Ratings(p21) 기준. 30~63A 정격의 AC 차단용량과 DC 차단용량은 생략(원문 p21 참조)"
+    },
+    "EN-P01260": {
+      "items": [
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "1500 (Ui)",
+          "unit": "V",
+          "page": 9
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "12 (Uimp)",
+          "unit": "kV",
+          "page": 9
+        },
+        {
+          "key": "frame",
+          "label": "프레임",
+          "value": "800/1000/1250/1600",
+          "unit": "AF",
+          "page": 9
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "50 (Icw, DC)",
+          "unit": "kA/1s",
+          "page": 9
+        }
+      ],
+      "variantAxis": "형식",
+      "variants": [
+        {
+          "id": "ddh",
+          "label": "DDH (3·4P)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "750V DC (3P), 1200V DC (4P) (Ue)",
+              "page": 9
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3, 4",
+              "unit": "P",
+              "page": 9
+            },
+            {
+              "key": "mounting",
+              "label": "설치·인출 방식",
+              "value": "Fixed / Draw-out",
+              "page": 9
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "IEC 60947-3 (DEKRA CB certification), GB 14048.3 (CCC certification)",
+              "page": 9
+            }
+          ]
+        },
+        {
+          "id": "ddv-2p",
+          "label": "DDV (2P)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "750V DC (2P) (Ue)",
+              "page": 9
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2",
+              "unit": "P",
+              "page": 9
+            },
+            {
+              "key": "mounting",
+              "label": "설치·인출 방식",
+              "value": "Fixed",
+              "page": 9
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "IEC 60947-3",
+              "page": 9
+            }
+          ]
+        },
+        {
+          "id": "ddv",
+          "label": "DDV (3·4P)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "1000V DC (3P), 1500V DC (4P) (Ue)",
+              "page": 9
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3, 4",
+              "unit": "P",
+              "page": 9
+            },
+            {
+              "key": "mounting",
+              "label": "설치·인출 방식",
+              "value": "Fixed / Draw-out",
+              "page": 9
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "IEC 60947-3 (DEKRA CB certification), GB 14048.3 (CCC certification)",
+              "page": 9
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[DC Compact DSU] up to 1500Vdc",
+        "url": "https://www.ls-electric.com/ko/cat/%5BDC_Compact_DSU%5D_up_to_1500Vdc_EN_C06012-01-202405.pdf",
+        "page": 9
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "영문 [DC Compact DSU] up to 1500Vdc 카탈로그 Switch-disconnectors ratings(p9) 기준 (HTTP Range로 필요한 페이지만 받아 추출)"
+    },
+    "EN-P01265": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "DC 1000V (3P), DC 1500V (4P) (Ue)",
+          "page": 6
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "1500 (Ui)",
+          "unit": "V",
+          "page": 6
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "12 (Uimp)",
+          "unit": "kV",
+          "page": 6
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "3, 4",
+          "unit": "P",
+          "page": 6
+        },
+        {
+          "key": "frame",
+          "label": "프레임",
+          "value": "800/1000/1200/1600",
+          "unit": "AF",
+          "page": 6
+        },
+        {
+          "key": "breakingCapacity",
+          "label": "정격차단전류",
+          "value": "8 / 10 / 12 / 12 (Interrupting rating, DC, L/R=8ms, 800/1000/1200/1600AF)",
+          "unit": "kA",
+          "page": 6
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "50 (Icw, DC)",
+          "unit": "kA/1s",
+          "page": 6
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "Fixed type / Draw-out type",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "UL 489B (PV system), UL489F (ESS system)",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "[DC Compact DSU] UL type",
+        "url": "https://www.ls-electric.com/ko/cat/%5BDC_Compact_DSU%5D_UL_type_EN_C060A2-04-202512.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "영문 [DC Compact DSU] UL type 카탈로그 Ratings(p6) 기준 (HTTP Range로 필요한 페이지만 받아 추출). UDA-16C는 UL 489B만 인증(원문 주)"
+    },
+    "EN-AAA016008": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "DC 1250 V (4P) / DC 800 V (3P) (Rated nominal voltage), DC 1500 V (4P) / DC 1000 V (3P) (Rated maximum voltage)",
+          "page": 6
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "4P / 3P",
+          "page": 6
+        },
+        {
+          "key": "frame",
+          "label": "프레임",
+          "value": "800~2500 (D) / 800~4000 (E)",
+          "unit": "AF",
+          "page": 6
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "2500 / 4000",
+          "unit": "A",
+          "page": 3
+        },
+        {
+          "key": "withstandCurrent",
+          "label": "단락 내전류",
+          "value": "85 / 100 (Short circuit withstand current, D/E)",
+          "unit": "kA",
+          "page": 6
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "Fixed / Draw-out",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "UL 489B, UL 489F",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "[DC UL DSU]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BDC_UL_DSU%5D_EN_C06032-05-202512.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "영문 [DC UL DSU] 카탈로그 개요(p3)·Ratings(p6) 기준. 단락 내전류 85/100kA는 D/E 프레임 열 순서로 읽음"
+    },
+    "EN-P00037": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50 / 60",
+          "unit": "Hz",
+          "page": 22
+        },
+        {
+          "key": "insulation",
+          "label": "절연·냉각 방식",
+          "value": "VI (Vacuum Interrupter)",
+          "page": 2
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 62271-100",
+          "page": 22
+        }
+      ],
+      "variantAxis": "정격전압",
+      "variants": [
+        {
+          "id": "7-2kv",
+          "label": "7.2 kV (MVL-06)",
+          "page": 22,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "7.2 (Ur)",
+              "unit": "kV",
+              "page": 22
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630, 1250",
+              "unit": "A",
+              "page": 22
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "20, 25, 31.5 (Ik)",
+              "unit": "kA",
+              "page": 22
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "20/4 sec, 25/4 sec, 31.5/4 sec",
+              "unit": "kA",
+              "page": 22
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "20 (1 min)",
+              "unit": "kV",
+              "page": 22
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "60",
+              "unit": "kV",
+              "page": 22
+            }
+          ]
+        },
+        {
+          "id": "12kv",
+          "label": "12 kV (MVL-12)",
+          "page": 23,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "12 (Ur)",
+              "unit": "kV",
+              "page": 23
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630, 1000, 1250",
+              "unit": "A",
+              "page": 23
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "16, 20, 25, 31.5 (Ik)",
+              "unit": "kA",
+              "page": 23
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "16/4 sec, 20/4 sec, 25/4 sec, 31.5/4 sec",
+              "unit": "kA",
+              "page": 23
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "28 (1 min)",
+              "unit": "kV",
+              "page": 23
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "75",
+              "unit": "kV",
+              "page": 23
+            }
+          ]
+        },
+        {
+          "id": "17-5kv",
+          "label": "17.5 kV (MVL-17)",
+          "page": 24,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "17.5 (Ur)",
+              "unit": "kV",
+              "page": 24
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630, 1000, 1250",
+              "unit": "A",
+              "page": 24
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "16, 20, 25, 31.5 (Ik)",
+              "unit": "kA",
+              "page": 24
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "16/4 sec, 20/4 sec, 25/4 sec, 31.5/4 sec",
+              "unit": "kA",
+              "page": 24
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "38 (1 min)",
+              "unit": "kV",
+              "page": 24
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "95",
+              "unit": "kV",
+              "page": 24
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "Metasol VCB",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMetasol_VCB%5D_EN_C050B2-01-202210.pdf",
+        "page": 22
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "영문 Metasol VCB 카탈로그 Ratings(p22~24) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 12kV 표 두 번째 열 머리글이 \"MVL–17□32\"로 인쇄돼 있으나 Rated voltage 12kV 표로 읽음 — 검수 필요"
+    },
+    "EN-P00039": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "17.5 (Ur)",
+          "unit": "kV",
+          "page": 3
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "5000 (P Type, Fixed) / 4000 (H Type, Withdrawable)",
+          "unit": "A",
+          "page": 3
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 3
+        },
+        {
+          "key": "breakingCapacity",
+          "label": "정격차단전류",
+          "value": "50 (Ik)",
+          "unit": "kA",
+          "page": 3
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "50 kA/4 s",
+          "page": 3
+        },
+        {
+          "key": "powerFreqWithstand",
+          "label": "상용주파 내전압",
+          "value": "50",
+          "unit": "kV",
+          "page": 3
+        },
+        {
+          "key": "impulseWithstand",
+          "label": "뇌임펄스 내전압",
+          "value": "110",
+          "unit": "kV",
+          "page": 3
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "P Type (Fixed) / H Type (Withdrawable)",
+          "page": 3
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC/IEEE 62271-37-013:2015",
+          "page": 3
+        }
+      ],
+      "source": {
+        "title": "[Susol VCB] for generator VCB",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSusol_VCB%5D_for_Generator_EN_C050H2-03-202610.pdf",
+        "page": 3
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "특수목적 VCB 카탈로그 3종 중 [Susol VCB] for generator VCB(발전기용, VH-17) Ratings(p3) 기준. Side Mount·Retrofit 카탈로그 값은 넣지 않음"
+    },
+    "EN-P00041": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 56
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "25, 31.5 (3 sec)",
+          "unit": "kA",
+          "page": 56
+        }
+      ],
+      "variantAxis": "형식",
+      "variants": [
+        {
+          "id": "uvl-05",
+          "label": "UVL-05 (4.76 kV)",
+          "page": 56,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "4.76 (Ur)",
+              "unit": "kV",
+              "page": 56
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "25, 31.5 (Isc)",
+              "unit": "kA",
+              "page": 56
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1200, 2000",
+              "unit": "A",
+              "page": 56
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "19 (1min)",
+              "unit": "kV",
+              "page": 56
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "60",
+              "unit": "kV",
+              "page": 56
+            }
+          ]
+        },
+        {
+          "id": "uvl-15",
+          "label": "UVL-15 (15 kV)",
+          "page": 56,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "15 (Ur)",
+              "unit": "kV",
+              "page": 56
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "25, 31.5 (Isc)",
+              "unit": "kA",
+              "page": 56
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1200, 2000",
+              "unit": "A",
+              "page": 56
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "36 (1min)",
+              "unit": "kV",
+              "page": 56
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "95",
+              "unit": "kV",
+              "page": 56
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[Device] Electric Product_UL type",
+        "url": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Electric_Product_Leaflet_UL_EN_C19922-16-202507.pdf",
+        "page": 56
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "[Device] Electric Product_UL type 영문 리플렛 UVL Series 정격표(p56) 기준. 같은 쪽 차트에 UVM/UVH 포함 4.76·15·27·38kV, 25~50kA, 1200~4000A 라인업(UVH-38은 ANSI type test) — 차트 값은 넣지 않음"
+    },
+    "P01055": {
+      "items": [
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "과전류, 구속, 결상, 불평형, 역상, 부족전류, 지락, 순시단락",
+          "page": 6
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "4~20mA출력, Modbus/RS-485 (형명 선택)",
+          "page": 6
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "AC/DC 85~245V (50Hz/60Hz), AC/DC24~36V (형명 선택)",
+          "page": 6
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "관통형, 표시창 분리 설치 가능, 35mm Din Rail/나사 설치",
+          "page": 6
+        }
+      ],
+      "variantAxis": "정격전류",
+      "variants": [
+        {
+          "id": "10",
+          "label": "10 (0.5~10A)",
+          "page": 6,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "0.5~10",
+              "unit": "A",
+              "page": 6
+            }
+          ]
+        },
+        {
+          "id": "100",
+          "label": "100 (5~100A)",
+          "page": 6,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "5~100",
+              "unit": "A",
+              "page": 6
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[IMP]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BIMP%5D_KO_C15051-04-202409.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "정격 및 형명체계(p6) 기준. 1000V 이하 저압 모터보호용(원문 주3)"
+    },
+    "P01076": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "110 (PT), 190 (GPT)",
+          "unit": "V",
+          "page": 7
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "CT 5A, 1A / ZCT 1.5mA",
+          "page": 7
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60, 50",
+          "unit": "Hz",
+          "page": 7
+        },
+        {
+          "key": "wiring",
+          "label": "결선방식",
+          "value": "3P3W, 3P4W",
+          "page": 7
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "AC/DC 110V, 220V",
+          "page": 7
+        },
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "CU: 50/51, 50N/51N, 46 · CR: 50/51, 50N/51N, 46, 79 · VO: 27, 59, 47P, 64 · NZ: 67N, 67G, 64",
+          "page": 15
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "RS485 : Modbus",
+          "page": 7
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "KEMC 1120, IEC60255",
+          "page": 7
+        }
+      ],
+      "source": {
+        "title": "[GIPAM10]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BGIPAM10%5D_KO_C16011-03-202304.pdf",
+        "page": 7
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "정격 및 특성(p7)·형명체계(p15) 기준"
+    },
+    "P01077": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "190, 190/√3 (GPT)",
+          "unit": "V",
+          "page": 5
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "CT 5A / ZCT 1.5mA",
+          "page": 5
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60, 50",
+          "unit": "Hz",
+          "page": 5
+        },
+        {
+          "key": "wiring",
+          "label": "결선방식",
+          "value": "3P3W, 3P4W",
+          "page": 5
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "AC/DC 110, DC 125V",
+          "page": 5
+        },
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "FN: 50/51, 50/51N, 46, 67N, 49, 48/51LR, 37, 66, 38 · FZ: 50/51, 46, 67G, 49, 48/51LR, 37, 66, 38",
+          "page": 5
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "RS485 : Modbus",
+          "page": 5
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 60255, IEC 61000-4, KEMC 1120",
+          "page": 5
+        }
+      ],
+      "source": {
+        "title": "[DPR1000]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BDPR1000%5D_KO_C160F1-01-202304.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "기능 및 정격(p5) 기준. 정격표 PT 입력은 \"-\"(없음)"
+    },
+    "P01080": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "10~230 (PT), 2.2~230 (GPT)",
+          "unit": "V",
+          "page": 5
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "0.05~6 (CT 입력)",
+          "unit": "A",
+          "page": 5
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60, 50",
+          "unit": "Hz",
+          "page": 5
+        },
+        {
+          "key": "wiring",
+          "label": "결선방식",
+          "value": "1P2W, 1P3W, 3P3W Delta, 3P3W Y, 3P4W",
+          "page": 5
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "AC/DC 110V, 220V",
+          "page": 5
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "RS485 : Modbus",
+          "page": 5
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC60255, IEC61000-4, KEMC 1110",
+          "page": 5
+        }
+      ],
+      "source": {
+        "title": "[GIMAC-PQ]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BGIMAC-PQ%5D_KO_C160J1-01-202304.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "기능 및 정격(카탈로그 인쇄 쪽번호 180, PDF 5쪽) 기준"
+    },
+    "P01081": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "20 ~ 230 (110V) (PT), 2.2 ~ 230 (GPT)",
+          "unit": "V",
+          "page": 5
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "0.05 ~ 6 (5A) or 0.01 ~ 1.2 (1A)",
+          "unit": "A",
+          "page": 5
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60, 50",
+          "unit": "Hz",
+          "page": 5
+        },
+        {
+          "key": "wiring",
+          "label": "결선방식",
+          "value": "1P2W, 1P3W, 3P3W(Y), 3P3W(Delta), 3P4W",
+          "page": 5
+        },
+        {
+          "key": "accuracy",
+          "label": "계측 정밀도",
+          "value": "전류/전압 ±0.3%, 전력/전력량 ±0.5%",
+          "page": 3
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "AC/DC 110V, 220V",
+          "page": 5
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "Modbus/RS485, Ethernet / DNP3.0/Ethernet / IEC61850 MMS/Ethernet",
+          "page": 5
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC60255, IEC61000-4",
+          "page": 5
+        }
+      ],
+      "source": {
+        "title": "[GIMAC-II Plus]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BGIMAC-II_Plus%5D_KO_C160K1-02-202406.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "기능 및 정격(p5) 기준. GIMAC-II Plus와 GIMAC-115P는 동일 제품(p13 주)"
+    },
+    "P01083": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "AC 20 ~ 452V, DC 20 ~ 264V",
+          "page": 5
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60, 50",
+          "unit": "Hz",
+          "page": 5
+        },
+        {
+          "key": "accuracy",
+          "label": "계측 정밀도",
+          "value": "AC/DC 전압 ±0.3%, DC 전류 (출력/배터리) ±0.5%",
+          "page": 3
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "AC/DC 88 ~ 264V, Free Voltage",
+          "page": 5
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "MODBUS/RS485",
+          "page": 5
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC60255, IEC61000-4",
+          "page": 5
+        }
+      ],
+      "source": {
+        "title": "[GIMAC-DC]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BGIMAC-DC%5D_KO_C160L1-01-202304.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "정격 및 기능(p5) 기준. DC 전류는 SHT 저항(DC 3 ~ 180mV) 입력"
+    },
+    "P21020": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "본체 AC 0...790V, DC 0...1000V / 커플러 AC 0...1000V, DC 0...1500V (계통 전압 Vn)",
+          "page": 10
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "42~460 (공칭 주파수)",
+          "unit": "Hz",
+          "page": 10
+        },
+        {
+          "key": "monitorRange",
+          "label": "절연 감시 범위",
+          "value": "1kΩ ~ 10MΩ",
+          "page": 10
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "AC/DC : 100~240V, 50/60Hz (공급전원)",
+          "page": 10
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "RS-485 1 Port : ModBus RTU, (옵션) Ethernet Converter RSTP : ModBus TCP",
+          "page": 10
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC61557-8, IEC60441",
+          "page": 10
+        }
+      ],
+      "source": {
+        "title": "[IMD] Catalog_국문",
+        "url": "https://www.ls-electric.com/ko/cat/%5BIMD%5D_KO_C160B1-04-202403.pdf",
+        "page": 10
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "성능 및 정격(p10) 기준. 비접지 계통(IT-System) 절연 감시 장치"
+    },
+    "P02214": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "DC 10 ~ 1,000V (입력전압)",
+          "page": 1
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "DC 0 ~ 750A (Via Shunt)",
+          "page": 1
+        },
+        {
+          "key": "accuracy",
+          "label": "계측 정밀도",
+          "value": "±1.0%",
+          "page": 1
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "DC 24V (±10%) / AC 85~265V (220V 권장)",
+          "page": 1
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "RS-485, Modbus-RTU",
+          "page": 1
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "Din-Rail Type",
+          "page": 1
+        }
+      ],
+      "source": {
+        "title": "[DC Meter] Leaflet",
+        "url": "https://www.ls-electric.com/ko/cat/%5BDC_Meter%5D_Leaflet_KO_C12051-05-202609.pdf",
+        "page": 1
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "[DC Meter] 리플렛 정격표(p1) 기준. 모델별 class 1.0 / 0.5(…/S) 구분, Shunt(75mV)는 별매"
+    },
+    "P01093": {
+      "items": [
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "AC 90~240V, 60Hz",
+          "page": 4
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "Panel 부착형",
+          "page": 4
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "COM1(RS-232C), COM2/3(RS-485), 이더넷(10 Base-T) — Modbus slave 기능",
+          "page": 4
+        }
+      ],
+      "source": {
+        "title": "[SDC-500] 사용설명서",
+        "url": "https://www.ls-electric.com/ko/cat/HPDT/%5BSDC-500%5D%20%EC%82%AC%EC%9A%A9%EC%84%A4%EB%AA%85%EC%84%9C_Manual_KO_202511.pdf",
+        "page": 4
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "정격 (본체)(p4) 기준. 최대수요전력제어기라 전압·전류 정격 항목 없음"
+    },
+    "P01215": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "1상 200~240 (-15%~+10%)",
+          "unit": "Vac",
+          "page": 2
+        },
+        {
+          "key": "motorPower",
+          "label": "적용 전동기 용량",
+          "value": "0.1~2.2",
+          "unit": "kW",
+          "page": 2
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "0.8~10.0 (중부하, 출력)",
+          "unit": "A",
+          "page": 2
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "입력 50~60 (±5 %) / 출력 0 ~ 400",
+          "unit": "Hz",
+          "page": 2
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "UL Open (IP20)",
+          "page": 2
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "RS485 통신 기본 내장",
+          "page": 1
+        },
+        {
+          "key": "mounting",
+          "label": "설치·인출 방식",
+          "value": "Din rail 설치 기본 제공, Side By Side",
+          "page": 1
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "UL 61800-5-1",
+          "page": 1
+        }
+      ],
+      "source": {
+        "title": "M100 카탈로그",
+        "url": "https://ssq.ls-electric.com/uploads/document/16389344544610/M100_Catalog_KR__04__201204.pdf",
+        "page": 2
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "M100 카탈로그(2쪽 리플렛) 입/출력 규격(p2) 기준. 정격전류(출력)는 모델별 표 값을 순서대로 읽음"
+    },
+    "P01262": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "3상 380 ~ 480 (-10% ~ +10%)",
+          "unit": "V",
+          "page": 12
+        },
+        {
+          "key": "motorPower",
+          "label": "적용 전동기 용량",
+          "value": "5.5~22",
+          "unit": "kW",
+          "page": 12
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "12~45 (정격 출력)",
+          "unit": "A",
+          "page": 12
+        },
+        {
+          "key": "capacity",
+          "label": "정격용량",
+          "value": "9.1~34.3 (정격 출력)",
+          "unit": "kVA",
+          "page": 12
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "입력 50 ~ 60 (±5%)",
+          "unit": "Hz",
+          "page": 12
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "CAN2.0B / RS232 통신 기본 내장",
+          "page": 7
+        }
+      ],
+      "source": {
+        "title": "L100 카탈로그",
+        "url": "https://ssq.ls-electric.com/uploads/document/16389350358190/_AC%20Drive_%20L100_Catalog_KR__01__210318.pdf",
+        "page": 12
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "기본 규격(p12) 기준. 엘리베이터(Lift) 전용 드라이브"
+    },
+    "P01187": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "입력 50 ~ 60 (±5%) / 최대 출력 400",
+          "unit": "Hz",
+          "page": 9
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "개방형 (IP 20), UL Enclosure(ENC) Type1",
+          "page": 10
+        },
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "과전압, 저전압, 과전류, 지락 전류 검출, 드라이브 과열, 전동기 과열, 출력 결상, 과부하 보호 등 트립",
+          "page": 10
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "RS485, Modbus 통신 가능",
+          "page": 5
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "UL, CE",
+          "page": 7
+        }
+      ],
+      "variantAxis": "입력 전압",
+      "variants": [
+        {
+          "id": "1ph-200v",
+          "label": "단상 200V급 (p.9)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "1상 200 ~ 230 VAC (+10%, -15%)",
+              "page": 9
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "0.4~1.5",
+              "unit": "kW",
+              "page": 9
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "2.5~8 (출력)",
+              "unit": "A",
+              "page": 9
+            }
+          ]
+        },
+        {
+          "id": "3ph-200v",
+          "label": "3상 200V급 (p.9)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "3상 200 ~ 230 VAC (+10%,-15% )",
+              "page": 9
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "0.4~22",
+              "unit": "kW",
+              "page": 9
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "2.5~88 (출력)",
+              "unit": "A",
+              "page": 9
+            }
+          ]
+        },
+        {
+          "id": "3ph-400v",
+          "label": "3상 400V급 (p.9)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "3상 380 ~ 480 VAC (+10%,-15% )",
+              "page": 9
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "0.4~22",
+              "unit": "kW",
+              "page": 9
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1.25~45 (출력)",
+              "unit": "A",
+              "page": 9
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "iG5A 트러블슈팅(Troubleshooting) 사용설명서",
+        "url": "https://ssq.ls-electric.com/uploads/document/16399669168300/iG5A_Troubleshooting_Rev1.0_150415.pdf",
+        "page": 9
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "기본 정격(p9~10) 기준"
+    },
+    "P01190": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "입력 50~60 (±5%)",
+          "unit": "Hz",
+          "page": 14
+        }
+      ],
+      "variantAxis": "입력 전압",
+      "variants": [
+        {
+          "id": "200v",
+          "label": "200V급 AC 입력 (p.14)",
+          "page": 14,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "3Ø 200~230V(-10%~+10%)",
+              "page": 14
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "2.2~37",
+              "unit": "kW",
+              "page": 14
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "12~146",
+              "unit": "A",
+              "page": 14
+            }
+          ]
+        },
+        {
+          "id": "400v",
+          "label": "400V급 AC 입력 (p.14)",
+          "page": 14,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "3Ø 380 ~ 480V(-10%~+10%)",
+              "page": 14
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "2.2~800",
+              "unit": "kW",
+              "page": 14
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "6~1384",
+              "unit": "A",
+              "page": 14
+            }
+          ]
+        },
+        {
+          "id": "400v-dc",
+          "label": "400V급 DC 입력 (p.15)",
+          "page": 15,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "DC 540~680V(+10%)",
+              "page": 15
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "5.5~500",
+              "unit": "kW",
+              "page": 15
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "12~960",
+              "unit": "A",
+              "page": 15
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "iV5 뉴제어기 사용설명서",
+        "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17344221865000/iV5_User_Manual_Kor_V1.1_220615.pdf",
+        "page": 14
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "표준 규격(p14~15) 기준. 정격전류는 출력 정격. MRL 전용(p15, 7.5~22kW)은 넣지 않음"
+    },
+    "P01189": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "입력 50/60 (±5%) / 출력 0.01 ~ 120",
+          "unit": "Hz",
+          "page": 9
+        },
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "과전압, 저전압, 과전류, 지락 보호, 드라이브 과열, 전동기 과열, 출력결상, 과부하 보호 등 트립",
+          "page": 9
+        },
+        {
+          "key": "communication",
+          "label": "통신",
+          "value": "485통신 내장(LS-bus) / 옵션: DeviceNet, Profibus-DP, Modbus-RTU, Lonworks, BAC-Net, Metasys N2",
+          "page": 7
+        }
+      ],
+      "variantAxis": "입력 전압",
+      "variants": [
+        {
+          "id": "200v",
+          "label": "200~230V급 (p.9)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "3Ø 200 ~ 230V (-15% ~ +10%)",
+              "page": 9
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "5.5~30 (팬·펌프 부하)",
+              "unit": "kW",
+              "page": 9
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "24~115 (110% 과부하 내량)",
+              "unit": "A",
+              "page": 9
+            },
+            {
+              "key": "ipRating",
+              "label": "보호등급(IP)",
+              "value": "IP20 / UL Type1, IP00 / UL Open",
+              "page": 9
+            }
+          ]
+        },
+        {
+          "id": "400v",
+          "label": "380~480V급 (p.9)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "3Ø 380 ~ 480V (-15% ~ +10%)",
+              "page": 9
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "5.5~450 (팬·펌프 부하)",
+              "unit": "kW",
+              "page": 9
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "12~877 (110% 과부하 내량)",
+              "unit": "A",
+              "page": 9
+            },
+            {
+              "key": "ipRating",
+              "label": "보호등급(IP)",
+              "value": "IP20 / UL Type1, IP00 / UL Open (110kW 이상 IP00)",
+              "page": 9
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "iP5A/iV5 RS485 Modbus RTU 통신 옵션 사용설명서",
+        "url": "https://ssq.ls-electric.com/uploads/document/16400729573330/iP5A_User%20Manual_RS485_Eng_Kor_V1.2_200701.pdf",
+        "page": 9
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "기본 사양(p9) 기준. 팬·펌프 전용, 적용 모터·정격전류는 팬·펌프 부하(Normal Duty) 기준"
+    },
+    "P01263": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "입력 50/60 ±5% / 출력 0.01~590 (V/F, V/F-SC)",
+          "unit": "Hz",
+          "page": 12
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IP 20(기본), UL Open & Enclosed Type 1(옵션)",
+          "page": 15
+        },
+        {
+          "key": "protection",
+          "label": "보호 기능",
+          "value": "과전류, 과전압, 암(ARM) 단락 전류, 인버터 과열, 출력 결상, 입력 결상, 지락, 전동기 과열 등 트립",
+          "page": 15
+        }
+      ],
+      "variantAxis": "입력 전압",
+      "variants": [
+        {
+          "id": "200v",
+          "label": "200V급 (p.12)",
+          "page": 12,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "3상 200~240, -15%~+10%",
+              "unit": "V",
+              "page": 12
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "0.4~75 (중부하 HD)",
+              "unit": "kW",
+              "page": 12
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "3.2~288 (HD, 출력)",
+              "unit": "A",
+              "page": 12
+            }
+          ]
+        },
+        {
+          "id": "400v",
+          "label": "400V급 (p.13)",
+          "page": 13,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "3상 380~480, -15%~+10%",
+              "unit": "V",
+              "page": 13
+            },
+            {
+              "key": "motorPower",
+              "label": "적용 전동기 용량",
+              "value": "0.4~400 (중부하 HD)",
+              "unit": "kW",
+              "page": 13
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1.8~781 (HD, 380~460V, 출력)",
+              "unit": "A",
+              "page": 13
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "S300 카탈로그",
+        "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17840729866150/S300_Catalog_KR_0707.pdf",
+        "page": 12
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "입·출력 규격(p12~14)·제품 사양(p15) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 400V급 적용 전동기·정격전류: p.13~14 표에 걸침"
+    },
+    "P01097": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 7
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IP4X",
+          "page": 7
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 62271-200",
+          "page": 7
+        }
+      ],
+      "variantAxis": "정격전압",
+      "variants": [
+        {
+          "id": "7-2kv",
+          "label": "7.2 kV",
+          "page": 7,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "7.2",
+              "unit": "kV",
+              "page": 7
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "20 (1min)",
+              "unit": "kV",
+              "page": 7
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "60",
+              "unit": "kV",
+              "page": 7
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "25/3, 40/3, 50/3",
+              "unit": "kA/s",
+              "page": 7
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630~5000",
+              "unit": "A",
+              "page": 7
+            }
+          ]
+        },
+        {
+          "id": "12kv",
+          "label": "12 kV",
+          "page": 7,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "12",
+              "unit": "kV",
+              "page": 7
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "28 (1min)",
+              "unit": "kV",
+              "page": 7
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "75",
+              "unit": "kV",
+              "page": 7
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "25/3, 40/3, 50/3",
+              "unit": "kA/s",
+              "page": 7
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630~5000",
+              "unit": "A",
+              "page": 7
+            }
+          ]
+        },
+        {
+          "id": "17-5kv",
+          "label": "17.5 kV",
+          "page": 8,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "17.5",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "38 (1min)",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "95",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "25/3, 40/3, 50/3",
+              "unit": "kA/s",
+              "page": 8
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630~4000",
+              "unit": "A",
+              "page": 8
+            }
+          ]
+        },
+        {
+          "id": "24kv",
+          "label": "24 kV",
+          "page": 8,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "24",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "50 (1min)",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "125",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "25/3, 40/3",
+              "unit": "kA/s",
+              "page": 8
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630~3150",
+              "unit": "A",
+              "page": 8
+            }
+          ]
+        },
+        {
+          "id": "36kv",
+          "label": "36 kV",
+          "page": 8,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "36",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "70 (1min)",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "170",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "25, 31.5, 40/3",
+              "unit": "kA/s",
+              "page": 8
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[MCSG]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCSG%5D_KO_C80051-11-202605.pdf",
+        "page": 7
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "중치형 MCSG(Standard type) 제품 사양(p7~8) 기준 (HTTP Range로 필요한 페이지만 받아 추출). 정격전류는 표의 최소~최대. 36kV 정격전류는 추출 텍스트가 잘려 비워 둠. V Series=Pro-MEC VCB, S Series=Susol VCB 적용"
+    },
+    "P01098": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "24/25.8",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "630, 1250, 2000",
+          "unit": "A",
+          "page": 4
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 4
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "12.5, 25 (1s or 3s)",
+          "unit": "kA",
+          "page": 4
+        },
+        {
+          "key": "powerFreqWithstand",
+          "label": "상용주파 내전압",
+          "value": "50 (1min)",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "impulseWithstand",
+          "label": "뇌임펄스 내전압",
+          "value": "125",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 62271-200",
+          "page": 4
+        }
+      ],
+      "source": {
+        "title": "[GSH-20V]_국문",
+        "url": "https://www.ls-electric.com/ko/cat/%5BGSH-20V%5D_KO_C80081-01-202411.pdf",
+        "page": 4
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "정격 및 특징(p4) 기준 (모델 GSH-V20)"
+    },
+    "P01100": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "3.6 / 7.2",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "up to 3,150",
+          "unit": "A",
+          "page": 4
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50 / 60",
+          "unit": "Hz",
+          "page": 4
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "up to 40 (1s or 3s)",
+          "unit": "kA",
+          "page": 4
+        },
+        {
+          "key": "powerFreqWithstand",
+          "label": "상용주파 내전압",
+          "value": "20 (1min)",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "impulseWithstand",
+          "label": "뇌임펄스 내전압",
+          "value": "60",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 62271-200",
+          "page": 4
+        }
+      ],
+      "source": {
+        "title": "[GSM] 3.6/7.2kV 고압폐쇄배전반",
+        "url": "https://www.ls-electric.com/ko/cat/%5BGSM%5D_KO_C80061-06-202609.pdf",
+        "page": 4
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "정격 및 특징(p4) 기준 (모델 GSM-V07)"
+    },
+    "P02203": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "12 / 17.5 / 24 (Ur)",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "630 (Ir)",
+          "unit": "A",
+          "page": 4
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50 / 60",
+          "unit": "Hz",
+          "page": 4
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "16kA/3s, 21kA/3s, 25kA/1s",
+          "page": 4
+        },
+        {
+          "key": "powerFreqWithstand",
+          "label": "상용주파 내전압",
+          "value": "28 / 38 / 50 (상, 대지간, 1min)",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "impulseWithstand",
+          "label": "뇌임펄스 내전압",
+          "value": "75 / 95 / 125 (상, 대지간)",
+          "unit": "kV",
+          "page": 4
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 62271-1, IEC 62271-100, IEC 62271-102, IEC 62271-103, IEC 62271-105, IEC 62271-200",
+          "page": 4
+        }
+      ],
+      "source": {
+        "title": "[C-AIS] 국문",
+        "url": "https://www.ls-electric.com/ko/cat/%5BC-AIS%5D_KO_C800E1-01-202212.pdf",
+        "page": 4
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "전기적 특성(p4) 기준. 같은 표의 \"정격차단전류 Ima 40/50/54.6kA\"는 기호(Ima)가 투입전류라 넣지 않음 — 수납 SM VCB(SVL) 차단전류는 p13: 16·20·25kA"
+    },
+    "P02202": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "25.8",
+          "unit": "kV",
+          "page": 6
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "insulation",
+          "label": "절연·냉각 방식",
+          "value": "Dry Air (압축건조공기)",
+          "page": 2
+        }
+      ],
+      "variantAxis": "모선 방식",
+      "variants": [
+        {
+          "id": "12-5ka",
+          "label": "25.8kV 12.5kA 단모선",
+          "page": 6,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630",
+              "unit": "A",
+              "page": 6
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "12.5",
+              "unit": "kA",
+              "page": 6
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "60",
+              "unit": "kV",
+              "page": 6
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "125",
+              "unit": "kV",
+              "page": 6
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "12.5 / 1",
+              "unit": "kA/sec",
+              "page": 6
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "KRSA-3117-R0 및 관련 IEC 62271, 62869 등",
+              "page": 6
+            }
+          ]
+        },
+        {
+          "id": "25ka",
+          "label": "25.8kV 25kA 복모선 (GESG-0220/0222-TC)",
+          "page": 7,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630 / 2000",
+              "unit": "A",
+              "page": 7
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "25",
+              "unit": "kA",
+              "page": 7
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "60",
+              "unit": "kV",
+              "page": 7
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "150",
+              "unit": "kV",
+              "page": 7
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "25 / 1",
+              "unit": "kA/sec",
+              "page": 7
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "GS 5925-0128",
+              "page": 7
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[DAIS] 25.8kV",
+        "url": "https://www.ls-electric.com/ko/cat/%5BDAIS%5D_25.8kV_KO_C81071-02-202212.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "Specification(p6~7) 기준 (HTTP Range로 필요한 페이지만 받아 추출)"
+    },
+    "P01101": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "Up to 690 (Rated operating voltage)",
+          "unit": "V",
+          "page": 5
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "Main: Up to 6300 / Up to 5000, Distribution: Up to 2000",
+          "unit": "A",
+          "page": 5
+        },
+        {
+          "key": "phases",
+          "label": "상 및 선식",
+          "value": "3P4W",
+          "page": 5
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 5
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "Up to 100 kA/1sec.",
+          "page": 5
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "1000",
+          "unit": "V",
+          "page": 5
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "12 / 8",
+          "unit": "kV",
+          "page": 5
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "Up to IP54",
+          "page": 5
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 61439-2 Edition 3.0 (2020)",
+          "page": 5
+        }
+      ],
+      "source": {
+        "title": "[Susol LV SWGR]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSusol_LV_SWGR%5D_KO_C80041-02-201904.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "[Susol LV SWGR] 정격사항(p5) 기준. 표 열(Main/Feeder/MCC) 구분은 텍스트 순서로 읽음 — 정격전류·임펄스 열 검수 필요"
+    },
+    "P01104": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "최대 AC 480V",
+          "page": 6
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "AC 600V",
+          "page": 6
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60 (표준), 50 (특수)",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "수평모선 600~2000A / 600~3500A / 600~4000A",
+          "page": 6
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "42kA/0.5sec, 65kA/1sec",
+          "page": 6
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "110, 220V (표준), 100, 120, 200V (특수) — 조작 및 제어전압",
+          "page": 6
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IEC IP20 NEMA Type1 (표준), IEC IP42 (특수)",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "JEM1195, IEC 61439-1&2, NEMA, ICS2'232",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "[MCC]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCC%5D_KO_C80001-07-202005.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "[MCC] 정격(p6) 기준. 수평모선 정격전류 3개 값은 GCC-H/V/N 열 순서로 읽음(원문 행 이름은 \"정격전압\"으로 인쇄) — 검수 필요"
+    },
+    "P01245": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "Up to 500",
+          "unit": "V",
+          "page": 13
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "Main Up to 5000, Distribution Up to 1500",
+          "unit": "A",
+          "page": 13
+        },
+        {
+          "key": "phases",
+          "label": "상 및 선식",
+          "value": "3상 4선식",
+          "page": 13
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 13
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "Up to 100kA/1sec",
+          "page": 13
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "750",
+          "unit": "V",
+          "page": 13
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "8",
+          "unit": "kV",
+          "page": 13
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "Up to IP54",
+          "page": 13
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 61439-1&2",
+          "page": 13
+        }
+      ],
+      "source": {
+        "title": "[Smart MCC]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSmart_MCC%5D_KO_C800I1-02-202504.pdf",
+        "page": 13
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "[Smart MCC] 카탈로그의 MCC panel 정격 사양(Susol MCC, p13) 기준"
+    },
+    "P02204": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "690 (Ue)",
+          "unit": "V",
+          "page": 6
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "1000 (Ui)",
+          "unit": "V",
+          "page": 6
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "Up to 12 (Uimp)",
+          "unit": "kV",
+          "page": 6
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "Main Busbar Up to 7000 / Up to 7250 (Back to Back), Distribution Busbar Up to 5000",
+          "unit": "A",
+          "page": 6
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "Up to 150 kA rms - 1s (Main Busbar), Up to 100 kA rms - 1s (Distribution Busbar)",
+          "page": 6
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "Up to IP43",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 61439-1/2, IEC TR 61641, IEC 60529",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "Modular MDB",
+        "url": "https://www.ls-electric.com/ko/cat/Modular_MDB_EN_C800%E2%93%952-01-202607.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "영문 Modular MDB Technical Specifications(p6) 기준"
+    },
+    "P01102": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "AC 690V (정격사용전압)",
+          "page": 5
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "AC 1000V",
+          "page": 5
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 5
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "3상3선 / 3상4선",
+          "page": 5
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "630 ~ 6300",
+          "unit": "A",
+          "page": 5
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "DC 100 / 110V (제어회로전압)",
+          "page": 5
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "JEM 1265, IEC 60439",
+          "page": 5
+        }
+      ],
+      "source": {
+        "title": "[Power Center]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BPower_Center%5D_KO_C80071-09-202103.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "제품 사양(p5) 기준. 극수 행은 원문 표기 \"극수(Pole) 3상3선 / 3상4선\""
+    },
+    "P01105": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "AC 1000V / DC 1500V 이하",
+          "page": 6
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50 / 60",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "Al 630 ~ 6300, Cu 630 ~ 7500",
+          "unit": "A",
+          "page": 6
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "Al 121 kA / 1 sec (2000A), 200 kA / 1 sec (4000A); Cu 135 kA / 1 sec (2000A), 220 kA / 1 sec (4000A)",
+          "page": 6
+        },
+        {
+          "key": "wiring",
+          "label": "결선방식",
+          "value": "3W, 4W, 5W",
+          "page": 6
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "옥내용 IP54, 옥외용 IP65, 옵션 IPX8 (접속부 몰딩)",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "KS C IEC 60439-1, 2, IEC 61439-1, 6",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "[Susol Busway]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSusol_Busway%5D_KO_C800A1-16-202608.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "제품 사양(p6) 기준"
+    },
+    "P01106": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "AC 1000V 이하 / DC 1500V 이하",
+          "page": 6
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "알루미늄 도체(AL) 600A ~ 5000A, 동 도체(CU) 600A ~ 6500A",
+          "page": 6
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50 / 60",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "wiring",
+          "label": "결선방식",
+          "value": "3W, 4W, 5W",
+          "page": 6
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "옥내용 IP41, 옥외용 IP65",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 60439-1,2 / KSC IEC 60439-1,2 / JIS C8364 / KS C8450(구)",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "[GH-P type Busway]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BGH-P_type_Busway%5D_KO_C800C1-20-202403.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "제품 사양(p6) 기준"
+    },
+    "P01910": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "AC 1000V 이하 / DC 1500V 이하",
+          "page": 6
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50 / 60",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "160~800",
+          "unit": "A",
+          "page": 6
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "Up to 30 kA / 1 sec (Option : 40 kA / 1 sec)",
+          "page": 6
+        },
+        {
+          "key": "wiring",
+          "label": "결선방식",
+          "value": "3W, 4W, 5W",
+          "page": 6
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IPX8 (Plug in hole : IP54)",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 61439-1, 6",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "[Susol Mini Busway]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSusol_Mini_Busway%5D_KO_C800Y1-01-202109.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "제품 사양(p6) 기준"
+    },
+    "P01911": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "0.69(Ui), 3.6, 7.2, 12, 17.5, 24, 36",
+          "unit": "kV",
+          "page": 6
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50 / 60",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "630 ~ 4000, 630 ~ 3200 (전압 등급별)",
+          "unit": "A",
+          "page": 6
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "12.5 ~ 80, 12.5 ~ 50, 12.5 ~ 40 (전압 등급별)",
+          "unit": "kA",
+          "page": 6
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "옥내형 IP41, 옥외형 IP54",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "KS C IEC 60439-1&2, IEC 62271-1&200, ANSI C37.23",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "[NSPB]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BNSPB%5D_KO_C80091-07-202403.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "제품 사양(p6) 기준. 정격전류·단시간전류는 전압 등급 열을 묶은 값으로 표에 적힌 순서 그대로 — 어느 전압 등급에 해당하는지는 원문 표 확인 필요"
+    },
+    "D421413": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "690",
+          "unit": "V",
+          "page": 5
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "12",
+          "unit": "kV",
+          "page": 5
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "630 ~ 3200",
+          "unit": "A",
+          "page": 5
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "~ 85 kA / 0.5 s",
+          "page": 5
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IP4X",
+          "page": 5
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60 (적용 Susol ACB)",
+          "unit": "Hz",
+          "page": 7
+        },
+        {
+          "key": "breakingCapacity",
+          "label": "정격차단전류",
+          "value": "85 (적용 Susol ACB)",
+          "unit": "kA",
+          "page": 7
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "4 P (적용 Susol ACB)",
+          "page": 7
+        }
+      ],
+      "source": {
+        "title": "LV CTTS 카탈로그",
+        "url": "https://www.ls-electric.com/ko/cat/LV_CTTS_KO_C800%E2%93%961-01-202610.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "LV CTTS 판넬 정격(p5)과 적용 Susol ACB Technical Table(p7) 기준. 주파수·차단전류·극수는 판넬에 들어가는 ACB 값"
+    },
+    "D420271": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "7.2",
+          "unit": "kV",
+          "page": 5
+        },
+        {
+          "key": "powerFreqWithstand",
+          "label": "상용주파 내전압",
+          "value": "20kV/1min",
+          "page": 5
+        },
+        {
+          "key": "impulseWithstand",
+          "label": "뇌임펄스 내전압",
+          "value": "60kV [1.2х50㎲]",
+          "page": 5
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "~2000",
+          "unit": "A",
+          "page": 5
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "~40kA/3s",
+          "page": 5
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IP4X",
+          "page": 5
+        }
+      ],
+      "source": {
+        "title": "MV CTTS 카탈로그",
+        "url": "https://www.ls-electric.com/ko/cat/MV_CTTS_KO_C800%E2%93%931-01-202606.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-19",
+      "reviewed": false,
+      "note": "MV CTTS 판넬 정격(p5) 기준. 내아크 ~40kA/0.5s (A-FLR)"
     }
   }
 }

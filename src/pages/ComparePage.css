@@ -66,7 +66,7 @@
   text-align: left;
   overflow-wrap: anywhere;
 }
-.cmp-table thead th { border-bottom-width: 2px; vertical-align: bottom; }
+.cmp-table thead th { border-bottom-width: 2px; vertical-align: top; }
 /* 첫 열 고정 */
 .cmp-table th:first-child {
   position: sticky;
@@ -75,7 +75,9 @@
   width: 150px;
   background: var(--color-surface);
   border-right: 1px solid var(--color-border);
-  color: var(--color-text-muted);
+  color: var(--color-text);
+  /* 항목 제목은 값보다 한 단계 크게 (2026-11-19 사용자: 각 항목 제목 글자가 작음) */
+  font-size: var(--fs-md, 16px);
   font-weight: var(--fw-bold);
 }
 /* 열 머리글 고정 (세로 스크롤해도 어느 열이 어느 항목인지 보이게) */
@@ -92,7 +94,7 @@
   padding: 8px 12px;
   background: var(--color-surface-2);
   color: var(--color-text);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm, 14px);
   letter-spacing: 0.02em;
 }
 /* 구역 머리 행은 colSpan 이라 첫 열 고정 대상에서 제외하고 글자만 고정 */
@@ -204,3 +206,10 @@
 /* 설명 행 — 펼친 항목 목록은 표 칸이 좁아 라벨 아래로 본문을 쌓는다 */
 .cmp-table .ov-points { margin-top: var(--space-2); }
 .cmp-table .ov-point { grid-template-columns: minmax(0, 1fr); row-gap: 2px; }
+
+/* 열 머리 정렬 (2026-11-19 사용자: 옵션 선택 칸이 없는 열만 사진·이름이 아래로 내려감)
+   → 위쪽 기준 정렬 + 옵션 칸이 없는 열에는 같은 높이의 빈 자리. '상세 보기·✕' 줄은 맨 아래로 */
+.cmp-colhead { height: 1px; }
+.cmp-colhead__inner { height: 100%; }
+.cmp-colhead__actions { margin-top: auto; }
+.cmp-variant--placeholder { visibility: hidden; }

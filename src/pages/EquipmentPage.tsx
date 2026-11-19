@@ -11,6 +11,7 @@ import { ButtonLink, DIAGRAM_CTA_LABEL } from '../components/common/Button';
 import { Count, Tag } from '../components/common/Badge';
 import PageHeader from '../components/common/PageHeader';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
+import MarketCard from '../components/market/MarketCard';
 import ProductVisual from '../components/pages/ProductVisual';
 import { CATEGORY_LABELS, isGapCoverage, pageTitle } from '../lib/labels';
 import { diagramHref, layerStyle, nodeForEquipment, productsForEquipment } from '../lib/pages/catalog';
@@ -149,6 +150,8 @@ export default function EquipmentPage() {
               )}
             </section>
           )}
+
+          <MarketCard equipmentId={eq.id} variant="page" />
         </div>
 
       </div>

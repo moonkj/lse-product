@@ -210,7 +210,10 @@
   stroke-width: 3px;
   opacity: 1;
 }
-/* 15% 미만(아주 작게 축소)에서만 멈춤 — 전체 보기(17~21%)·폭 맞춤에서는 흐름이 보이게 (3라운드 E4) */
-.dflow[data-tiny='true'] .dflow__path {
+/* 아주 작게 축소하면 멈춤(전체 흐름 20% 미만·선택 경로 12% 미만, FlowLayer) — 작은 화면에서 수십 개 펄스가 떨림처럼 보임 */
+.dflow[data-tiny='true'] .dflow__path,
+.dflow[data-tiny='true'] .dflow__path--rev,
+.dflow[data-tiny='true'] .dflow__path--down,
+.dflow[data-tiny='true'] .dflow__path--bus {
   animation-play-state: paused;
 }

@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "about": "입찰 공고·뉴스 제목 키워드 → 제품맵 기기 id 매핑표. 제품맵(시장 동향 카드)과 마켓뉴스가 같이 쓴다. 기기 id는 src/data/equipment-types.json 기준.",
+  "match": "keywords 중 하나가 제목에 있고, with 가 있으면 그중 하나도 있고, exclude 는 하나도 없을 때 equipment 에 연결. 한글이 든 말은 띄어쓰기 무시, 영문·숫자만인 말은 단어 경계·대소문자 무시. only=bids 는 입찰 제목에만. 위에서부터 모두 검사하고 같은 기기는 한 번만.",
+  "rules": [
+    { "keywords": ["GIS", "가스절연개폐장치", "가스절연개폐기"], "with": ["362kV", "345kV", "765kV", "800kV", "550kV", "초고압"], "exclude": ["크레인", "안전발판"], "only": "bids", "equipment": ["ehv-gis"] },
+    { "keywords": ["GIS", "가스절연개폐장치", "가스절연개폐기"], "with": ["170kV", "154kV"], "exclude": ["크레인", "안전발판"], "only": "bids", "equipment": ["gis-154"] },
+    { "keywords": ["GIS", "가스절연개폐장치", "가스절연개폐기"], "exclude": ["362kV", "345kV", "765kV", "800kV", "550kV", "170kV", "154kV", "크레인", "안전발판"], "only": "bids", "equipment": ["ehv-gis", "gis-154"] },
+    { "keywords": ["가스절연개폐장치", "gas-insulated switchgear"], "only": "news", "equipment": ["ehv-gis", "gis-154"] },
+
+    { "keywords": ["주상변압기", "pole-mounted transformer"], "equipment": ["pole-tr"] },
+    { "keywords": ["지상변압기", "유입변압기", "유입형변압기", "pad-mounted transformer"], "equipment": ["oil-tr"] },
+    { "keywords": ["몰드변압기", "건식변압기", "dry-type transformer"], "equipment": ["cast-tr"] },
+    { "keywords": ["전력용변압기", "가스절연변압기", "단권변압기", "주변압기", "power transformer"], "equipment": ["main-tr"] },
+    { "keywords": ["승압변압기", "발전기용변압기", "step-up transformer"], "equipment": ["step-up-tr"] },
+    { "keywords": ["변압기", "transformer"], "exclude": ["주상변압기", "지상변압기", "유입변압기", "유입형변압기", "몰드변압기", "건식변압기", "전력용변압기", "가스절연변압기", "단권변압기", "주변압기", "승압변압기", "계기용", "변압기 보호", "OLTC", "탐사", "접지케이블", "solid-state transformer", "SST", "고체변압기", "반도체변압기", "고체형변압기"], "equipment": ["main-tr", "oil-tr", "cast-tr"] },
+
+    { "keywords": ["수배전반", "폐쇄형배전반", "통합배전반", "수변전설비", "배전반", "switchgear", "switchboard"], "exclude": ["보호배전반", "소내배전반", "직류 배전반", "절연세척", "가스절연개폐장치", "gas-insulated switchgear"], "equipment": ["mv-swgr", "lv-swgr"] },
+    { "keywords": ["특고압배전반", "고압배전반", "고압반"], "equipment": ["mv-swgr"] },
+    { "keywords": ["저압배전반", "저압반"], "equipment": ["lv-swgr"] },
+    { "keywords": ["전동기제어반", "동력제어반", "MCC"], "equipment": ["mcc"] },
+    { "keywords": ["분전반", "panelboard"], "equipment": ["panelboard", "branch-mccb"] },
+
+    { "keywords": ["보호배전반", "보호 IED", "보호IED", "동작실패보호", "변압기 보호"], "equipment": ["relay-tx"] },
+    { "keywords": ["보호계전기", "보호계전", "디지털계전기", "protection relay"], "equipment": ["protection-relay", "relay-tx"] },
+    { "keywords": ["변전소자동화", "디지털변전소", "IEC 61850"], "equipment": ["sas"] },
+
+    { "keywords": ["가스절연부하개폐기", "절연부하개폐기", "ECO-부하개폐기", "친환경부하개폐기", "가스개폐기", "DAS개폐기", "자동화개폐기", "다회로차단기", "다회로개폐기"], "equipment": ["auto-switch"] },
+    { "keywords": ["부하개폐기", "자동고장구분개폐기", "LBS"], "exclude": ["가스절연부하개폐기", "절연부하개폐기", "ECO-부하개폐기", "친환경부하개폐기"], "equipment": ["lbs"] },
+    { "keywords": ["리클로저", "recloser"], "equipment": ["recloser"] },
+    { "keywords": ["자동부하전환개폐기", "ALTS"], "equipment": ["alts"] },
+    { "keywords": ["자동절환개폐기", "ATS"], "only": "bids", "equipment": ["lv-ats"] },
+
+    { "keywords": ["진공차단기", "VCB"], "equipment": ["vcb"] },
+    { "keywords": ["기중차단기", "ACB"], "only": "bids", "equipment": ["acb"] },
+    { "keywords": ["배선용차단기", "MCCB"], "equipment": ["mccb"] },
+    { "keywords": ["누전차단기", "ELCB"], "equipment": ["elcb"] },
+    { "keywords": ["직류차단기", "DC차단기", "DC breaker", "DC circuit breaker", "LVDC", "직류배전"], "equipment": ["dc-devices"] },
+    { "keywords": ["고속도차단기", "전기철도", "철도전력", "급전설비", "전철변전소"], "exclude": ["다회로"], "equipment": ["railway"] },
+    { "keywords": ["한류기", "fault current limiter"], "equipment": ["fcl"] },
+
+    { "keywords": ["피뢰기", "surge arrester"], "equipment": ["la"] },
+    { "keywords": ["서지보호기", "SPD"], "only": "bids", "equipment": ["spd"] },
+    { "keywords": ["계기용변성기", "계기용변류기", "MOF"], "only": "bids", "equipment": ["mof", "ct-pt"] },
+    { "keywords": ["전력량계", "스마트미터", "smart meter", "AMI"], "exclude": ["가스", "수도"], "equipment": ["meter"] },
+    { "keywords": ["원격검침"], "exclude": ["도시가스", "가스계량기", "수도"], "equipment": ["amrs"] },
+    { "keywords": ["진상콘덴서", "역률개선", "역률제어"], "equipment": ["capacitor"] },
+    { "keywords": ["무정전전원", "UPS"], "equipment": ["ups"] },
+    { "keywords": ["비상발전기", "비상용발전기", "디젤발전기"], "equipment": ["emergency-gen"] },
+    { "keywords": ["버스덕트", "버스웨이", "busway", "busduct"], "equipment": ["busway"] },
+    { "keywords": ["순간전압보상", "DVR"], "only": "bids", "equipment": ["sag-protector"] },
+
+    { "keywords": ["송전선로", "지중송전", "전력케이블", "transmission line"], "equipment": ["transmission-line"] },
+    { "keywords": ["HVDC", "초고압직류", "초고압 직류"], "equipment": ["hvdc"] },
+    { "keywords": ["STATCOM", "FACTS", "유연송전"], "equipment": ["facts"] },
+    { "keywords": ["substation", "변전소 건설", "변전소 신설"], "exclude": ["modular substation"], "equipment": ["substation"] },
+    { "keywords": ["모듈형변전", "modular substation", "e-house"], "equipment": ["modular-substation"] },
+
+    { "keywords": ["에너지저장장치", "ESS", "BESS", "battery storage", "energy storage"], "exclude": ["LED", "등기구"], "equipment": ["ess"] },
+    { "keywords": ["전력변환장치", "PCS", "태양광인버터", "태양광 인버터"], "equipment": ["pcs"] },
+    { "keywords": ["태양광발전", "태양광 발전"], "equipment": ["pv"] },
+    { "keywords": ["마이크로그리드", "microgrid"], "equipment": ["microgrid"] },
+    { "keywords": ["전기차충전", "전기차 충전기", "급속충전기", "완속충전기", "EV charger", "EV charging"], "equipment": ["ev-charger"] },
+
+    { "keywords": ["SCADA", "ECMS", "PQMS"], "equipment": ["scada"] },
+    { "keywords": ["배전관리시스템", "배전자동화시스템", "ADMS", "DERMS"], "equipment": ["dms"] },
+    { "keywords": ["BEMS", "FEMS"], "equipment": ["xems"] },
+    { "keywords": ["에너지관리시스템"], "equipment": ["ems"] },
+    { "keywords": ["PLC"], "only": "bids", "equipment": ["plc"] },
+    { "keywords": ["전동기", "고효율모터"], "exclude": ["제어반", "보호"], "equipment": ["motor"] }
+  ]
+}
