@@ -107,19 +107,19 @@ describe('표시 규칙', () => {
     expect(reserveLevel(null)).toBeNull();
   });
 
-  it('40분 넘게 갱신이 없으면 지연', () => {
+  it('20분 넘게 갱신이 없으면 지연', () => {
     const asof = '2026-11-19T14:20:00+09:00';
-    expect(isStale(asof, new Date('2026-11-19T05:59:00Z'))).toBe(false); // 14:59 KST (39분)
-    expect(isStale(asof, new Date('2026-11-19T06:01:00Z'))).toBe(true); // 15:01 KST (41분)
+    expect(isStale(asof, new Date('2026-11-19T05:39:00Z'))).toBe(false); // 14:39 KST (19분)
+    expect(isStale(asof, new Date('2026-11-19T05:41:00Z'))).toBe(true); // 14:41 KST (21분)
     expect(isStale('garbage')).toBe(true);
   });
 
-  it('기준 시각은 기기 시간대와 무관하게 KST HH:MM, 다음 갱신 = 생성 + 20분', () => {
+  it('기준 시각은 기기 시간대와 무관하게 KST HH:MM, 다음 갱신 = 생성 + 5분', () => {
     expect(hmKst('2026-11-19T14:20:00+09:00')).toBe('14:20');
     expect(hmKst('2026-11-19T15:05:00Z')).toBe('00:05');
     expect(hmKst(undefined)).toBe('--:--');
     const d = buildSupplyData(parseDataGoKrItems(fixture), new Date('2026-11-19T05:21:00Z'))!;
-    expect(nextUpdateHm(d)).toBe('14:41');
+    expect(nextUpdateHm(d)).toBe('14:26');
   });
 
   it('isSupplyData 는 모양이 틀린 JSON 을 거름', () => {

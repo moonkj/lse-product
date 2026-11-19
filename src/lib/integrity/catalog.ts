@@ -21,7 +21,7 @@ export function catalogRules(c: Collector, products: readonly Product[], categor
   c.run('DI-05', () => {
     for (const p of products)
       if (!PRODUCT_ID_RE_BY_SOURCE[sourceOf(p)].test(p.id))
-        c.error('DI-05', `제품 id 형식 아님 (${sourceOf(p)}: 국문 P+숫자5자리·D+자료실 번호, 영문 EN-…, SSQ SSQ-…): ${p.id}`, { productId: p.id });
+        c.error('DI-05', `제품 id 형식 아님 (${sourceOf(p)}: 국문 P+숫자5자리·D+자료실 번호, 영문 EN-…, SSQ SSQ-…, 미국 법인 US-…): ${p.id}`, { productId: p.id });
   });
   c.run('DI-06', () => {
     for (const x of categories) if (!CATEGORY_CODE_RE.test(x.code)) c.error('DI-06', `카테고리 코드 형식 아님: ${x.code}`, { categoryCode: x.code });

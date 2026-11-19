@@ -133,12 +133,13 @@ export type DocRef = z.infer<typeof DocRefSchema>;
 
 /**
  * 제품 출처 (2026-11-18 사용자 결정: 국문·영문·Solution Square 전 제품).
- * ko = 국문 사이트(기본), en = 영문 사이트 전용 시리즈, ssq = Solution Square(sol.ls-electric.com) 전용 라인.
+ * ko = 국문 사이트(기본), en = 영문 사이트 전용 시리즈, ssq = Solution Square(sol.ls-electric.com) 전용 라인,
+ * us = 미국 법인 LS ELECTRIC America(lselectricamerica.com) 전용 북미 제품 (2026-11-19 UL67 패널보드).
  * 생략 = ko. 출처별 id 형식은 integrity PRODUCT_ID_RE_BY_SOURCE (ko: P00000·D000000(자료실), en: EN-…, ssq: SSQ-…)
  */
-export const ProductSourceSchema = z.enum(['ko', 'en', 'ssq']);
+export const ProductSourceSchema = z.enum(['ko', 'en', 'ssq', 'us']);
 export type ProductSource = z.infer<typeof ProductSourceSchema>;
-export const PRODUCT_SOURCE_LABELS: Record<ProductSource, string> = { ko: '국문 사이트', en: '영문 사이트', ssq: 'Solution Square' };
+export const PRODUCT_SOURCE_LABELS: Record<ProductSource, string> = { ko: '국문 사이트', en: '영문 사이트', ssq: 'Solution Square', us: 'LS ELECTRIC America' };
 
 export const ProductSchema = z.object({
   id: z.string().min(1),

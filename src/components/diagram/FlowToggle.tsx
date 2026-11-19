@@ -26,7 +26,7 @@ export default function FlowToggle() {
         announce(on ? '전기 흐름 끔' : '전기 흐름 켬');
       }}
     >
-      <span aria-hidden="true">⚡</span> 흐름
+      <span aria-hidden="true">⚡</span><span className="dflow-toggle__label"> 흐름</span>
     </button>
   );
 }

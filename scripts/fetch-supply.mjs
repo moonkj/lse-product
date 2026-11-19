@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 실시간 전력수급 수집 → dist/data/supply.json (빌드 산출물에만 씀, 커밋하지 않음)
- * 실행: node scripts/fetch-supply.mjs  (GitHub Actions deploy.yml 의 빌드 뒤 단계, 20분 schedule)
+ * 실행: node scripts/fetch-supply.mjs  (GitHub Actions deploy.yml 의 빌드 뒤 단계 — push·6시간 예약. 실시간 값은 functions/api/supply.ts, 이 파일은 대체용)
  *
  * - API: 공공데이터포털 한국전력거래소_오늘전력수급현황조회_GW [15158703]
  *   https://apis.data.go.kr/B552115/Sukub5mToday/getSukub5mToday (serviceKey, pageNo, numOfRows=300, dataType=JSON)

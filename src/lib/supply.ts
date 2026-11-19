@@ -19,10 +19,10 @@ export const SUPPLY_FIELDS = ['suppAbility', 'supplyAbility', 'suppAblty', 'sppl
 
 /** 화면·JSON 출처 문구 (항상 표시) */
 export const SUPPLY_SOURCE = '전력거래소 공개 데이터';
-/** 수집 주기(분) — .github/workflows/deploy.yml schedule 과 맞출 것 */
-export const COLLECT_EVERY_MIN = 20;
-/** 이보다 오래 갱신이 없으면 "지연" (공개·수집 주기의 2배) */
-export const STALE_AFTER_MIN = 40;
+/** 갱신 주기(분) — 전력거래소 5분 공개 · /api/supply 캐시(functions/api/supply.ts CACHE_SECONDS) · 앱 다시 읽기 간격 */
+export const COLLECT_EVERY_MIN = 5;
+/** 이보다 오래 갱신이 없으면 "지연" (공개 지연 여유 포함 4주기). API 가 실패해 배포 때 파일로 대체되면 대개 지연으로 보인다 */
+export const STALE_AFTER_MIN = 20;
 
 /**
  * 경보 단계 — 공급예비력(GW)이 값 "미만"이면 그 단계. 위에서부터 검사.

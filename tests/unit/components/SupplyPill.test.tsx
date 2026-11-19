@@ -33,9 +33,11 @@ describe('SupplyPill', () => {
   it('JSON 이 없으면(404) 아무것도 그리지 않음', async () => {
     fetchMock.mockResolvedValue(new Response('', { status: 404 }));
     const { container } = render(<SupplyPill />);
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    // API(/api/supply) → 대체 파일(data/supply.json) 순서로 둘 다 시도
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
     expect(container).toBeEmptyDOMElement();
-    expect(String(fetchMock.mock.calls[0][0])).toMatch(/data\/supply\.json$/);
+    expect(String(fetchMock.mock.calls[0][0])).toBe('https://lse-grid-map.pages.dev/api/supply');
+    expect(String(fetchMock.mock.calls[1][0])).toMatch(/data\/supply\.json$/);
   });
 
   it('정상: "예비율 14.3% · 정상 · 14:20 기준", 출처 title, 누르면 팝오버(수요·공급능력·예비력·출처·다음 갱신)', async () => {
@@ -52,7 +54,7 @@ describe('SupplyPill', () => {
     expect(pop).toHaveTextContent('현재 수요70.0 GW');
     expect(pop).toHaveTextContent('공급능력80.0 GW');
     expect(pop).toHaveTextContent('공급예비력10.00 GW');
-    expect(screen.getByTestId('supply-source')).toHaveTextContent('출처: 전력거래소 공개 데이터 · 14:20 기준 · 다음 갱신 약 14:41');
+    expect(screen.getByTestId('supply-source')).toHaveTextContent('출처: 전력거래소 공개 데이터 · 14:20 기준 · 다음 갱신 약 14:26');
     expect(pop.querySelector('.supply__spark-demand')).not.toBeNull();
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByTestId('supply-popover')).toBeNull();
@@ -67,7 +69,7 @@ describe('SupplyPill', () => {
     expect(pill).toHaveTextContent('주의');
   });
 
-  it('40분 넘게 갱신 없으면 회색 "지연 · 마지막 13:30"', async () => {
+  it('20분 넘게 갱신 없으면 회색 "지연 · 마지막 13:30"', async () => {
     fetchMock.mockImplementation(() => ok(make(10, '2026-11-19T13:30:00+09:00')));
     render(<SupplyPill />);
     const pill = await screen.findByTestId('supply-pill');

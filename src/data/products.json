@@ -3332,5 +3332,20 @@
     "business": "power",
     "discontinued": false,
     "docs": []
+  },
+  {
+    "id": "US-1671",
+    "name": "UL67 Panelboard (LPB-1·2·3)",
+    "categoryCode": "",
+    "categoryPath": [
+      "LS ELECTRIC America",
+      "Power Distribution",
+      "UL67 Panelboard"
+    ],
+    "url": "https://www.lselectricamerica.com/product/1671/ul-67-panelboard",
+    "source": "us",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
   }
 ]

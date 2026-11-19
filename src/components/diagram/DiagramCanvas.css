@@ -1292,3 +1292,38 @@
   .dtool__main > .dtool__clear { flex-shrink: 1; min-width: 0; }
   .dtool__clear b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 }
+
+/* 좁은 도구줄에서 버튼이 화면 밖으로 넘치던 문제 (2026-11-19: 폭 414~500px, 수급 알약이 있으면 830px 아래 전부).
+   400px 이상은 한 줄 고정(nowrap)이라 단계별로 글자를 줄인다. 줄인 글자는 화면낭독기용으로 남겨 버튼 이름은 그대로 */
+.dflow-toggle__label,
+.dtool__btn-sub,
+.supply__label,
+.supply__time,
+.supply__sep,
+.supply__status { white-space: nowrap; }
+@container dtool (max-width: 860px) {
+  /* 흐름·계획 버튼은 아이콘만, 수급 알약은 '예비율' 글자와 기준 시각을 뺌(시각은 누르면 팝오버에 있음) */
+  .dflow-toggle__label,
+  .dtool__end .supply__label,
+  .dtool__end .supply__time { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+  .dtool__end { gap: 4px; }
+  .dtool__end .dflow-toggle { min-width: 44px; padding-left: 0; padding-right: 0; justify-content: center; }
+}
+@container dtool (max-width: 700px) {
+  /* 폭 맞춤 버튼 숨김(전체 보기·확대로 대신), 수급 알약은 아이콘 + 예비율만 (단계는 아이콘·색과 버튼 이름으로) */
+  [data-testid='zoom-fit-width'] { display: none; }
+  .dtool__end .supply__sep,
+  .dtool__end .supply__status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+}
+@container dtool (max-width: 600px) {
+  /* 그래도 넘치면 오른쪽 묶음(흐름·계획·수급)만 둘째 줄 오른쪽으로 */
+  .dtool__main { flex-wrap: wrap; row-gap: 4px; }
+  .dtool__end { margin-left: auto; }
+}
+@container dtool (max-width: 520px) {
+  /* '전체 보기'는 '전체'만(이름은 그대로), 보기 세그먼트·버튼 안쪽 여백 축소 */
+  .dtool__btn-sub { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; padding: 0; margin: -1px; }
+  .dtool__seg-btn { padding: 0 var(--space-2); }
+  .dtool__btn { padding: 0 var(--space-2); }
+  .dtool__main { padding-left: var(--space-2); padding-right: var(--space-2); }
+}

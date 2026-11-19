@@ -75,18 +75,19 @@ export function isHttpsUrl(s: string): boolean {
   }
 }
 
-/** 공식 사이트(서브도메인 포함) https 링크 — DI-17·63·84 */
-export const LSE_URL_RE = /^https:\/\/([a-z0-9-]+\.)*ls-electric\.com(\/|$)/i;
+/** 공식 사이트(서브도메인 포함) https 링크 — DI-17·63·84. 미국 법인 사이트(lselectricamerica.com)도 공식 출처로 인정 (2026-11-19) */
+export const LSE_URL_RE = /^https:\/\/([a-z0-9-]+\.)*(ls-electric|lselectricamerica)\.com(\/|$)/i;
 export const PRODUCT_ID_RE = /^P\d{5}$/;
 /**
  * 출처별 제품 id 형식 (2026-11-18 영문·SSQ 확장). 영문 사이트 코드는 국문과 체계가 달라 같은 P 번호가 다른 제품이므로 접두사로 구분한다.
  * ko: P00000(국문 제품 페이지) · D000000(국문 자료실 등록 제품 — 제품 페이지 없이 카탈로그만 있는 경우, 자료실 d_id)
- * en: EN-P00000(영문 제품) · EN-AAA000(영문 카테고리형 제품) / ssq: SSQ-<카테고리 번호>[-모델]
+ * en: EN-P00000(영문 제품) · EN-AAA000(영문 카테고리형 제품) / ssq: SSQ-<카테고리 번호>[-모델] / us: US-<미국 법인 제품 번호>
  */
 export const PRODUCT_ID_RE_BY_SOURCE = {
   ko: /^(P\d{5}|D\d{6})$/,
   en: /^EN-(P\d{5}|[A-Z]{3}\d{3,})$/,
   ssq: /^SSQ-\d+(-[A-Za-z0-9]+)?$/,
+  us: /^US-\d+$/,
 } as const;
 export const CATEGORY_CODE_RE = /^[A-Z]{3}\d{3,}$/;
 /** 라우트(/equipment/:id)에 쓰이는 URL-safe kebab-case */

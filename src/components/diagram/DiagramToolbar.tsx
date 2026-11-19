@@ -111,7 +111,7 @@ function ZoomControls({ total }: { total: number }) {
         </button>
       </div>
       <button type="button" className="dtool__btn" data-testid="zoom-reset" onClick={() => getDiagramController()?.fitAll()}>
-        전체 보기<span className="dtool__count"> ({total}종)</span>
+        전체<span className="dtool__btn-sub"> 보기</span><span className="dtool__count"> ({total}종)</span>
       </button>
       <button
         type="button"

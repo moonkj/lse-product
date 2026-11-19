@@ -21,7 +21,7 @@ export default function PlanToggle() {
         announce(on ? '계획 기반 설비 소요 끔' : '계획 기반 설비 소요 켬');
       }}
     >
-      <span aria-hidden="true">▤</span> 계획
+      <span aria-hidden="true">▤</span><span className="dflow-toggle__label"> 계획</span>
     </button>
   );
 }

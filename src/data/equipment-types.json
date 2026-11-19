@@ -2546,37 +2546,59 @@
         {
           "label": "선정 포인트",
           "text": "주간선 전류와 분기 회로 수, 설치점 단락전류에 맞춘 차단용량, 매입·노출 설치, 외함 재질과 보호등급, 증설 여유를 본다."
+        },
+        {
+          "label": "제품 설명",
+          "text": "UL67 패널보드 기준으로 LPB-1(레일형 모선, 100·150·250AF), LPB-2(레일형, 400·600AF), LPB-3(볼트온형, 800·1200AF)을 공급한다. 주차단기 또는 메인 러그 최대 1200A, 분기 차단기는 UTE100~UTS1200, NEMA Type 1 옥내형이다. 국내 KS 분전반 함체는 별도 확인 필요."
         }
       ],
-      "basis": "general",
-      "sources": []
+      "basis": "catalog",
+      "sources": [
+        {
+          "title": "UL67 Panelboard 리플릿 (C830D2-01-202309)",
+          "url": "https://www.lselectricamerica.com/product/1671/ul-67-panelboard",
+          "page": 5
+        }
+      ]
     },
     "learnPoints": [
       "주택·사무실 벽에 있는 차단기 함이 분전반"
     ],
-    "coverage": "missing",
+    "coverage": "owned",
     "lseCategoryCodes": [],
-    "gapNote": "분전반용 차단기는 공급 — 분전반 함체 완제품 보유 여부 확인 필요",
+    "gapNote": "UL67 패널보드 기준, 국내 KS 분전반 함체는 별도 확인 필요",
     "gapAssessment": {
-      "supplyMode": "unknown",
-      "basis": "bu-confirmed",
-      "confidence": "confirmed",
+      "supplyMode": "in-house",
+      "basis": "catalog",
+      "confidence": "candidate",
       "evidence": [
         {
-          "type": "url",
-          "ref": "https://www.ls-electric.com/ko/product/",
-          "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
+          "type": "doc",
+          "ref": "UL67 Panelboard Leaflet EN C830D2-01-202309",
+          "note": "LPB-1·2·3 사양 (5~7쪽) — 북미 UL 인증 제품"
         },
         {
-          "type": "meeting",
-          "ref": "2026-11-18 사용자 확정 지시",
-          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
+          "type": "url",
+          "ref": "https://www.lselectricamerica.com/product/1671/ul-67-panelboard",
+          "note": "LS ELECTRIC America 제품 페이지 (2026-11-19 확인)"
         }
       ],
-      "verifiedBy": "제품맵 운영팀",
-      "verifiedAt": "2026-11-18",
-      "reviewDue": "2027-05-18"
-    }
+      "ratingScope": {
+        "required": "국내 KS 분전반 함체 포함",
+        "offered": "UL67 패널보드(북미) — 국내 KS 함체는 별도 확인 필요"
+      }
+    },
+    "productIds": [
+      "US-1671"
+    ],
+    "searchAliases": [
+      "LPB",
+      "LPB-1",
+      "LPB-2",
+      "LPB-3",
+      "UL67 Panelboard",
+      "UL67 패널보드"
+    ]
   },
   {
     "id": "branch-mccb",
