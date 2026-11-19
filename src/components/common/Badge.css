@@ -7,7 +7,7 @@
   gap: var(--space-1);
   padding: 2px var(--space-2);
   border: 1px solid transparent;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-chip);
   background: var(--color-tag-bg);
   color: var(--color-text-soft);
   font-size: var(--fs-xs);

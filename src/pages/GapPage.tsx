@@ -5,7 +5,7 @@ import { useData } from '../data/load';
 import { announce } from '../lib/announce';
 import CoverageBadge from '../components/common/CoverageBadge';
 import Button, { ButtonLink, DIAGRAM_CTA_LABEL } from '../components/common/Button';
-import { Count, FilterChip, Tag } from '../components/common/Badge';
+import { Count, FilterChip } from '../components/common/Badge';
 import PageHeader, { jumpState } from '../components/common/PageHeader';
 import {
   CATEGORY_LABELS,
@@ -14,9 +14,7 @@ import {
   COVERAGE_LABELS,
   COVERAGE_ORDER,
   COVERAGE_SHORT_LABELS,
-  confidenceLabel,
   GAP_LIST_COVERAGES,
-  gapConfidence,
   isMainLayer,
   pageTitle,
   todayIso,
@@ -284,15 +282,6 @@ export default function GapPage() {
                     <tr key={eq.id} data-testid={`gap-item-${eq.id}`} data-coverage={eq.coverage}>
                       <td>
                         <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_SHORT_LABELS[eq.coverage]} />
-                        {gapConfidence(eq) && (
-                          <Tag
-                            tone={gapConfidence(eq)!}
-                            className={`gp-conf gp-conf--${gapConfidence(eq)}`}
-                            testId={`gap-confidence-${eq.id}`}
-                          >
-                            {confidenceLabel(eq.coverage, gapConfidence(eq)!).replace('공백 ', '')}
-                          </Tag>
-                        )}
                       </td>
                       <td>
                         <Link to="/" state={jumpState(eq.layer)} className="gp-layer-link" title="계통도에서 이 계층 보기">

@@ -165,10 +165,6 @@ export default function DiagramLegend({ mode }: { mode: ViewMode }) {
               참조 타일 (같은 기기 재등장)
             </li>
           </ul>
-          <p className="dlegend__conf" data-testid="legend-confidence">
-            <span className="dlegend__conf-box dlegend__conf-box--candidate" aria-hidden="true" /> 공백 후보
-            <span className="dlegend__conf-box dlegend__conf-box--confirmed" aria-hidden="true" /> 공백 확정
-          </p>
         </div>
       )}
     </div>

@@ -3,7 +3,7 @@ import { useData } from '../../data/load';
 import { getDiagramModel } from '../../lib/diagram/model';
 import { useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
 import { useView } from '../../lib/diagram/view';
-import { FLOW_DASH, FLOW_GAP, FLOW_PERIOD_SEC, IDLE_DASH, IDLE_GAP, IDLE_SPEED, computeFlowEdges, flowDirMap, pathMidpoint, useFlowOn } from '../../lib/diagram/flow';
+import { FLOW_DASH, FLOW_DOWN_DASH, FLOW_DOWN_GAP, FLOW_DOWN_PERIOD_SEC, FLOW_GAP, FLOW_PERIOD_SEC, IDLE_DASH, IDLE_GAP, IDLE_SPEED, computeFlowEdges, flowDirMap, pathMidpoint, useFlowOn } from '../../lib/diagram/flow';
 import './flow.css';
 
 /** 배율을 이 단위로 반올림해 줌 중 다시 그리기를 줄인다 */
@@ -66,6 +66,11 @@ export default function FlowLayer() {
     '--flow-gap': `${gap / scale}px`,
     '--flow-period': `${(dash + gap) / scale}px`,
     '--flow-duration': `${period}s`,
+    // 하류(role=down) 경로용 — 6/14, 같은 속도라 주기는 대시 길이에 맞춰 짧아짐
+    '--flow-dash-down': `${FLOW_DOWN_DASH / scale}px`,
+    '--flow-gap-down': `${FLOW_DOWN_GAP / scale}px`,
+    '--flow-period-down': `${(FLOW_DOWN_DASH + FLOW_DOWN_GAP) / scale}px`,
+    '--flow-duration-down': `${FLOW_DOWN_PERIOD_SEC}s`,
   } as CSSProperties;
 
   return (
@@ -102,7 +107,13 @@ export default function FlowLayer() {
         ))}
         {flows.map((f) =>
           f.dir === 'bi' ? null : (
-            <path key={f.id} className={`dflow__path${f.dir === 'reverse' ? ' dflow__path--rev' : ''}`} d={f.d} data-flow-edge={f.id} />
+            <path
+              key={f.id}
+              className={`dflow__path${f.role === 'up' ? ' dflow__path--up' : f.role === 'down' ? ' dflow__path--down' : ''}${f.dir === 'reverse' ? ' dflow__path--rev' : ''}`}
+              d={f.d}
+              data-flow-edge={f.id}
+              data-flow-role={f.role}
+            />
           ),
         )}
       </g>

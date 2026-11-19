@@ -79,11 +79,6 @@ export default function EquipmentPage() {
               계열사 공급: <strong data-testid="equipment-affiliate-name">{eq.affiliateName}</strong>
             </p>
           )}
-          {eq.gapNote && (
-            <p className="pg-note" data-testid="equipment-gap-note">
-              {eq.gapNote}
-            </p>
-          )}
 
           <div className="pg-actions">
             {node && (

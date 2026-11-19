@@ -134,6 +134,9 @@ export class PanZoom {
       st.top = `${this.oy - f.pad}px`;
       st.width = `${cw + 2 * f.pad}px`;
       st.height = `${ch + 2 * f.pad}px`;
+      // 시트가 화면 안에 다 들어가면(가운데 정렬) 범례를 시트 왼쪽에 맞추도록 화면 기준 시트 왼쪽을 알림
+      const fits = cw + 2 * f.pad <= this.vw;
+      this.vp.parentElement?.style.setProperty('--sheet-left', fits ? `${Math.max(0, this.ox - f.pad)}px` : '0px');
     }
     // 많이 축소했을 때 밴드 라벨이 읽히도록 글자 배율 보정
     this.inner.style.setProperty('--label-k', String(Math.max(1, Math.min(3.5, 0.8 / this.scale))));

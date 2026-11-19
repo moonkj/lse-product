@@ -1,3 +1,4 @@
+import './QrButton.css';
 import { useEffect, useRef } from 'react';
 
 /**

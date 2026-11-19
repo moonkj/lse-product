@@ -37,6 +37,9 @@ export default function Header() {
 
       <SearchBox />
 
+      {/* QR — 오른쪽 버튼 묶음 맨 왼쪽 (2026-11-19 사용자) */}
+      <QrButton />
+
       {/* 넓게 보기 (C1): 압축 화면을 손으로 켜는 토글. 디자이너 토론 P0-5: 아이콘 버튼(글자는 화면낭독기용) */}
       <button
         type="button"
@@ -53,7 +56,6 @@ export default function Header() {
         <span className="present-toggle__label">넓게 보기</span>
       </button>
 
-      <QrButton />
       <ThemeToggle />
     </header>
   );

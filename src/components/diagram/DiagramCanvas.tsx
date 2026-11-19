@@ -38,9 +38,15 @@ export interface JumpState extends FocusState {
   jumpTo?: Layer;
 }
 
-/** 처음 열었을 때 보이는 영역: L4 수전설비 주회로(VCB 열) 확대 — 2026-11-19 주 계층 x ×1.3 뒤에도 같은 배율·같은 가운데 */
-const INITIAL_DESKTOP: Rect = { x: 863, y: 1620, w: 900, h: 540 };
-const INITIAL_MOBILE: Rect = { x: 930, y: 1640, w: 480, h: 420 };
+/** 모바일 첫 화면: L4 수전설비 주회로(VCB 열) 확대 — 2026-11-19 좌표 변경(x ×1.3, L2·L3 여백 −150) 뒤에도 같은 영역 */
+const INITIAL_MOBILE: Rect = { x: 930, y: 1490, w: 480, h: 420 };
+/**
+ * 데스크톱 첫 화면 (2026-11-19 사용자 승인): 맨 위(L1)부터.
+ * 폭 맞춤 배율이 INITIAL_FIT_MIN 이상이면 폭 맞춤(가운데·맨 위), 아니면 INITIAL_SCALE 로 계통도 왼쪽 위를 화면 왼쪽 위(여백 INITIAL_MARGIN)에.
+ */
+const INITIAL_FIT_MIN = 0.46;
+const INITIAL_SCALE = 0.5;
+const INITIAL_MARGIN = 24;
 /** 도면 시트 틀 (E5 P0): 안쪽 여백 16px, 시트 아래 여백 72px (범례 카드 40px 가 그림 아래를 가리지 않게) — 화면 px */
 const SHEET_PAD = 16;
 const SHEET_BOTTOM = 72;
@@ -98,7 +104,7 @@ const LABEL_ZONE_H = 84;
 const LAYER_MIN_SCALE = 0.64;
 /** 이 배율 미만이면 부제를 숨기고 제목을 키운다(중간 단계) */
 const MID_SCALE = 0.6;
-export const OVERVIEW_SCALE = 0.35; // 2026-11-19 사용자: 35% 아래에서만 점+약칭
+export const OVERVIEW_SCALE = 0.45; // 디자이너 4·5라운드: 35→45% (1440 폭 맞춤 37%에서 글자 5px 문제) // 2026-11-19 사용자: 35% 아래에서만 점+약칭
 
 export const Bands = memo(function Bands({
   model,
@@ -348,7 +354,9 @@ export default function DiagramCanvas() {
     if (init.jumpTo && layerRect(init.jumpTo)) {
       pz.fitRect(layerRect(init.jumpTo)!, 1);
       pinLayer(init.jumpTo);
-    } else pz.fitRect(init.isMobile ? INITIAL_MOBILE : INITIAL_DESKTOP, 1);
+    } else if (init.isMobile) pz.fitRect(INITIAL_MOBILE, 1);
+    else if (pz.fitWidthScale() >= INITIAL_FIT_MIN) pz.fitWidth();
+    else pz.placeAt(0, 0, INITIAL_MARGIN, INITIAL_MARGIN, INITIAL_SCALE);
 
     const unregister = registerDiagramController({
       jumpToLayer: (l) => {

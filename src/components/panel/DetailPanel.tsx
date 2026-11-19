@@ -29,7 +29,6 @@ import { useData } from '../../data/load';
 import { ButtonLink } from '../common/Button';
 import DocsList from '../common/DocsList';
 import EmptyProducts from '../common/EmptyProducts';
-import GapAssessmentSection from './GapAssessmentSection';
 import GapSections from './GapSections';
 import NeighborChips from './NeighborChips';
 import PanelHero from './PanelHero';
@@ -49,8 +48,6 @@ function pillText(coverage: Coverage, productCount: number, confirmed: boolean, 
   return relatedCount > 0 ? `${base} · 관련 제품 ${relatedCount}개` : base;
 }
 
-/** gapNote 라벨: 상태에 맞게 (보유 기기 메모에 "공백"이 붙지 않게) */
-const NOTE_LABELS: Partial<Record<Coverage, string>> = { partial: '일부 보유 메모', missing: '공백 메모' };
 
 /** 기록 항목(location.key)별 패널 스크롤 위치 — 제품 페이지 등에서 뒤로가기로 돌아오면 복원 (B5). 최근 100개만 (리뷰 S7) */
 const panelScroll = new Map<string, number>();
@@ -108,7 +105,7 @@ function PanelCompareButton({ id, name, className = '' }: { id: string; name: st
 
 /** 설명: 기본 1줄 요약, "펼치기"로 요약 전문 + 항목 (P1 패널 순서 — 맨 아래) */
 function PanelDescription({ eq }: { eq: Parameters<typeof EquipmentOverview>[0]['eq'] }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true); // 2026-11-19 사용자: 설명을 접지 말고 열어 두기
   const bodyId = useId();
   const { summary, points } = overviewParts(eq);
   const canExpand = points.length > 0 || summary.length > 40;
@@ -468,14 +465,7 @@ export default function DetailPanel() {
             </p>
           )}
 
-          {eq.gapNote && (
-            <div className={`dp-gapnote${gapView ? ' dp-gapnote--strong' : ''}`}>
-              <span className="dp-gapnote__label">{NOTE_LABELS[eq.coverage] ?? '메모'}</span>
-              <span data-testid="detail-gap-note">{eq.gapNote}</span>
-            </div>
-          )}
-
-          <GapAssessmentSection eq={eq} />
+          {/* 메모·판정 기록(판정 확정/후보·근거·공급 방식·확인·재확인 기한·근거 링크)은 화면에 표시하지 않음 — 2026-11-19 사용자: 전수 삭제 */}
 
           {gapView && <GapSections node={node} onSelect={selectFromPanel} />}
 

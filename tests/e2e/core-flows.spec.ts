@@ -346,7 +346,7 @@ test.describe('E2E-3 기획 Gap 확인', () => {
 
     await clickNode(page, missing!.node.id, missing!.eq.layer);
     await expect(tid(page, 'detail-coverage-badge')).toHaveAttribute('data-coverage', 'missing');
-    await expect(tid(page, 'detail-gap-note')).toBeVisible();
+    await expect(tid(page, 'detail-gap-note')).toHaveCount(0); // 메모·판정 기록은 표시하지 않음 (2026-11-19)
     await expect(tid(page, 'detail-product-list')).toHaveCount(0);
     await expect(tid(page, 'detail-empty-products')).toBeVisible(); // "자사 제품 미보유(공백)" — 오류 아님
   });
@@ -752,22 +752,15 @@ test.describe('E2E-6 계통도 개선 R3', () => {
     if (ownedPlain) await expect(diagramNode(page, ownedPlain.node.id)).not.toHaveAttribute('data-confidence', /.+/);
   });
 
-  // UX 라운드 U B7: 패널 구성품은 공백이 아니므로 섹션 제목 "구성품 판정", 확신도 "판정 확정/후보" (공백 단어 없음)
-  test('CT/PT(패널 구성품) 선택 → 패널에 "구성품 판정" 섹션 (근거·확신도, "공백" 표기 없음)', async ({ page }) => {
+  // 2026-11-19 사용자: 판정 기록(메모·판정 확정/후보·근거·재확인 기한) 전수 삭제
+  test('패널 구성품 선택 → 판정 기록 섹션·메모가 없음', async ({ page }) => {
     const t = nodeWith('sourced', (e) => e.id === 'ct-pt') ?? nodeWith('sourced');
     test.skip(!t, 'sourced 기기 노드 없음');
     await page.goto(`./#/?node=${t!.node.id}`);
     await expect(panel(page)).toBeVisible();
     await expect(tid(page, 'detail-coverage-badge')).toHaveAttribute('data-coverage', 'sourced');
-    const section = tid(page, 'detail-gap-assessment');
-    await expect(section).toBeVisible();
-    await expect(section).toContainText('구성품 판정');
-    // v0.8: 데이터 판정 기준 — 확정이면 '확정', 후보·재확인 기한 지남이면 '후보'
-    const conf = expectedConfidence(eqById.get(t!.node.equipmentTypeId)!)!;
-    await expect(tid(page, 'detail-gap-confidence')).toHaveAttribute('data-confidence', conf);
-    await expect(section).toContainText(conf === 'confirmed' ? '확정' : '후보');
-    await expect(section).not.toContainText(conf === 'confirmed' ? '후보' : '확정');
-    await expect(section).not.toContainText('공백');
+    await expect(tid(page, 'detail-gap-assessment')).toHaveCount(0);
+    await expect(panel(page)).not.toContainText('재확인 기한');
   });
   // ── v0.7 (개선 R4) ──
   test('v0.7 R4 참조 타일 패널: detail-meta = "참조 타일", detail-ref-origin = 원래 위치(계층·분류), "원래 위치로 이동" → 원래 기기 노드', async ({ page }) => {

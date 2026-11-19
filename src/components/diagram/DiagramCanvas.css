@@ -62,7 +62,7 @@
   top: 10px;
   left: 14px;
   padding: 2px 14px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-chip-lg);
   background: var(--band-label-bg);
   /* 2026-11-19 사용자: 너무 작음 → 약 2.2배(13px → 28px, 계통도 좌표 기준 — 3배는 너무 커서 조정) */
   /* 축소 보정(--label-k)은 예전 13px 기준 유지 — 3배 크기에 보정까지 곱하면 전체 보기에서 타일을 덮음 */
@@ -291,7 +291,7 @@
 .dnode--partial { --node-border: var(--cov-partial); --node-bw: var(--node-border-w-partial); }
 
 /* 공백 판정 확신도 (개선 R3): 공백류 테두리 — 후보 = 점선, 확정 = 실선 */
-.dnode[data-confidence='candidate'] { border-style: dashed; }
+.dnode[data-confidence='candidate'] { border-style: solid; } /* 판정 후보/확정 구분 표시 없앰 (2026-11-19) */
 .dnode[data-confidence='confirmed'] { border-style: solid; }
 
 /* 사진 판 108×60 가로형 (E3 P0) — 사진·심볼 공통. 흰 타일 위에서도 판 경계가 보이는 옅은 회색(다크는 한 단계 낮춘 흰색 + 테두리) */
@@ -367,12 +367,13 @@
   left: 8px;
   display: grid;
   place-items: center;
-  width: 16px;
-  height: 16px;
+  /* 참조 ↗ 칩 20px · 아이콘 13px (디자이너 3·4라운드 E3 — 16px은 64%에서 보이지 않음) */
+  width: 20px;
+  height: 20px;
   border: 1px solid var(--color-node-border);
   border-radius: var(--radius-pill);
   background: var(--color-surface);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: var(--fw-bold);
   line-height: 1;
   color: var(--color-text-muted);
@@ -434,13 +435,13 @@
   width: 18px;
   height: 18px;
   font-size: 12px;
-  box-shadow: 0 0 0 1.5px var(--node-bg);
+  box-shadow: 0 0 0 1.5px var(--tile-plate-bg, var(--node-bg)); /* 바깥 링 = 사진 판 색 (다크에서 검은 테두리로 뜨지 않게) */
 }
 
 .dnode__badge.cov-badge--owned .cov-badge__icon {
-  width: 16px;
-  height: 16px;
-  font-size: 11px;
+  width: 14px;
+  height: 14px;
+  font-size: 10px;
 }
 
 /* 계열사 마름모는 회전하면 대각선이 길어지므로 한 단계 작게 — 18px 상자 안에 */
@@ -804,7 +805,8 @@
 /* ── 범례 카드 — 캔버스 왼쪽 아래 도킹 (디자인 토론 P0-2, E5 P0 카드 마감: 불투명·모서리 12·그림자·높이 40) ─── */
 .dlegend {
   position: absolute;
-  left: 16px;
+  /* 그림이 화면보다 좁으면(가운데 정렬) 시트 왼쪽에 맞춤 — PanZoom 이 --sheet-left 를 넣음 (디자이너 5라운드 E5) */
+  left: calc(var(--sheet-left, 0px) + 16px);
   bottom: 16px;
   z-index: 3;
   box-sizing: border-box;
@@ -1290,3 +1292,22 @@
   overflow-clip-margin: 14px;
 }
 /* 공백만 보기 사이드바 활성도 계층 고유색 (E1) — 공백 수 빨강 점은 그대로 */
+
+/* ── 디자이너 4·5라운드 P0 ───────────────────────────── */
+/* 다크 모선: 밴드에 묻히지 않게 밝게 (E4) */
+:root[data-theme='dark'] .dbusnode { background: #6f93c6; }
+/* '해제' 버튼: 외곽선 알약 — 도구줄의 채운 버튼을 줄임 (E5) */
+.dtool__clear-x {
+  border: 1px solid var(--color-brand);
+  background: transparent;
+  color: var(--color-brand);
+}
+.dtool__clear:hover .dtool__clear-x {
+  background: var(--color-brand);
+  color: var(--color-on-brand, #fff);
+}
+/* 휴대폰: 도구줄 한 줄 — 폭 맞춤·인쇄 숨김 (E2·E5), 타일 부제 키움 (E3) */
+@media (max-width: 600px) {
+  [data-testid='zoom-fit-width'] { display: none; }
+  .dnode__caption { font-size: 15px; }
+}

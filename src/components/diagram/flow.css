@@ -55,6 +55,15 @@
   animation-name: dflow-move-rev;
 }
 
+/* 상·하류 대시 구분 (색은 같게, E4 2~4라운드): 상류 = 기본 18/22, 하류 = 6/14.
+   같은 속도(44px/s)라 주기는 대시+간격 길이에 맞춰 하류가 짧다. 값은 FlowLayer 가 배율로 나눠 넣음 */
+.dflow__path--down {
+  --flow-dash: var(--flow-dash-down);
+  --flow-gap: var(--flow-gap-down);
+  --flow-period: var(--flow-period-down);
+  --flow-duration: var(--flow-duration-down);
+}
+
 @keyframes dflow-move {
   from {
     stroke-dashoffset: var(--flow-period);

@@ -327,10 +327,7 @@
   box-shadow: inset 3px 0 0 var(--color-selected);
 }
 
-.layer-nav--gap .layer-nav__btn.is-current {
-  background: var(--cov-missing-bg);
-  color: var(--cov-missing-text);
-}
+/* 공백만 보기에서도 활성 줄은 계층색 (빨강은 공백 알약만 — 5라운드 우선순위 버그 수정). 칩 줄 규칙은 아래 navrow 구역 */
 
 .layer-nav__code {
   margin-right: 6px;
@@ -344,11 +341,6 @@
 
 .layer-nav__btn.is-current .layer-nav__count {
   color: inherit;
-}
-
-.layer-nav__count.has-gap {
-  color: var(--cov-missing-text);
-  font-weight: var(--fw-bold);
 }
 
 .layer-nav__note {
@@ -943,4 +935,10 @@
 @media (max-width: 900px) {
   .app-header { min-height: 56px; padding-top: var(--space-2); padding-bottom: var(--space-2); }
   .app-header__logo { font-size: var(--fs-md); }
+}
+/* 오른쪽 버튼 묶음 시작 = QR (검색창과 사이를 띄움) */
+.app-header .hdr-qr { margin-left: auto; }
+.app-header .hdr-qr + .present-toggle { margin-left: 0; }
+@media (max-width: 600px) {
+  .app-header .present-toggle { margin-left: auto; }
 }

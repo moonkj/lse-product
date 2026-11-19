@@ -54,7 +54,7 @@ describe('CT-04 DetailPanel', () => {
     expect(empty).not.toHaveTextContent('미보유'); // 보유 기기를 공백으로 보이게 하지 않음
   });
 
-  it.skipIf(!missingNode)('미보유 기기 → "자사 제품 미보유(공백)" + 공백 메모, 제품 목록·카테고리 링크 없음', () => {
+  it.skipIf(!missingNode)('미보유 기기 → "자사 제품 미보유(공백)", 제품 목록·카테고리 링크 없음, 메모·판정 기록은 표시하지 않음(2026-11-19)', () => {
     const n = missingNode!;
     renderAt(n.id);
     expect(screen.getByTestId('detail-coverage-badge')).toHaveAttribute('data-coverage', 'missing');
@@ -62,7 +62,8 @@ describe('CT-04 DetailPanel', () => {
     const empty = screen.getByTestId('detail-empty-products');
     expect(empty).toHaveTextContent('자사 제품 미보유(공백)');
     expect(within(empty).queryAllByRole('link')).toHaveLength(0);
-    if (n.eq.gapNote) expect(screen.getByTestId('detail-gap-note')).toHaveTextContent(n.eq.gapNote);
+    expect(screen.queryByTestId('detail-gap-note')).toBeNull();
+    expect(screen.queryByTestId('detail-gap-assessment')).toBeNull();
   });
 
   it.skipIf(!withProducts)('제품이 있는 기기 → 제품 카드 목록, 빈 상태 없음', () => {
@@ -122,11 +123,10 @@ describe('UX 라운드 U — DetailPanel', () => {
     expect(screen.getByTestId('detail-title')).toHaveTextContent(n.eq.name);
   });
 
-  it.skipIf(!sourcedWithGa)('B7 패널 구성품 → 판정 섹션·확신도에 "공백" 단어 없음', () => {
+  it.skipIf(!sourcedWithGa)('판정 기록(판정 확정/후보·근거·재확인 기한) 섹션은 표시하지 않음 (2026-11-19 사용자: 전수 삭제)', () => {
     renderAt(sourcedWithGa!.id);
-    const section = screen.getByTestId('detail-gap-assessment');
-    expect(within(section).getByTestId('detail-gap-confidence').textContent).toMatch(/^판정 (확정|후보)$/);
-    expect(section.querySelector('h3')!.textContent).not.toMatch(/공백/);
+    expect(screen.queryByTestId('detail-gap-assessment')).toBeNull();
+    expect(screen.queryByText(/재확인 기한|판정 근거/)).toBeNull();
   });
 
   it.skipIf(!withProducts)('B8 제품 수 단위 = "N개"', () => {
@@ -190,14 +190,14 @@ describe('A3 상세 패널 — 레일·순서·비교 담기', () => {
     expect(panel.querySelector('.dp-head .dp-hero')).not.toBeNull(); // 썸네일은 머리 안
   });
 
-  it.skipIf(!withOverview)('P1 설명: 기본 접힘(1줄 요약), 펼치기 → aria-expanded', () => {
+  it.skipIf(!withOverview)('설명: 기본 펼침(2026-11-19 사용자), 접기 → aria-expanded', () => {
     renderAt(withOverview!.id);
     const t = screen.getByTestId('detail-desc-toggle');
-    expect(t).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.getByTestId('detail-desc').parentElement).toHaveAttribute('data-collapsed', 'true');
-    fireEvent.click(t);
     expect(t).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByTestId('detail-desc').parentElement).toHaveAttribute('data-collapsed', 'false');
+    fireEvent.click(t);
+    expect(t).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByTestId('detail-desc').parentElement).toHaveAttribute('data-collapsed', 'true');
   });
 
   it.skipIf(!withProducts)('P1 "비교에 담기" ↔ "✓ 담김 n/4" (aria-pressed, 다시 누르면 빼기)', () => {

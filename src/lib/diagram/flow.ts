@@ -17,15 +17,19 @@ import type { Pt } from './router';
 export type FlowDir = NonNullable<DiagramEdge['flow']>;
 
 /** 대시 길이·간격(화면 px)과 속도(화면 px/s) — 속도는 시안 비교용으로 24(D3) / 48(D2)도 가능 */
-export const FLOW_DASH = 16;
-export const FLOW_GAP = 20;
-export const FLOW_SPEED = 56; // D2 색 재검토(2026-11-19): 한눈에 보이게 초당 56px
+export const FLOW_DASH = 18;
+export const FLOW_GAP = 22;
+export const FLOW_SPEED = 44; // 디자이너 3~5라운드: 56은 깜빡이듯 빠름 → 44px/s
 /** 한 주기(대시+간격)를 지나는 시간(초) — 배율과 무관하게 일정 (대시·간격을 배율로 나눠 화면 크기를 고정하므로) */
 /** 평소(전체 흐름) 펄스 — 옅고 짧고 느리게 (디자이너 2라운드) */
 export const IDLE_DASH = 6;
 export const IDLE_GAP = 30;
 export const IDLE_SPEED = 24;
 export const FLOW_PERIOD_SEC = (FLOW_DASH + FLOW_GAP) / FLOW_SPEED;
+/** 하류(선택 기기에서 나가는 쪽) 대시 — 상류 18/22 와 같은 색·같은 속도, 짧은 대시로 방향 의미를 더함 (디자이너 2~4라운드 E4) */
+export const FLOW_DOWN_DASH = 6;
+export const FLOW_DOWN_GAP = 14;
+export const FLOW_DOWN_PERIOD_SEC = (FLOW_DOWN_DASH + FLOW_DOWN_GAP) / FLOW_SPEED;
 
 export interface FlowEdgeInput {
   id: string;

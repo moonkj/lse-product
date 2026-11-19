@@ -1,6 +1,6 @@
 {
   "width": 3010,
-  "height": 4398,
+  "height": 4048,
   "review": {
     "status": "approved",
     "changedAt": "2026-11-18",
@@ -23,7 +23,7 @@
       "label": "송변전",
       "voltage": "345/154kV",
       "y": 540,
-      "height": 540,
+      "height": 480,
       "x": 0,
       "width": 2262
     },
@@ -31,8 +31,8 @@
       "id": "L3",
       "label": "특고압 배전",
       "voltage": "22.9kV",
-      "y": 1080,
-      "height": 540,
+      "y": 1020,
+      "height": 450,
       "x": 0,
       "width": 2262
     },
@@ -40,7 +40,7 @@
       "id": "L4",
       "label": "수전설비",
       "voltage": "22.9kV · 6.6kV",
-      "y": 1620,
+      "y": 1470,
       "height": 864,
       "x": 0,
       "width": 2262
@@ -49,8 +49,8 @@
       "id": "L5",
       "label": "변압",
       "voltage": "22.9kV→380/220V",
-      "y": 2484,
-      "height": 540,
+      "y": 2334,
+      "height": 340,
       "x": 0,
       "width": 2262
     },
@@ -58,7 +58,7 @@
       "id": "L6",
       "label": "저압 배전",
       "voltage": "380/220V",
-      "y": 3024,
+      "y": 2674,
       "height": 540,
       "x": 0,
       "width": 2262
@@ -67,7 +67,7 @@
       "id": "L7",
       "label": "분전반 및 부하",
       "voltage": "380/220V 분기",
-      "y": 3564,
+      "y": 3214,
       "height": 834,
       "x": 0,
       "width": 2262
@@ -79,7 +79,7 @@
       "x": 2310,
       "width": 700,
       "y": 0,
-      "height": 1620
+      "height": 1470
     },
     {
       "id": "REN",
@@ -87,8 +87,8 @@
       "voltage": "계층별 연계",
       "x": 2310,
       "width": 700,
-      "y": 1620,
-      "height": 2778
+      "y": 1470,
+      "height": 2578
     }
   ],
   "nodes": [
@@ -174,289 +174,289 @@
       "id": "n-fcl",
       "equipmentTypeId": "fcl",
       "x": 1169,
-      "y": 1206
+      "y": 1146
     },
     {
       "id": "n-dline",
       "equipmentTypeId": "dist-line",
       "x": 1169,
-      "y": 1422
+      "y": 1322
     },
     {
       "id": "n-recloser",
       "equipmentTypeId": "recloser",
       "x": 1508,
-      "y": 1422
+      "y": 1322
     },
     {
       "id": "n-auto-sw",
       "equipmentTypeId": "auto-switch",
       "x": 1847,
-      "y": 1422
+      "y": 1322
     },
     {
       "id": "n-pole-tr",
       "equipmentTypeId": "pole-tr",
       "x": 2111,
-      "y": 1422
+      "y": 1322
     },
     {
       "id": "n-mv-swgr",
       "equipmentTypeId": "mv-swgr",
       "x": 339,
-      "y": 1890
+      "y": 1740
     },
     {
       "id": "n-la",
       "equipmentTypeId": "la",
       "x": 887,
-      "y": 1683
+      "y": 1533
     },
     {
       "id": "n-lbs",
       "equipmentTypeId": "lbs",
       "x": 1169,
-      "y": 1683
+      "y": 1533
     },
     {
       "id": "n-alts",
       "equipmentTypeId": "alts",
       "x": 1508,
-      "y": 1683
+      "y": 1533
     },
     {
       "id": "n-meter",
       "equipmentTypeId": "meter",
       "x": 887,
-      "y": 1836
+      "y": 1686
     },
     {
       "id": "n-mof",
       "equipmentTypeId": "mof",
       "x": 1169,
-      "y": 1836
+      "y": 1686
     },
     {
       "id": "n-relay",
       "equipmentTypeId": "protection-relay",
       "x": 621,
-      "y": 1989
+      "y": 1839
     },
     {
       "id": "n-ct-pt",
       "equipmentTypeId": "ct-pt",
       "x": 887,
-      "y": 1989
+      "y": 1839
     },
     {
       "id": "n-vcb",
       "equipmentTypeId": "vcb",
       "x": 1169,
-      "y": 1989
+      "y": 1839
     },
     {
       "id": "n-pf",
       "equipmentTypeId": "pf",
       "x": 1508,
-      "y": 2214
+      "y": 2064
     },
     {
       "id": "n-vc",
       "equipmentTypeId": "vc-vi",
       "x": 1697,
-      "y": 2376
+      "y": 2226
     },
     {
       "id": "n-mv-drive",
       "equipmentTypeId": "mv-drive",
       "x": 2168,
-      "y": 2376
+      "y": 2226
     },
     {
       "id": "n-cast-tr",
       "equipmentTypeId": "cast-tr",
       "x": 1169,
-      "y": 2754
+      "y": 2484
     },
     {
       "id": "n-oil-tr",
       "equipmentTypeId": "oil-tr",
       "x": 1508,
-      "y": 2754
+      "y": 2484
     },
     {
       "id": "n-lv-swgr",
       "equipmentTypeId": "lv-swgr",
       "x": 339,
-      "y": 3294
+      "y": 2944
     },
     {
       "id": "n-pmeter",
       "equipmentTypeId": "power-meter",
       "x": 867,
-      "y": 3114
+      "y": 2764
     },
     {
       "id": "n-acb",
       "equipmentTypeId": "acb",
       "x": 1169,
-      "y": 3114
+      "y": 2764
     },
     {
       "id": "n-mccb",
       "equipmentTypeId": "mccb",
       "x": 679,
-      "y": 3312
+      "y": 2962
     },
     {
       "id": "n-mcc",
       "equipmentTypeId": "mcc",
       "x": 887,
-      "y": 3312
+      "y": 2962
     },
     {
       "id": "n-spd",
       "equipmentTypeId": "spd",
       "x": 1093,
-      "y": 3312
+      "y": 2962
     },
     {
       "id": "n-cap",
       "equipmentTypeId": "capacitor",
       "x": 1300,
-      "y": 3312
+      "y": 2962
     },
     {
       "id": "n-busway",
       "equipmentTypeId": "busway",
       "x": 1960,
-      "y": 3312
+      "y": 2962
     },
     {
       "id": "n-sag",
       "equipmentTypeId": "sag-protector",
       "x": 2168,
-      "y": 3312
+      "y": 2962
     },
     {
       "id": "n-aps",
       "equipmentTypeId": "aps",
       "x": 621,
-      "y": 2214
+      "y": 2064
     },
     {
       "id": "n-ats",
       "equipmentTypeId": "lv-ats",
       "x": 1508,
-      "y": 3474
+      "y": 3124
     },
     {
       "id": "n-egen",
       "equipmentTypeId": "emergency-gen",
       "x": 1734,
-      "y": 3474
+      "y": 3124
     },
     {
       "id": "n-panel",
       "equipmentTypeId": "panelboard",
       "x": 566,
-      "y": 3654
+      "y": 3304
     },
     {
       "id": "n-elcb",
       "equipmentTypeId": "elcb",
       "x": 339,
-      "y": 3852
+      "y": 3502
     },
     {
       "id": "n-mcb",
       "equipmentTypeId": "mcb-rcbo",
       "x": 566,
-      "y": 3852
+      "y": 3502
     },
     {
       "id": "n-bmccb",
       "equipmentTypeId": "branch-mccb",
       "x": 792,
-      "y": 3852
+      "y": 3502
     },
     {
       "id": "n-light",
       "equipmentTypeId": "lighting-outlet",
       "x": 452,
-      "y": 4068
+      "y": 3718
     },
     {
       "id": "n-evc",
       "equipmentTypeId": "ev-charger",
       "x": 792,
-      "y": 4068
+      "y": 3718
     },
     {
       "id": "n-mms",
       "equipmentTypeId": "mms",
       "x": 1093,
-      "y": 3654
+      "y": 3304
     },
     {
       "id": "n-ms",
       "equipmentTypeId": "ms",
       "x": 1093,
-      "y": 3852
+      "y": 3502
     },
     {
       "id": "n-empr",
       "equipmentTypeId": "empr",
       "x": 1320,
-      "y": 3852
+      "y": 3502
     },
     {
       "id": "n-drive",
       "equipmentTypeId": "lv-drive",
       "x": 1546,
-      "y": 3852
+      "y": 3502
     },
     {
       "id": "n-soft",
       "equipmentTypeId": "soft-starter",
       "x": 1772,
-      "y": 3852
+      "y": 3502
     },
     {
       "id": "n-servo",
       "equipmentTypeId": "servo",
       "x": 2036,
-      "y": 3852
+      "y": 3502
     },
     {
       "id": "n-motor",
       "equipmentTypeId": "motor",
       "x": 1320,
-      "y": 4077
+      "y": 3727
     },
     {
       "id": "n-plc",
       "equipmentTypeId": "plc",
       "x": 1659,
-      "y": 4077
+      "y": 3727
     },
     {
       "id": "n-hmi",
       "equipmentTypeId": "hmi",
       "x": 1885,
-      "y": 4077
+      "y": 3727
     },
     {
       "id": "n-dmc",
       "equipmentTypeId": "dmc",
       "x": 2093,
-      "y": 3654
+      "y": 3304
     },
     {
       "id": "n-smart",
       "equipmentTypeId": "smart-device",
       "x": 189,
-      "y": 4068
+      "y": 3718
     },
     {
       "id": "n-scada",
@@ -486,55 +486,55 @@
       "id": "n-care",
       "equipmentTypeId": "care",
       "x": 2494,
-      "y": 1170
+      "y": 1110
     },
     {
       "id": "n-amrs",
       "equipmentTypeId": "amrs",
       "x": 2826,
-      "y": 1170
+      "y": 1110
     },
     {
       "id": "n-pv",
       "equipmentTypeId": "pv",
       "x": 2494,
-      "y": 1800
+      "y": 1650
     },
     {
       "id": "n-dc",
       "equipmentTypeId": "dc-devices",
       "x": 2826,
-      "y": 1800
+      "y": 1650
     },
     {
       "id": "n-pcs",
       "equipmentTypeId": "pcs",
       "x": 2494,
-      "y": 2088
+      "y": 1938
     },
     {
       "id": "n-ess",
       "equipmentTypeId": "ess",
       "x": 2826,
-      "y": 2088
+      "y": 1938
     },
     {
       "id": "n-microgrid",
       "equipmentTypeId": "microgrid",
       "x": 2659,
-      "y": 2412
+      "y": 2262
     },
     {
       "id": "n-modular",
       "equipmentTypeId": "modular-substation",
-      "x": 2494,
-      "y": 2790
+      "x": 2659,
+      "y": 2944
     },
     {
       "id": "n-railway",
       "equipmentTypeId": "railway",
-      "x": 2826,
-      "y": 2790
+      "x": 2659,
+      "y": 3631
     },
     {
       "id": "n-tr-345",
@@ -550,7 +550,7 @@
       "ref": true,
       "label": "22.9/6.6kV",
       "x": 1885,
-      "y": 2214
+      "y": 2064
     },
     {
       "id": "n-acb-2",
@@ -558,7 +558,7 @@
       "ref": true,
       "label": "TR2 2차 주차단기",
       "x": 1960,
-      "y": 3114
+      "y": 2764
     },
     {
       "id": "bus-229",
@@ -566,7 +566,7 @@
       "label": "22.9kV 모선",
       "layer": "L4",
       "x": 1526,
-      "y": 2097,
+      "y": 1947,
       "width": 718
     },
     {
@@ -575,7 +575,7 @@
       "label": "380V 모선",
       "layer": "L6",
       "x": 1131,
-      "y": 3204,
+      "y": 2854,
       "width": 906
     },
     {
@@ -584,7 +584,7 @@
       "label": "고압 전동기",
       "layer": "L4",
       "x": 1932,
-      "y": 2376
+      "y": 2226
     },
     {
       "id": "ep-emergency",
@@ -592,7 +592,7 @@
       "label": "비상 부하 (소방·승강기)",
       "layer": "L6",
       "x": 1300,
-      "y": 3474
+      "y": 3124
     },
     {
       "id": "ep-pcs-out",
@@ -600,7 +600,7 @@
       "label": "→ 380V 모선 연계",
       "layer": "REN",
       "x": 2494,
-      "y": 2250
+      "y": 2100
     },
     {
       "id": "ep-pcs-in",
@@ -608,19 +608,19 @@
       "label": "← 신재생 PCS 연계",
       "layer": "L6",
       "x": 1583,
-      "y": 3114
+      "y": 2764
     },
     {
       "id": "n-gearbox",
       "equipmentTypeId": "gearbox",
       "x": 1320,
-      "y": 4263
+      "y": 3913
     },
     {
       "id": "n-ups",
       "equipmentTypeId": "ups",
       "x": 1734,
-      "y": 3312
+      "y": 2962
     }
   ],
   "edges": [
@@ -815,19 +815,19 @@
       "points": [
         {
           "x": 621,
-          "y": 1931
+          "y": 1781
         },
         {
           "x": 621,
-          "y": 1913
+          "y": 1763
         },
         {
           "x": 1169,
-          "y": 1913
+          "y": 1763
         },
         {
           "x": 1169,
-          "y": 1931
+          "y": 1781
         }
       ]
     },
@@ -839,11 +839,11 @@
       "points": [
         {
           "x": 1169,
-          "y": 2047
+          "y": 1897
         },
         {
           "x": 1169,
-          "y": 2097
+          "y": 1947
         }
       ]
     },
@@ -857,11 +857,11 @@
       "points": [
         {
           "x": 1169,
-          "y": 2097
+          "y": 1947
         },
         {
           "x": 1169,
-          "y": 2696
+          "y": 2426
         }
       ]
     },
@@ -874,11 +874,11 @@
       "points": [
         {
           "x": 1508,
-          "y": 2097
+          "y": 1947
         },
         {
           "x": 1508,
-          "y": 2156
+          "y": 2006
         }
       ]
     },
@@ -898,11 +898,11 @@
       "points": [
         {
           "x": 1885,
-          "y": 2097
+          "y": 1947
         },
         {
           "x": 1885,
-          "y": 2156
+          "y": 2006
         }
       ]
     },
@@ -949,11 +949,11 @@
       "points": [
         {
           "x": 1169,
-          "y": 3172
+          "y": 2822
         },
         {
           "x": 1169,
-          "y": 3204
+          "y": 2854
         }
       ]
     },
@@ -971,11 +971,11 @@
       "points": [
         {
           "x": 679,
-          "y": 3204
+          "y": 2854
         },
         {
           "x": 679,
-          "y": 3254
+          "y": 2904
         }
       ]
     },
@@ -987,11 +987,11 @@
       "points": [
         {
           "x": 887,
-          "y": 3204
+          "y": 2854
         },
         {
           "x": 887,
-          "y": 3254
+          "y": 2904
         }
       ]
     },
@@ -1004,11 +1004,11 @@
       "points": [
         {
           "x": 1093,
-          "y": 3204
+          "y": 2854
         },
         {
           "x": 1093,
-          "y": 3254
+          "y": 2904
         }
       ]
     },
@@ -1020,11 +1020,11 @@
       "points": [
         {
           "x": 1300,
-          "y": 3204
+          "y": 2854
         },
         {
           "x": 1300,
-          "y": 3254
+          "y": 2904
         }
       ]
     },
@@ -1037,11 +1037,11 @@
       "points": [
         {
           "x": 1508,
-          "y": 3204
+          "y": 2854
         },
         {
           "x": 1508,
-          "y": 3416
+          "y": 3066
         }
       ]
     },
@@ -1130,15 +1130,15 @@
       "points": [
         {
           "x": 506,
-          "y": 3654
+          "y": 3304
         },
         {
           "x": 189,
-          "y": 3654
+          "y": 3304
         },
         {
           "x": 189,
-          "y": 4010
+          "y": 3660
         }
       ]
     },
@@ -1201,15 +1201,15 @@
       "points": [
         {
           "x": 1960,
-          "y": 3370
+          "y": 3020
         },
         {
           "x": 1960,
-          "y": 3852
+          "y": 3502
         },
         {
           "x": 1976,
-          "y": 3852
+          "y": 3502
         }
       ]
     },
@@ -1221,19 +1221,19 @@
       "points": [
         {
           "x": 887,
-          "y": 3370
+          "y": 3020
         },
         {
           "x": 887,
-          "y": 3578
+          "y": 3228
         },
         {
           "x": 2093,
-          "y": 3578
+          "y": 3228
         },
         {
           "x": 2093,
-          "y": 3596
+          "y": 3246
         }
       ]
     },
@@ -1292,11 +1292,11 @@
       "points": [
         {
           "x": 1583,
-          "y": 3136
+          "y": 2786
         },
         {
           "x": 1583,
-          "y": 3204
+          "y": 2854
         }
       ]
     },
@@ -1308,15 +1308,15 @@
       "points": [
         {
           "x": 2659,
-          "y": 2354
+          "y": 2204
         },
         {
           "x": 2659,
-          "y": 2088
+          "y": 1938
         },
         {
           "x": 2554,
-          "y": 2088
+          "y": 1938
         }
       ]
     },
@@ -1346,23 +1346,23 @@
       "points": [
         {
           "x": 2826,
-          "y": 1228
+          "y": 1168
         },
         {
           "x": 2826,
-          "y": 1607
+          "y": 1457
         },
         {
           "x": 965,
-          "y": 1607
+          "y": 1457
         },
         {
           "x": 965,
-          "y": 1836
+          "y": 1686
         },
         {
           "x": 947,
-          "y": 1836
+          "y": 1686
         }
       ]
     },
@@ -1386,7 +1386,7 @@
         },
         {
           "x": 621,
-          "y": 1931
+          "y": 1781
         }
       ]
     },
@@ -1406,15 +1406,15 @@
         },
         {
           "x": 2572,
-          "y": 3038
+          "y": 2688
         },
         {
           "x": 867,
-          "y": 3038
+          "y": 2688
         },
         {
           "x": 867,
-          "y": 3056
+          "y": 2706
         }
       ]
     },
@@ -1426,23 +1426,23 @@
       "points": [
         {
           "x": 2434,
-          "y": 1170
+          "y": 1110
         },
         {
           "x": 2010,
-          "y": 1170
+          "y": 1110
         },
         {
           "x": 2010,
-          "y": 2678
+          "y": 2408
         },
         {
           "x": 1169,
-          "y": 2678
+          "y": 2408
         },
         {
           "x": 1169,
-          "y": 2696
+          "y": 2426
         }
       ]
     },
@@ -1462,7 +1462,7 @@
         },
         {
           "x": 2659,
-          "y": 2354
+          "y": 2204
         }
       ]
     },
@@ -1496,15 +1496,15 @@
       "points": [
         {
           "x": 1794,
-          "y": 3312
+          "y": 2962
         },
         {
           "x": 1885,
-          "y": 3312
+          "y": 2962
         },
         {
           "x": 1885,
-          "y": 4019
+          "y": 3669
         }
       ]
     }

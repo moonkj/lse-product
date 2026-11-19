@@ -11,7 +11,7 @@ import ExternalLink from '../components/common/ExternalLink';
 import { OverviewPoints } from '../components/common/EquipmentOverview';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import ProductVisual, { hasProductPhoto } from '../components/pages/ProductVisual';
-import { CATEGORY_LABELS, COVERAGE_LABELS, confidenceLabel, gapConfidence, pageTitle } from '../lib/labels';
+import { CATEGORY_LABELS, COVERAGE_LABELS, pageTitle } from '../lib/labels';
 import { layerTitle } from '../lib/diagram/model';
 import { overviewParts, overviewText } from '../lib/overview';
 import { equipmentForProduct, productsForEquipment } from '../lib/pages/catalog';
@@ -246,23 +246,12 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
     },
     {
       key: 'coverage',
-      label: '커버리지·공백 판정',
-      cells: list.map((eq) => {
-        const conf = gapConfidence(eq);
-        return {
-          text: `${eq.coverage}|${conf ?? ''}`,
-          node: (
-            <div className="cmp-stack">
-              <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_LABELS[eq.coverage]} />
-              {conf && (
-                <Tag tone={conf} className="cmp-badge" data-confidence={conf}>
-                  {confidenceLabel(eq.coverage, conf)}
-                </Tag>
-              )}
-            </div>
-          ),
-        };
-      }),
+      label: '커버리지',
+      // 판정 확정/후보 표시는 화면에서 뺌 (2026-11-19 사용자: 판정 기록 전수 삭제)
+      cells: list.map((eq) => ({
+        text: eq.coverage,
+        node: <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_LABELS[eq.coverage]} />,
+      })),
     },
     {
       key: 'products',

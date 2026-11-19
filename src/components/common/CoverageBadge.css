@@ -28,7 +28,7 @@
 /* 모양 차이를 더 키움: 계열사=마름모, 해당없음=사각, 패널 구성품=모서리 둥근 사각 + 테두리 */
 .cov-badge--affiliate .cov-badge__icon { border-radius: 2px; transform: rotate(45deg); }
 .cov-badge--affiliate .cov-badge__icon { font-size: 0; }
-.cov-badge--na .cov-badge__icon { border-radius: 3px; }
+.cov-badge--na .cov-badge__icon { border-radius: var(--radius-chip); }
 /* 해당 없음 = 속 빈 배지 (E1 P1-6): 채움 대신 바탕색 + 1.5px 회색 테두리 + 회색 − — 상태 색 5종과 무게가 갈림 */
 .cov-badge--na .cov-badge__icon {
   box-sizing: border-box;

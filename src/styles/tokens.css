@@ -42,10 +42,20 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-pill: 999px;
+  --radius-chip: 4px;     /* 칩·태그 모서리 (E5 4·5라운드 — 숫자 3px 를 토큰으로) */
+  --radius-chip-lg: 8px;  /* 큰 칩(밴드 이름표) 모서리 */
   --radius-tile: 8px;    /* 계통도 기기 타일 (E5 P1 — 10px → 토큰) */
   --header-h: 68px;      /* 네이비 띠 높이 — 마켓뉴스처럼 넉넉하게(2026-11-19 사용자: 상단이 너무 좁음), 아래 CI 레드 선 별도 */
   --header-accent-w: 4px;
-  --nav-w: 224px;
+  --nav-w: 248px;        /* 사이드바 '계층 축' (5라운드 합의 224 → 248) */
+  /* 사이드바 계층 축 (5라운드 합의) — 줄 높이 비례 최소·최대·고정(낮은 화면), 축선, 보유율 막대, 공백 알약 */
+  --nav-row-min: 56px;
+  --nav-row-max: 120px;
+  --nav-row-fixed: 44px;
+  --nav-rail: #c3cad4;
+  --nav-bar-track: #eef1f5;
+  --nav-gap-pill-bg: #fbe4e4;
+  --nav-gap-pill-text: #c62d1f;
   --panel-w: 360px;
   --bp-mobile: 900px; /* 참고값 (미디어쿼리는 리터럴 사용) */
   --shadow-sm: 0 1px 2px rgb(20 23 28 / 0.08);
@@ -128,7 +138,7 @@
   --band-l6: #f2f1d7;
   --band-l7: #ffefdd;
   --band-ren: #e1f0d0;
-  --band-mon: #e2e7ed;
+  --band-mon: #dfe6f0; /* 감시 열 — 살짝 청색(H255 C0.018, E1 4라운드) */
   --band-label: #3d4450;
 
   /* 계통도 노드·선택·Gap */
@@ -272,15 +282,16 @@
   --band-accent-l7: #f0bb8a;
   --band-accent-ren: #b4dc8a;
   --band-accent-mon: #b0bccf;
-  /* 명도 램프 (E1 P0-1): 다크는 L1 0.335 → L7 0.257 (고압일수록 밝게 떠오름) */
-  --band-l1: #36334c;
-  --band-l2: #28334b;
-  --band-l3: #183344;
-  --band-l4: #093337;
-  --band-l5: #0d3127;
-  --band-l6: #2a280b;
-  --band-l7: #331e0a;
-  --band-ren: #243014;
+  /* 명도 램프 (E1 P0-1): 다크는 L1 0.335 → L7 0.257 (고압일수록 밝게 떠오름)
+     채도는 4라운드 E1: L1~L5 0.030, L6·L7 0.024 (진흙색 해소) */
+  --band-l1: #363445;
+  --band-l2: #2c3343;
+  --band-l3: #22323e;
+  --band-l4: #1a3134;
+  --band-l5: #192f28;
+  --band-l6: #292719;
+  --band-l7: #2c2117;
+  --band-ren: #272e1d;
   --band-mon: #25292f;
   --band-label: #c9ced6;
 
@@ -329,6 +340,11 @@
   --tile-plate-border: #3a4250;
   --tile-symbol: #3d4450;
   --tile-plate-missing-bg: #f5d5d2; /* 다크도 밝은 판 계열 유지 — 심볼 대비 */
+
+  --nav-rail: #46505f;
+  --nav-bar-track: #2c333f;
+  --nav-gap-pill-bg: #3a1a1a;
+  --nav-gap-pill-text: #ff9b9b;
 
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
   --shadow-md: 0 4px 12px rgb(0 0 0 / 0.5);

@@ -25,48 +25,25 @@
   }
 }
 
-/*
- * 숫자 고정 열 (디자인 토론 P0-1): 이름 | 보유/전체 | ●공백 — 모드와 무관하게 같은 자리·같은 인코딩.
- * 공백 0 이면 빈칸으로 열 폭만 유지. 보조 설명(visually-hidden)은 absolute 라 grid 칸을 차지하지 않는다.
- */
-.layer-nav .layer-nav__btn {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto 2.2em;
-  column-gap: var(--space-2);
-}
-
-.layer-nav .layer-nav__name {
-  min-width: 0;
-}
-
-.layer-nav .layer-nav__count {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.layer-nav .layer-nav__gap {
-  font-size: var(--fs-xs);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  color: var(--cov-missing-text);
-  white-space: nowrap;
-}
-
-.layer-nav .layer-nav__gap.has-gap {
-  font-weight: var(--fw-bold);
-}
-
-.layer-nav__gapmark {
-  color: var(--cov-missing-text);
-}
-
 /* 칩 줄(모바일·압축)에서는 숫자 열 숨김 — 칩 모양은 AppLayout.css */
 .app-shell--navrow .layer-nav .layer-nav__btn {
   display: flex;
 }
 
-.app-shell--navrow .layer-nav__gap {
+.app-shell--navrow .layer-nav__gap,
+.app-shell--navrow .layer-nav__volt,
+.app-shell--navrow .layer-nav__bar,
+.app-shell--navrow .layer-nav__icon,
+.app-shell--navrow .layer-nav__rail,
+.app-shell--navrow .layer-nav__range,
+.app-shell--navrow .layer-nav__group-title,
+.app-shell--navrow .layer-nav__summary {
   display: none;
+}
+
+.app-shell--navrow .layer-nav__axis,
+.app-shell--navrow .layer-nav__side {
+  display: contents;
 }
 
 /* 칩 줄 끝 "공백 표" — 헤더 메뉴를 숨기는 휴대폰 세로(≤600px)에서만 */
@@ -102,19 +79,438 @@
 .layer-nav__btn--l7 { --layer-accent: var(--band-accent-l7); --layer-bg: var(--band-l7); }
 .layer-nav__btn--ren { --layer-accent: var(--band-accent-ren); --layer-bg: var(--band-ren); }
 .layer-nav__btn--mon { --layer-accent: var(--band-accent-mon); --layer-bg: var(--band-mon); }
-.layer-nav:not(.layer-nav--gap) .layer-nav__btn.is-current {
-  background: var(--layer-bg, var(--node-selected-bg));
-  color: var(--layer-accent, var(--color-link));
-  box-shadow: inset 3px 0 0 var(--layer-accent, var(--color-selected));
-}
 .app-shell--navrow .layer-nav:not(.layer-nav--gap) .layer-nav__btn.is-current {
   border-color: var(--layer-accent, var(--color-chip-active-bg));
   background: var(--layer-accent, var(--color-chip-active-bg));
   color: var(--color-surface);
   box-shadow: none;
 }
-.layer-nav--gap .layer-nav__btn.is-current {
+
+/* ════════════════════════════════════════════════════════════════════
+ * 데스크톱 사이드바 = 계층 축 (5라운드 디자이너 합의, docs/personas-diagram/ROUND5.md)
+ * - 줄: 왼쪽 계층색 띠 4px(지금 계층 6px) · 코드 칩 28px(계층색 바탕) · 이름 14 + 전압 12 · 보유율 막대(커버리지 색 누적) · 보유/전체 · 공백 알약
+ * - L1~L7 은 2px 세로 축선으로 잇고, 보이는 세로 범위는 3px 괄호. 감시·신재생은 '연계' 묶음.
+ * - 칩 줄(app-shell--navrow)에는 적용하지 않는다.
+ * ════════════════════════════════════════════════════════════════════ */
+.app-shell:not(.app-shell--navrow) .layer-nav {
+  gap: 0;
+  padding: var(--space-3) var(--space-3) var(--space-4);
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .nav-block {
+  flex: 1 0 auto;
+  gap: var(--space-3);
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .nav-section-title {
+  padding: var(--space-1) var(--space-1) 0;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__list {
+  gap: 2px;
+}
+
+/* 계층 축 — 축선·괄호의 쌓임 기준 */
+.layer-nav__axis {
+  position: relative;
+  isolation: isolate;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav--axis .layer-nav__list--main > li {
+  height: var(--row-h, auto);
+}
+
+/* 축선: 코드 칩 가운데(줄 왼쪽 안쪽 여백 18 + 칩 반 14)를 지나는 2px 선 */
+.layer-nav__rail {
+  position: absolute;
+  z-index: 1;
+  top: var(--rail-top, 18px);
+  bottom: var(--rail-bottom, 18px);
+  left: 31px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--nav-rail);
+  pointer-events: none;
+}
+
+/* 보이는 세로 범위 괄호 — JS 가 translateY·height 만 갱신(펜·줌과 같은 프레임, 전환 없음) */
+.layer-nav__range {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 8px;
+  width: 8px;
+  border: 3px solid var(--color-selected);
+  border-right: 0;
+  border-radius: 3px 0 0 3px;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* 끌기 히트 영역을 괄호 양옆으로 넓힘 (보이는 모양은 3px 그대로) */
+.layer-nav__range::before {
+  content: '';
+  position: absolute;
+  inset: -3px -6px -3px -8px;
+}
+
+.layer-nav__range.is-dragging {
+  cursor: grabbing;
+}
+
+.layer-nav--list .layer-nav__range,
+.layer-nav--list .layer-nav__rail {
+  left: 29px;
+}
+.layer-nav--list .layer-nav__range {
+  left: 6px;
+}
+
+/* 줄 — 축 모드: 이름/전압 두 줄 + 막대 */
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'code label count'
+    'code volt gap'
+    '. bar bar';
+  align-content: center;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 2px;
+  height: 100%;
+  min-height: var(--nav-row-min);
+  padding: 6px var(--space-2) 6px 18px;
+  border-radius: 2px var(--radius-md) var(--radius-md) 2px;
+  color: var(--color-text);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+}
+
+/* 왼쪽 계층색 띠 4px (지금 계층 6px) — 곧은 띠(둥근 inset 그림자는 범위 괄호와 헷갈림) */
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--layer-accent, var(--color-border-strong));
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-current::after {
+  width: 6px;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-tall {
+  row-gap: 4px;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__name {
+  display: contents;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__code,
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__icon {
+  grid-area: code;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  border-radius: 6px;
+  background: var(--layer-accent, var(--color-text-muted));
+  color: var(--color-surface);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__icon {
+  font-size: 15px;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__label {
+  grid-area: label;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  line-height: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__volt {
+  grid-area: volt;
+  min-width: 0;
+  overflow: hidden;
+  /* 계층색 바탕(보이는 계층) 위에서도 4.5:1 이상 (axe) */
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  font-size: var(--fs-xs);
+  line-height: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__count {
+  grid-area: count;
+  justify-self: end;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+  text-align: right;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__gap {
+  grid-area: gap;
+  justify-self: end;
+  display: none;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__gap.has-gap {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--nav-gap-pill-bg);
+  color: var(--nav-gap-pill-text);
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* 보유율 막대 — 커버리지 6상태 누적(범례 순서), 구간 사이 1px 틈. 계층색으로 칠하지 않음(E1) */
+.layer-nav__bar {
+  display: flex;
+  gap: 1px;
+  overflow: hidden;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--nav-bar-track);
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__bar {
+  grid-area: bar;
+  margin-top: 2px;
+}
+
+.layer-nav__seg {
+  flex-basis: 0;
+  min-width: 2px;
+}
+.layer-nav__seg--owned { background: var(--cov-owned); }
+.layer-nav__seg--partial { background: var(--cov-partial); }
+.layer-nav__seg--affiliate { background: var(--cov-affiliate); }
+.layer-nav__seg--sourced { background: var(--cov-sourced); }
+.layer-nav__seg--missing { background: var(--cov-missing); }
+.layer-nav__seg--na { background: var(--cov-na); }
+
+/* 줄 — 목록 모드(화면 높이 700 미만) · 연계 묶음: 44px 한 줄 + 얇은 막대 */
+.app-shell:not(.app-shell--navrow) .layer-nav--list .layer-nav__btn,
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__list--side .layer-nav__btn {
+  grid-template-columns: 24px minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    'code label count gap'
+    'code bar bar bar';
+  column-gap: 8px;
+  row-gap: 3px;
+  height: auto;
+  min-height: var(--nav-row-fixed);
+  padding: 5px var(--space-2) 5px 18px;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav--list .layer-nav__code,
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__list--side .layer-nav__icon {
+  width: 24px;
+  height: 24px;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav--list .layer-nav__volt {
+  display: none;
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav--list .layer-nav__label,
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__list--side .layer-nav__label {
+  font-size: var(--fs-sm);
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav--list .layer-nav__bar,
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__list--side .layer-nav__bar {
+  height: 4px;
+  margin-top: 0;
+}
+
+.layer-nav--list .layer-nav__rail {
+  top: 22px;
+  bottom: 22px;
+}
+
+/* 연계 묶음 제목 — 구분선 아래 */
+.layer-nav__group-title {
+  margin: 0;
+  padding: var(--space-2) var(--space-1) var(--space-1);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+
+/* 상태 — 보이는 계층 = 밴드색 옅게, 지금 계층 = 밴드색 + 띠 6px + 굵게, 선택 영역(focus) = 계층색 테두리.
+ * 공백만 보기에서도 같은 계층색 (빨강은 공백 알약만 — 5라운드 우선순위 버그 수정) */
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn:hover {
+  background: var(--color-surface-2);
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-visible {
+  background: color-mix(in srgb, var(--layer-bg, var(--color-surface-2)) 70%, transparent);
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-visible:hover,
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-current {
   background: var(--layer-bg, var(--node-selected-bg));
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-current .layer-nav__label {
   color: var(--layer-accent, var(--color-link));
-  box-shadow: inset 3px 0 0 var(--layer-accent, var(--color-selected));
+  font-weight: var(--fw-bold);
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-current .layer-nav__count {
+  color: var(--color-text);
+  font-weight: var(--fw-bold);
+}
+
+.app-shell:not(.app-shell--navrow) .layer-nav .layer-nav__btn.is-focus {
+  box-shadow: inset 0 0 0 2px var(--layer-accent, var(--color-selected));
+}
+
+/* 전체 보유 요약 카드 (마켓뉴스 카드 문법: surface · 1px 선 · 모서리 12) */
+.layer-nav__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.layer-nav__summary p {
+  margin: 0;
+}
+
+.layer-nav__summary-title {
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+
+.layer-nav__summary-num {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.layer-nav__summary-num b {
+  margin-right: 2px;
+  color: var(--color-text);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  line-height: 1.1;
+}
+
+.layer-nav__bar--summary {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.layer-nav__summary-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-xs);
+}
+
+.layer-nav__summary-gaps {
+  color: var(--cov-missing-text);
+  font-weight: var(--fw-bold);
+}
+
+.layer-nav__summary-gaps-detail {
+  color: var(--color-text-muted);
+  font-weight: var(--fw-regular);
+}
+
+.layer-nav__summary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  color: var(--color-link);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+}
+
+.layer-nav__summary-link:hover {
+  text-decoration: underline;
+}
+
+/* 높이가 모자라면(768 이하) 요약 카드 숨김 — 계층 줄 높이 우선 */
+@media (max-height: 768px) {
+  .layer-nav__summary {
+    display: none;
+  }
+}
+
+/* 줄에 마우스를 올리면 계통도의 그 밴드에 계층색 안쪽 테두리 (E4: 120ms 페이드, 움직임 줄이기면 즉시).
+ * 속성은 LayerNav 가 <html data-hover-layer="L4"> 로 단다. --band-accent 는 각 .dband--* 가 정의 */
+.dband {
+  transition: box-shadow 120ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dband {
+    transition: none;
+  }
+}
+:root[data-hover-layer='L1'] .dband--l1,
+:root[data-hover-layer='L2'] .dband--l2,
+:root[data-hover-layer='L3'] .dband--l3,
+:root[data-hover-layer='L4'] .dband--l4,
+:root[data-hover-layer='L5'] .dband--l5,
+:root[data-hover-layer='L6'] .dband--l6,
+:root[data-hover-layer='L7'] .dband--l7,
+:root[data-hover-layer='REN'] .dband--ren,
+:root[data-hover-layer='MON'] .dband--mon {
+  box-shadow: inset 0 0 0 3px var(--band-accent), inset 0 -1px 0 var(--band-divider), inset -1px 0 0 var(--band-divider);
+}
+/* 선택 영역(is-active)이면 왼쪽 6px 띠도 유지 */
+:root[data-hover-layer='L1'] .dband--l1.is-active,
+:root[data-hover-layer='L2'] .dband--l2.is-active,
+:root[data-hover-layer='L3'] .dband--l3.is-active,
+:root[data-hover-layer='L4'] .dband--l4.is-active,
+:root[data-hover-layer='L5'] .dband--l5.is-active,
+:root[data-hover-layer='L6'] .dband--l6.is-active,
+:root[data-hover-layer='L7'] .dband--l7.is-active,
+:root[data-hover-layer='REN'] .dband--ren.is-active,
+:root[data-hover-layer='MON'] .dband--mon.is-active {
+  box-shadow: inset 6px 0 0 var(--band-accent), inset 0 0 0 3px var(--band-accent), inset 0 -1px 0 var(--band-divider), inset -1px 0 0 var(--band-divider);
+}
+
+/* 전압 둘째 줄 대비: 계층색 바탕(보이는 계층) 위에서도 4.5:1 이상 (axe) */
+.layer-nav .layer-nav__volt {
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+}
+/* 좁은 데스크톱(≤1100px): 사이드바 폭은 예전 224px — 계통도·비교 바 폭 확보 */
+@media (max-width: 1100px) {
+  :root { --nav-w: 224px; }
 }
