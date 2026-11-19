@@ -488,7 +488,7 @@
 
 /* 빈 상세 패널이 접힌 오른쪽 레일(P0-8) — 패널 열 폭(--panel-w)을 레일 폭으로. 비교 바 위치 계산도 이 값을 쓴다 */
 .app-shell--panel-rail {
-  --panel-w: var(--panel-rail-w, 28px);
+  --panel-w: var(--panel-rail-w, 48px);
 }
 
 /* 우측 상세 패널 */

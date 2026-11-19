@@ -27,7 +27,6 @@ import { isMainLayer, pageTitle } from '../../lib/labels';
 import DiagramNode from './DiagramNode';
 import { AltBadges, BusNodes, EndpointNodes } from './DiagramExtras';
 import DiagramToolbar from './DiagramToolbar';
-import Minimap from './Minimap';
 import DiagramLegend from './DiagramLegend';
 import FlowLayer from './FlowLayer';
 import './DiagramCanvas.css';
@@ -285,7 +284,7 @@ export default function DiagramCanvas() {
   }, []);
 
   /**
-   * 노드를 보이는 영역(상세 패널·하단 시트·미니맵·비교 바를 뺀 부분, 실제 DOM 크기) 안으로.
+   * 노드를 보이는 영역(상세 패널·하단 시트·비교 바를 뺀 부분, 실제 DOM 크기) 안으로.
    * 이미 다 보이면 움직이지 않는다. zoom = 너무 축소돼 있으면 읽을 수 있는 배율까지 확대.
    */
   const revealNode = useCallback(
@@ -467,7 +466,7 @@ export default function DiagramCanvas() {
     [],
   );
 
-  // 키보드 포커스가 타일로 오면(Tab·Esc 복귀·검색) 보이는 영역 안으로 (패널·미니맵·비교 바 밑에 숨지 않게, B3).
+  // 키보드 포커스가 타일로 오면(Tab·Esc 복귀·검색) 보이는 영역 안으로 (패널·비교 바 밑에 숨지 않게, B3).
   // 마우스로 누른 포커스는 제외 (:focus-visible) — 드래그 시작 시 화면이 튀지 않게.
   // Home/End: 브라우저 기본 동작은 계통도를 맨 위/아래로 스크롤해 포커스 타일이 화면 밖에 남음(B4)
   //  → 첫/마지막 타일로 포커스를 옮기고 보이게 한다.
@@ -609,7 +608,6 @@ export default function DiagramCanvas() {
             </div>
           </div>
         </div>
-        {!isMobile && <Minimap mode={mode} />}
         <DiagramLegend mode={mode} />
       </div>
     </section>

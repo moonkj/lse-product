@@ -755,53 +755,6 @@
   margin-left: auto;
 }
 
-/* ── 미니맵 — 오른쪽 위, 기본 접힘 토글 (디자인 토론 P0-9) ─────────────── */
-.minimap-dock {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-.minimap-dock__toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  font-size: var(--fs-xs);
-  cursor: pointer;
-}
-
-.minimap-dock__toggle:hover,
-.minimap-dock__toggle[aria-pressed='true'] {
-  color: var(--color-text);
-  border-color: var(--color-border-strong);
-}
-
-.minimap {
-  padding: 6px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-}
-
-@media (pointer: coarse) {
-  .minimap-dock__toggle {
-    min-height: 44px;
-  }
-}
-
 /* ── 범례 카드 — 캔버스 왼쪽 아래 도킹 (디자인 토론 P0-2, E5 P0 카드 마감: 불투명·모서리 12·그림자·높이 40) ─── */
 .dlegend {
   position: absolute;
@@ -1028,35 +981,6 @@
 .diagram__stage:has(.dlegend[data-focus='missing']) .dnode:not([data-coverage='missing']):not(.is-selected) :is(.dnode__img, .dnode__symbol, .dnode__badge),
 .diagram__stage:has(.dlegend[data-focus='na']) .dnode:not([data-coverage='na']):not(.is-selected) :is(.dnode__img, .dnode__symbol, .dnode__badge) {
   opacity: 0.3;
-}
-
-.minimap svg {
-  display: block;
-}
-
-.minimap__band--l1 { fill: var(--band-l1); }
-.minimap__band--l2 { fill: var(--band-l2); }
-.minimap__band--l3 { fill: var(--band-l3); }
-.minimap__band--l4 { fill: var(--band-l4); }
-.minimap__band--l5 { fill: var(--band-l5); }
-.minimap__band--l6 { fill: var(--band-l6); }
-.minimap__band--l7 { fill: var(--band-l7); }
-.minimap__band--ren { fill: var(--band-ren); }
-.minimap__band--mon { fill: var(--band-mon); }
-
-.minimap__band {
-  stroke: var(--color-border);
-  stroke-width: 6px;
-}
-
-.minimap__dot {
-  fill: var(--cov-missing);
-}
-
-.minimap__view {
-  fill: var(--color-selected);
-  fill-opacity: 0.08;
-  stroke: var(--color-selected);
 }
 
 /* 터치 대상 44×44 (모바일·터치 기기) */

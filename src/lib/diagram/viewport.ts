@@ -1,21 +1,20 @@
 import type { Rect } from './panzoom';
 
 /**
- * 계통도 "보이는 영역" 계산 (UX 토론 B3) — viewport 중 상세 패널·하단 시트·미니맵·비교 바에 가리지 않은 부분.
+ * 계통도 "보이는 영역" 계산 (UX 토론 B3) — viewport 중 상세 패널·하단 시트·비교 바에 가리지 않은 부분.
  * 가리는 요소의 크기는 고정값이 아니라 매번 실제 DOM 크기(getBoundingClientRect)로 잰다 → 레이아웃(압축 화면 등)이 바뀌어도 맞다.
  * 새 덮개 요소는 `data-diagram-obscures` 속성만 달면 계산에 들어간다.
  */
 export const OBSCURER_SELECTOR = [
   '[data-testid="detail-panel"]',
   '[data-testid="compare-tray"]',
-  '.minimap',
   '[data-diagram-obscures]',
 ].join(', ');
 
 export interface VisibleArea {
   /** 큰 덮개(시트·비교 바·겹친 패널)를 잘라 낸 뒤 남은 가장 넓은 직사각형 — 자동 팬은 이 가운데로 */
   free: Rect;
-  /** 잘라 내기엔 작은 덮개(미니맵 등) — 대상이 여기에 겹치면 "안 보임"으로 판정 */
+  /** 잘라 내기엔 작은 덮개(작은 버튼 등) — 대상이 여기에 겹치면 "안 보임"으로 판정 */
   small: Rect[];
 }
 

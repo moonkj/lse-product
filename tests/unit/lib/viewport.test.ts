@@ -19,10 +19,10 @@ describe('B3 subtractObstacles', () => {
     expect(centerOf(free)).toEqual({ x: 195, y: 190 });
   });
 
-  it('비교 바(가로 60% 이상) → 아래를 잘라 냄, 미니맵(작음) → small 로 남김', () => {
+  it('비교 바(가로 60% 이상) → 아래를 잘라 냄, 작은 덮개 → small 로 남김', () => {
     const tray = { x: 16, y: 714, w: 700, h: 58 };
-    const minimap = { x: 764, y: 600, w: 100, h: 172 };
-    const va = subtractObstacles(VP, [minimap, tray]);
+    const small = { x: 764, y: 600, w: 100, h: 172 };
+    const va = subtractObstacles(VP, [small, tray]);
     expect(va.free).toEqual({ x: 0, y: 0, w: 880, h: 714 });
     expect(va.small).toEqual([{ x: 764, y: 600, w: 100, h: 114 }]);
   });

@@ -48,7 +48,7 @@ test.describe('C1 압축 화면 · 넓게 보기', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await gotoHome(page);
     const before = (await visibleDiagram(page)).w;
-    expect(before).toBeLessThan(820); // 232 사이드바 + 28 레일 (빈 패널은 레일로 접힘)
+    expect(before).toBeLessThan(820); // 사이드바 + 48 상세 탭 (빈 패널은 레일로 접힘)
 
     await tid(page, 'present-toggle').click();
     await expect(tid(page, 'present-toggle')).toHaveAttribute('aria-pressed', 'true');
@@ -56,7 +56,7 @@ test.describe('C1 압축 화면 · 넓게 보기', () => {
     await expect(page.locator('.detail-panel--empty')).toBeHidden();
     await expect(tid(page, 'legend')).toBeHidden();
     await expect(tid(page, 'layer-nav-L4')).toBeVisible(); // 계층 칩 한 줄은 남음
-    expect((await visibleDiagram(page)).w).toBeGreaterThanOrEqual(990); // 28px 레일만 남음
+    expect((await visibleDiagram(page)).w).toBeGreaterThanOrEqual(970); // 48px 상세 탭만 남음
 
     await page.reload();
     await expect(tid(page, 'present-toggle')).toHaveAttribute('aria-pressed', 'true');

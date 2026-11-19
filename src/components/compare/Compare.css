@@ -116,7 +116,6 @@
     right: calc(var(--panel-w) + 16px);
     max-width: none;
   }
-  .app-shell--home.app-shell--tray .minimap { bottom: calc(var(--cmp-tray-h, 64px) + 24px); }
 }
 @media (min-width: 901px) and (max-width: 1099px) {
   .app-shell--home .cmp-tray__items { display: none; }

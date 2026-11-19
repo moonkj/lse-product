@@ -344,7 +344,7 @@ export default function LayerNav() {
             className="layer-nav__range"
             ref={rangeRef}
             aria-hidden="true"
-            title="끌어서 계통도 세로 이동"
+            title="지금 화면에 보이는 범위 — 끌어서 계통도 세로 이동"
             style={{ display: 'none' }}
             onPointerDown={onRangeDown}
             onPointerMove={onRangeMove}

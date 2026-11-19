@@ -41,13 +41,13 @@ async function zoomPct(page: Page) {
   return parseInt((await tid(page, 'zoom-pct').textContent()) ?? '0', 10);
 }
 
-/** 타일이 계통도 viewport 안에 있고 상세 패널·미니맵·비교 바와 겹치지 않는지 */
+/** 타일이 계통도 viewport 안에 있고 상세 패널·비교 바와 겹치지 않는지 */
 async function tileUnobscured(page: Page, nodeId: string) {
   return page.evaluate((id) => {
     const r = document.querySelector(`[data-node-id="${id}"]`)!.getBoundingClientRect();
     const vp = document.getElementById('diagram-viewport')!.getBoundingClientRect();
     const inVp = r.left >= vp.left && r.right <= vp.right && r.top >= vp.top && r.bottom <= vp.bottom;
-    const covers = [...document.querySelectorAll('[data-testid="detail-panel"], .minimap, [data-testid="compare-tray"]')].filter((el) => {
+    const covers = [...document.querySelectorAll('[data-testid="detail-panel"], [data-testid="compare-tray"]')].filter((el) => {
       const b = el.getBoundingClientRect();
       return b.width > 0 && !(r.right <= b.left || r.left >= b.right || r.bottom <= b.top || r.top >= b.bottom);
     });

@@ -590,32 +590,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  width: 24px;
-  min-height: 72px;
-  padding: 8px 0;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  font-size: var(--fs-xs);
+  gap: 8px;
+  width: 38px;
+  min-height: 120px;
+  padding: 12px 0;
+  border: 0;
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-brand);
+  color: var(--color-on-brand, #fff);
+  font-size: 15px;
   line-height: 1;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
 .detail-panel-rail__btn:hover {
-  border-color: var(--color-brand);
-  color: var(--color-brand);
+  background: var(--color-brand-hover, var(--color-brand));
+  filter: brightness(1.08);
 }
 
 .detail-panel-rail__btn:focus-visible {
   outline: 2px solid var(--color-focus);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
 
 .detail-panel-rail__label {
   writing-mode: vertical-rl;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   font-weight: var(--fw-bold);
 }
 
