@@ -117,6 +117,20 @@ function ZoomControls({ total }: { total: number }) {
 
 function CurrentHint() {
   const layer = useView((s) => s.layer);
+  const focus = useView((s) => s.focus);
+  // 선택 영역이 있으면 해제 버튼을 늘 보이게 (2026-11-19 사용자: 해제 방법이 명확하지 않음)
+  if (focus)
+    return (
+      <button
+        type="button"
+        className="dtool__clear"
+        data-testid="selection-clear"
+        title="선택 해제 (Esc · 같은 영역을 다시 눌러도 해제)"
+        onClick={() => getDiagramController()?.clearSelection()}
+      >
+        <b>{layerTitle(focus)}</b> <span className="dtool__clear-label">선택됨</span> <span className="dtool__clear-x">해제 ✕</span>
+      </button>
+    );
   return (
     <span className="dtool__hint">
       {layer ? `${layerTitle(layer)} · ` : ''}드래그로 이동, 휠로 확대·축소

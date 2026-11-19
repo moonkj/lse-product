@@ -90,3 +90,24 @@ test('전기 흐름: 기기를 고르면 기본으로 흐르고(대시 이동), 
   await expect(page.locator('.dflow__path')).toHaveCount(0);
   await expect(page).toHaveURL(/flow=0/);
 });
+
+test('선택 해제: 도구줄 해제 버튼 · 같은 영역 다시 누르기 · Esc — 기기 선택과 영역 표시가 함께 풀림', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('./#/?node=n-vcb');
+  const focus = page.getByTestId('layer-focus');
+  await expect(focus).toHaveAttribute('data-layer', 'L4');
+  await page.getByTestId('selection-clear').click();
+  await expect(focus).toHaveCount(0);
+  await expect(page).not.toHaveURL(/node=/);
+  // 칩으로 고른 뒤 같은 영역 다시 누르기
+  await page.getByTestId('layer-nav-L5').click();
+  await expect(focus).toHaveAttribute('data-layer', 'L5');
+  const bb = (await page.getByTestId('layer-band-L5').boundingBox())!;
+  await page.mouse.click(bb.x + 8, bb.y + bb.height - 6);
+  await expect(focus).toHaveCount(0);
+  // Esc
+  await page.getByTestId('layer-nav-L6').click();
+  await expect(focus).toHaveAttribute('data-layer', 'L6');
+  await page.keyboard.press('Escape');
+  await expect(focus).toHaveCount(0);
+});

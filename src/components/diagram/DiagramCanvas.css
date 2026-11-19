@@ -1103,3 +1103,43 @@
     print-color-adjust: exact;
   }
 }
+
+/* 도구줄 '선택 해제' — 선택 영역이 있을 때 안내 문구 자리에 */
+.dtool__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 6px 0 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.dtool__clear b {
+  color: var(--color-brand);
+}
+.dtool__clear-x {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand);
+  color: var(--color-on-brand, #fff);
+  font-weight: var(--fw-bold);
+}
+.dtool__clear:hover .dtool__clear-x {
+  background: var(--color-brand-strong);
+}
+@media (pointer: coarse) {
+  .dtool__clear { min-height: 44px; }
+}
+/* 좁은 폭·압축 화면: '선택됨' 글자를 빼고 계층 이름 + 해제만 (도구줄이 두 줄로 늘지 않게) */
+@media (max-width: 1100px) {
+  .dtool__clear-label { display: none; }
+}
+.app-shell--compact .dtool__clear-label { display: none; }

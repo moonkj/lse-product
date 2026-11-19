@@ -64,6 +64,8 @@ export interface DiagramController {
   revealNode(id: string): void;
   /** 화면은 그대로 두고 그 계층을 선택 영역(상자)으로 표시 — 계통도 안 영역을 눌렀을 때 */
   focusLayer(layer: Layer): void;
+  /** 선택 해제 — 기기 선택과 선택 영역 표시를 함께 푼다 (도구줄 '선택 해제'·같은 영역 다시 누르기·Esc) */
+  clearSelection(): void;
 }
 
 let controller: DiagramController | null = null;

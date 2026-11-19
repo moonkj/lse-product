@@ -102,7 +102,10 @@ export const Bands = memo(function Bands({
             const d = downRef.current;
             downRef.current = null;
             if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) > 5) return;
-            getDiagramController()?.focusLayer(layer);
+            const c = getDiagramController();
+            // 이미 선택된 영역을 다시 누르면 해제 (2026-11-19 사용자: 해제 방법이 명확하지 않음)
+            if (viewStore.get().focus === layer) c?.clearSelection();
+            else c?.focusLayer(layer);
           },
         }
       : {};
@@ -336,6 +339,12 @@ export default function DiagramCanvas() {
       centerOn: (x, y) => pz.centerOn(x, y),
       revealNode: (id) => revealRef.current(id),
       focusLayer: (l) => pinLayer(l, true),
+      clearSelection: () => {
+        pinRef.current = null;
+        viewStore.set({ focus: null });
+        selectRef.current(null);
+        announce('선택 해제');
+      },
     });
     return () => {
       // 다른 화면으로 갔다가 뒤로가기로 돌아오면 이 위치를 복원
@@ -461,6 +470,17 @@ export default function DiagramCanvas() {
   }, []);
 
   // 타일 선택(클릭·Enter) → 상세 패널 제목으로 포커스 (B4: Tab 51회 → 0회). 이미 선택된 타일이면 바로 이동
+  const selectRef = useRef(selectNode);
+  selectRef.current = selectNode;
+  // Esc: 선택 영역·기기 선택 해제 (패널 Esc 처리 뒤에도 영역 표시가 남아 있으면 마저 해제)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || !viewStore.get().focus) return;
+      getDiagramController()?.clearSelection();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   const selectedRef = useRef(selectedId);
   selectedRef.current = selectedId;
   const onActivate = useCallback(
