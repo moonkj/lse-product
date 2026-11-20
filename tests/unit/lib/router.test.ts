@@ -66,7 +66,7 @@ describe('UT-11 라우터 기본 동작 (합성)', () => {
 
   it('boxOf: 모선 반폭은 정수 나눗셈 (width 301 → 150)', () => {
     expect(boxOf(bus('b', 500, 300, 301))).toMatchObject({ kind: 'bus', hw: 150, hh: 4 });
-    expect(boxOf({ id: 'r', ref: true, x: 0, y: 0 })).toMatchObject({ kind: 'ref', hw: 60, hh: 58 });
+    expect(boxOf({ id: 'r', ref: true, x: 0, y: 0 })).toMatchObject({ kind: 'ref', hw: 75, hh: 60 });
     expect(boxOf({ id: 'p', kind: 'endpoint', x: 0, y: 0 })).toMatchObject({ kind: 'endpoint', hw: 60, hh: 22 });
   });
 
@@ -96,9 +96,9 @@ describe('UT-11 라우터 기본 동작 (합성)', () => {
   it('모선 연결: 모선 위 (기기 x) 점에서 수직 points, 모선 쪽이 from 이든 to 든', () => {
     const nodes = [bus('b', 500, 300, 400), tile('d', 600, 450), tile('u', 400, 150)];
     const boxes = boxMapOf(nodes);
-    expect(routeEdge(boxes, 'b', 'd')).toEqual({ ok: true, points: [{ x: 600, y: 300 }, { x: 600, y: 392 }] });
-    expect(routeEdge(boxes, 'd', 'b')).toEqual({ ok: true, points: [{ x: 600, y: 392 }, { x: 600, y: 300 }] });
-    expect(routeEdge(boxes, 'u', 'b')).toEqual({ ok: true, points: [{ x: 400, y: 208 }, { x: 400, y: 300 }] });
+    expect(routeEdge(boxes, 'b', 'd')).toEqual({ ok: true, points: [{ x: 600, y: 300 }, { x: 600, y: 390 }] });
+    expect(routeEdge(boxes, 'd', 'b')).toEqual({ ok: true, points: [{ x: 600, y: 390 }, { x: 600, y: 300 }] });
+    expect(routeEdge(boxes, 'u', 'b')).toEqual({ ok: true, points: [{ x: 400, y: 210 }, { x: 400, y: 300 }] });
     // 모선 양 끝(x = 300, 700)은 범위 안
     expect(routeEdge(boxMapOf([bus('b', 500, 300, 400), tile('e', 700, 450)]), 'b', 'e').ok).toBe(true);
   });

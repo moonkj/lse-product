@@ -245,24 +245,24 @@ describe('스키마·판정 함수 자기검증', () => {
     const tile = (id: string, x: number, y: number): DNode => ({ id, equipmentTypeId: 'vcb', x, y });
     const bus: DNode = { id: 'b', kind: 'bus', x: 300, y: 300, width: 200, label: 'b', layer: 'L4' };
     const pts = defaultRoute(boxOf(tile('a', 100, 100)), boxOf(tile('c', 500, 100)))!;
-    expect(pts).toEqual([{ x: 160, y: 100 }, { x: 440, y: 100 }]);
+    expect(pts).toEqual([{ x: 175, y: 100 }, { x: 425, y: 100 }]);
     expect(segHitsNode(pts[0], pts[1], tile('m', 300, 100))).toBe(true);
-    expect(segHitsNode(pts[0], pts[1], tile('m', 300, 159 + 1))).toBe(false);
+    expect(segHitsNode(pts[0], pts[1], tile('m', 300, 161 + 1))).toBe(false);
     expect(segHitsNode({ x: 300, y: 200 }, { x: 300, y: 400 }, bus)).toBe(true); // 모선을 세로로 관통
     expect(segHitsNode({ x: 100, y: 295 }, { x: 500, y: 295 }, bus), '모선(±4) + 여유 2px 안').toBe(true);
     expect(segHitsNode({ x: 100, y: 294 }, { x: 500, y: 294 }, bus)).toBe(false);
     // 끝점(120×44)은 반높이 22 로 기본 경로를 만든다
     const ep: DNode = { id: 'p', kind: 'endpoint', x: 100, y: 300, label: 'p', layer: 'L6' };
-    expect(defaultRoute(boxOf(tile('a', 100, 100)), boxOf(ep))).toEqual([{ x: 100, y: 158 }, { x: 100, y: 278 }]);
+    expect(defaultRoute(boxOf(tile('a', 100, 100)), boxOf(ep))).toEqual([{ x: 100, y: 160 }, { x: 100, y: 278 }]);
     // 꺾인 기본 경로 (세로 간격 충분: 아래로 → 가로 → 아래로), 중간 y 는 Python round
     expect(defaultRoute(boxOf(tile('a', 100, 100)), boxOf(tile('c', 400, 401)))).toEqual([
-      { x: 100, y: 158 },
+      { x: 100, y: 160 },
       { x: 100, y: 250 },
       { x: 400, y: 250 },
-      { x: 400, y: 343 },
+      { x: 400, y: 341 },
     ]);
     // 모선 연결 기본 경로: 모선 위 (기기 x) 점에서 수직, 모선 범위 밖이면 null
-    expect(defaultRoute(boxOf(bus), boxOf(tile('d', 350, 420)))).toEqual([{ x: 350, y: 300 }, { x: 350, y: 362 }]);
+    expect(defaultRoute(boxOf(bus), boxOf(tile('d', 350, 420)))).toEqual([{ x: 350, y: 300 }, { x: 350, y: 360 }]);
     expect(defaultRoute(boxOf(bus), boxOf(tile('d', 450, 420)))).toBeNull();
   });
 

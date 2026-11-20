@@ -15,7 +15,7 @@ interface Props {
 }
 
 /**
- * 사진 타일 노드 120×116 (160px 썸네일을 108×60 판에 + 약어 + 이름). 커버리지 = 타일 안쪽 우상단 배지(모양+색) —
+ * 사진 타일 노드 150×120 (여백 자른 썸네일을 140×66 판에 + 약어 + 이름). 커버리지 = 타일 안쪽 우상단 배지(모양+색) —
  * 타일 밖으로 나가지 않아 계층 경계선과 겹치지 않는다(2026-11-19).
  * 테두리(P0-3): 기본 회색 1px, 미보유 1.5px 빨강 + 옅은 빨강 판, 일부 보유 1.5px 황색 + 판 하단 띠, 선택 = 바깥 네이비 링.
  * 사진 없는 기기는 단선결선도 심볼. 공백류(미보유·일부·계열사·패널 구성품)는 판정 확신도로 테두리 모양:
@@ -62,7 +62,7 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
         }
       }}
     >
-      {/* 사진 판 108×60 가로형 (E3 P0) — 사진·심볼 공통. 미보유 = 옅은 빨강 판, 일부 보유 = 판 하단 황색 띠 (CSS) */}
+      {/* 사진 판 140×66 가로형 (E3 P0) — 사진·심볼 공통. 미보유 = 옅은 빨강 판, 일부 보유 = 판 하단 황색 띠 (CSS) */}
       <span className="dnode__plate" aria-hidden="true">
         {photo ? (
           // src 는 DiagramCanvas 의 IntersectionObserver 가 화면 근처에 왔을 때 채운다 (data-src)
@@ -70,8 +70,8 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
             className="dnode__img"
             data-src={photo}
             alt=""
-            width={108}
-            height={60}
+            width={140}
+            height={66}
             loading="lazy"
             decoding="async"
             draggable={false}

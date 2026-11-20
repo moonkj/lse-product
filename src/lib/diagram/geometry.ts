@@ -5,9 +5,9 @@
  */
 import type { DiagramEdge, DiagramNodeKind } from '../schema';
 
-/** 기기 사진 타일 (참조 타일 포함) — diagram.json 좌표 = 타일 중심 */
-export const TILE_W = 120;
-export const TILE_H = 116;
+/** 기기 사진 타일 (참조 타일 포함) — diagram.json 좌표 = 타일 중심. 2026-11-20 120×116 → 150×120 (사진 잘림 개선, 세로 간격 최소 153px 이라 높이는 조금만) */
+export const TILE_W = 150;
+export const TILE_H = 120;
 /** 끝점 라벨 상자 */
 export const ENDPOINT_W = 120;
 export const ENDPOINT_H = 44;

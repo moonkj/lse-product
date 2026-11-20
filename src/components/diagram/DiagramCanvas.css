@@ -271,11 +271,11 @@
   box-shadow: var(--shadow-md);
 }
 
-/* ── 노드 (사진 타일 120×116, 2026-11-19 색·타일 고도화 E3·E5) ─────────────────────────────── */
+/* ── 노드 (사진 타일 150×120 — 2026-11-20 사진 잘림 개선으로 키움, 2026-11-19 색·타일 고도화 E3·E5) ─────────────────────────────── */
 .dnode {
   position: absolute;
-  width: 120px;
-  height: 116px;
+  width: 150px;
+  height: 120px;
   padding: 5px 5px 2px;
   display: flex;
   flex-direction: column;
@@ -310,14 +310,15 @@
 .dnode[data-confidence='candidate'] { border-style: solid; } /* 판정 후보/확정 구분 표시 없앰 (2026-11-19) */
 .dnode[data-confidence='confirmed'] { border-style: solid; }
 
-/* 사진 판 108×60 가로형 (E3 P0) — 사진·심볼 공통. 흰 타일 위에서도 판 경계가 보이는 옅은 회색(다크는 한 단계 낮춘 흰색 + 테두리) */
+/* 사진 판 140×66 가로형 (E3 P0) — 사진·심볼 공통. 흰 타일 위에서도 판 경계가 보이는 옅은 회색(다크는 한 단계 낮춘 흰색 + 테두리) */
 .dnode__plate {
   position: relative;
   flex: none;
   display: grid;
   place-items: center;
-  width: 108px;
-  height: 60px;
+  width: 140px;
+  height: 66px;
+  padding: 3px 20px; /* 좌우 20px = 우상단 상태 배지(18px)가 사진을 가리지 않게, 가운데 정렬 유지 */
   border: 1px solid var(--tile-plate-border);
   border-radius: var(--radius-xs);
   background: var(--plate-bg, var(--tile-plate-bg));

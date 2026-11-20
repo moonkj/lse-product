@@ -46,8 +46,8 @@ function base(): Fixture {
   const chain: DiagramNode[] = [1, 2, 3, 4, 5, 6, 7].map((i) => ({ id: `n${i}`, equipmentTypeId: `e${i}`, x: 300, y: 150 + 300 * (i - 1) }));
   const edges: DiagramEdge[] = [1, 2, 3, 4, 5, 6].map((i) => ({ id: `e0${i}`, from: `n${i}`, to: `n${i + 1}`, kind: 'power' }));
   edges.push(
-    { id: 'e07', from: 'bus6', to: 'n8', points: [{ x: 600, y: 1560 }, { x: 600, y: 1642 }] },
-    { id: 'e08', from: 'bus6', to: 'n9', points: [{ x: 800, y: 1560 }, { x: 800, y: 1642 }] },
+    { id: 'e07', from: 'bus6', to: 'n8', points: [{ x: 600, y: 1560 }, { x: 600, y: 1640 }] },
+    { id: 'e08', from: 'bus6', to: 'n9', points: [{ x: 800, y: 1560 }, { x: 800, y: 1640 }] },
   );
   return {
     categories: [{ code: 'AAA001', name: '차단기', path: ['차단기'], url: 'https://www.ls-electric.com/ko/product/category/AAA001', productIds: ['P00001'] }],
@@ -147,7 +147,7 @@ describe('UT-10 공용 무결성 검사 — 기준 데이터', () => {
 describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
   it('DI-46 모선 끝에서 가로로 출발하는 모선 연결선', () => {
     const r = check((f) => {
-      edge(f, 'e08').points = [{ x: 900, y: 1560 }, { x: 960, y: 1560 }, { x: 960, y: 1700 }, { x: 860, y: 1700 }];
+      edge(f, 'e08').points = [{ x: 900, y: 1560 }, { x: 960, y: 1560 }, { x: 960, y: 1700 }, { x: 875, y: 1700 }];
     });
     expect(errRules(r)).toEqual(['DI-46']);
     expect(r.errors[0].message).toContain('수직');
@@ -156,7 +156,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
   });
   it('DI-46 모선 범위 밖 점에서 출발 / points 없음', () => {
     const out = check((f) => {
-      edge(f, 'e08').points = [{ x: 950, y: 1560 }, { x: 950, y: 1600 }, { x: 800, y: 1600 }, { x: 800, y: 1642 }];
+      edge(f, 'e08').points = [{ x: 950, y: 1560 }, { x: 950, y: 1600 }, { x: 800, y: 1600 }, { x: 800, y: 1640 }];
     });
     expect(errRules(out)).toContain('DI-46');
     expect(out.errors.some((i) => i.rule === 'DI-46' && i.message.includes('모선 위가 아닙니다'))).toBe(true);
@@ -241,7 +241,7 @@ describe('UT-10 T2 R3 관리자 실패 시나리오 → 규칙 ID', () => {
     const r = check((f) => {
       f.equipmentTypes.push(eq('e10', 'L7'));
       f.diagram.nodes.push({ id: 'n10', equipmentTypeId: 'e10', x: 500, y: 1950 });
-      // n8→n7: (600,1758)→(600,1854)→(300,1854)→(300,1892) / n9→n10: (800,1758)→(800,1854)→(500,1854)→(500,1892) — y=1854 에서 x 500~600 겹침
+      // n8→n7: (600,1760)→(600,1855)→(300,1855)→(300,1890) / n9→n10: (800,1760)→(800,1855)→(500,1855)→(500,1890) — y=1855 근처에서 x 500~600 겹침
       f.diagram.edges.push({ id: 'e11', from: 'n8', to: 'n7' }, { id: 'e12', from: 'n9', to: 'n10' });
     });
     expect(errRules(r)).toEqual(['DI-45a']);
@@ -345,7 +345,7 @@ describe('UT-10 규칙별 위반 → 해당 ID (HARD)', () => {
     ['DI-42', (f) => f.diagram.edges.push({ id: 'e31', from: 'n1', to: 'n3', points: [{ x: 360, y: 150 }, { x: 420, y: 150 }, { x: 420, y: 750 }, { x: 360, y: 750 }] })],
     ['DI-43', (f) => f.equipmentTypes.push(eq('e13', 'L7'))],
     ['DI-43b', (f) => (f.diagram.review = { status: 'approved' })],
-    ['DI-44b', (f) => (edge(f, 'e01').points = [{ x: 300, y: 208 }, { x: 310, y: 392 }])],
+    ['DI-44b', (f) => (edge(f, 'e01').points = [{ x: 300, y: 210 }, { x: 310, y: 390 }])],
     ['DI-81', (f) => (f.images.ghost = { ...f.images.e1 })],
     ['DI-83', (f) => (f.images.e1.productId = 'P99999')],
     ['DI-84', (f) => (f.images.e1.sourceUrl = 'https://example.com/e1.png')],
@@ -415,7 +415,7 @@ describe('UT-10 v0.8 분기별 위반 (권장 R2 — 규칙 안의 다른 분기
     const r = check((f) => {
       f.equipmentTypes.push(eq('e10', 'L5'));
       f.diagram.nodes.push({ id: 'n10', equipmentTypeId: 'e10', x: 700, y: 1350 });
-      f.diagram.edges.push({ id: 'e43', from: 'n10', to: 'n8', points: [{ x: 700, y: 1408 }, { x: 700, y: 1600 }, { x: 600, y: 1600 }, { x: 600, y: 1642 }] });
+      f.diagram.edges.push({ id: 'e43', from: 'n10', to: 'n8', points: [{ x: 700, y: 1408 }, { x: 700, y: 1600 }, { x: 600, y: 1600 }, { x: 600, y: 1640 }] });
     });
     const hit = r.errors.filter((i) => i.rule === 'DI-44a');
     expect(hit.map((i) => i.refs.edgeId)).toEqual(['e43']);
@@ -424,8 +424,8 @@ describe('UT-10 v0.8 분기별 위반 (권장 R2 — 규칙 안의 다른 분기
   });
 
   it('DI-44b 끝 점이 도착 노드 가장자리 밖 (직교 경로 — 사선 분기와 별개)', () => {
-    // n2 위 가장자리 y = 450 - 58 = 392. 끝 점 380 → 12px 모자람
-    const r = check((f) => (edge(f, 'e01').points = [{ x: 300, y: 208 }, { x: 300, y: 380 }]));
+    // n2 위 가장자리 y = 450 - 60 = 390. 끝 점 380 → 10px 모자람
+    const r = check((f) => (edge(f, 'e01').points = [{ x: 300, y: 210 }, { x: 300, y: 380 }]));
     const m = msgs(r, 'DI-44b');
     expect(m).toHaveLength(1);
     expect(m[0]).toContain('끝 점이');
@@ -449,7 +449,7 @@ describe('UT-10 규칙별 위반 → 해당 ID (SOFT 경고, 오류 아님)', ()
       })],
     ['DI-27h', (f) =>
       Object.assign(equip(f, 'e1'), { coverage: 'missing', lseCategoryCodes: [], gapNote: 'x', gapAssessment: { ...gapCandidate, verifiedBy: 'hong@example.com' } })],
-    ['DI-39', (f) => (node(f, 'n9').x = 740)], // n8 과 간격 20px (< 30)
+    ['DI-39', (f) => (node(f, 'n9').x = 770)], // n8 과 간격 20px (< 30), 타일 폭 150
     ['DI-43b', (f) => delete f.diagram.review],
     ['DI-51', (f) => (equip(f, 'e9').name = equip(f, 'e8').name)],
     ['DI-52', (f) => (equip(f, 'e1').description = '대외비 자료')],
