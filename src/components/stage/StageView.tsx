@@ -7,7 +7,6 @@ import { COVERAGE_LABELS, type EquipmentType } from '../../lib/schema';
 import { isGapCoverage } from '../../lib/labels';
 import { usePresetStore } from '../../lib/market/presetStore';
 import { buildChecklist, presetById, scenarioById, PRESET_TIER_LABELS, type ChecklistRow } from '../../lib/market/presets';
-import { ViewSegment } from '../diagram/DiagramToolbar';
 import PresetPicker from '../market/PresetPicker';
 import MarketButton from '../market/MarketButton';
 import ViewSwitch from './ViewSwitch';
@@ -180,7 +179,6 @@ export default function StageView() {
       <div className="dtool dtool--stage">
         <div className="dtool__row dtool__main">
           <ViewSwitch />
-          <ViewSegment mode={gapMode ? 'gap' : 'product'} />
           <PresetPicker />
           <span className="stage__total" aria-live="polite">
             기기 {total}종

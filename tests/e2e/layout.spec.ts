@@ -90,7 +90,7 @@ test.describe('C1 압축 화면 · 넓게 보기', () => {
     const header = await page.getByRole('banner').boundingBox();
     expect(header!.height).toBeLessThanOrEqual(64);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-    for (const id of ['view-mode-gap', 'layer-nav-L4', 'theme-toggle', 'gap-table-link-mobile']) {
+    for (const id of ['view-switch-stage', 'layer-nav-L4', 'theme-toggle', 'gap-table-link-mobile']) {
       // 휴대폰 세로: 헤더 메뉴는 숨기고 공백 표는 칩 줄 끝 링크
       if (id === 'gap-table-link-mobile') await tid(page, id).scrollIntoViewIfNeeded();
       expect((await tid(page, id).boundingBox())!.height, id).toBeGreaterThanOrEqual(44);
@@ -174,9 +174,9 @@ test.describe('C4 시작 카드 띠 제거 (디자이너 토론 P0-6)', () => {
     await page.goto('./');
     await expect(tid(page, 'diagram')).toBeVisible();
     await expect(tid(page, 'start-card')).toHaveCount(0);
-    // 보기 세그먼트는 도구줄 맨 왼쪽
-    await expect(tid(page, 'view-mode-product')).toHaveAttribute('aria-pressed', 'true');
-    const seg = (await tid(page, 'view-mode-product').boundingBox())!;
+    // 보기 방식 전환(계통맵|단계별)은 도구줄 맨 왼쪽, 보기 모드 버튼은 없음 (2026-11-20)
+    await expect(page.getByTestId(/^view-mode-/)).toHaveCount(0);
+    const seg = (await tid(page, 'view-switch').boundingBox())!;
     const zoom = (await tid(page, 'zoom-out').boundingBox())!;
     expect(seg.x).toBeLessThan(zoom.x);
   });
@@ -193,9 +193,9 @@ test.describe('B10 live region · 라우트 포커스', () => {
 
   test('라우트 이동 → 새 화면 h1 포커스, 같은 화면 쿼리 변경(보기 모드)은 포커스 유지', async ({ page }) => {
     await gotoHome(page);
-    await tid(page, 'view-mode-gap').click();
-    await expect(page).toHaveURL(/mode=gap/);
-    await expect(tid(page, 'view-mode-gap')).toBeFocused();
+    await tid(page, 'view-switch-stage').click();
+    await expect(page).toHaveURL(/view=stage/);
+    await expect(tid(page, 'view-switch-stage')).toBeFocused();
 
     await tid(page, 'gap-table-link').click();
     await expect(page.getByRole('heading', { level: 1, name: '라인업 현황' })).toBeFocused();

@@ -175,13 +175,11 @@ async function clickNode(page: Page, nodeId: string, layer: string) {
 //   헤더 모드 탭 = 제품·Gap, 옛 /learn 링크 → 계통도(/)로 replace 리디렉트, 옛 ?mode=learn → 제품 모드
 // ═════════════════════════════════════════════════════════════
 test.describe('E2E-1 교육 탭 제거', () => {
-  test('교육 탭 없음 — 도구줄 보기 세그먼트는 전체·보완 필요 2개 (헤더에는 없음)', async ({ page }) => {
+  test('교육 탭 없음 — 보기 모드 버튼 없음 (2026-11-20 사용자: 전체가 기본, 보완 필요 버튼 제거 — 범례 "미보유"로 확인)', async ({ page }) => {
     await gotoHome(page);
-    await expect(page.getByRole('banner').getByTestId(/^view-mode-/)).toHaveCount(0);
-    await expect(tid(page, 'view-mode-product')).toBeVisible();
-    await expect(tid(page, 'view-mode-gap')).toBeVisible();
-    await expect(tid(page, 'view-mode-learn')).toHaveCount(0);
-    await expect(page.getByRole('group', { name: '보기 모드' }).getByRole('button')).toHaveCount(2);
+    await expect(page.getByTestId(/^view-mode-/)).toHaveCount(0);
+    await expect(page.getByRole('group', { name: '보기 모드' })).toHaveCount(0);
+    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'product');
   });
 
   test('/learn?step=L4 (옛 링크) → 계통도(/)로 리디렉트 (쿼리 버림)', async ({ page }) => {
@@ -195,7 +193,6 @@ test.describe('E2E-1 교육 탭 제거', () => {
   test('?mode=learn (옛 링크) → 제품 모드로 열림, 교육 보기 안내 없음', async ({ page }) => {
     await page.goto('./#/?mode=learn');
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'product');
-    await expect(tid(page, 'view-mode-product')).toHaveAttribute('aria-pressed', 'true');
     await expect(tid(page, 'tour-start')).toHaveCount(0);
   });
 
@@ -318,10 +315,9 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     const owned = nodeWith('owned');
     test.skip(!missing || !owned, 'missing/owned 노드 데이터 없음');
 
-    await gotoHome(page);
-    await tid(page, 'view-mode-gap').click();
-    // 사용자 확정: Gap = 같은 계통도 위 강조 (별도 페이지로 이동하지 않음)
-    await expect(page).toHaveURL(/#\/\?(.*&)?mode=gap/);
+    // 버튼은 없앴지만(2026-11-20) 옛 공유 링크 ?mode=gap 은 그대로 열린다
+    await page.goto('./#/?mode=gap');
+    await expect(tid(page, 'diagram')).toBeVisible();
     await expect(tid(page, 'diagram')).toBeVisible();
     await expect(tid(page, 'gap-page')).toHaveCount(0);
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
@@ -378,16 +374,11 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     for (const row of await items.all()) await expect(row).toHaveAttribute('data-coverage', 'missing');
   });
 
-  test('R-09 보기 모드 URL 공유: ?mode=gap 으로 열면 Gap 모드, 토글 시 URL 갱신', async ({ page }) => {
+  test('R-09 옛 공유 링크 ?mode=gap 으로 열면 Gap 모드, 새로고침해도 유지', async ({ page }) => {
     await page.goto('./#/?mode=gap');
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
-    await expect(tid(page, 'view-mode-gap')).toHaveAttribute('aria-pressed', 'true');
     await page.reload();
     await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'gap');
-
-    await tid(page, 'view-mode-product').click();
-    await expect(page).not.toHaveURL(/[?&]mode=/);
-    await expect(tid(page, 'diagram')).toHaveAttribute('data-view-mode', 'product');
   });
 
   test('affiliate 기기 패널에 계열사명이 표시된다', async ({ page }) => {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { getDiagramController, useView } from '../../lib/diagram/view';
 import { layerTitle } from '../../lib/diagram/model';
-import { useSetViewMode, type ViewMode } from '../../lib/diagram/url';
+import type { ViewMode } from '../../lib/diagram/url';
 import type { Diagram } from '../../lib/schema';
 import { getData } from '../../data/load';
 import { gapConfidence } from '../../lib/labels';
@@ -44,42 +44,6 @@ function ReviewBadge({ review }: { review?: Diagram['review'] }) {
     >
       <span aria-hidden="true">⏳</span> 계통 검수 대기
     </span>
-  );
-}
-
-/**
- * 보기 세그먼트 "보기 [전체｜공백만]" — 디자이너 토론 P0-5: 헤더의 제품/Gap 토글을 도구줄 맨 왼쪽으로 옮김.
- * URL `?mode=` 가 원본(useSetViewMode). 화면낭독기 그룹 이름은 "보기 모드" 유지.
- */
-export function ViewSegment({ mode }: { mode: ViewMode }) {
-  const setMode = useSetViewMode();
-  const opts: { value: ViewMode; label: string; title: string }[] = [
-    { value: 'product', label: '전체', title: '전체 기기 보기' },
-    { value: 'gap', label: '보완 필요', title: '미보유·일부 보유 기기만 강조' },
-  ];
-  return (
-    <div className="dtool__view">
-      <span className="dtool__view-label" aria-hidden="true">
-        보기
-      </span>
-      <div className="dtool__seg" role="group" aria-label="보기 모드">
-        {opts.map((o) => (
-          <button
-            key={o.value}
-            type="button"
-            className="dtool__seg-btn"
-            aria-pressed={mode === o.value}
-            data-testid={`view-mode-${o.value}`}
-            title={o.title}
-            onClick={() => {
-              if (mode !== o.value) setMode(o.value);
-            }}
-          >
-            {o.label}
-          </button>
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -215,7 +179,6 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
       )}
       <div className="dtool__row dtool__main">
         <ViewSwitch />
-        <ViewSegment mode={mode} />
         <PresetPicker />
         <ZoomControls total={total} />
         <PrintButton />

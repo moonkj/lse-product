@@ -116,30 +116,17 @@ describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
     expect(screen.queryByText(/교육/)).toBeNull();
   });
 
-  it('계통도 도구줄 맨 왼쪽 "보기 [전체｜보완 필요]" — 2개뿐, aria-pressed, 누르면 ?mode= 갱신', () => {
-    function Loc() {
-      const { search } = useLocation();
-      return <span data-testid="loc">{search}</span>;
-    }
+  it('계통도 도구줄: 맨 왼쪽 [계통맵 | 단계별] 스위치, 보기 모드(전체·보완 필요) 버튼 없음 (2026-11-20 — 범례 "미보유"로 확인)', () => {
     render(
       <MemoryRouter initialEntries={['/?node=n-vcb']}>
         <DiagramToolbar mode="product" total={10} />
-        <Loc />
       </MemoryRouter>,
     );
-    const group = screen.getByRole('group', { name: '보기 모드' });
-    const tabs = Array.from(group.querySelectorAll('button'));
-    expect(tabs.map((b) => b.textContent)).toEqual(['전체', '보완 필요']);
-    expect(screen.getByTestId('view-mode-product')).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByTestId('view-mode-gap')).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.queryByTestId('view-mode-learn')).toBeNull();
-    // 도구줄 첫 요소 = [계통맵 | 단계별] 보기 방식 스위치(2026-11-19), 그다음 보기 세그먼트, 오른쪽 끝 슬롯(흐름·수급 자리)
-    const row = group.closest('.dtool__main')!;
+    expect(screen.queryByRole('group', { name: '보기 모드' })).toBeNull();
+    expect(screen.queryByTestId('view-mode-gap')).toBeNull();
+    const row = screen.getByTestId('view-switch').closest('.dtool__main')!;
     expect(row.firstElementChild).toHaveAttribute('data-testid', 'view-switch');
-    expect(row.children[1]).toContainElement(group);
     expect(screen.getByTestId('dtool-end')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('view-mode-gap'));
-    expect(screen.getByTestId('loc').textContent).toBe('?node=n-vcb&mode=gap');
   });
 
   it('옛 링크 ?mode=learn 은 제품 모드로 해석 (gap 만 Gap 모드)', () => {
