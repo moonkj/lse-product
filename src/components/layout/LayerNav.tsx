@@ -360,7 +360,15 @@ export default function LayerNav() {
           </div>
         )}
         <section className="layer-nav__summary" aria-label="전체 보유 요약" data-testid="layer-nav-summary">
-          <p className="layer-nav__summary-title">전체 보유</p>
+          <p className="layer-nav__summary-title">
+            전체 보유
+            {model.coverageCounts.na > 0 && (
+              <span className="layer-nav__summary-excl" data-testid="layer-nav-na-excluded">
+                {' '}
+                · 해당 없음 {model.coverageCounts.na}종 제외
+              </span>
+            )}
+          </p>
           <p className="layer-nav__summary-num">
             <b>
               {totals.owned}/{totals.total}

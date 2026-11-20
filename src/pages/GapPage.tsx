@@ -120,6 +120,12 @@ export default function GapPage() {
           <div className="gp-stat gp-stat--owned">
             <dt>
               보유율 {rate.owned}/{rate.total}
+              {totals.na > 0 && (
+                <span className="gp-stat__excl" data-testid="gap-na-excluded">
+                  {' '}
+                  · 해당 없음 {totals.na}종 제외
+                </span>
+              )}
             </dt>
             <dd>{rate.pct}%</dd>
           </div>

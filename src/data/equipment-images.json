@@ -271,14 +271,6 @@
     "bytes": 63167,
     "thumb": "images/equipment/thumb/modular-substation.png"
   },
-  "motor": {
-    "file": "images/equipment/motor.png",
-    "productId": "P01350",
-    "productName": "F Series",
-    "sourceUrl": "https://www.ls-electric.com/ko/upload/images/product/F-series_th2(1)(1).png",
-    "bytes": 92578,
-    "thumb": "images/equipment/thumb/motor.png"
-  },
   "ms": {
     "file": "images/equipment/ms.png",
     "productId": "P01260",

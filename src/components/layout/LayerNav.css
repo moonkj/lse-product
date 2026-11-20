@@ -421,6 +421,11 @@
   font-weight: var(--fw-bold);
 }
 
+/* 자사 사업 범위 밖(해당 없음)은 분모에서 뺐다는 안내 (2026-11-20) */
+.layer-nav__summary-excl {
+  font-weight: var(--fw-regular, 400);
+}
+
 .layer-nav__summary-num {
   color: var(--color-text-muted);
   font-size: var(--fs-sm);

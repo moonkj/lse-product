@@ -147,9 +147,9 @@ export function countCoverage(list: EquipmentType[]): CoverageCounts {
   return c;
 }
 
-/** 보유율 = owned / 전체 (디자인 승인안 기준. na 포함 전체 기기 종류 수가 분모) */
+/** 보유율 = owned / 집계 대상. 해당 없음(na, 자사 사업 범위 밖)은 분모에서 뺀다 (2026-11-20 사용자) */
 export function ownedRate(c: CoverageCounts): { owned: number; total: number; pct: number } {
-  const total = COVERAGE_ORDER.reduce((s, k) => s + c[k], 0);
+  const total = COVERAGE_ORDER.filter((k) => k !== 'na').reduce((s, k) => s + c[k], 0);
   return { owned: c.owned, total, pct: total === 0 ? 0 : Math.round((c.owned / total) * 100) };
 }
 

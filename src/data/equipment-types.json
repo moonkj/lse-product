@@ -5,7 +5,7 @@
     "layer": "L1",
     "voltage": "수~25kV",
     "category": "generation",
-    "description": "연료·수력·원자력 등의 에너지를 전기로 바꾸는 계통의 시작점.",
+    "description": "연료·수력·원자력 등의 에너지를 전기로 바꾸는 계통의 시작점. 자사 사업 범위 밖.",
     "overview": {
       "summary": "발전소에서 증기·가스·수력 터빈의 회전 에너지를 교류 전력으로 바꿔 계통에 공급하는 회전기로, 전력계통의 출발점이 된다.",
       "points": [
@@ -29,30 +29,9 @@
       "발전 전압은 보통 수십 kV 이하라 바로 승압이 필요",
       "계통 주파수(60Hz)를 유지하는 주체"
     ],
-    "coverage": "missing",
+    "coverage": "na",
     "lseCategoryCodes": [],
-    "abbr": "G",
-    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
-    "gapAssessment": {
-      "supplyMode": "unknown",
-      "basis": "bu-confirmed",
-      "confidence": "confirmed",
-      "evidence": [
-        {
-          "type": "url",
-          "ref": "https://www.ls-electric.com/ko/product/",
-          "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
-        },
-        {
-          "type": "meeting",
-          "ref": "2026-11-18 사용자 확정 지시",
-          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
-        }
-      ],
-      "verifiedBy": "제품맵 운영팀",
-      "verifiedAt": "2026-11-18",
-      "reviewDue": "2027-05-18"
-    }
+    "abbr": "G"
   },
   {
     "id": "step-up-tr",
@@ -2416,7 +2395,7 @@
     "layer": "L6",
     "voltage": "380/220V",
     "category": "generation",
-    "description": "정전 시 비상 부하에 전원을 공급하는 디젤·가스 발전기.",
+    "description": "정전 시 비상 부하에 전원을 공급하는 디젤·가스 발전기. 자사 사업 범위 밖.",
     "overview": {
       "summary": "상용 전원이 끊겼을 때 소방·승강기·비상조명·중요 설비에 전원을 공급하는 디젤 또는 가스 엔진 발전기다. 수용가 구내에 둔다.",
       "points": [
@@ -2439,30 +2418,9 @@
     "learnPoints": [
       "ATS와 함께 동작"
     ],
-    "coverage": "missing",
+    "coverage": "na",
     "lseCategoryCodes": [],
-    "abbr": "EG",
-    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
-    "gapAssessment": {
-      "supplyMode": "unknown",
-      "basis": "bu-confirmed",
-      "confidence": "confirmed",
-      "evidence": [
-        {
-          "type": "url",
-          "ref": "https://www.ls-electric.com/ko/product/",
-          "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
-        },
-        {
-          "type": "meeting",
-          "ref": "2026-11-18 사용자 확정 지시",
-          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
-        }
-      ],
-      "verifiedBy": "제품맵 운영팀",
-      "verifiedAt": "2026-11-18",
-      "reviewDue": "2027-05-18"
-    }
+    "abbr": "EG"
   },
   {
     "id": "mcc",
@@ -3184,7 +3142,7 @@
     "layer": "L7",
     "voltage": "380V",
     "category": "load",
-    "description": "전기에너지를 회전력으로 바꾸는 대표 부하.",
+    "description": "전기에너지를 회전력으로 바꾸는 대표 부하. 자사 사업 범위 밖.",
     "overview": {
       "summary": "전기 에너지를 회전력이나 직선 운동으로 바꾸는 부하로, 펌프·팬·압축기·컨베이어 등 대부분의 산업 설비 구동을 맡는다.",
       "points": [
@@ -3201,8 +3159,8 @@
           "text": "출력(kW)과 전압, 극수·회전수, 효율 등급(IE), 기동 토크와 기동전류, 보호등급과 냉각 방식을 본다."
         },
         {
-          "label": "제품 설명",
-          "text": "서보 시스템용 F Series 모터, Standard DD모터, 리니어 모터(코어타입·코어리스)를 공급한다."
+          "label": "자사 관련",
+          "text": "전동기 자체는 자사 사업 범위 밖이다. 자사는 전동기를 기동·보호·제어하는 MCC, 모터보호 차단기·계전기, 소프트 스타터, 인버터와 서보 드라이브·모션 제품을 공급한다."
         }
       ],
       "basis": "general",
@@ -3211,39 +3169,10 @@
     "learnPoints": [
       "산업 전력 소비의 큰 비중을 차지"
     ],
-    "coverage": "partial",
-    "lseCategoryCodes": [
-      "BBB002003",
-      "BBB002004",
-      "BBB002007"
-    ],
+    "coverage": "na",
+    "lseCategoryCodes": [],
     "abbr": "M",
-    "productIds": [
-      "SSQ-858"
-    ],
-    "gapNote": "서보·리니어·DD 모터는 보유, 범용 유도전동기는 미보유 — 확인 필요",
-    "gapAssessment": {
-      "supplyMode": "in-house",
-      "basis": "bu-confirmed",
-      "confidence": "confirmed",
-      "evidence": [
-        {
-          "type": "url",
-          "ref": "https://www.ls-electric.com/ko/product/",
-          "note": "공식 홈페이지 제품 메뉴 기준 (2026-11-18 수집)"
-        },
-        {
-          "type": "meeting",
-          "ref": "2026-11-18 사용자 확정 지시",
-          "note": "홈페이지 기준 판정을 운영 담당이 확정 (사업부 정식 검증 전)"
-        }
-      ],
-      "verifiedBy": "제품맵 운영팀",
-      "verifiedAt": "2026-11-18",
-      "reviewDue": "2027-05-18"
-    },
     "searchAliases": [
-      "SynRM",
       "DD 모터",
       "DD Motor"
     ]

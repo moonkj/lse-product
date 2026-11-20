@@ -299,7 +299,8 @@ function buildStats(nodes: readonly NodeItem[], layers: readonly DiagramLayer[])
   for (const n of nodes) {
     coverageCounts[n.coverage] += 1;
     const s = layerStats.get(n.layer);
-    if (!s) continue;
+    // 해당 없음(자사 사업 범위 밖)은 보유 집계 분모에서 뺀다 (2026-11-20 사용자)
+    if (!s || n.coverage === 'na') continue;
     s.total += 1;
     if (n.coverage === 'owned') s.owned += 1;
     if (isGapCoverage(n.coverage)) s.gaps += 1;

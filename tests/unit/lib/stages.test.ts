@@ -37,10 +37,10 @@ describe('단계별 보기', () => {
     expect(stageOf(by.get('scada')!)).toBe('MON');
   });
 
-  it('열·줄 보유·보완 수 = 층 기기 수 합 (계통맵 사이드바와 같은 계산)', () => {
+  it('열·줄 보유·보완 수 = 층 기기 수 합, 해당 없음 제외 (계통맵 사이드바와 같은 계산)', () => {
     for (const c of board.columns) {
       const items = equipment.filter((e) => e.layer === c.id);
-      expect(c.total).toBe(items.length);
+      expect(c.total).toBe(items.filter((e) => e.coverage !== 'na').length); // 해당 없음은 집계 제외
       expect(c.owned).toBe(items.filter((e) => e.coverage === 'owned').length);
       expect(c.gaps).toBe(items.filter((e) => e.coverage === 'missing' || e.coverage === 'partial').length);
     }

@@ -121,8 +121,9 @@ function groupItems(items: EquipmentType[], min: number): StageGroup[] {
   );
 }
 
+/** 해당 없음(na, 자사 사업 범위 밖)은 집계 분모에서 뺀다 (2026-11-20 사용자) */
 const counts = (items: EquipmentType[]) => ({
-  total: items.length,
+  total: items.filter((e) => e.coverage !== 'na').length,
   owned: items.filter((e) => e.coverage === 'owned').length,
   gaps: items.filter((e) => GAP.includes(e.coverage)).length,
 });
