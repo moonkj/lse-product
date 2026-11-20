@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { docsByProductId, equipmentThumbUrl, productImageUrl, useData } from '../data/load';
-import { PRODUCT_SOURCE_LABELS, type ProductSource } from '../lib/schema';
 import { pageTitle } from '../lib/labels';
 import { announce } from '../lib/announce';
 import { downloadText } from '../lib/pages/catalog';
@@ -9,7 +8,6 @@ import { specLabel, specValueText } from '../lib/pages/compare';
 import {
   BUSINESS_LABELS,
   SORT_LABELS,
-  SOURCE_ORDER,
   STAGE_FILTER_IDS,
   STAGE_FILTER_LABELS,
   VOLTAGE_LABELS,
@@ -75,7 +73,6 @@ function ProductCard({ row, specs }: { row: ProductRow; specs?: SpecsMap }) {
         {img ? <img src={img} alt="" loading="lazy" /> : <span className="pcard__nopic">사진 없음</span>}
       </Link>
       <div className="pcard__tags">
-        <span className="pcard__tag">{PRODUCT_SOURCE_LABELS[row.source]}</span>
         <span className="pcard__tag">{BUSINESS_LABELS[p.business]}</span>
         {row.ul && <span className="pcard__tag pcard__tag--ul">UL</span>}
         {p.discontinued && <span className="pcard__tag pcard__tag--disc">단종</span>}
@@ -212,32 +209,11 @@ export default function ProductsPage() {
             counts={counts('voltage')}
             onToggle={(v) => update({ voltage: toggleIn(filters.voltage, v as (typeof VOLTAGE_ORDER)[number]) })}
           />
-          <FacetGroup
-            title="출처"
-            facet="source"
-            options={SOURCE_ORDER.map((v) => ({ value: v, label: PRODUCT_SOURCE_LABELS[v] }))}
-            selected={filters.source}
-            counts={counts('source')}
-            onToggle={(v) => update({ source: toggleIn(filters.source, v as ProductSource) })}
-          />
           <fieldset className="pfil__group">
             <legend className="pfil__legend">조건</legend>
             <label className="pfil__opt">
               <input type="checkbox" checked={filters.ul} onChange={() => update({ ul: !filters.ul })} data-testid="pfil-ul" />
               <span className="pfil__opt-label">북미 UL 제품만</span>
-            </label>
-            <label className="pfil__opt">
-              <input type="checkbox" checked={filters.specsOnly} onChange={() => update({ specsOnly: !filters.specsOnly })} data-testid="pfil-specs" />
-              <span className="pfil__opt-label">정격 사양 있는 제품만</span>
-            </label>
-            <label className="pfil__opt">
-              <input
-                type="checkbox"
-                checked={filters.showDiscontinued}
-                onChange={() => update({ showDiscontinued: !filters.showDiscontinued })}
-                data-testid="pfil-disc"
-              />
-              <span className="pfil__opt-label">단종 제품도 보기</span>
             </label>
           </fieldset>
         </aside>

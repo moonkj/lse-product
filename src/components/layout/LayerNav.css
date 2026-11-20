@@ -447,9 +447,21 @@
 
 .layer-nav__summary-foot {
   display: flex;
+  flex-wrap: wrap; /* 좁은 사이드바에서 글자가 한 글자씩 쪼개지지 않게: 보완 필요 줄 / 라인업 현황 링크 줄 (2026-11-20) */
   justify-content: space-between;
   align-items: center;
+  gap: 2px 8px;
   font-size: var(--fs-xs);
+}
+
+.layer-nav__summary-gaps,
+.layer-nav__summary-gaps-detail,
+.layer-nav__summary-link {
+  white-space: nowrap;
+}
+
+.layer-nav__summary-link {
+  margin-left: auto;
 }
 
 .layer-nav__summary-gaps {

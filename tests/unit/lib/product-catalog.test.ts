@@ -57,8 +57,10 @@ describe('제품 조회', () => {
   });
 
   it('주소 ↔ 필터 왕복, 모르는 값은 버림', () => {
-    const fl = f({ q: 'ACB', business: ['power'], stage: ['L7'], voltage: ['lv'], source: ['ko'], ul: true, specsOnly: true, sort: 'name' as const });
+    const fl = f({ q: 'ACB', business: ['power'], stage: ['L7'], voltage: ['lv'], ul: true, sort: 'name' as const });
     expect(parseProductFilters(productFiltersToParams(fl))).toEqual(fl);
+    // 화면에서 없앤 출처·정격 사양·단종 필터는 옛 주소에 있어도 무시 (2026-11-20)
+    expect(parseProductFilters(new URLSearchParams('src=ko&specs=1&disc=1'))).toMatchObject({ source: [], specsOnly: false, showDiscontinued: false });
     expect(parseProductFilters(new URLSearchParams('biz=x,power&volt=zz&sort=bad')).business).toEqual(['power']);
     expect(parseProductFilters(new URLSearchParams('sort=bad')).sort).toBe('system');
   });
@@ -71,6 +73,7 @@ describe('제품 조회', () => {
   it('CSV: BOM·CRLF·수식 주입 방지', () => {
     const csv = buildProductCsv(rows.slice(0, 2));
     expect(csv.startsWith('﻿제품 ID,')).toBe(true);
+    expect(csv.slice(0, csv.indexOf(String.fromCharCode(13, 10)))).not.toContain('출처'); // 국문·영문 사이트 출처 표시 전부 삭제 (2026-11-20 사용자)
     expect(csv).toContain('\r\n');
     const evil = { ...rows[0], product: { ...rows[0].product, name: '=HYPERLINK("x")' } };
     expect(buildProductCsv([evil])).toContain(`"'=HYPERLINK(""x"")"`);

@@ -70,7 +70,8 @@ test.describe('제품 조회 /products', () => {
     await page.goto('./#/products?ul=1');
     await expect(tid(page, 'pfil-ul')).toBeChecked();
     await expect(tid(page, 'pcard-US-1671')).toBeVisible();
-    await expect(tid(page, 'pcard-US-1671')).toContainText('LS ELECTRIC America');
+    // 출처(국문·영문 사이트 등) 표시는 없앰 (2026-11-20 사용자)
+    await expect(tid(page, 'pcard-US-1671')).not.toContainText(/국문 사이트|영문 사이트|LS ELECTRIC America/);
   });
 
   test('비교 담기 → 비교 바, 결과 없음 안내, 접근성 위반 0', async ({ page }) => {

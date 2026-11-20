@@ -794,6 +794,11 @@
   color: var(--color-text);
 }
 
+/* 비교 바(화면 아래 고정)가 떠 있으면 범례를 바 위로 올린다 — 바 실측 높이 --cmp-tray-h (CompareTray) + 간격 (2026-11-20 겹침 수정) */
+.app-shell--tray .dlegend {
+  bottom: calc(var(--cmp-tray-h, 80px) + 24px);
+}
+
 /* 범례 아이콘은 모두 16×16 상자 안에 (◆ 계열사만 크던 문제) */
 .dlegend .cov-badge__icon {
   width: var(--legend-icon);

@@ -5,7 +5,6 @@
 import type { AppData, SpecsMap } from '../../data/load';
 import { resolveProducts } from '../../data/load';
 import type { EquipmentType, Layer, Product, ProductSource } from '../schema';
-import { PRODUCT_SOURCE_LABELS } from '../schema';
 import { normalizeModel } from '../search';
 import { MONITORING_LABEL, MONITORING_LAYER, STAGE_DEFS, stageOf } from '../stages';
 import { csvCell } from './catalog';
@@ -144,10 +143,11 @@ export function parseProductFilters(params: URLSearchParams): ProductFilters {
     business: listOf(params.get('biz'), ['power', 'automation'] as const),
     stage: listOf(params.get('stage'), STAGE_FILTER_IDS),
     voltage: listOf(params.get('volt'), VOLTAGE_ORDER),
-    source: listOf(params.get('src'), SOURCE_ORDER),
+    // 출처·정격 사양·단종 필터는 화면에서 없앴다 (2026-11-20 사용자) — 옛 주소의 src·specs·disc 는 무시해 보이지 않는 필터가 남지 않게
+    source: [],
     ul: params.get('ul') === '1',
-    specsOnly: params.get('specs') === '1',
-    showDiscontinued: params.get('disc') === '1',
+    specsOnly: false,
+    showDiscontinued: false,
     sort: sort === 'name' || sort === 'specs' ? sort : 'system',
   };
 }
@@ -202,13 +202,12 @@ export function facetCounts(rows: readonly ProductRow[], f: ProductFilters, face
 
 /** 지금 결과 → CSV (UTF-8 BOM, 수식 주입 방지 — 공백 표 CSV 와 같은 규칙) */
 export function buildProductCsv(rows: readonly ProductRow[]): string {
-  const header = ['제품 ID', '제품명', '분류', '사업', '출처', '연결 기기', 'UL', '정격 사양', '단종', '공식 페이지'];
+  const header = ['제품 ID', '제품명', '분류', '사업', '연결 기기', 'UL', '정격 사양', '단종', '공식 페이지'];
   const body = rows.map((r) => [
     r.product.id,
     r.product.name,
     r.product.categoryPath.join(' > '),
     BUSINESS_LABELS[r.product.business],
-    PRODUCT_SOURCE_LABELS[r.source],
     r.equipment.map((e) => e.name).join(' / '),
     r.ul ? 'UL' : '',
     r.hasSpecs ? '있음' : '',

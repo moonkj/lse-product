@@ -191,12 +191,9 @@ test.describe('B10 live region · 라우트 포커스', () => {
     await expect(tid(page, 'live-region')).toHaveText(/보완 필요 목록 · 미보유 — \d+종/);
   });
 
-  test('라우트 이동 → 새 화면 h1 포커스, 같은 화면 쿼리 변경(보기 모드)은 포커스 유지', async ({ page }) => {
+  test('라우트 이동 → 새 화면 h1 포커스', async ({ page }) => {
+    // 보기 모드 버튼을 없애(2026-11-20) "같은 화면 쿼리 변경은 포커스 유지" 확인 대상이 사라짐
     await gotoHome(page);
-    await tid(page, 'view-switch-stage').click();
-    await expect(page).toHaveURL(/view=stage/);
-    await expect(tid(page, 'view-switch-stage')).toBeFocused();
-
     await tid(page, 'gap-table-link').click();
     await expect(page.getByRole('heading', { level: 1, name: '라인업 현황' })).toBeFocused();
   });
