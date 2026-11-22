@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   # 실시간 전력수급은 Cloudflare Pages Function(/api/supply)이 5분 캐시로 직접 제공 → 20분 예약 빌드는 없앰 (2026-11-19).
-  # 남은 예약: 6시간마다 1회 — 시장 동향 스냅샷(fetch-market) 갱신 + 대체용 data/supply.json 다시 만들기
+  # 남은 예약: 6시간마다 1회 — 시장 동향 스냅샷(fetch-market)·전력시장 연도별 지표(fetch-annual) 갱신 + 대체용 data/supply.json 다시 만들기
   schedule:
     - cron: '7 */6 * * *'
 
@@ -36,6 +36,11 @@ jobs:
         continue-on-error: true
         timeout-minutes: 2
         run: node scripts/fetch-market.mjs
+      # 전력거래소 EPSIS 연도별 통계 → src/data/market-annual.json 실적·조회일 (빌드에만 반영, 커밋하지 않음). 실패하면 커밋된 값 그대로
+      - name: Fetch annual market indicators (EPSIS)
+        continue-on-error: true
+        timeout-minutes: 2
+        run: node scripts/fetch-annual.mjs
       - run: npm run build
       - id: pages
         uses: actions/configure-pages@v5
