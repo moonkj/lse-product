@@ -4220,5 +4220,151 @@
       "AAA008"
     ],
     "abbr": "AMRS"
+  },
+  {
+    "id": "sst",
+    "name": "반도체 변압기 (SST)",
+    "layer": "L5",
+    "voltage": "22.9kV AC → 800V DC",
+    "category": "transformation",
+    "description": "전력반도체로 특고압 교류를 바로 저압 직류로 바꾸는 변압·변환 장치. 데이터센터 DC 배전의 시작점.",
+    "overview": {
+      "summary": "고주파 전력반도체 변환기와 소형 고주파 변압기로 특고압 교류를 직접 800V급 직류로 바꾼다. 기존 변압기·정류기·UPS 단계를 줄여 데이터센터 DC 배전의 핵심 설비로 꼽힌다.",
+      "points": [
+        {
+          "label": "역할",
+          "text": "22.9kV 수전 모선에서 전력을 받아 랙까지 가는 800V DC 모선을 만든다. 여러 대를 병렬로 두고 예비 1대(N+1)로 고장에 대비한다."
+        },
+        {
+          "label": "동작 원리",
+          "text": "입력단 정류·역률 보상, 고주파 절연 DC-DC 변환, 출력 전압 제어의 단계로 동작한다. 수십 kHz로 스위칭해 변압기 크기와 무게를 크게 줄인다."
+        },
+        {
+          "label": "선정 포인트",
+          "text": "정격 출력(MW), 입력 전압과 출력 DC 전압, 효율, 고장 전류 제한 성능, 병렬·예비 운전 방식, 냉각 방식을 본다."
+        }
+      ],
+      "basis": "general",
+      "sources": []
+    },
+    "learnPoints": [
+      "변압기·정류기·UPS 여러 단계를 한 장치로 줄인다",
+      "데이터센터 800V DC 배전의 출발점"
+    ],
+    "coverage": "developing",
+    "lseCategoryCodes": [],
+    "abbr": "SST",
+    "searchAliases": [
+      "Solid State Transformer",
+      "반도체변압기",
+      "SST"
+    ]
+  },
+  {
+    "id": "sscb",
+    "name": "반도체 차단기 (SSCB)",
+    "layer": "REN",
+    "voltage": "800V DC",
+    "category": "protection",
+    "description": "기계 접점 대신 전력반도체로 직류 고장 전류를 매우 빠르게 끊는 차단기.",
+    "overview": {
+      "summary": "직류는 전류가 0을 지나지 않아 기계식 차단기로 끊기 어렵다. 반도체 차단기는 전력반도체로 수 마이크로초 안에 고장 전류를 끊어 DC 배전의 보호를 맡는다.",
+      "points": [
+        {
+          "label": "역할",
+          "text": "800V DC 모선과 분기 회로 사이에서 단락·과전류가 생기면 고장 구간만 빠르게 분리해 다른 랙의 전원을 지킨다."
+        },
+        {
+          "label": "동작 원리",
+          "text": "전류를 실시간으로 감시하다 고장을 감지하면 전력반도체를 꺼 전류를 끊고, 회로의 에너지는 보호 소자가 흡수한다. 아크가 생기지 않는다."
+        },
+        {
+          "label": "선정 포인트",
+          "text": "정격 전압·전류, 차단 시간, 통전 손실(발열), 절연 방식(기계 접점 병용 여부), 감시·통신 기능을 본다."
+        }
+      ],
+      "basis": "general",
+      "sources": []
+    },
+    "learnPoints": [
+      "직류 고장 전류를 아크 없이 매우 빠르게 차단"
+    ],
+    "coverage": "developing",
+    "lseCategoryCodes": [],
+    "abbr": "SSCB",
+    "searchAliases": [
+      "Solid State Circuit Breaker",
+      "반도체차단기",
+      "SSCB"
+    ]
+  },
+  {
+    "id": "dc-dc",
+    "name": "DC-DC 컨버터",
+    "layer": "REN",
+    "voltage": "800V DC ↔ 배터리 전압",
+    "category": "control",
+    "description": "직류 전압을 다른 직류 전압으로 바꿔 ESS 배터리를 DC 모선에 연결한다.",
+    "overview": {
+      "summary": "배터리 전압과 800V DC 모선 전압을 맞춰 충전과 방전을 양방향으로 제어한다. DC 배전에서는 교류 변환 없이 ESS를 모선에 바로 붙여 정전 시 전원을 이어 준다.",
+      "points": [
+        {
+          "label": "역할",
+          "text": "평상시에는 DC 모선에서 배터리를 충전하고, SST 고장이나 정전 때는 배터리 전력을 모선으로 보내 랙 전원을 유지한다."
+        },
+        {
+          "label": "동작 원리",
+          "text": "전력반도체 스위칭으로 전압을 올리거나 내리고, 전류 방향을 바꿔 충·방전을 전환한다."
+        },
+        {
+          "label": "선정 포인트",
+          "text": "정격 출력, 입출력 전압 범위, 효율, 응답 속도, 배터리 관리 시스템(BMS) 연동을 본다."
+        }
+      ],
+      "basis": "general",
+      "sources": []
+    },
+    "learnPoints": [
+      "ESS를 DC 모선에 교류 변환 없이 연결"
+    ],
+    "coverage": "developing",
+    "lseCategoryCodes": [],
+    "abbr": "DC-DC",
+    "searchAliases": [
+      "DC/DC Converter",
+      "DCDC"
+    ]
+  },
+  {
+    "id": "it-rack",
+    "name": "IT 서버 랙",
+    "layer": "L7",
+    "voltage": "AC 380/220V · 800V DC",
+    "category": "load",
+    "description": "서버·스토리지·네트워크 장비가 들어가는 데이터센터의 최종 부하. 자사 사업 범위 밖.",
+    "overview": {
+      "summary": "데이터센터 전력의 대부분을 쓰는 최종 부하다. 랙마다 전원 공급 장치(PSU)가 있고, AC 배전에서는 PDU로, DC 배전에서는 직류 분배 장치로 전원을 받는다.",
+      "points": [
+        {
+          "label": "역할",
+          "text": "계통의 마지막 단에서 전력을 소비한다. 랙 전력 밀도가 높아질수록 배전 방식(AC·DC)과 이중화 구성이 중요해진다."
+        },
+        {
+          "label": "선정 포인트",
+          "text": "랙당 전력(kW), 이중 전원(A·B 계통) 여부, 전원 공급 장치 입력 전압(AC 또는 DC)을 본다."
+        }
+      ],
+      "basis": "general",
+      "sources": []
+    },
+    "learnPoints": [
+      "데이터센터 전력의 대부분을 쓰는 최종 부하"
+    ],
+    "coverage": "na",
+    "lseCategoryCodes": [],
+    "searchAliases": [
+      "Server Rack",
+      "서버랙"
+    ]
   }
 ]

@@ -205,6 +205,7 @@
 .mpre__cov--owned { color: var(--cov-owned-text); }
 .mpre__cov--affiliate { color: var(--cov-affiliate-text); }
 .mpre__cov--sourced { color: var(--cov-sourced-text); }
+.mpre__cov--developing { color: var(--cov-developing-text); }
 .mpre__cov--na { color: var(--cov-na-text); }
 
 .mpre__list {

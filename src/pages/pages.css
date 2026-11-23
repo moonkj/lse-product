@@ -163,6 +163,7 @@
 .pg-chain__node--affiliate { border-color: var(--cov-affiliate); }
 .pg-chain__node b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pg-chain__node--sourced { border-color: var(--cov-sourced); }
+.pg-chain__node--developing { border-color: var(--cov-developing); }
 .pg-chain__node--missing { border-color: var(--cov-missing); }
 .pg-chain__node[data-confidence='candidate'] { border-style: dashed; }
 .pg-chain__node--missing .eq-symbol { color: var(--cov-missing-text); }

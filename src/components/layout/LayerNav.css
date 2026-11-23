@@ -323,6 +323,7 @@
 .layer-nav__seg--partial { background: var(--cov-partial); }
 .layer-nav__seg--affiliate { background: var(--cov-affiliate); }
 .layer-nav__seg--sourced { background: var(--cov-sourced); }
+.layer-nav__seg--developing { background: var(--cov-developing); }
 .layer-nav__seg--missing { background: var(--cov-missing); }
 .layer-nav__seg--na { background: var(--cov-na); }
 

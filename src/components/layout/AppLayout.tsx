@@ -12,6 +12,7 @@ import PanelResizer from './PanelResizer';
 import { shellGrid, useCompactDensity, usePanelRail } from './shellLayout';
 import { useRouteFocus } from './useRouteFocus';
 import './AppLayout.css';
+import { setActiveGrid, useGrid } from '../../lib/diagram/grid';
 
 /** 지연 로딩되는 페이지 청크를 받는 동안 */
 function PageLoading() {
@@ -42,6 +43,8 @@ export default function AppLayout() {
   // 사이드바(계층 바로가기·범례)는 계통도(제품·Gap 모드)에서만 (C1). 제품·기기·비교·공백 표 화면은 본문을 넓게
   // 단계별 보기(?view=stage)는 열 자체가 계층 묶음이라 사이드바를 숨긴다
   const homeView = useHomeView();
+  // 계통 종류(?grid=) — 자식(계통도·사이드바·상세 패널)이 getDiagramModel 로 읽기 전에 맞춘다
+  setActiveGrid(useGrid());
   const showNav = onHome && homeView === 'map';
   const navRow = showNav && (isMobile || compact);
   // 모바일은 패널이 고정 위치(시트/사이드)라 열 없음

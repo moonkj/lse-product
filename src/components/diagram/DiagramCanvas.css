@@ -741,6 +741,34 @@
   cursor: pointer;
 }
 
+/* 계통 종류 선택 [국내 표준 | 데이터센터(국내)] (GridSelect, 2026-11-23) */
+.dgrid {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.dgrid__label { font-weight: var(--fw-bold); white-space: nowrap; }
+.dgrid__select {
+  height: 36px;
+  padding: 0 28px 0 10px;
+  border: 1px solid var(--color-border-strong, var(--color-border));
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+@container dtool (max-width: 900px) {
+  .dgrid__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+@media (max-width: 900px) {
+  .dgrid__select { min-height: 44px; }
+}
+
 .dtool__hint {
   /* 남는 폭만 차지(기준 0) → 글자가 길어도 줄을 넘기지 않고 말줄임 */
   flex: 1 1 0;
@@ -992,6 +1020,7 @@
 .diagram__stage:has(.dlegend[data-focus='partial']) .dnode:not([data-coverage='partial']):not(.is-selected),
 .diagram__stage:has(.dlegend[data-focus='affiliate']) .dnode:not([data-coverage='affiliate']):not(.is-selected),
 .diagram__stage:has(.dlegend[data-focus='sourced']) .dnode:not([data-coverage='sourced']):not(.is-selected),
+.diagram__stage:has(.dlegend[data-focus='developing']) .dnode:not([data-coverage='developing']):not(.is-selected),
 .diagram__stage:has(.dlegend[data-focus='missing']) .dnode:not([data-coverage='missing']):not(.is-selected),
 .diagram__stage:has(.dlegend[data-focus='na']) .dnode:not([data-coverage='na']):not(.is-selected) {
   background: color-mix(in srgb, var(--node-bg) 40%, transparent);
@@ -1003,6 +1032,7 @@
 .diagram__stage:has(.dlegend[data-focus='partial']) .dnode:not([data-coverage='partial']):not(.is-selected) :is(.dnode__img, .dnode__symbol, .dnode__badge),
 .diagram__stage:has(.dlegend[data-focus='affiliate']) .dnode:not([data-coverage='affiliate']):not(.is-selected) :is(.dnode__img, .dnode__symbol, .dnode__badge),
 .diagram__stage:has(.dlegend[data-focus='sourced']) .dnode:not([data-coverage='sourced']):not(.is-selected) :is(.dnode__img, .dnode__symbol, .dnode__badge),
+.diagram__stage:has(.dlegend[data-focus='developing']) .dnode:not([data-coverage='developing']):not(.is-selected) :is(.dnode__img, .dnode__symbol, .dnode__badge),
 .diagram__stage:has(.dlegend[data-focus='missing']) .dnode:not([data-coverage='missing']):not(.is-selected) :is(.dnode__img, .dnode__symbol, .dnode__badge),
 .diagram__stage:has(.dlegend[data-focus='na']) .dnode:not([data-coverage='na']):not(.is-selected) :is(.dnode__img, .dnode__symbol, .dnode__badge) {
   opacity: 0.3;

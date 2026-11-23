@@ -8,6 +8,7 @@ import { getDiagramController, useView, viewStore, type ViewState } from '../../
 import { useMediaQuery, useViewMode } from '../../lib/diagram/url';
 import type { JumpState } from '../diagram/DiagramCanvas';
 import './LayerNav.css';
+import { getActiveGrid } from '../../lib/diagram/grid';
 
 /** 내비 짧은 이름 — 전압은 둘째 줄(데이터 voltage)로 내려 한 줄 유지 (5라운드 합의) */
 const SHORT: Partial<Record<Layer, string>> = {
@@ -259,7 +260,8 @@ export default function LayerNav() {
     const isCurrent = onHome && current === l.id;
     const isFocus = onHome && focus === l.id;
     const isVisible = onHome && visible.has(l.id);
-    const name = SHORT[l.id] ?? l.label;
+    // 짧은 이름은 국내 표준 계통도용 — 다른 계통(데이터센터)은 그 계통도의 계층 이름 그대로
+    const name = (getActiveGrid() === 'std' ? SHORT[l.id] : undefined) ?? l.label;
     const main = isMainLayer(l.id);
     const h = main && rowHeights ? rowHeights[idx] : undefined;
     const cls = [

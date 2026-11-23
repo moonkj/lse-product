@@ -19,6 +19,7 @@
 .gp-stat--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
 .gp-stat--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
 .gp-stat--sourced { background: var(--cov-sourced-bg); color: var(--cov-sourced-text); }
+.gp-stat--developing { background: var(--cov-developing-bg); color: var(--cov-developing-text); }
 /* 공백 후보/확정 = 공용 Tag(candidate·confirmed 톤) */
 .gp-conf { margin-left: var(--space-1); }
 

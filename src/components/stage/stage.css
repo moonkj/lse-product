@@ -190,6 +190,7 @@
 .scard[data-cov='partial'] { --cov: var(--cov-partial); --cov-text: var(--cov-partial-text); --cov-bg: var(--cov-partial-bg); }
 .scard[data-cov='affiliate'] { --cov: var(--cov-affiliate); --cov-text: var(--cov-affiliate-text); --cov-bg: var(--cov-affiliate-bg); }
 .scard[data-cov='sourced'] { --cov: var(--cov-sourced); --cov-text: var(--cov-sourced-text); --cov-bg: var(--cov-sourced-bg); }
+.scard[data-cov='developing'] { --cov: var(--cov-developing); --cov-text: var(--cov-developing-text); --cov-bg: var(--cov-developing-bg); }
 .scard[data-cov='missing'] { --cov: var(--cov-missing); --cov-text: var(--cov-missing-text); --cov-bg: var(--cov-missing-bg); border: 2px solid var(--cov-missing); border-left-width: 5px; }
 .scard:hover { box-shadow: var(--shadow-md); }
 .scard[aria-pressed='true'] { outline: 3px solid var(--color-brand-2); outline-offset: 1px; }

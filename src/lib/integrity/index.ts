@@ -42,6 +42,8 @@ export interface DatasetInput {
   products: unknown;
   /** equipment-images.json (없으면 사진 규칙 생략) */
   images?: unknown;
+  /** 보조 계통도 (파일 이름 → 내용, 예: { 'diagram-dc.json': … }) — 계통 종류 선택(2026-11-23). 각자 auxiliary 규칙으로 검사 */
+  extraDiagrams?: Record<string, unknown>;
   /** 오늘 YYYY-MM-DD (기본: KST 오늘). DI-27g 재확인 기한 */
   today?: string;
 }
@@ -151,9 +153,22 @@ export function checkDataset(input: DatasetInput): CheckResult {
   const categories = (categoriesRaw ?? []) as Category[];
   if (productsRaw && categoriesRaw) catalogRules(c, products, categories);
   if (eqRaw) equipmentRules(c, equipment, categories, products, today);
+  // 보조 계통도: 스키마 → 자체 규칙(auxiliary). 여기에 기기 노드가 있는 기기는 기본 계통도에 없어도 DI-43 통과
+  const placedElsewhere = new Set<string>();
+  for (const [file, raw] of Object.entries(input.extraDiagrams ?? {})) {
+    if (!raw || typeof raw !== 'object') {
+      c.error('DI-00', `${file}: 객체가 아닙니다`);
+      continue;
+    }
+    schemaIssues(c, file, DiagramSchema, raw);
+    const d = raw as Diagram;
+    if (!(Array.isArray(d.nodes) && Array.isArray(d.edges) && Array.isArray(d.layers)) || !eqRaw) continue;
+    for (const n of d.nodes) if (n.equipmentTypeId && !n.ref && (n.kind ?? 'equipment') === 'equipment') placedElsewhere.add(n.equipmentTypeId);
+    diagramRules(c, d, equipment, { auxiliary: true });
+  }
   if (diagramRaw && eqRaw) {
     const d = diagramRaw as Diagram;
-    if (Array.isArray(d.nodes) && Array.isArray(d.edges) && Array.isArray(d.layers)) diagramRules(c, d, equipment);
+    if (Array.isArray(d.nodes) && Array.isArray(d.edges) && Array.isArray(d.layers)) diagramRules(c, d, equipment, { placedElsewhere });
   }
   if (input.images && typeof input.images === 'object' && eqRaw) imageRules(c, input.images as Record<string, EquipmentImage>, equipment, products);
   return c.result();

@@ -96,6 +96,7 @@ beforeAll(() => {
     categories: readJson(FILES.categories),
     products: readJson(FILES.products),
     images: readJson('equipment-images.json'),
+    extraDiagrams: { 'diagram-dc.json': readJson('diagram-dc.json') },
   };
   products = z.array(ProductSchema).parse(asArray(raw.products, 'products'));
   z.array(CategorySchema).parse(asArray(raw.categories, 'categories'));

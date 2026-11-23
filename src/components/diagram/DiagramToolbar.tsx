@@ -13,6 +13,7 @@ import PresetPicker from '../market/PresetPicker';
 import PlanToggle from '../market/PlanToggle';
 import MarketButton from '../market/MarketButton';
 import ViewSwitch from '../stage/ViewSwitch';
+import GridSelect from './GridSelect';
 
 interface Props {
   mode: ViewMode;
@@ -179,6 +180,7 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
       )}
       <div className="dtool__row dtool__main">
         <ViewSwitch />
+        <GridSelect />
         <PresetPicker />
         <ZoomControls total={total} />
         <PrintButton />

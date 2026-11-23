@@ -12,7 +12,7 @@ export const LAYERS = LayerSchema.options;
 /**
  * 커버리지 6상태. sourced = 패널 구성품·타사 조달 (수배전반에 타사 제품을 넣어 공급하는 구성품, 개선 R3 · 사용자 승인)
  */
-export const CoverageSchema = z.enum(['owned', 'partial', 'affiliate', 'sourced', 'missing', 'na']);
+export const CoverageSchema = z.enum(['owned', 'partial', 'affiliate', 'sourced', 'developing', 'missing', 'na']);
 export type Coverage = z.infer<typeof CoverageSchema>;
 export const COVERAGES = CoverageSchema.options;
 
@@ -415,6 +415,7 @@ export const COVERAGE_LABELS: Record<Coverage, string> = {
   partial: '일부 보유',
   affiliate: '계열사 보유',
   sourced: '패널 구성품(타사 조달)',
+  developing: '개발 중',
   missing: '미보유',
   na: '해당 없음',
 };

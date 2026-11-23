@@ -32,6 +32,7 @@ import FlowLayer from './FlowLayer';
 import PlanLayer from '../market/PlanLayer';
 import './DiagramCanvas.css';
 import './sheet.css';
+import { diagramOf, getActiveGrid } from '../../lib/diagram/grid';
 
 /** 다른 페이지에서 계층 점프 시 navigate state 로 넘기는 값 */
 export interface JumpState extends FocusState {
@@ -590,7 +591,7 @@ export default function DiagramCanvas() {
           ))}
         </span>
       </div>
-      <DiagramToolbar mode={mode} total={model.nodes.length} review={data.diagram.review} />
+      <DiagramToolbar mode={mode} total={model.nodes.length} review={diagramOf(data, getActiveGrid()).review} />
       <div className="diagram__stage">
         <div
           ref={vpRef}

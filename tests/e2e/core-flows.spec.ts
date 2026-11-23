@@ -29,7 +29,7 @@ import AxeBuilder from '@axe-core/playwright';
 // ─────────────────────────────────────────────────────────────
 // 테스트 데이터 (JSON 직접 읽기 — 앱 코드 import 없이 독립적으로)
 // ─────────────────────────────────────────────────────────────
-type Coverage = 'owned' | 'partial' | 'affiliate' | 'sourced' | 'missing' | 'na';
+type Coverage = 'owned' | 'partial' | 'affiliate' | 'sourced' | 'developing' | 'missing' | 'na';
 interface Eq {
   id: string;
   name: string;
@@ -716,14 +716,16 @@ test.describe('E2E-6 계통도 개선 R3', () => {
     else await expect(tid(page, 'diagram-review-badge')).toHaveCount(0);
   });
 
-  test('범례: sourced(패널 구성품) 항목 + 개수 합 = 74종(참조 타일 제외), 미보유·패널 구성품 개수 = 데이터', async ({ page }) => {
+  test('범례: sourced(패널 구성품) 항목 + 개수 합 = 국내 표준 계통도 기기 수(참조 타일 제외), 미보유·패널 구성품 개수 = 데이터', async ({ page }) => {
     await gotoHome(page);
     await expect(tid(page, 'legend-item-sourced')).toBeVisible();
     await expect(tid(page, 'legend-item-sourced')).toContainText('패널 구성품');
-    const cs: Coverage[] = ['owned', 'partial', 'affiliate', 'sourced', 'missing', 'na'];
+    const cs: Coverage[] = ['owned', 'partial', 'affiliate', 'sourced', 'developing', 'missing', 'na'];
     const counts = await Promise.all(cs.map((c) => legendCount(page, c)));
-    expect(counts.reduce((a, b) => a + b, 0)).toBe(equipment.length); // 74 (참조 타일을 세면 77)
-    const count = (c: Coverage) => equipment.filter((e) => e.coverage === c).length;
+    // 범례는 지금 계통도(국내 표준) 기기만 센다 — SST 등 데이터센터에만 있는 기기는 빠짐 (2026-11-23)
+    const onMap = new Set(diagram.nodes.map((n) => n.equipmentTypeId));
+    expect(counts.reduce((a, b) => a + b, 0)).toBe(onMap.size);
+    const count = (c: Coverage) => equipment.filter((e) => e.coverage === c && onMap.has(e.id)).length;
     expect(await legendCount(page, 'missing')).toBe(count('missing')); // 현재 9
     expect(await legendCount(page, 'sourced')).toBe(count('sourced')); // 현재 3
   });

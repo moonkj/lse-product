@@ -5,6 +5,7 @@ import { useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
 import { useView } from '../../lib/diagram/view';
 import { FLOW_DASH, FLOW_DOWN_DASH, FLOW_DOWN_GAP, FLOW_DOWN_PERIOD_SEC, FLOW_GAP, FLOW_PERIOD_SEC, IDLE_DASH, IDLE_GAP, IDLE_SPEED, computeFlowEdges, flowDirMap, pathMidpoint, useFlowOn } from '../../lib/diagram/flow';
 import './flow.css';
+import { diagramOf, getActiveGrid } from '../../lib/diagram/grid';
 
 /** 배율을 이 단위로 반올림해 줌 중 다시 그리기를 줄인다 */
 const SCALE_STEP = 0.05;
@@ -33,7 +34,8 @@ export default function FlowLayer() {
     return () => document.removeEventListener('visibilitychange', on);
   }, []);
 
-  const dirs = useMemo(() => flowDirMap(data.diagram.edges), [data]);
+  const grid = getActiveGrid();
+  const dirs = useMemo(() => flowDirMap(diagramOf(data, grid).edges), [data, grid]);
   const busIds = useMemo(() => new Set(model.busNodes.map((b) => b.id)), [model]);
   const flows = useMemo(
     // 기본 켜짐: 기기를 고르지 않으면 전체 전력선, 고르면 그 기기 상·하류만. ?flow=0 이면 끔

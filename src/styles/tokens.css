@@ -109,12 +109,14 @@
   --cov-affiliate: #2f6fd6;  /* 파랑: 계열사 보유 — 4.8:1 */
   --cov-sourced: #8e3a9e;    /* 자홍: 패널 구성품(타사 조달) — 흰 아이콘 6.5:1, 색각 이상에서도 계열사 파랑과 갈림(E1 P1-4) */
   --cov-missing: #c62d1f;    /* 빨강: 미보유(공백) — 흰 아이콘 5.5:1 (L 0.54) */
+  --cov-developing: #0e7c86; /* 청록: 개발 중 (2026-11-23) — 흰 아이콘 4.9:1 */
   --cov-na: #737c88;         /* 회색: 해당 없음 — 흰 아이콘 대비 4.2:1 */
   --cov-owned-bg: #e3f5e9;
   --cov-partial-bg: #fdf3d0;
   --cov-affiliate-bg: #e2ecfb;
   --cov-sourced-bg: #f6e6f4;
   --cov-missing-bg: #fbe4e4;
+  --cov-developing-bg: #def3f4;
   --cov-na-bg: #eef0f2;
   --cov-on-color: #ffffff;
 
@@ -170,6 +172,7 @@
   --cov-affiliate-text: #1f4f9c;
   --cov-sourced-text: #74287f;
   --cov-missing-text: #b0281b;
+  --cov-developing-text: #0a5f67;
   --cov-na-text: #4a5363;
   --gap-banner-bg: #fff7f7;
   --gap-note-border: #f0c4c4;
@@ -264,12 +267,14 @@
   --cov-affiliate: #5a93f0;
   --cov-sourced: #e08ad6;   /* 자홍 (E1 P1-4) */
   --cov-missing: #ff6b5e;
+  --cov-developing: #4cc9d2;
   --cov-na: #7d8794;
   --cov-owned-bg: #16301f;
   --cov-partial-bg: #33290c;
   --cov-affiliate-bg: #172742;
   --cov-sourced-bg: #33192f;
   --cov-missing-bg: #3a1a1a;
+  --cov-developing-bg: #12302f;
   --cov-na-bg: #232a33;
   --cov-on-color: #0b1220;
 
@@ -313,6 +318,7 @@
   --cov-affiliate-text: #a7c6ff;
   --cov-sourced-text: #f0c2ea;
   --cov-missing-text: #ff9b9b;
+  --cov-developing-text: #8fe3e9;
   --cov-na-text: #c2cad6;
   --gap-banner-bg: #2a1818;
   --gap-note-border: #5a2a2a;

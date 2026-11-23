@@ -15,6 +15,7 @@ import {
 import { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER, confidenceLabel, gapConfidence } from '../labels';
 import { edgeKind, isBus, type EdgeKind } from '../diagram/geometry';
 import { hopsAcrossBus } from '../diagram/topology';
+import { gridOfNode } from '../diagram/grid';
 
 // 라벨·순서 상수는 lib/labels.ts 가 단일 출처 (기존 import 경로 호환용 재수출)
 export { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER } from '../labels';
@@ -22,6 +23,7 @@ export { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_ORDER } from '../labels';
 /** 계통도 화면으로 가는 링크 (메인 화면은 ?node=, ?mode= 쿼리로 상태 복원) */
 export function diagramHref(nodeId?: string, mode?: 'gap'): string {
   const q = new URLSearchParams();
+  if (gridOfNode(nodeId) === 'dc') q.set('grid', 'dc'); // 데이터센터 계통도 노드
   if (mode) q.set('mode', mode);
   if (nodeId) q.set('node', nodeId);
   const s = q.toString();
@@ -52,7 +54,8 @@ function getDerived(data: AppData = getData()): Derived {
     }
   }
   const nodeByEquipmentId = new Map<string, DiagramNode>();
-  for (const n of data.diagram.nodes) {
+  // 국내 표준 계통도 먼저, 거기 없는 기기(SST 등)는 데이터센터 계통도 노드
+  for (const n of [...data.diagram.nodes, ...(data.diagramDc?.nodes ?? [])]) {
     // 참조 타일(ref)은 같은 기기의 재등장 — 대표 노드는 원래 타일
     if (n.equipmentTypeId && !n.ref && !nodeByEquipmentId.has(n.equipmentTypeId)) nodeByEquipmentId.set(n.equipmentTypeId, n);
   }
@@ -60,13 +63,13 @@ function getDerived(data: AppData = getData()): Derived {
     equipmentByProductId,
     productsByEquipmentId,
     nodeByEquipmentId,
-    nodeById: new Map(data.diagram.nodes.map((n) => [n.id, n])),
+    nodeById: new Map([...data.diagram.nodes, ...(data.diagramDc?.nodes ?? [])].map((n) => [n.id, n])),
   };
   derivedFor = data;
   return derived;
 }
 
-const PRIMARY_COVERAGE_RANK: Record<Coverage, number> = { owned: 0, partial: 1, affiliate: 2, sourced: 3, missing: 4, na: 5 };
+const PRIMARY_COVERAGE_RANK: Record<Coverage, number> = { owned: 0, partial: 1, affiliate: 2, sourced: 3, developing: 4, missing: 5, na: 6 };
 
 /**
  * 제품이 매핑된 기기들. 첫 번째 = 대표 기기:
@@ -139,7 +142,7 @@ export function neighborChain(nodeId: string): ChainLink[] {
 
 export type CoverageCounts = Record<Coverage, number>;
 
-export const emptyCounts = (): CoverageCounts => ({ owned: 0, partial: 0, affiliate: 0, sourced: 0, missing: 0, na: 0 });
+export const emptyCounts = (): CoverageCounts => ({ owned: 0, partial: 0, affiliate: 0, sourced: 0, developing: 0, missing: 0, na: 0 });
 
 export function countCoverage(list: EquipmentType[]): CoverageCounts {
   const c = emptyCounts();

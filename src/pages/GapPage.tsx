@@ -40,7 +40,7 @@ interface CellSel {
 }
 
 /** 목록 정렬: 계층 순 → 미보유·일부·계열사·패널 구성품·보유·해당없음 */
-const LIST_COVERAGE_RANK: Record<Coverage, number> = { missing: 0, partial: 1, affiliate: 2, sourced: 3, owned: 4, na: 5 };
+const LIST_COVERAGE_RANK: Record<Coverage, number> = { missing: 0, partial: 1, affiliate: 2, sourced: 3, developing: 4, owned: 5, na: 6 };
 /** 필터 버튼 라벨: 정식 라벨에서 "미보유(공백)" 만 짧게 */
 const FILTER_LABELS: Record<Coverage, string> = { ...COVERAGE_LABELS, missing: COVERAGE_SHORT_LABELS.missing };
 

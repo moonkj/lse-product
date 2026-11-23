@@ -455,6 +455,7 @@
 .alist__cov--partial { background: var(--cov-partial); }
 .alist__cov--affiliate { background: var(--cov-affiliate); }
 .alist__cov--sourced { background: var(--cov-sourced); }
+.alist__cov--developing { background: var(--cov-developing); }
 .alist__cov--missing { background: var(--cov-missing); }
 .alist__cov--na { background: var(--cov-na); }
 

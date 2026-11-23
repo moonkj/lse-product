@@ -23,6 +23,7 @@ import productsJson from './products.json';
 import categoriesJson from './categories.json';
 import equipmentTypesJson from './equipment-types.json';
 import diagramJson from './diagram.json';
+import diagramDcJson from './diagram-dc.json';
 import docsJson from './docs.json';
 import equipmentImagesJson from './equipment-images.json';
 import productImagesJson from './product-images.json';
@@ -43,6 +44,8 @@ export interface AppData {
   categories: Category[];
   equipmentTypes: EquipmentType[];
   diagram: Diagram;
+  /** 데이터센터(국내) 계통도 (diagram-dc.json, 계통 종류 ?grid=dc) */
+  diagramDc: Diagram;
   docsGeneratedAt: string;
   productById: Map<string, Product>;
   categoryByCode: Map<string, Category>;
@@ -69,6 +72,7 @@ export function getData(): AppData {
   const categories = parseOrThrow(CategoriesSchema, categoriesJson, 'categories.json');
   const equipmentTypes = parseOrThrow(EquipmentTypesSchema, equipmentTypesJson, 'equipment-types.json');
   const diagram = parseOrThrow(DiagramSchema, diagramJson, 'diagram.json');
+  const diagramDc = parseOrThrow(DiagramSchema, diagramDcJson, 'diagram-dc.json');
   const docs = parseOrThrow(DocsFileSchema, docsJson, 'docs.json');
   const images = parseOrThrow(EquipmentImagesSchema, equipmentImagesJson, 'equipment-images.json');
   const productImages = parseOrThrow(ProductImagesSchema, productImagesJson, 'product-images.json');
@@ -79,6 +83,7 @@ export function getData(): AppData {
     categories,
     equipmentTypes,
     diagram,
+    diagramDc,
     docsGeneratedAt: docs.generatedAt,
     productById: new Map(products.map((p) => [p.id, p])),
     categoryByCode: new Map(categories.map((c) => [c.code, c])),

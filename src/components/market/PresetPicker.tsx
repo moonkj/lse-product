@@ -33,7 +33,8 @@ let nodeEqCache: Map<string, string> | undefined;
 function nodeEqMap(): Map<string, string> {
   if (!nodeEqCache) {
     nodeEqCache = new Map();
-    for (const n of getData().diagram.nodes) if (n.equipmentTypeId) nodeEqCache.set(n.id, n.equipmentTypeId);
+    const d = getData();
+    for (const n of [...d.diagram.nodes, ...(d.diagramDc?.nodes ?? [])]) if (n.equipmentTypeId) nodeEqCache.set(n.id, n.equipmentTypeId);
   }
   return nodeEqCache;
 }

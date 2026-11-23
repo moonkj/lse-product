@@ -113,7 +113,19 @@ export function edgeCrossings(diagram: Diagram, kinds: readonly EdgeKind[]): { a
   return out;
 }
 
-export function diagramRules(c: Collector, diagram: Diagram, equipment: readonly EquipmentType[]) {
+export interface DiagramRuleOptions {
+  /**
+   * DI-43 "배치 안 됨"을 따지지 않을 기기 id — 다른 계통도(예: 데이터센터)에 기기 노드가 있는 기기 (2026-11-23 계통 종류 추가).
+   */
+  placedElsewhere?: ReadonlySet<string>;
+  /**
+   * 보조 계통도(데이터센터 등): 계통 일부 계층만 그린다 → DI-33·34 는 이 계통도에 정의한 계층만,
+   * DI-43 은 "한 계통도 안에서 한 번만 배치"만 검사 (모든 기기 배치는 기본 계통도 + 보조 계통도 합으로 따진다)
+   */
+  auxiliary?: boolean;
+}
+
+export function diagramRules(c: Collector, diagram: Diagram, equipment: readonly EquipmentType[], opts: DiagramRuleOptions = {}) {
   const eqById: EqMap = new Map(equipment.map((e) => [e.id, e]));
   const nodes = diagram.nodes;
   const byId = new Map(nodes.map((n) => [n.id, n]));
@@ -159,11 +171,11 @@ export function diagramRules(c: Collector, diagram: Diagram, equipment: readonly
   c.run('DI-33', () => {
     const defined = new Set<string>(diagram.layers.map((l) => l.id));
     const used = new Set(nodes.map(layerOf).filter((l): l is Layer => !!l));
-    for (const id of new Set<string>([...MAIN_LAYERS, ...used])) if (!defined.has(id)) c.error('DI-33', `${id} 계층 밴드가 계통도에 없습니다`);
+    for (const id of new Set<string>([...(opts.auxiliary ? [] : MAIN_LAYERS), ...used])) if (!defined.has(id)) c.error('DI-33', `${id} 계층 밴드가 계통도에 없습니다`);
     for (const id of used) if (!(LAYERS as readonly string[]).includes(id)) c.error('DI-33', `계약 밖 계층 ${id}`);
   });
   c.run('DI-34', () => {
-    for (const l of MAIN_LAYERS)
+    for (const l of MAIN_LAYERS.filter((m) => !opts.auxiliary || diagram.layers.some((b) => b.id === m)))
       if (!nodes.some((n) => isPrimaryEquipmentNode(n) && layerOf(n) === l)) c.error('DI-34', `${l} 계층에 기기 노드(참조 타일 제외)가 하나도 없습니다`);
   });
   c.run('DI-35', () => {
@@ -196,7 +208,9 @@ export function diagramRules(c: Collector, diagram: Diagram, equipment: readonly
     });
   });
   c.run('DI-38', () => {
-    const ys = MAIN_LAYERS.map((id) => diagram.layers.find((l) => l.id === id)?.y ?? Number.NaN);
+    // 보조 계통도는 정의한 주 계층만 순서 검사
+    const ids = opts.auxiliary ? MAIN_LAYERS.filter((m) => diagram.layers.some((b) => b.id === m)) : MAIN_LAYERS;
+    const ys = ids.map((id) => diagram.layers.find((l) => l.id === id)?.y ?? Number.NaN);
     if (!ys.every((y, i) => i === 0 || y > ys[i - 1])) c.error('DI-38', `L1→L7 밴드가 위에서 아래 순서가 아닙니다 (y = ${ys.join(', ')})`);
   });
   c.run('DI-39', () => {
@@ -238,7 +252,9 @@ export function diagramRules(c: Collector, diagram: Diagram, equipment: readonly
       adj.set(e.from, [...(adj.get(e.from) ?? []), e.to]);
       adj.set(e.to, [...(adj.get(e.to) ?? []), e.from]);
     }
-    const starts = nodes.filter((n) => layerOf(n) === 'L1').map((n) => n.id);
+    // 시작 = 가장 위 주 계층 (기본 계통도는 L1, 보조 계통도는 정의한 첫 주 계층 — 예: 데이터센터 L4 수전)
+    const top = opts.auxiliary ? (MAIN_LAYERS.find((m) => diagram.layers.some((b) => b.id === m)) ?? 'L1') : 'L1';
+    const starts = nodes.filter((n) => layerOf(n) === top).map((n) => n.id);
     const targets = new Set(nodes.filter((n) => layerOf(n) === 'L7').map((n) => n.id));
     const seen = new Set<string>(starts);
     const queue = [...starts];
@@ -251,7 +267,7 @@ export function diagramRules(c: Collector, diagram: Diagram, equipment: readonly
         }
       }
     }
-    if (![...targets].some((t) => seen.has(t))) c.error('DI-41', 'L1 노드에서 L7 노드까지 이어지는 경로가 없습니다 (전원→부하 흐름이 끊김)');
+    if (![...targets].some((t) => seen.has(t))) c.error('DI-41', `${top} 노드에서 L7 노드까지 이어지는 경로가 없습니다 (전원→부하 흐름이 끊김)`);
   });
   c.run('DI-42', () => {
     for (const e of diagram.edges) {
@@ -268,7 +284,8 @@ export function diagramRules(c: Collector, diagram: Diagram, equipment: readonly
     const main = nodes.filter(isPrimaryEquipmentNode);
     for (const e of equipment) {
       const list = main.filter((n) => n.equipmentTypeId === e.id);
-      if (list.length === 0) c.error('DI-43', `${e.name}: 계통도에 배치되지 않았습니다 (모든 기기는 기기 노드가 1개 필요, 참조 타일 제외)`, { equipmentId: e.id });
+      const elsewhere = !!opts.auxiliary || !!opts.placedElsewhere?.has(e.id);
+      if (list.length === 0 && !elsewhere) c.error('DI-43', `${e.name}: 계통도에 배치되지 않았습니다 (모든 기기는 기기 노드가 1개 필요, 참조 타일 제외)`, { equipmentId: e.id });
       else if (list.length > 1)
         c.error('DI-43', `${e.name}: 기기 노드가 ${list.length}개입니다 — 같은 기기를 다시 그릴 때는 참조 타일을 쓰세요 (${list.map((n) => n.id).join(', ')})`, { equipmentId: e.id, nodeId: list[1].id });
     }

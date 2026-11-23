@@ -34,7 +34,7 @@ export const CATEGORY_ORDER: EquipmentCategory[] = [
 ];
 
 /** 공백 표·칩 표시 순서 */
-export const COVERAGE_ORDER: Coverage[] = ['owned', 'partial', 'affiliate', 'sourced', 'missing', 'na'];
+export const COVERAGE_ORDER: Coverage[] = ['owned', 'partial', 'affiliate', 'sourced', 'developing', 'missing', 'na'];
 
 /** 색약 대응: 색과 함께 모양이 다른 아이콘을 병행 */
 export const COVERAGE_ICONS: Record<Coverage, string> = {
@@ -42,6 +42,7 @@ export const COVERAGE_ICONS: Record<Coverage, string> = {
   partial: '◐',
   affiliate: '◆',
   sourced: '⊡',
+  developing: '▲',
   missing: '✕',
   na: '–',
 };
@@ -52,6 +53,7 @@ export const COVERAGE_SHORT_LABELS: Record<Coverage, string> = {
   partial: '일부',
   affiliate: '계열사',
   sourced: '패널 구성품',
+  developing: '개발 중',
   missing: '미보유',
   na: '해당 없음',
 };

@@ -93,6 +93,7 @@ export default function EmptyProducts({ eq, testIdPrefix, className, listClassNa
   else if (eq.coverage === 'affiliate') body = <p>계열사 제품으로 공급합니다.</p>;
   else if (eq.coverage === 'sourced')
     body = <p>패널 구성품 — 수배전반에 타사 제품을 넣어 함께 공급합니다.</p>;
+  else if (eq.coverage === 'developing') body = <p>개발 중 — 출시되면 제품이 연결됩니다.</p>;
   else if (eq.coverage === 'na') body = <p>해당 없음 — 자사 공급 대상이 아닌 기기입니다.</p>;
   else if (family)
     body = (

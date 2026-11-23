@@ -6,6 +6,7 @@ import type { Category, EquipmentType, Product } from '../schema';
 import { checkDataset, checkEquipment, type Issue as RuleIssue } from '../integrity';
 import { todayIso } from '../labels';
 import type { Draft } from './draft';
+import diagramDcJson from '../../data/diagram-dc.json';
 
 export { koIssue } from '../integrity';
 
@@ -40,6 +41,8 @@ export function validateDraft(draft: Draft, ref: RefData, today = todayIso()): I
     equipmentTypes: draft.equipmentTypes,
     diagram: draft.diagram,
     images: draft.images,
+    // 데이터센터 계통도(관리자 편집 대상 아님)도 함께 — 그쪽에만 있는 기기(SST 등)가 "배치 안 됨"으로 잡히지 않게
+    extraDiagrams: { 'diagram-dc.json': diagramDcJson },
     categories: ref.categories,
     products: ref.products,
     today,

@@ -16,7 +16,7 @@ test.describe('보기 전환 · 단계별 보기', () => {
     await expect(tid(page, 'stage-view')).toBeVisible();
     for (const id of ['L1', 'L2', 'L3', 'REN', 'L4', 'L5', 'L6', 'L7']) await expect(tid(page, `stage-col-${id}`)).toBeVisible();
     await expect(tid(page, 'stage-monitoring')).toBeVisible();
-    await expect(page.locator('.scard')).toHaveCount(76);
+    await expect(page.locator('.scard')).toHaveCount(80); // 데이터센터 기기(SST·SSCB·DC-DC·IT 랙) 포함 전체 기기
 
     await tid(page, 'stage-card-panelboard').click();
     await expect(page).toHaveURL(/node=n-panel/);
@@ -112,5 +112,42 @@ test.describe('페이지 조각 미리 받기 (자동 배포 뒤 이동 실패 �
     await page.goto('./#/equipment/vcb');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('진공차단기');
     await expect(page.getByTestId('page-error')).toHaveCount(0);
+  });
+});
+
+test.describe('계통 종류: 데이터센터(국내) (2026-11-23)', () => {
+  test('계통 선택 → AC·DC 두 경로 계통도, 개발 중 표시, SST 상세, 국내 표준으로 돌아가기, 접근성 위반 0', async ({ page }) => {
+    await page.goto('./#/');
+    await expect(page.getByTestId('diagram')).toBeVisible();
+    const sel = page.getByTestId('grid-select');
+    await expect(sel).toHaveValue('std');
+    await expect(sel.locator('option')).toHaveText(['국내 표준', '데이터센터(국내)']);
+    await sel.selectOption('dc');
+    await expect(page).toHaveURL(/grid=dc/);
+    await expect(page.getByTestId('diagram-node-dc-sst')).toBeVisible();
+    await expect(page.getByTestId('diagram-node-dc-ups')).toHaveCount(1);
+    await expect(page.getByTestId('diagram-node-n-gen')).toHaveCount(0); // 국내 표준 노드는 없음
+    await expect(page.getByTestId('legend-card')).toContainText('개발 중');
+
+    await page.getByTestId('diagram-node-dc-sst').click();
+    await expect(page.getByTestId('detail-panel')).toContainText('반도체 변압기');
+    await expect(page.getByTestId('detail-panel')).toContainText('개발 중');
+
+    const axe = await new AxeBuilder({ page }).include('[data-testid="diagram"]').analyze();
+    expect(axe.violations.map((v) => v.id)).toEqual([]);
+
+    await sel.selectOption('std');
+    await expect(page).not.toHaveURL(/grid=/);
+    await expect(page).not.toHaveURL(/node=dc-/); // 다른 계통 노드 선택은 지움
+    await expect(page.getByTestId('diagram-node-n-gen')).toBeVisible();
+  });
+
+  test('데이터센터에만 있는 기기(SST) 상세 페이지 → "계통도에서 보기"는 데이터센터 계통도로', async ({ page }) => {
+    await page.goto('./#/equipment/sst');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('반도체 변압기');
+    await page.getByRole('link', { name: /계통도에서 보기/ }).first().click();
+    await expect(page).toHaveURL(/grid=dc/);
+    await expect(page).toHaveURL(/node=dc-sst/);
+    await expect(page.getByTestId('grid-select')).toHaveValue('dc');
   });
 });

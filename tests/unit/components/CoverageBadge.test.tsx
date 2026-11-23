@@ -10,12 +10,13 @@ import { COVERAGES, COVERAGE_LABELS } from '../../../src/lib/schema';
 afterEach(cleanup);
 
 describe('CT-01 CoverageBadge', () => {
-  it('6개 상태(개선 R3 sourced 추가) 아이콘·라벨이 서로 모두 다르다 (모양만으로 구분 가능)', () => {
-    expect(COVERAGES).toHaveLength(6);
+  it('7개 상태(개선 R3 sourced, 2026-11-23 developing 추가) 아이콘·라벨이 서로 모두 다르다 (모양만으로 구분 가능)', () => {
+    expect(COVERAGES).toHaveLength(7);
+    expect(COVERAGES).toContain('developing');
     expect(COVERAGES).toContain('sourced');
     expect(COVERAGES.every((c) => !!COVERAGE_ICONS[c]?.trim()), '아이콘 없는 상태').toBe(true);
-    expect(new Set(COVERAGES.map((c) => COVERAGE_ICONS[c])).size).toBe(6);
-    expect(new Set(COVERAGES.map((c) => COVERAGE_LABELS[c])).size).toBe(6);
+    expect(new Set(COVERAGES.map((c) => COVERAGE_ICONS[c])).size).toBe(7);
+    expect(new Set(COVERAGES.map((c) => COVERAGE_LABELS[c])).size).toBe(7);
   });
 
   it('sourced 라벨은 "패널 구성품" 을 포함 (사용자 승인 용어)', () => {

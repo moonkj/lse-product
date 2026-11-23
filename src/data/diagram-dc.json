@@ -1,0 +1,520 @@
+{
+  "width": 1900,
+  "height": 2030,
+  "review": {
+    "status": "pending",
+    "changedAt": "2026-11-23",
+    "note": "데이터센터(국내) 계통 초안 — AC(변압기·UPS)와 DC(SST N+1·800V DC) 두 경로. 설계 검토 전"
+  },
+  "layers": [
+    {
+      "id": "L4",
+      "label": "수전설비",
+      "voltage": "22.9kV 2회선",
+      "x": 0,
+      "width": 1900,
+      "y": 0,
+      "height": 700
+    },
+    {
+      "id": "L5",
+      "label": "변압·변환",
+      "voltage": "22.9kV → 380V AC / 800V DC",
+      "x": 0,
+      "width": 1900,
+      "y": 700,
+      "height": 300
+    },
+    {
+      "id": "L6",
+      "label": "AC 배전",
+      "voltage": "380/220V · 기존 방식",
+      "x": 0,
+      "width": 950,
+      "y": 1000,
+      "height": 700
+    },
+    {
+      "id": "REN",
+      "label": "DC 배전",
+      "voltage": "800V DC · 차세대",
+      "x": 950,
+      "width": 950,
+      "y": 1000,
+      "height": 700
+    },
+    {
+      "id": "L7",
+      "label": "랙·IT 부하",
+      "voltage": "AC 380/220V · 800V DC",
+      "x": 0,
+      "width": 1900,
+      "y": 1700,
+      "height": 330
+    }
+  ],
+  "nodes": [
+    {
+      "id": "dc-kepco-a",
+      "kind": "endpoint",
+      "label": "한전 22.9kV 1회선",
+      "layer": "L4",
+      "x": 500,
+      "y": 70
+    },
+    {
+      "id": "dc-kepco-b",
+      "kind": "endpoint",
+      "label": "한전 22.9kV 2회선",
+      "layer": "L4",
+      "x": 800,
+      "y": 70
+    },
+    {
+      "id": "dc-alts",
+      "equipmentTypeId": "alts",
+      "x": 650,
+      "y": 200
+    },
+    {
+      "id": "dc-mof",
+      "equipmentTypeId": "mof",
+      "x": 650,
+      "y": 360
+    },
+    {
+      "id": "dc-vcb",
+      "equipmentTypeId": "vcb",
+      "x": 650,
+      "y": 520
+    },
+    {
+      "id": "dc-relay",
+      "equipmentTypeId": "protection-relay",
+      "x": 900,
+      "y": 520
+    },
+    {
+      "id": "dc-bus-229",
+      "kind": "bus",
+      "label": "22.9kV 모선",
+      "layer": "L4",
+      "x": 950,
+      "y": 650,
+      "width": 1500
+    },
+    {
+      "id": "dc-tr",
+      "equipmentTypeId": "cast-tr",
+      "x": 450,
+      "y": 850
+    },
+    {
+      "id": "dc-sst",
+      "equipmentTypeId": "sst",
+      "x": 1050,
+      "y": 850
+    },
+    {
+      "id": "dc-sst-2",
+      "equipmentTypeId": "sst",
+      "x": 1250,
+      "y": 850,
+      "ref": true,
+      "label": "SST 2"
+    },
+    {
+      "id": "dc-sst-r",
+      "equipmentTypeId": "sst",
+      "x": 1450,
+      "y": 850,
+      "ref": true,
+      "label": "예비 SST (N+1)"
+    },
+    {
+      "id": "dc-acb",
+      "equipmentTypeId": "acb",
+      "x": 450,
+      "y": 1110
+    },
+    {
+      "id": "dc-bus-380",
+      "kind": "bus",
+      "label": "380V 모선",
+      "layer": "L6",
+      "x": 450,
+      "y": 1230,
+      "width": 600
+    },
+    {
+      "id": "dc-ats",
+      "equipmentTypeId": "lv-ats",
+      "x": 450,
+      "y": 1380
+    },
+    {
+      "id": "dc-gen",
+      "equipmentTypeId": "emergency-gen",
+      "x": 750,
+      "y": 1380
+    },
+    {
+      "id": "dc-ups",
+      "equipmentTypeId": "ups",
+      "x": 450,
+      "y": 1560
+    },
+    {
+      "id": "dc-bus-800",
+      "kind": "bus",
+      "label": "800V DC 모선",
+      "layer": "REN",
+      "x": 1350,
+      "y": 1100,
+      "width": 700
+    },
+    {
+      "id": "dc-sscb",
+      "equipmentTypeId": "sscb",
+      "x": 1150,
+      "y": 1300
+    },
+    {
+      "id": "dc-dcb",
+      "equipmentTypeId": "dc-devices",
+      "x": 1450,
+      "y": 1300
+    },
+    {
+      "id": "dc-dcdc",
+      "equipmentTypeId": "dc-dc",
+      "x": 1650,
+      "y": 1300
+    },
+    {
+      "id": "dc-ess",
+      "equipmentTypeId": "ess",
+      "x": 1650,
+      "y": 1500
+    },
+    {
+      "id": "dc-rpp",
+      "equipmentTypeId": "panelboard",
+      "x": 450,
+      "y": 1860
+    },
+    {
+      "id": "dc-rack-ac",
+      "equipmentTypeId": "it-rack",
+      "x": 700,
+      "y": 1860,
+      "ref": true,
+      "label": "AC 랙"
+    },
+    {
+      "id": "dc-rack",
+      "equipmentTypeId": "it-rack",
+      "x": 1150,
+      "y": 1860
+    },
+    {
+      "id": "dc-rack-dc2",
+      "equipmentTypeId": "it-rack",
+      "x": 1450,
+      "y": 1860,
+      "ref": true,
+      "label": "DC 랙 B"
+    }
+  ],
+  "edges": [
+    {
+      "id": "dc-e001",
+      "from": "dc-kepco-a",
+      "to": "dc-alts",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "dc-e002",
+      "from": "dc-kepco-b",
+      "to": "dc-alts",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "dc-e003",
+      "from": "dc-alts",
+      "to": "dc-mof",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "dc-e004",
+      "from": "dc-mof",
+      "to": "dc-vcb",
+      "voltage": "22.9kV"
+    },
+    {
+      "id": "dc-e005",
+      "from": "dc-vcb",
+      "to": "dc-relay",
+      "kind": "signal"
+    },
+    {
+      "id": "dc-e006",
+      "from": "dc-vcb",
+      "to": "dc-bus-229",
+      "voltage": "22.9kV",
+      "points": [
+        {
+          "x": 650,
+          "y": 580
+        },
+        {
+          "x": 650,
+          "y": 650
+        }
+      ]
+    },
+    {
+      "id": "dc-e007",
+      "from": "dc-bus-229",
+      "to": "dc-tr",
+      "voltage": "22.9kV",
+      "points": [
+        {
+          "x": 450,
+          "y": 650
+        },
+        {
+          "x": 450,
+          "y": 790
+        }
+      ]
+    },
+    {
+      "id": "dc-e008",
+      "from": "dc-bus-229",
+      "to": "dc-sst",
+      "voltage": "22.9kV",
+      "points": [
+        {
+          "x": 1050,
+          "y": 650
+        },
+        {
+          "x": 1050,
+          "y": 790
+        }
+      ]
+    },
+    {
+      "id": "dc-e009",
+      "from": "dc-bus-229",
+      "to": "dc-sst-2",
+      "voltage": "22.9kV",
+      "points": [
+        {
+          "x": 1250,
+          "y": 650
+        },
+        {
+          "x": 1250,
+          "y": 790
+        }
+      ]
+    },
+    {
+      "id": "dc-e010",
+      "from": "dc-bus-229",
+      "to": "dc-sst-r",
+      "voltage": "22.9kV",
+      "points": [
+        {
+          "x": 1450,
+          "y": 650
+        },
+        {
+          "x": 1450,
+          "y": 790
+        }
+      ]
+    },
+    {
+      "id": "dc-e011",
+      "from": "dc-tr",
+      "to": "dc-acb",
+      "voltage": "380V"
+    },
+    {
+      "id": "dc-e012",
+      "from": "dc-acb",
+      "to": "dc-bus-380",
+      "voltage": "380V",
+      "points": [
+        {
+          "x": 450,
+          "y": 1170
+        },
+        {
+          "x": 450,
+          "y": 1230
+        }
+      ]
+    },
+    {
+      "id": "dc-e013",
+      "from": "dc-bus-380",
+      "to": "dc-ats",
+      "voltage": "380V",
+      "points": [
+        {
+          "x": 450,
+          "y": 1230
+        },
+        {
+          "x": 450,
+          "y": 1320
+        }
+      ]
+    },
+    {
+      "id": "dc-e014",
+      "from": "dc-gen",
+      "to": "dc-ats",
+      "voltage": "380V",
+      "label": "정전 시 비상발전기"
+    },
+    {
+      "id": "dc-e015",
+      "from": "dc-ats",
+      "to": "dc-ups",
+      "voltage": "380V"
+    },
+    {
+      "id": "dc-e016",
+      "from": "dc-ups",
+      "to": "dc-rpp",
+      "voltage": "380V"
+    },
+    {
+      "id": "dc-e017",
+      "from": "dc-rpp",
+      "to": "dc-rack-ac",
+      "voltage": "220V"
+    },
+    {
+      "id": "dc-e018",
+      "from": "dc-sst",
+      "to": "dc-bus-800",
+      "voltage": "800V DC",
+      "points": [
+        {
+          "x": 1050,
+          "y": 910
+        },
+        {
+          "x": 1050,
+          "y": 1100
+        }
+      ]
+    },
+    {
+      "id": "dc-e019",
+      "from": "dc-sst-2",
+      "to": "dc-bus-800",
+      "voltage": "800V DC",
+      "points": [
+        {
+          "x": 1250,
+          "y": 910
+        },
+        {
+          "x": 1250,
+          "y": 1100
+        }
+      ]
+    },
+    {
+      "id": "dc-e020",
+      "from": "dc-sst-r",
+      "to": "dc-bus-800",
+      "voltage": "800V DC",
+      "points": [
+        {
+          "x": 1450,
+          "y": 910
+        },
+        {
+          "x": 1450,
+          "y": 1100
+        }
+      ]
+    },
+    {
+      "id": "dc-e021",
+      "from": "dc-bus-800",
+      "to": "dc-sscb",
+      "voltage": "800V DC",
+      "points": [
+        {
+          "x": 1150,
+          "y": 1100
+        },
+        {
+          "x": 1150,
+          "y": 1240
+        }
+      ]
+    },
+    {
+      "id": "dc-e022",
+      "from": "dc-bus-800",
+      "to": "dc-dcb",
+      "voltage": "800V DC",
+      "points": [
+        {
+          "x": 1450,
+          "y": 1100
+        },
+        {
+          "x": 1450,
+          "y": 1240
+        }
+      ]
+    },
+    {
+      "id": "dc-e023",
+      "from": "dc-bus-800",
+      "to": "dc-dcdc",
+      "voltage": "800V DC",
+      "flow": "bi",
+      "points": [
+        {
+          "x": 1650,
+          "y": 1100
+        },
+        {
+          "x": 1650,
+          "y": 1240
+        }
+      ]
+    },
+    {
+      "id": "dc-e024",
+      "from": "dc-dcdc",
+      "to": "dc-ess",
+      "voltage": "DC",
+      "flow": "bi"
+    },
+    {
+      "id": "dc-e025",
+      "from": "dc-sscb",
+      "to": "dc-rack",
+      "voltage": "800V DC"
+    },
+    {
+      "id": "dc-e026",
+      "from": "dc-dcb",
+      "to": "dc-rack-dc2",
+      "voltage": "800V DC"
+    }
+  ]
+}

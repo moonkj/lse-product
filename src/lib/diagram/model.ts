@@ -4,6 +4,7 @@ import { isGapCoverage, isMainLayer } from '../labels';
 import { edgeKind, isPowerLike, type EdgeKind } from './geometry';
 import { boxOf, defaultRoute, type Pt, type RouteBox } from './router';
 import { busRelation, hopsAcrossBus } from './topology';
+import { diagramOf, getActiveGrid, type GridId } from './grid';
 
 /**
  * 일반 계통도 화면 모델 — diagram.json + equipment-types.json 에서 화면에 그릴 노드·연결선·이웃·집계를 만든다.
@@ -345,13 +346,17 @@ export function computeDiagramModel(data: AppData): DiagramModel {
   };
 }
 
-let cached: { data: AppData; model: DiagramModel } | undefined;
+const cached = new Map<GridId, { data: AppData; model: DiagramModel }>();
 
-/** 일반 화면용 모델 (데이터 객체 기준 캐시). 관리자 초안은 computeDiagramModel 로 따로 만든다 (공용 캐시를 덮어쓰지 않게) */
-export function getDiagramModel(data: AppData = getData()): DiagramModel {
-  if (cached?.data === data) return cached.model;
-  const model = computeDiagramModel(data);
-  cached = { data, model };
+/**
+ * 일반 화면용 모델 (데이터 객체·계통 종류 기준 캐시). 계통 종류는 기본값 = 지금 화면 계통(?grid=, grid.ts).
+ * 관리자 초안은 computeDiagramModel 로 따로 만든다 (공용 캐시를 덮어쓰지 않게)
+ */
+export function getDiagramModel(data: AppData = getData(), grid: GridId = getActiveGrid()): DiagramModel {
+  const hit = cached.get(grid);
+  if (hit?.data === data) return hit.model;
+  const model = computeDiagramModel(grid === 'std' ? data : { ...data, diagram: diagramOf(data, grid) });
+  cached.set(grid, { data, model });
   return model;
 }
 

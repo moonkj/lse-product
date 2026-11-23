@@ -264,6 +264,7 @@
 .dp-chip--partial { --chip-border: var(--cov-partial); }
 .dp-chip--affiliate { --chip-border: var(--cov-affiliate); }
 .dp-chip--sourced { --chip-border: var(--cov-sourced); }
+.dp-chip--developing { --chip-border: var(--cov-developing); }
 .dp-chip--missing { --chip-border: var(--cov-missing); }
 .dp-chip[data-confidence='candidate'] { border-style: dashed; }
 .dp-chip--na { --chip-border: var(--cov-na); }

@@ -22,6 +22,7 @@
 .cov-badge--partial { --cov-color: var(--cov-partial); }
 .cov-badge--affiliate { --cov-color: var(--cov-affiliate); }
 .cov-badge--sourced { --cov-color: var(--cov-sourced); }
+.cov-badge--developing { --cov-color: var(--cov-developing); }
 .cov-badge--missing { --cov-color: var(--cov-missing); }
 .cov-badge--na { --cov-color: var(--cov-na); }
 
@@ -51,6 +52,7 @@
 .cov-pill.cov-badge--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
 .cov-pill.cov-badge--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
 .cov-pill.cov-badge--sourced { background: var(--cov-sourced-bg); color: var(--cov-sourced-text); }
+.cov-pill.cov-badge--developing { background: var(--cov-developing-bg); color: var(--cov-developing-text); }
 .cov-pill.cov-badge--missing { background: var(--cov-missing-bg); color: var(--cov-missing-text); }
 .cov-pill.cov-badge--na { background: var(--cov-na-bg); color: var(--cov-na-text); }
 
@@ -68,6 +70,7 @@
 .cov-chip--partial { background: var(--cov-partial-bg); color: var(--cov-partial-text); }
 .cov-chip--affiliate { background: var(--cov-affiliate-bg); color: var(--cov-affiliate-text); }
 .cov-chip--sourced { background: var(--cov-sourced-bg); color: var(--cov-sourced-text); }
+.cov-chip--developing { background: var(--cov-developing-bg); color: var(--cov-developing-text); }
 .cov-chip--missing { background: var(--cov-missing-bg); color: var(--cov-missing-text); }
 .cov-chip--na { background: var(--cov-na-bg); color: var(--cov-na-text); }
 /* chip 안에 badge 를 넣던 기존 기기 페이지 배치 호환 */

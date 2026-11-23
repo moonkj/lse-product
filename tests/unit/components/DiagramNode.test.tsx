@@ -88,6 +88,7 @@ describe('CT-03 DiagramNode', () => {
       missing: ['true', 'false'],
       partial: ['true', 'false'],
       affiliate: ['false', 'false'],
+      developing: ['false', 'false'], // 개발 중(2026-11-23)은 보완 대상이 아니라 보통
       sourced: ['false', 'false'], // 개선 R3: 패널 구성품은 계열사와 같이 "보통" (R-08 강조 기준 = 미보유·일부 보유 유지)
       owned: ['false', 'true'],
       na: ['false', 'true'],
