@@ -19,7 +19,6 @@ export default function Header() {
         <BrandLogo className="app-header__brand" size="md" />
         <span className="app-header__title">
           전력계통 제품맵
-          <span className="app-header__sub">LS ELECTRIC 제품 지도</span>
         </span>
       </Link>
 

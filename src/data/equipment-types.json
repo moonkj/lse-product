@@ -198,7 +198,6 @@
     "coverage": "missing",
     "lseCategoryCodes": [],
     "abbr": "LA",
-    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
       "basis": "bu-confirmed",
@@ -253,7 +252,6 @@
     "coverage": "missing",
     "lseCategoryCodes": [],
     "abbr": "CT/PT",
-    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
       "basis": "bu-confirmed",
@@ -811,7 +809,6 @@
     "coverage": "missing",
     "lseCategoryCodes": [],
     "abbr": "R/C",
-    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
       "basis": "bu-confirmed",
@@ -916,7 +913,6 @@
     "coverage": "missing",
     "lseCategoryCodes": [],
     "abbr": "P.Tr",
-    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
       "basis": "bu-confirmed",
@@ -1089,7 +1085,6 @@
     "coverage": "sourced",
     "lseCategoryCodes": [],
     "abbr": "LA",
-    "gapNote": "수배전반 구성품으로 타사 제품을 넣어 공급하는 경우가 많음 — 실제 조달 방식은 사업부 확인 필요",
     "gapAssessment": {
       "supplyMode": "panel-sourced",
       "basis": "bu-confirmed",
@@ -1198,7 +1193,6 @@
     "coverage": "sourced",
     "lseCategoryCodes": [],
     "abbr": "MOF",
-    "gapNote": "수배전반 구성품으로 타사 제품을 넣어 공급하는 경우가 많음 — 실제 조달 방식은 사업부 확인 필요",
     "gapAssessment": {
       "supplyMode": "panel-sourced",
       "basis": "bu-confirmed",
@@ -1410,7 +1404,6 @@
     "coverage": "sourced",
     "lseCategoryCodes": [],
     "abbr": "CT/PT",
-    "gapNote": "수배전반 구성품으로 타사 제품을 넣어 공급하는 경우가 많음 — 실제 조달 방식은 사업부 확인 필요",
     "gapAssessment": {
       "supplyMode": "panel-sourced",
       "basis": "bu-confirmed",
@@ -2144,7 +2137,6 @@
     "coverage": "missing",
     "lseCategoryCodes": [],
     "abbr": "SC/APFC",
-    "gapNote": "홈페이지 제품 목록에서 찾지 못함 — 실제 미보유 여부 확인 필요",
     "gapAssessment": {
       "supplyMode": "unknown",
       "basis": "bu-confirmed",

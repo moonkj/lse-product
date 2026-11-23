@@ -57,7 +57,6 @@ export function checkEquipment(e: EquipmentType, ctx: EquipmentContext = {}): Ch
     c.error('DI-21', `${name}: 미보유 기기에는 연결 카테고리·제품을 지정할 수 없습니다`, ref('lseCategoryCodes'));
   if (e.coverage === 'affiliate' && !e.affiliateName?.trim()) c.error('DI-22', `${name}: 계열사 보유 기기는 계열사명이 필요합니다`, ref('affiliateName'));
   if (e.coverage !== 'affiliate' && e.affiliateName) c.error('DI-23', `${name}: 계열사명은 계열사 보유일 때만 적습니다`, ref('affiliateName'));
-  if (e.coverage === 'missing' && !e.gapNote?.trim()) c.error('DI-24', `${name}: 미보유 기기는 공백 메모가 필요합니다 (왜 공백인지)`, ref('gapNote'));
   if (e.coverage === 'partial' && !e.gapNote?.trim()) c.warn('DI-25', `${name}: 일부 보유 기기는 공백 메모를 적는 것을 권장합니다`, ref('gapNote'));
   if (e.coverage === 'partial' && links === 0) c.error('DI-26', `${name}: 일부 보유 기기는 연결 카테고리나 제품이 1개 이상 필요합니다`, ref('lseCategoryCodes'));
   // DI-27 (SOFT) 보유인데 연결 제품이 전부 단종
@@ -94,7 +93,6 @@ export function checkEquipment(e: EquipmentType, ctx: EquipmentContext = {}): Ch
     if (g.verifiedBy && (EMAIL_RE.test(g.verifiedBy) || !/(부|팀|소|실|센터|사업|그룹)/.test(g.verifiedBy)))
       c.warn('DI-27h', `${name}: 확인 부서 "${g.verifiedBy}" — 개인 실명·이메일 대신 부서명을 적으세요`, ref('gapAssessment'));
   }
-  if (e.coverage === 'sourced' && !e.gapNote?.trim()) c.warn('DI-27g', `${name}: 패널 구성품 기기는 메모(gapNote)를 적는 것을 권장합니다`, ref('gapNote'));
 
   // DI-50 학습 포인트 필수 — 폐지(2026-11-18 사용자 결정: 교육 전용 포털이 아니므로 학습 포인트를 화면에 표시하지 않음)
   return c.result();

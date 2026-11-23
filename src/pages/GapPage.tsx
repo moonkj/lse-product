@@ -8,8 +8,8 @@ import CoverageBadge from '../components/common/CoverageBadge';
 import { ButtonLink } from '../components/common/Button';
 import { FilterChip } from '../components/common/Badge';
 import PageHeader from '../components/common/PageHeader';
-import { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_LABELS, COVERAGE_ORDER, COVERAGE_SHORT_LABELS, isMainLayer, pageTitle, todayIso } from '../lib/labels';
-import { buildGapCsv, buildMatrix, countCoverage, diagramHref, downloadText, gapMemo, nodeForEquipment, ownedRate } from '../lib/pages/catalog';
+import { COVERAGE_LABELS, COVERAGE_SHORT_LABELS, isMainLayer, pageTitle, todayIso } from '../lib/labels';
+import { buildGapCsv, countCoverage, diagramHref, downloadText, gapMemo, nodeForEquipment, ownedRate } from '../lib/pages/catalog';
 import { GROWTH_LABELS, GROWTH_SYMBOLS, MarketGrowthSchema, growthByEquipment } from '../lib/market/annual';
 import './pages.css';
 import './GapPage.css';
@@ -20,7 +20,7 @@ import './GapPage.css';
  *  ① 얼마나 갖췄나 — 요약 카드 4개 (보유율 · 보완 필요 · 다른 방식으로 공급 · 개발 중)
  *  ② 어느 단계가 비었나 — 계층별 가로 막대 (누르면 아래 목록이 그 계층만)
  *  ③ 무엇을 먼저 볼까 — 보완 대상 기기를 '우선 검토(시장 증가 + 자사 없음) / 검토 / 다른 방식으로 공급 / 개발 중'으로 묶은 목록
- * 예전 "보유 현황표(계층×기능)"는 맨 아래 접힌 상세표로, "보완 매트릭스(성장×보유)"는 ③의 묶음·'시장 증가' 표시로 녹였다.
+ * 예전 "보유 현황표(계층×기능)"는 삭제(2026-11-23 사용자), "보완 매트릭스(성장×보유)"는 ③의 묶음·'시장 증가' 표시로 녹였다.
  */
 
 const GROWTH = MarketGrowthSchema.parse(growthJson);
@@ -318,61 +318,6 @@ export default function GapPage() {
         </div>
       </section>
 
-      {/* 자세히: 계층 × 기능 표 (예전 보유 현황표) */}
-      <details className="pg-card gx-card gx-detail">
-        <summary>
-          <h2 className="gx-detail__title">자세히 보기: 계층 × 기능 표</h2>
-          <span className="gx-card__hint">기기 기능(개폐·보호·변성…)별로 나눠 본 표입니다.</span>
-        </summary>
-        <DetailTable equipment={equipment} />
-      </details>
-    </div>
-  );
-}
-
-/** 계층 × 기능 표 — 칸마다 상태별 개수 칩 (마우스를 올리면 기기 이름) */
-function DetailTable({ equipment }: { equipment: EquipmentType[] }) {
-  const matrix = useMemo(() => buildMatrix(equipment), [equipment]);
-  const cats = CATEGORY_ORDER.filter((c) => matrix.some((r) => r.cells[c].length > 0));
-  return (
-    <div className="gx-scroll" tabIndex={0} role="region" aria-label="계층 × 기능 표 (가로 스크롤)">
-      <table className="gx-table">
-        <thead>
-          <tr>
-            <th scope="col">계층</th>
-            {cats.map((c) => (
-              <th key={c} scope="col">
-                {CATEGORY_LABELS[c]}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {matrix
-            .filter((r) => cats.some((c) => r.cells[c].length > 0))
-            .map((r) => (
-              <tr key={r.layer}>
-                <th scope="row">
-                  {isMainLayer(r.layer) && <b>{r.layer}</b>} {LAYER_LABELS[r.layer]}
-                </th>
-                {cats.map((c) => {
-                  const items = r.cells[c];
-                  if (items.length === 0) return <td key={c} />;
-                  const counts = countCoverage(items);
-                  return (
-                    <td key={c} title={items.map((e) => e.name).join(', ')}>
-                      <span className="gx-cell">
-                        {COVERAGE_ORDER.filter((k) => counts[k] > 0).map((k) => (
-                          <CoverageBadge key={k} coverage={k} variant="chip" label={counts[k]} />
-                        ))}
-                      </span>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-        </tbody>
-      </table>
     </div>
   );
 }

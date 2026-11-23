@@ -346,7 +346,7 @@ test.describe('UX 3차 묶음 (2026-11-23)', () => {
 });
 
 test.describe('라인업 현황 재설계 (2026-11-23)', () => {
-  test('요약 카드 4개 → 계층별 막대(누르면 목록이 그 계층만) → 우선순위 묶음, 상세표는 접힘, 접근성 위반 0', async ({ page }) => {
+  test('요약 카드 4개 → 계층별 막대(누르면 목록이 그 계층만) → 우선순위 묶음, 상세표 없음, 메모 문구 삭제, 접근성 위반 0', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('./#/gap');
     const kpis = page.locator('.gx-kpi');
@@ -359,7 +359,9 @@ test.describe('라인업 현황 재설계 (2026-11-23)', () => {
     for (const row of await page.getByTestId('gap-list').getByTestId(/^gap-item-/).all()) await expect(row.locator('.gx-item__layer')).toHaveText('L1');
     await page.getByTestId('gap-layer-clear').click();
     await expect(page.getByTestId('gap-layer-clear')).toHaveCount(0);
-    await expect(page.locator('.gx-detail')).not.toHaveAttribute('open', '');
+    await expect(page.locator('.gx-detail')).toHaveCount(0);
+    await expect(page.getByTestId('gap-page')).not.toContainText('홈페이지 제품 목록에서 찾지 못함');
+    await expect(page.getByTestId('gap-page')).not.toContainText('사업부 확인 필요'); // 계층 × 기능 표는 삭제 (2026-11-23 사용자)
     const axe = await new AxeBuilder({ page }).include('[data-testid="gap-page"]').analyze();
     expect(axe.violations.map((v) => v.id)).toEqual([]);
   });

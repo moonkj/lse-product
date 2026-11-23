@@ -307,7 +307,6 @@ describe('UT-10 규칙별 위반 → 해당 ID (HARD)', () => {
     ['DI-21', (f) => Object.assign(equip(f, 'e1'), { coverage: 'missing', gapNote: 'x', gapAssessment: gapCandidate })],
     ['DI-22', (f) => Object.assign(equip(f, 'e1'), { coverage: 'affiliate', gapAssessment: { ...gapCandidate, supplyMode: 'affiliate' } })],
     ['DI-23', (f) => (equip(f, 'e1').affiliateName = 'LS전선')],
-    ['DI-24', (f) => Object.assign(equip(f, 'e1'), { coverage: 'missing', lseCategoryCodes: [], gapAssessment: gapCandidate })],
     ['DI-26', (f) => Object.assign(equip(f, 'e1'), { coverage: 'partial', gapNote: 'x', lseCategoryCodes: [], gapAssessment: gapCandidate })],
     ['DI-27a', (f) => Object.assign(equip(f, 'e1'), { coverage: 'missing', lseCategoryCodes: [], gapNote: 'x' })],
     ['DI-27c', (f) =>
