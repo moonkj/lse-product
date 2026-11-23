@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { getData } from '../../data/load';
 import { getDiagramModel } from '../../lib/diagram/model';
 import { requestPanelFocus, useSelectedNodeId, useSelectNode, useViewMode, useMediaQuery, MOBILE_QUERY } from '../../lib/diagram/url';
-import { buildStageBoard, type StageColumn, type StageRow } from '../../lib/stages';
+import { buildStageBoard, stageSetupFor, type StageColumn, type StageRow } from '../../lib/stages';
+import { diagramOf, useGrid } from '../../lib/diagram/grid';
+import GridSelect from '../diagram/GridSelect';
 import { COVERAGE_LABELS, type EquipmentType } from '../../lib/schema';
 import { isGapCoverage } from '../../lib/labels';
 import { usePresetStore } from '../../lib/market/presetStore';
@@ -134,7 +136,18 @@ function RowHead({ row }: { row: StageRow }) {
  * 휴대폰(≤900px)은 층 탭으로 한 열씩.
  */
 export default function StageView() {
-  const board = useMemo(() => buildStageBoard(getData().equipmentTypes), []);
+  // 계통 선택 반영 (2026-11-23 UX 토론): 지금 계통도에 그려진 기기만, 층 이름은 그 계통도 이름으로. 빈 열·줄은 숨김
+  const grid = useGrid();
+  const board = useMemo(() => {
+    const data = getData();
+    const diagram = diagramOf(data, grid);
+    const onMap = new Set(diagram.nodes.map((n) => n.equipmentTypeId).filter(Boolean));
+    const { defs, rows } = stageSetupFor(grid, diagram.layers);
+    const b = buildStageBoard(data.equipmentTypes.filter((e) => onMap.has(e.id)), defs, rows);
+    const filled = (c: StageColumn) => c.groupsList.some((g) => g.items.length > 0);
+    const rowsKept = b.rows.map((r) => ({ ...r, columns: r.columns.filter(filled) })).filter((r) => r.columns.length > 0);
+    return { ...b, rows: rowsKept, columns: rowsKept.flatMap((r) => r.columns) };
+  }, [grid]);
   const nodeByEq = useNodeByEquipment();
   const selectedNode = useSelectedNodeId();
   const selectNode = useSelectNode();
@@ -168,7 +181,8 @@ export default function StageView() {
       />
     );
   };
-  const total = board.columns.reduce((s, c) => s + c.total, 0) + board.monitoring.length;
+  // 화면에 보이는 카드 수 그대로 (예전엔 해당 없음을 뺀 집계 수라 카드 수와 달랐음)
+  const total = board.columns.reduce((s, c) => s + c.groupsList.reduce((n, g) => n + g.items.length, 0), 0) + board.monitoring.length;
   // 휴대폰: 고른 탭의 열 하나만 (그 열이 속한 줄 제목과 함께)
   const rows: StageRow[] = isMobile
     ? board.rows.map((r) => ({ ...r, columns: r.columns.filter((c) => c.id === tab) })).filter((r) => r.columns.length > 0)
@@ -179,9 +193,10 @@ export default function StageView() {
       <div className="dtool dtool--stage">
         <div className="dtool__row dtool__main">
           <ViewSwitch />
+          <GridSelect />
           <PresetPicker />
-          <span className="stage__total" aria-live="polite">
-            기기 {total}종
+          <span className="stage__total" aria-live="polite" data-testid="stage-total">
+            카드 {total}개
           </span>
           <div className="dtool__end">
             <MarketButton />
@@ -191,7 +206,7 @@ export default function StageView() {
 
       <div className="stage__scroll">
         <p className="stage__lead">
-          계통맵과 같은 층(L1~L7·신재생)으로 기기를 나눠 카드로 보여 줍니다. 카드를 누르면 계통맵과 같은 상세 정보가 열립니다.
+          계통맵과 같은 층으로 기기를 나눠 카드로 보여 줍니다. 카드를 누르면 계통맵과 같은 상세 정보가 열립니다.
         </p>
 
         {isMobile && (
@@ -216,7 +231,7 @@ export default function StageView() {
         {rows.map((r) => (
           <section key={r.id} className={`stage__row stage__row--${r.id}`} aria-labelledby={`srow-${r.id}`} data-testid={`stage-row-${r.id}`}>
             <RowHead row={r} />
-            <div className="stage__grid">
+            <div className="stage__grid" style={{ '--stage-cols': r.columns.length } as React.CSSProperties}>
               {r.columns.map((c) => (
                 <Column key={c.id} col={c} render={render} />
               ))}

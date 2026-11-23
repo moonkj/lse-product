@@ -84,7 +84,7 @@
 .stage__row-gaps { color: var(--cov-missing-text); font-weight: var(--fw-bold); }
 .stage__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--stage-cols, 4), minmax(0, 1fr));
   gap: var(--space-3);
   align-items: start;
 }

@@ -86,7 +86,7 @@ export default function DiagramLegend({ mode }: { mode: ViewMode }) {
       aria-label="범례"
     >
       <div className="dlegend__row">
-        <ul className="dlegend__list" aria-label="커버리지 범례" data-testid="legend">
+        <ul className="dlegend__list" aria-label="보유 상태 범례" data-testid="legend">
           {COVERAGES.map((c) => {
             const faded = gap && isDimmedCoverage(c);
             return (

@@ -432,10 +432,20 @@ export default function DiagramCanvas() {
           io.unobserve(e.target);
         }
       },
-      { root: vp, rootMargin: '300px' },
+      // 선택 기기로 화면이 이동하는 동안에도 미리 받도록 여유를 크게 (300px 일 때 이동 직후 약 1초 빈 판이 보였음, 2026-11-23)
+      { root: vp, rootMargin: '1500px' },
     );
     imgs.forEach((img) => io.observe(img));
-    return () => io.disconnect();
+    // 첫 화면이 자리 잡은 뒤 한가할 때 나머지 사진도 받아 둔다 (썸네일 62장 약 2MB) — 이동·확대 때 빈 판이 보이지 않게
+    const idle = window.setTimeout(() => {
+      const rest = () => imgs.forEach(load);
+      if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(rest, { timeout: 4000 });
+      else rest();
+    }, 2500);
+    return () => {
+      io.disconnect();
+      window.clearTimeout(idle);
+    };
   }, [model]);
 
   useEffect(() => {

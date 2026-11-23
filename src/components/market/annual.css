@@ -145,3 +145,19 @@ rect.mai-mix--other { fill: var(--cov-na); }
 .mgm__table td:nth-child(2) { width: 40%; }
 .mgm__chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: top; }
 .mgm__table thead th { white-space: nowrap; }
+
+/* 산출 근거 접기·증감 표시 (2026-11-23 UX 토론) */
+.mai-card__basis { margin-top: 8px; }
+.mai-card__basis > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--color-link);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+.mai-yoy { font-weight: var(--fw-bold); white-space: nowrap; }
+.mai-yoy--up { color: var(--cov-owned-text); }
+.mai-yoy--down { color: var(--cov-missing-text); }
+.mai-yoy--flat { color: var(--color-text-muted); }

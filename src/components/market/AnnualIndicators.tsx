@@ -72,7 +72,15 @@ function IndicatorCard({ ind }: { ind: Indicator }) {
         </b>{' '}
         <span className="mai-card__meta">
           {lastPt.year}년 실적
-          {yoy !== undefined && ` · 전년 대비 ${yoy >= 0 ? '+' : ''}${fmt(yoy, 1)}%`}
+          {/* 증감은 ▲▼와 색으로 먼저 읽히게 (2026-11-23 UX 토론) — 색만이 아니라 기호·글자도 함께 */}
+          {yoy !== undefined && (
+            <>
+              {' · 전년 대비 '}
+              <span className={`mai-yoy mai-yoy--${yoy > 0 ? 'up' : yoy < 0 ? 'down' : 'flat'}`} data-testid={`mai-yoy-${ind.id}`}>
+                {yoy > 0 ? '▲' : yoy < 0 ? '▼' : '–'} {fmt(Math.abs(yoy), 1)}%
+              </span>
+            </>
+          )}
           {growth !== undefined && ` · ${firstPt.year}–${lastPt.year} 연평균 ${growth >= 0 ? '+' : ''}${fmt(growth, 1)}%`}
         </span>
       </p>
@@ -89,6 +97,9 @@ function IndicatorCard({ ind }: { ind: Indicator }) {
       <div className="mai-chart" role="region" aria-label={`${ind.label} 차트 (가로 스크롤)`} tabIndex={0}>
         <LineChart ind={ind} />
       </div>
+      {/* 산출 근거는 기본으로 접는다 — 그래프보다 큰 자리를 차지했음 (2026-11-23 UX 토론) */}
+      <details className="mai-card__basis" data-testid={`mai-basis-${ind.id}`}>
+        <summary>산출 근거 보기</summary>
       <dl className="mai-card__method">
         <dt>실적 방법</dt>
         <dd>
@@ -121,6 +132,7 @@ function IndicatorCard({ ind }: { ind: Indicator }) {
           ))}
         </ul>
       )}
+      </details>
       {ind.gapNote && <p className="mai-card__gap">{ind.gapNote}</p>}
       <DataTable caption={`${ind.label} (${ind.unit})`} rows={tableRows(ind)} digits={digits} />
     </section>
@@ -263,6 +275,8 @@ function MixCard({ mix }: { mix: MarketAnnual['mix'] }) {
       <div className="mai-chart" role="region" aria-label="전원믹스 차트 (가로 스크롤)" tabIndex={0}>
         <MixChart actual={mix.actual} forecast={mix.forecast} />
       </div>
+      <details className="mai-card__basis" data-testid="mai-basis-mix">
+        <summary>산출 근거 보기</summary>
       <dl className="mai-card__method">
         <dt>실적 방법</dt>
         <dd>
@@ -283,6 +297,7 @@ function MixCard({ mix }: { mix: MarketAnnual['mix'] }) {
           </>
         )}
       </dl>
+      </details>
       <table className="visually-hidden">
         <caption>전원믹스 발전량 비중(%)</caption>
         <thead>

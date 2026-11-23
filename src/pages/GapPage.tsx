@@ -114,7 +114,7 @@ export default function GapPage() {
       <PageHeader
         crumbs={[{ label: '계통도', to: diagramHref(undefined, 'gap') }, { label: '라인업 현황' }]}
         title="라인업 현황"
-        lead="전압 계층 × 기기 기능별로 자사 제품 커버리지를 봅니다. 칸을 누르면 해당 기기 목록이, 계층 이름을 누르면 계통도의 그 계층이 열립니다."
+        lead="전압 계층 × 기기 기능별로 자사 제품 보유 현황을 봅니다. 칸을 누르면 해당 기기 목록이, 계층 이름을 누르면 계통도의 그 계층이 열립니다."
         actions={
         <dl className="gp-stats">
           <div className="gp-stat gp-stat--owned">
@@ -126,6 +126,10 @@ export default function GapPage() {
                   · 해당 없음 {totals.na}종 제외
                 </span>
               )}
+              {/* 계통도 사이드바(계통별)와 숫자가 다른 이유를 밝힘 (2026-11-23 UX 토론 P0) */}
+              <span className="gp-stat__basis" data-testid="gap-basis">
+                전체 기기 기준 (데이터센터 포함)
+              </span>
             </dt>
             <dd>{rate.pct}%</dd>
           </div>
@@ -151,12 +155,12 @@ export default function GapPage() {
 
       <section className="pg-card gp-card" aria-labelledby="mx-h">
         <div className="gp-card__head">
-          <h2 id="mx-h">커버리지 매트릭스</h2>
+          <h2 id="mx-h">보유 현황표</h2>
           <span className="gp-legend">
             {COVERAGE_ORDER.map((c) => `${COVERAGE_ICONS[c]} ${COVERAGE_SHORT_LABELS[c]}`).join(' · ')} · 숫자 = 기기 종류 수
           </span>
         </div>
-        <div className="gp-scroll" tabIndex={0} role="region" aria-label="커버리지 매트릭스 (가로 스크롤)">
+        <div className="gp-scroll" tabIndex={0} role="region" aria-label="보유 현황표 (가로 스크롤)">
           <table className="gp-matrix" data-testid="gap-matrix">
             <thead>
               <tr>

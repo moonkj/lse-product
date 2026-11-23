@@ -860,12 +860,76 @@
   cursor: col-resize;
 }
 
-/* 휴대폰 세로: 헤더 메뉴(계통도·공백 표)는 숨겨 검색창 폭 확보 — 공백 표는 칩 줄 끝 링크로 (LayerNav) */
+/* 휴대폰 세로: 헤더 메뉴는 숨겨 검색창 폭 확보 — 대신 ☰ 메뉴(MobileMenu, 2026-11-23) */
 @media (max-width: 600px) {
   .app-nav {
     display: none;
   }
 }
+.mmenu-toggle { display: none; }
+@media (max-width: 600px) {
+  /* 휴대폰: 다크 모드는 ☰ 메뉴 안으로 옮겨 검색창 폭 확보 (360px 에서 120px 이상) */
+  .theme-toggle--hdr { display: none; }
+  .mmenu-toggle { display: inline-flex; margin-left: auto; }
+}
+.mmenu {
+  margin: 0 0 0 auto;
+  width: min(300px, 86vw);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: -8px 0 24px rgb(0 0 0 / 0.25);
+}
+.mmenu::backdrop { background: rgb(0 0 0 / 0.45); }
+.mmenu__panel { display: flex; flex-direction: column; height: 100%; }
+.mmenu__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 12px 20px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--fs-md, 16px);
+}
+.mmenu__close {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+.mmenu__list { margin: 0; padding: 8px 0; list-style: none; }
+.mmenu__link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 20px;
+  border: 0;
+  border-left: 4px solid transparent;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.mmenu__link:hover { background: var(--color-surface-2); }
+.mmenu__link[aria-current='page'] {
+  border-left-color: var(--color-brand);
+  background: var(--color-surface-2);
+  color: var(--color-link);
+}
+.mmenu__link--btn { font-weight: var(--fw-regular, 400); color: var(--color-text-muted); }
 /* 아주 좁은 폭(≤400px): 로고 상자를 조금 줄여 검색창 120px 이상 확보 */
 @media (max-width: 400px) {
   .app-header__brand { padding: 5px 6px; }

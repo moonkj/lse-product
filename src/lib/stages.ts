@@ -155,3 +155,23 @@ export function buildStageBoard(
   });
   return { rows, columns, monitoring, monitoringLabel: MONITORING_LABEL, unassigned };
 }
+
+/**
+ * 데이터센터(국내) 계통의 단계별 줄 (2026-11-23 UX 토론 — 단계별에도 계통 선택 반영).
+ * 계통도 층 이름·전압은 diagram-dc.json 을 따르고, 줄은 수전·변환 / 배전(AC·DC) / 부하.
+ */
+export const DC_STAGE_ROWS: RowFileEntry[] = [
+  { id: 'dc-supply', label: '수전·변환', sub: '22.9kV 2회선 → 380V AC / 800V DC', stages: ['L4', 'L5'] },
+  { id: 'dc-dist', label: '배전', sub: 'AC 380V (기존) · DC 800V (차세대)', stages: ['L6', 'REN'] },
+  { id: 'dc-load', label: '부하', sub: 'IT 서버 랙', stages: ['L7'] },
+];
+
+/** 계통 종류별 열·줄 정의 — 층 이름·전압은 그 계통도(diagram.layers)에서 */
+export function stageSetupFor(grid: 'std' | 'dc', layers: readonly { id: string; label: string; voltage: string }[]): { defs: StageDef[]; rows: RowFileEntry[] } {
+  if (grid === 'std') return { defs: STAGE_DEFS, rows: STAGE_ROWS };
+  const info = new Map(layers.map((l) => [l.id, l]));
+  const defs = DC_STAGE_ROWS.flatMap((r) =>
+    r.stages.map((id): StageDef => ({ id, code: isMain(id) ? id : '', label: info.get(id)?.label ?? id, voltage: info.get(id)?.voltage ?? '', layers: [id], row: r.id })),
+  );
+  return { defs, rows: DC_STAGE_ROWS };
+}

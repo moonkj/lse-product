@@ -7,5 +7,5 @@ import { useGrid } from '../lib/diagram/grid';
 export default function HomePage() {
   const grid = useGrid();
   // 계통 종류가 바뀌면 계통도를 새로 그린다 (확대·이동 상태 초기화)
-  return useHomeView() === 'stage' ? <StageView /> : <DiagramCanvas key={grid} />;
+  return useHomeView() === 'stage' ? <StageView key={grid} /> : <DiagramCanvas key={grid} />;
 }

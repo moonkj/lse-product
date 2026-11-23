@@ -18,7 +18,7 @@ import GridSelect from './GridSelect';
 interface Props {
   mode: ViewMode;
   total: number;
-  /** 계통 검수 상태 — pending 이면 "계통 검수 대기" 배지 */
+  /** 계통 검수 상태 — pending 이면 "초안" 배지 */
   review?: Diagram['review'];
 }
 
@@ -41,9 +41,10 @@ function ReviewBadge({ review }: { review?: Diagram['review'] }) {
       title={detail || undefined}
       tabIndex={0}
       role="note"
-      aria-label={`계통 검수 대기${detail ? ` — ${detail}` : ''}`}
+      aria-label={`계통 초안 — 설계 검토 전${detail ? ` · ${detail}` : ''}`}
     >
-      <span aria-hidden="true">⏳</span> 계통 검수 대기
+      {/* '검수 대기'는 고객에게 미완성처럼 읽혀 '초안'으로 (2026-11-23 UX 토론) — 자세한 사정은 title 툴팁 */}
+      <span aria-hidden="true">✎</span> 초안
     </span>
   );
 }

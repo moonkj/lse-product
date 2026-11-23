@@ -8,7 +8,7 @@ import { getDiagramController, useView, viewStore, type ViewState } from '../../
 import { useMediaQuery, useViewMode } from '../../lib/diagram/url';
 import type { JumpState } from '../diagram/DiagramCanvas';
 import './LayerNav.css';
-import { getActiveGrid } from '../../lib/diagram/grid';
+import { GRID_LABELS, getActiveGrid } from '../../lib/diagram/grid';
 
 /** 내비 짧은 이름 — 전압은 둘째 줄(데이터 voltage)로 내려 한 줄 유지 (5라운드 합의) */
 const SHORT: Partial<Record<Layer, string>> = {
@@ -357,13 +357,15 @@ export default function LayerNav() {
         </div>
         {sideLayers.length > 0 && (
           <div className="layer-nav__side">
-            <h3 className="layer-nav__group-title">연계</h3>
+            {/* 데이터센터 계통의 옆 묶음은 DC 배전(주 경로)이라 '연계'가 아니다 (2026-11-23 UX 토론) */}
+            <h3 className="layer-nav__group-title">{getActiveGrid() === 'dc' ? '차세대 DC 경로' : '연계'}</h3>
             <ul className="layer-nav__list layer-nav__list--side">{sideLayers.map((l, i) => renderRow(l, i))}</ul>
           </div>
         )}
         <section className="layer-nav__summary" aria-label="전체 보유 요약" data-testid="layer-nav-summary">
-          <p className="layer-nav__summary-title">
-            전체 보유
+          <p className="layer-nav__summary-title" data-testid="layer-nav-summary-basis">
+            {/* 숫자 기준을 밝힌다 — 라인업 현황(전체 기기)과 숫자가 다른 이유 (2026-11-23 UX 토론 P0) */}
+            {GRID_LABELS[getActiveGrid()]} 계통 기준
             {model.coverageCounts.na > 0 && (
               <span className="layer-nav__summary-excl" data-testid="layer-nav-na-excluded">
                 {' '}

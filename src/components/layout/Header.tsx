@@ -4,6 +4,7 @@ import BrandLogo from '../common/BrandLogo';
 import { useUiStore } from '../../store/useUiStore';
 import ThemeToggle from './ThemeToggle';
 import QrButton from './QrButton';
+import MobileMenu from './MobileMenu';
 
 export default function Header() {
   const { pathname } = useLocation();
@@ -112,6 +113,9 @@ export default function Header() {
         </svg>
         <span className="theme-toggle__label">사용법</span>
       </button>
+
+      {/* 휴대폰(≤600px) 전용 ☰ 메뉴 — 위 화면 메뉴가 숨겨지는 폭 */}
+      <MobileMenu />
 
       {/* QR — 헤더 맨 오른쪽 (2026-11-19 사용자) */}
       <QrButton />

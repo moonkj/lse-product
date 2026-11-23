@@ -12,7 +12,7 @@ export default function ThemeToggle() {
   return (
     <button
       type="button"
-      className="theme-toggle"
+      className="theme-toggle theme-toggle--hdr"
       data-testid="theme-toggle"
       data-theme-current={theme}
       title={`${label}로 보기`}

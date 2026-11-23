@@ -135,7 +135,7 @@ function PrintSheet({ preset, scenario, rows }: { preset: Preset; scenario?: Sce
         {scenario ? ` · 수전 방식: ${scenario.label}` : ''}
       </h1>
       <p>
-        출력 {todayIso()} · 기준 {preset.basis} · 보유 상태 = 제품맵 커버리지
+        출력 {todayIso()} · 기준 {preset.basis} · 보유 상태 = 제품맵 기준
       </p>
       {demand && (
         <p>

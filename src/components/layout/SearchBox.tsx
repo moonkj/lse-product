@@ -116,7 +116,7 @@ export default function SearchBox() {
         id="global-search"
         type="search"
         autoComplete="off"
-        placeholder="기기·제품·모델명 검색 (예: VCB, GIPAM, iS7)"
+        placeholder="기기·모델명 검색 (예: VCB, iS7)"
         value={query}
         role="combobox"
         aria-expanded={showPopup && results.length > 0}

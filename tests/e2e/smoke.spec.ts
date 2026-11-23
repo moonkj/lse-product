@@ -23,7 +23,7 @@ test('스모크: 앱이 뜨고 헤더와 범례 7종(v0.6 R3 + 개발 중)이 �
   await expect(header.getByRole('img', { name: 'LS ELECTRIC' })).toBeVisible();
   await expect(header).toContainText('전력계통 제품맵');
 
-  const legend = page.getByRole('list', { name: '커버리지 범례' });
+  const legend = page.getByRole('list', { name: '보유 상태 범례' });
   await expect(legend).toBeVisible();
   const items = legend.getByRole('listitem');
   await expect(items).toHaveCount(COVERAGE_LABELS.length);

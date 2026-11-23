@@ -249,7 +249,7 @@ function equipmentSections(list: EquipmentType[], specsState: SpecsState): { sec
     },
     {
       key: 'coverage',
-      label: '커버리지',
+      label: '보유 상태',
       // 판정 확정/후보 표시는 화면에서 뺌 (2026-11-19 사용자: 판정 기록 전수 삭제)
       cells: list.map((eq) => ({
         text: eq.coverage,

@@ -16,7 +16,7 @@ test.describe('보기 전환 · 단계별 보기', () => {
     await expect(tid(page, 'stage-view')).toBeVisible();
     for (const id of ['L1', 'L2', 'L3', 'REN', 'L4', 'L5', 'L6', 'L7']) await expect(tid(page, `stage-col-${id}`)).toBeVisible();
     await expect(tid(page, 'stage-monitoring')).toBeVisible();
-    await expect(page.locator('.scard')).toHaveCount(80); // 데이터센터 기기(SST·SSCB·DC-DC·IT 랙) 포함 전체 기기
+    await expect(page.locator('.scard')).toHaveCount(76); // 국내 표준 계통도에 있는 기기만 (단계별도 계통 선택을 따름, 2026-11-23)
 
     await tid(page, 'stage-card-panelboard').click();
     await expect(page).toHaveURL(/node=n-panel/);
@@ -200,5 +200,69 @@ test.describe('첫 화면 길잡이 (말풍선 3단계, 2026-11-23)', () => {
     await expect(tid(page, 'detail-panel')).toBeVisible();
     await page.waitForTimeout(1200);
     await expect(tid(page, 'first-guide')).toHaveCount(0);
+  });
+});
+
+test.describe('UX 1차 묶음 (2026-11-23)', () => {
+  test('휴대폰 ☰ 메뉴: 열면 화면 목록(현재 화면 표시), 제품 조회로 이동하면 닫힘, Esc 로 닫힘', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./#/');
+    const t = tid(page, 'mobile-menu-toggle');
+    await expect(t).toBeVisible();
+    await t.click();
+    const m = tid(page, 'mobile-menu');
+    await expect(m).toBeVisible();
+    await expect(tid(page, 'mmenu-home')).toHaveAttribute('aria-current', 'page');
+    await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/ux/m-menu.png' });
+    await tid(page, 'mmenu-products').click();
+    await expect(tid(page, 'products-title')).toBeVisible();
+    await expect(m).not.toBeVisible();
+    await t.click();
+    await expect(tid(page, 'mmenu-products')).toHaveAttribute('aria-current', 'page');
+    await page.keyboard.press('Escape');
+    await expect(m).not.toBeVisible();
+  });
+
+  test('데스크톱에서는 ☰ 메뉴가 없고 헤더 메뉴만', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./#/');
+    await expect(tid(page, 'mobile-menu-toggle')).toBeHidden();
+    await expect(tid(page, 'products-link')).toBeVisible();
+  });
+
+  test('보유율 기준 문구: 사이드바 = 계통 기준, 라인업 현황 = 전체 기기 기준', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto('./#/');
+    await expect(tid(page, 'layer-nav-summary-basis')).toContainText('국내 표준 계통 기준');
+    await page.goto('./#/?grid=dc');
+    await expect(tid(page, 'layer-nav-summary-basis')).toContainText('데이터센터(국내) 계통 기준');
+    await expect(page.getByRole('heading', { name: '차세대 DC 경로' })).toBeVisible();
+    await expect(tid(page, 'diagram-review-badge')).toContainText('초안');
+    await page.goto('./#/gap');
+    await expect(tid(page, 'gap-basis')).toContainText('전체 기기 기준');
+    await expect(page.getByRole('heading', { name: '보유 현황표' })).toBeVisible();
+  });
+
+  test('단계별도 계통 선택을 따름: 데이터센터 = 수전·변환 / 배전 / 부하, 카드 수 = 표시 숫자', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto('./#/?view=stage&grid=dc');
+    await expect(tid(page, 'stage-view')).toBeVisible();
+    await expect(tid(page, 'stage-row-dc-supply')).toBeVisible();
+    await expect(tid(page, 'stage-row-dc-dist')).toBeVisible();
+    await expect(tid(page, 'stage-row-grid')).toHaveCount(0);
+    await expect(tid(page, 'stage-card-sst')).toBeVisible();
+    const n = await page.locator('.scard').count();
+    await expect(tid(page, 'stage-total')).toHaveText(`카드 ${n}개`);
+    await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/ux/d-stage-dc.png' });
+  });
+
+  test('전력시장 지표: 산출 근거는 접혀 있고 펼칠 수 있음, 증감은 ▲▼', async ({ page }) => {
+    await page.goto('./#/market');
+    const basis = tid(page, 'mai-basis-consumption');
+    await expect(basis).not.toHaveAttribute('open', '');
+    await expect(basis.getByText('실적 방법')).toBeHidden();
+    await basis.locator('summary').click();
+    await expect(basis.getByText('실적 방법')).toBeVisible();
+    await expect(tid(page, 'mai-yoy-generation')).toHaveText(/[▲▼–] \d/);
   });
 });

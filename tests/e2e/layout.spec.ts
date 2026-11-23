@@ -90,7 +90,7 @@ test.describe('C1 압축 화면 · 넓게 보기', () => {
     const header = await page.getByRole('banner').boundingBox();
     expect(header!.height).toBeLessThanOrEqual(64);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-    for (const id of ['view-switch-stage', 'layer-nav-L4', 'theme-toggle', 'gap-table-link-mobile']) {
+    for (const id of ['view-switch-stage', 'layer-nav-L4', 'mobile-menu-toggle', 'gap-table-link-mobile']) {
       // 휴대폰 세로: 헤더 메뉴는 숨기고 공백 표는 칩 줄 끝 링크
       if (id === 'gap-table-link-mobile') await tid(page, id).scrollIntoViewIfNeeded();
       expect((await tid(page, id).boundingBox())!.height, id).toBeGreaterThanOrEqual(44);
