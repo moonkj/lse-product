@@ -9,7 +9,7 @@ import Button, { ButtonExternal, ButtonLink, DIAGRAM_CTA_LABEL } from '../compon
 import { Count, Tag } from '../components/common/Badge';
 import PageHeader, { type Crumb } from '../components/common/PageHeader';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
-import ProductVisual, { FALLBACK_PHOTO_LABEL, hasProductPhoto } from '../components/pages/ProductVisual';
+import ProductVisual, { FALLBACK_PHOTO_LABEL, equipmentPhotoIsOf, hasProductPhoto } from '../components/pages/ProductVisual';
 import ProductSpecs, { SPECS_VARIANTS_ANCHOR } from '../components/pages/ProductSpecs';
 import { useSpecs } from '../components/compare/useSpecs';
 import { hasVariants } from '../lib/pages/compare';
@@ -64,12 +64,12 @@ export default function ProductPage() {
 
       <section className="pg-hero" aria-labelledby="product-title">
         <div className="pg-hero__media">
-          {hasProductPhoto(product.id) || eq ? (
+          {hasProductPhoto(product.id) || equipmentPhotoIsOf(eq?.id, product.id) ? (
             <ProductVisual product={product} eq={eq} alt={`${product.name} 제품 사진`} lazy={false} />
           ) : (
             <span className="pg-muted">사진 없음</span>
           )}
-          {!hasProductPhoto(product.id) && eq && equipmentImageUrl(eq.id) && (
+          {!hasProductPhoto(product.id) && eq && equipmentPhotoIsOf(eq.id, product.id) && equipmentImageUrl(eq.id) && (
             <span className="pg-hero__caption" data-testid="product-photo-fallback">
               {FALLBACK_PHOTO_LABEL} · {eq.name}
             </span>

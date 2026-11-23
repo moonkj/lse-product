@@ -178,3 +178,16 @@
   .pg-hero__title { font-size: 26px; }
   .pg-card { padding: var(--space-4); }
 }
+
+/* 제품 사진 없음 자리표시 (2026-11-23 — 다른 제품 사진으로 대체하지 않음) */
+.pvis-none {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 40px;
+  padding: 4px 6px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  text-align: center;
+}

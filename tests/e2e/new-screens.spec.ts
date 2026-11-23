@@ -57,7 +57,7 @@ test.describe('제품 조회 /products', () => {
     await page.goto('./#/');
     await tid(page, 'products-link').click();
     await expect(tid(page, 'products-title')).toHaveText('제품 조회');
-    await expect(tid(page, 'products-count')).toContainText('전체 235개');
+    await expect(tid(page, 'products-count')).toContainText('전체 231개');
 
     await tid(page, 'products-search').fill('susol mccb');
     await expect(page).toHaveURL(/q=susol/);
@@ -364,5 +364,19 @@ test.describe('라인업 현황 재설계 (2026-11-23)', () => {
     await expect(page.getByTestId('gap-page')).not.toContainText('사업부 확인 필요'); // 계층 × 기능 표는 삭제 (2026-11-23 사용자)
     const axe = await new AxeBuilder({ page }).include('[data-testid="gap-page"]').analyze();
     expect(axe.violations.map((v) => v.id)).toEqual([]);
+  });
+});
+
+test.describe('제품 사진 재검수 (2026-11-23)', () => {
+  test('자기 사진이 없는 제품은 다른 제품 사진 대신 "사진 없음"', async ({ page }) => {
+    // GIPAM2000(영문 사이트)은 자기 사진이 없다 — 예전에는 XGIPAM 사진이 대신 보였음
+    await page.goto('./#/products?q=GIPAM2000');
+    const card = page.getByTestId('pcard-EN-P00051');
+    await expect(card).toBeVisible();
+    await expect(card.locator('.pcard__pic img')).toHaveCount(0);
+    await expect(card).toContainText('사진 없음');
+    await page.goto('./#/product/EN-P00051');
+    await expect(page.locator('.pg-hero__media')).toContainText('사진 없음');
+    await expect(page.locator('.pg-hero__media img')).toHaveCount(0);
   });
 });

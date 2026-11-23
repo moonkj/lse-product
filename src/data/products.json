@@ -1204,48 +1204,6 @@
     "docs": []
   },
   {
-    "id": "P01190",
-    "name": "iV5",
-    "categoryCode": "BBB005018",
-    "categoryPath": [
-      "저압드라이브",
-      "General"
-    ],
-    "url": "https://www.ls-electric.com/ko/product/view/P01190",
-    "source": "ko",
-    "business": "automation",
-    "discontinued": true,
-    "docs": []
-  },
-  {
-    "id": "P01187",
-    "name": "iG5A",
-    "categoryCode": "BBB005018",
-    "categoryPath": [
-      "저압드라이브",
-      "General"
-    ],
-    "url": "https://www.ls-electric.com/ko/product/view/P01187",
-    "source": "ko",
-    "business": "automation",
-    "discontinued": true,
-    "docs": []
-  },
-  {
-    "id": "P01189",
-    "name": "iP5A",
-    "categoryCode": "BBB005018",
-    "categoryPath": [
-      "저압드라이브",
-      "General"
-    ],
-    "url": "https://www.ls-electric.com/ko/product/view/P01189",
-    "source": "ko",
-    "business": "automation",
-    "discontinued": true,
-    "docs": []
-  },
-  {
     "id": "P01202",
     "name": "Drive Panel",
     "categoryCode": "BBB005014",
@@ -2433,20 +2391,6 @@
     "source": "ko",
     "business": "automation",
     "discontinued": false,
-    "docs": []
-  },
-  {
-    "id": "P01173",
-    "name": "XP 시리즈",
-    "categoryCode": "BBB003001",
-    "categoryPath": [
-      "HMI",
-      "XGT Panel"
-    ],
-    "url": "https://www.ls-electric.com/ko/product/view/P01173",
-    "source": "ko",
-    "business": "automation",
-    "discontinued": true,
     "docs": []
   },
   {

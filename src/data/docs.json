@@ -2110,11 +2110,6 @@
         }
       ]
     },
-    "P01173": {
-      "source": "ssq",
-      "deepLink": "https://ssq.ls-electric.com/kr/ko/product/category/176",
-      "docs": []
-    },
     "P01183": {
       "source": "ssq",
       "deepLink": "https://ssq.ls-electric.com/kr/ko/product/category/199",
@@ -2239,61 +2234,6 @@
         }
       ]
     },
-    "P01187": {
-      "source": "ssq",
-      "deepLink": "https://ssq.ls-electric.com/kr/ko/product/category/281",
-      "docs": [
-        {
-          "type": "manual",
-          "title": "iG5A Ethernet 옵션 모듈 통합 사용설명서",
-          "url": "https://ssq.ls-electric.com/uploads/document/16400714743670/IG5A_EtherNet_User%20Manual_Eng_Kor_V1.0_200609.pdf",
-          "lang": "etc",
-          "updatedAt": "2025-12-08"
-        },
-        {
-          "type": "manual",
-          "title": "iG5A 트러블슈팅(Troubleshooting) 사용설명서",
-          "url": "https://ssq.ls-electric.com/uploads/document/16399669168300/iG5A_Troubleshooting_Rev1.0_150415.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-08"
-        },
-        {
-          "type": "manual",
-          "title": "iG5A 엘리베이터 Door 전용화 사용설명서",
-          "url": "https://ssq.ls-electric.com/uploads/document/16399628729950/iG5A%20%EC%97%98%EB%A6%AC%EB%B2%A0%EC%9D%B4%ED%84%B0%20Door%20%EC%A0%84%EC%9A%A9%ED%99%94%20%EC%82%AC%EC%9A%A9%EC%84%A4%EB%AA%85%EC%84%9C_V2.2_090120.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-08"
-        },
-        {
-          "type": "catalog",
-          "title": "iG5A 카탈로그",
-          "url": "https://ssq.ls-electric.com/uploads/document/16389362915690/iG5A_%EC%B9%B4%EB%8B%AC%EB%A1%9C%EA%B7%B8_KR__34__210527.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-08"
-        },
-        {
-          "type": "catalog",
-          "title": "Drive Solution - 종합 카탈로그",
-          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17642013019120/Drive%20Solution_Catalog_KR_202507.pdf",
-          "lang": "ko",
-          "updatedAt": "2026-06-08"
-        },
-        {
-          "type": "catalog",
-          "title": "회생 제동 유닛 IRU-F 카탈로그",
-          "url": "https://ssq.ls-electric.com/uploads/document/16874872905220/iRU_K_161125.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-08"
-        },
-        {
-          "type": "datasheet",
-          "title": "Drive PCB Conformal Coating 자료",
-          "url": "https://ssq.ls-electric.com/uploads/document/17452884516550/LS%20ELECTRIC%20PCB%20Ass_y%20Conformal%20Coating_KR_250421.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-04-22"
-        }
-      ]
-    },
     "P01188": {
       "source": "ssq",
       "deepLink": "https://ssq.ls-electric.com/kr/ko/product/category/200",
@@ -2353,130 +2293,6 @@
           "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17642013019120/Drive%20Solution_Catalog_KR_202507.pdf",
           "lang": "ko",
           "updatedAt": "2026-06-08"
-        },
-        {
-          "type": "catalog",
-          "title": "HFS(고조파저감필터) 카탈로그",
-          "url": "https://ssq.ls-electric.com/uploads/document/16389359473220/HFS_%EA%B3%A0%EC%A1%B0%ED%8C%8C%EC%A0%80%EA%B0%90%ED%95%84%ED%84%B0__%EC%B9%B4%ED%83%88%EB%A1%9C%EA%B7%B8_KR_210217.pdf",
-          "lang": "ko",
-          "updatedAt": "2024-08-28"
-        }
-      ]
-    },
-    "P01189": {
-      "source": "ssq",
-      "deepLink": "https://ssq.ls-electric.com/kr/ko/product/category/2",
-      "docs": [
-        {
-          "type": "manual",
-          "title": "iP5A/iV5 RS485 Modbus RTU 통신 옵션 사용설명서",
-          "url": "https://ssq.ls-electric.com/uploads/document/16400729573330/iP5A_User%20Manual_RS485_Eng_Kor_V1.2_200701.pdf",
-          "lang": "etc",
-          "updatedAt": "2025-12-02"
-        },
-        {
-          "type": "manual",
-          "title": "iV5/iP5A RS485 Modbus RTU 통신 옵션 사용설명서",
-          "url": "https://ssq.ls-electric.com/uploads/document/16400545721240/iP5A%20iV5_RS485_MODBUS-RTU_User%20Manual_Kor_V1.0_200529.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-02"
-        },
-        {
-          "type": "manual",
-          "title": "iP5A, iV5 CC-Link 옵션 보드 사용설명서",
-          "url": "https://ssq.ls-electric.com/uploads/document/16399837402750/IP5A_IV5_CC-LINK%20%EA%B5%AD%EB%AC%B8%20%EC%98%B5%EC%85%98%20%EB%A7%A4%EB%89%B4%EC%96%BC.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-01"
-        },
-        {
-          "type": "catalog",
-          "title": "iP5A 카탈로그",
-          "url": "https://ssq.ls-electric.com/uploads/document/16388623292600/iP5A_%EC%B9%B4%ED%83%88%EB%A1%9C%EA%B7%B8_KR_190717.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-01"
-        },
-        {
-          "type": "catalog",
-          "title": "H100 카탈로그",
-          "url": "https://ssq.ls-electric.com/uploads/document/17936100709070/H100_KO_C55041-31-202611.pdf",
-          "lang": "ko",
-          "updatedAt": "2026-11-03"
-        },
-        {
-          "type": "catalog",
-          "title": "S300 카탈로그",
-          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17840729866150/S300_Catalog_KR_0707.pdf",
-          "lang": "ko",
-          "updatedAt": "2026-07-17"
-        },
-        {
-          "type": "datasheet",
-          "title": "G100C Datasheet 400V급 2.2kW (LSLV0022G100C-4EONN)",
-          "url": "https://ssq.ls-electric.com/uploads/document/17785465568970/Datasheet_LSLV0022G100C-4EONN_kr_%EC%88%98%EC%A0%95.pdf",
-          "lang": "ko",
-          "updatedAt": "2026-05-12"
-        },
-        {
-          "type": "datasheet",
-          "title": "G100 Datasheet 200V급 22kW (LSLV0220G100-2EONN)",
-          "url": "https://ssq.ls-electric.com/uploads/document/17709479676580/Datasheet_LSLV0220G100-2EONN_KR.pdf",
-          "lang": "ko",
-          "updatedAt": "2026-02-13"
-        },
-        {
-          "type": "datasheet",
-          "title": "G100 Datasheet 200V급 18.5kW (LSLV0185G100-2EONN)",
-          "url": "https://ssq.ls-electric.com/uploads/document/17709479072300/Datasheet_LSLV0185G100-2EONN_KR.pdf",
-          "lang": "ko",
-          "updatedAt": "2026-02-13"
-        }
-      ]
-    },
-    "P01190": {
-      "source": "ssq",
-      "deepLink": "https://ssq.ls-electric.com/kr/ko/product/category/201",
-      "docs": [
-        {
-          "type": "manual",
-          "title": "iV5 뉴제어기 사용설명서",
-          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17344221865000/iV5_User_Manual_Kor_V1.1_220615.pdf",
-          "lang": "ko",
-          "updatedAt": "2026-10-29"
-        },
-        {
-          "type": "manual",
-          "title": "iV5 CC-Link 옵션 보드 사용설명서",
-          "url": "https://ssq.ls-electric.com/uploads/document/16399867485860/iP5A_iV5_CC-LINK_User%20Manual_V1.0_200619.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-02"
-        },
-        {
-          "type": "manual",
-          "title": "iV5 동기 옵션 보드 사용설명서",
-          "url": "https://ssq.ls-electric.com/uploads/document/16400555777210/iV5%20SYNC_IO_User%20Manual_Kor_V1.0_200716.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-02"
-        },
-        {
-          "type": "catalog",
-          "title": "iV5 카탈로그",
-          "url": "https://ssq.ls-electric.com/uploads/document/16388646220110/iV5_Catalog_KR__27__200508.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-12-01"
-        },
-        {
-          "type": "catalog",
-          "title": "Drive Solution - 종합 카탈로그",
-          "url": "https://ssqfd-abhdhraad3gkgbcg.a03.azurefd.net/prod/largefile/document/17642013019120/Drive%20Solution_Catalog_KR_202507.pdf",
-          "lang": "ko",
-          "updatedAt": "2026-06-08"
-        },
-        {
-          "type": "datasheet",
-          "title": "Drive PCB Conformal Coating 자료",
-          "url": "https://ssq.ls-electric.com/uploads/document/17452884516550/LS%20ELECTRIC%20PCB%20Ass_y%20Conformal%20Coating_KR_250421.pdf",
-          "lang": "ko",
-          "updatedAt": "2025-04-22"
         },
         {
           "type": "catalog",

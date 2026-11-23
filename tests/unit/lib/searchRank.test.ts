@@ -111,8 +111,8 @@ describe('제품 출처 (국문·영문·SSQ)', () => {
     expect(ps.some((p) => p.source === 'en')).toBe(true);
     expect(ps.some((p) => p.source === 'ssq')).toBe(true);
   });
-  it('일람표(비제품)는 제품에서 제외, 사이트 단종 4건은 discontinued', () => {
+  it('일람표(비제품)는 제품에서 제외, 사이트 단종 제품(iV5·iG5A·iP5A·XP 시리즈·GIMAC-i)은 삭제됨 (2026-11-23 재검수)', () => {
     expect(ps.some((p) => p.name.includes('일람표'))).toBe(false);
-    for (const id of ['P01190', 'P01187', 'P01189', 'P01173']) expect(getData().productById.get(id)?.discontinued, id).toBe(true);
+    for (const id of ['P01190', 'P01187', 'P01189', 'P01173', 'EN-P00062']) expect(getData().productById.has(id), id).toBe(false);
   });
 });

@@ -29,6 +29,7 @@ import PageHeader from '../components/common/PageHeader';
 import type { SpecsMap } from '../data/load';
 import './pages.css';
 import './ProductsPage.css';
+import { equipmentPhotoIsOf } from '../components/pages/ProductVisual';
 
 const PAGE_SIZE = 48;
 
@@ -63,7 +64,8 @@ function FacetGroup({ title, facet, options, selected, counts, onToggle }: Facet
 
 function ProductCard({ row, specs }: { row: ProductRow; specs?: SpecsMap }) {
   const p = row.product;
-  const img = productImageUrl(p.id, true) ?? (row.equipment[0] ? equipmentThumbUrl(row.equipment[0].id) : undefined);
+  // 다른 제품 사진으로 대체하지 않는다 — 기기 대표 사진이 이 제품 것일 때만 (2026-11-23)
+  const img = productImageUrl(p.id, true) ?? (equipmentPhotoIsOf(row.equipment[0]?.id, p.id) ? equipmentThumbUrl(row.equipment[0].id) : undefined);
   const sp = specs?.get(p.id);
   const items = (sp?.items ?? []).slice(0, 3);
   const catalog = docsByProductId(p.id)?.docs.find((d) => d.type === 'catalog');
