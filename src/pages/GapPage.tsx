@@ -1,339 +1,378 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LAYER_LABELS, type Coverage, type EquipmentCategory, type Layer } from '../lib/schema';
+import growthJson from '../data/market-growth.json';
+import { LAYERS, LAYER_LABELS, type Coverage, type EquipmentType, type Layer } from '../lib/schema';
 import { useData } from '../data/load';
 import { announce } from '../lib/announce';
 import CoverageBadge from '../components/common/CoverageBadge';
-import Button, { ButtonLink, DIAGRAM_CTA_LABEL } from '../components/common/Button';
-import { Count, FilterChip } from '../components/common/Badge';
-import PageHeader, { jumpState } from '../components/common/PageHeader';
-import {
-  CATEGORY_LABELS,
-  CATEGORY_ORDER,
-  COVERAGE_ICONS,
-  COVERAGE_LABELS,
-  COVERAGE_ORDER,
-  COVERAGE_SHORT_LABELS,
-  GAP_LIST_COVERAGES,
-  isMainLayer,
-  pageTitle,
-  todayIso,
-} from '../lib/labels';
-import {
-  buildGapCsv,
-  buildMatrix,
-  countCoverage,
-  diagramHref,
-  downloadText,
-  gapMemo,
-  nodeForEquipment,
-  ownedRate,
-} from '../lib/pages/catalog';
-import GapMatrix from '../components/market/GapMatrix';
+import { ButtonLink } from '../components/common/Button';
+import { FilterChip } from '../components/common/Badge';
+import PageHeader from '../components/common/PageHeader';
+import { CATEGORY_LABELS, CATEGORY_ORDER, COVERAGE_LABELS, COVERAGE_ORDER, COVERAGE_SHORT_LABELS, isMainLayer, pageTitle, todayIso } from '../lib/labels';
+import { buildGapCsv, buildMatrix, countCoverage, diagramHref, downloadText, gapMemo, nodeForEquipment, ownedRate } from '../lib/pages/catalog';
+import { GROWTH_LABELS, GROWTH_SYMBOLS, MarketGrowthSchema, growthByEquipment } from '../lib/market/annual';
 import './pages.css';
 import './GapPage.css';
 
-type StatusFilter = 'all' | Coverage;
-interface CellSel {
-  layer: Layer;
-  category: EquipmentCategory;
-}
+/**
+ * 라인업 현황 (/gap) — 2026-11-23 전면 재설계 (사용자: "어떤 구조인지 알아볼 수 없음, 너무 어렵게 표현됨").
+ * 화면이 세 질문에 위에서부터 답한다:
+ *  ① 얼마나 갖췄나 — 요약 카드 4개 (보유율 · 보완 필요 · 다른 방식으로 공급 · 개발 중)
+ *  ② 어느 단계가 비었나 — 계층별 가로 막대 (누르면 아래 목록이 그 계층만)
+ *  ③ 무엇을 먼저 볼까 — 보완 대상 기기를 '우선 검토(시장 증가 + 자사 없음) / 검토 / 다른 방식으로 공급 / 개발 중'으로 묶은 목록
+ * 예전 "보유 현황표(계층×기능)"는 맨 아래 접힌 상세표로, "보완 매트릭스(성장×보유)"는 ③의 묶음·'시장 증가' 표시로 녹였다.
+ */
 
-/** 목록 정렬: 계층 순 → 미보유·일부·계열사·패널 구성품·보유·해당없음 */
-const LIST_COVERAGE_RANK: Record<Coverage, number> = { missing: 0, partial: 1, affiliate: 2, sourced: 3, developing: 4, owned: 5, na: 6 };
-/** 필터 버튼 라벨: 정식 라벨에서 "미보유(공백)" 만 짧게 */
-const FILTER_LABELS: Record<Coverage, string> = { ...COVERAGE_LABELS, missing: COVERAGE_SHORT_LABELS.missing };
+const GROWTH = MarketGrowthSchema.parse(growthJson);
+
+type Filter = 'all' | 'missing' | 'partial' | 'affiliate' | 'sourced' | 'developing';
+const LIST_COVERAGES: readonly Coverage[] = ['missing', 'partial', 'affiliate', 'sourced', 'developing'];
+const FILTERS: Filter[] = ['all', 'missing', 'partial', 'affiliate', 'sourced', 'developing'];
+const FILTER_LABELS: Record<Filter, string> = {
+  all: '전체',
+  missing: COVERAGE_SHORT_LABELS.missing,
+  partial: COVERAGE_LABELS.partial,
+  affiliate: COVERAGE_LABELS.affiliate,
+  sourced: COVERAGE_SHORT_LABELS.sourced,
+  developing: COVERAGE_LABELS.developing,
+};
+
+/** 막대 조각 순서·색 — 보유(초록) → 개발 중 → 다른 방식으로 공급 → 일부 → 미보유(빨강) */
+const SEGMENTS: { key: string; label: string; covs: Coverage[] }[] = [
+  { key: 'owned', label: '보유', covs: ['owned'] },
+  { key: 'developing', label: '개발 중', covs: ['developing'] },
+  { key: 'other', label: '계열사·패널 구성품', covs: ['affiliate', 'sourced'] },
+  { key: 'partial', label: '일부 보유', covs: ['partial'] },
+  { key: 'missing', label: '미보유', covs: ['missing'] },
+];
+
+interface Group {
+  id: 'priority' | 'review' | 'other' | 'developing';
+  title: string;
+  desc: string;
+  items: EquipmentType[];
+}
 
 export default function GapPage() {
   const data = useData();
   const equipment = data.equipmentTypes;
-  const layerOrder = useMemo(() => new Map(data.diagram.layers.map((l, i) => [l.id, i])), [data]);
+  const growth = useMemo(() => growthByEquipment(GROWTH), []);
   const layerVoltage = useMemo(() => new Map(data.diagram.layers.map((l) => [l.id, l.voltage])), [data]);
-  const matrix = useMemo(() => buildMatrix(equipment), [equipment]);
   const totals = useMemo(() => countCoverage(equipment), [equipment]);
   const rate = ownedRate(totals);
-
-  // 기본 필터 = 전체 (디자인 승인안·리더 결정, FT-26): 첫 화면 목록 = 미보유·일부·계열사·패널 구성품 전체
-  const [status, setStatus] = useState<StatusFilter>('all');
-  const [cell, setCell] = useState<CellSel | null>(null);
+  const [filter, setFilter] = useState<Filter>('all');
+  const [layer, setLayer] = useState<Layer | null>(null);
   const listRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     document.title = pageTitle('라인업 현황');
   }, []);
 
-  /** 칸 선택 시: 그 칸의 모든 기기 / 아니면: 미보유·일부·계열사·패널 구성품 (GAP_LIST_COVERAGES) */
-  const scope = useMemo(() => {
-    const base = cell
-      ? equipment.filter((e) => e.layer === cell.layer && e.category === cell.category)
-      : equipment.filter((e) => GAP_LIST_COVERAGES.includes(e.coverage));
-    return [...base].sort(
-      (a, b) =>
-        (layerOrder.get(a.layer) ?? 0) - (layerOrder.get(b.layer) ?? 0) ||
-        LIST_COVERAGE_RANK[a.coverage] - LIST_COVERAGE_RANK[b.coverage],
-    );
-  }, [equipment, cell, layerOrder]);
-  const scopeCounts = countCoverage(scope);
-  const chipCoverages = cell ? COVERAGE_ORDER.filter((c) => scopeCounts[c] > 0) : GAP_LIST_COVERAGES;
-  const visible = status === 'all' ? scope : scope.filter((e) => e.coverage === status);
-  const listTitle = cell ? `${cell.layer} · ${CATEGORY_LABELS[cell.category]} 기기` : '보완 필요 목록';
-
-  // 필터·칸 선택 결과를 스크린리더에 알림 (B10 — 앱 공용 live region). 첫 화면은 알리지 않음
-  const filterKey = `${status}|${cell?.layer ?? ''}|${cell?.category ?? ''}`;
-  const lastKey = useRef(filterKey);
-  useEffect(() => {
-    if (lastKey.current === filterKey) return;
-    lastKey.current = filterKey;
-    const filter = status === 'all' ? '' : ` · ${FILTER_LABELS[status]}`;
-    announce(`${listTitle}${filter} — ${visible.length}종`);
-  }, [filterKey]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const selectCell = (sel: CellSel) => {
-    const same = cell && cell.layer === sel.layer && cell.category === sel.category;
-    setCell(same ? null : sel);
-    setStatus('all');
-    if (!same) {
-      const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-      requestAnimationFrame(() => listRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }));
-    }
+  const isUp = (e: EquipmentType) => {
+    const d = growth.get(e.id)?.direction;
+    return d === 'up' || d === 'up2';
   };
 
-  const clearCell = () => {
-    setCell(null);
-    setStatus('all');
+  // ② 계층별 현황 (해당 없음은 분모에서 뺌)
+  const layers = useMemo(
+    () =>
+      LAYERS.map((l) => {
+        const items = equipment.filter((e) => e.layer === l);
+        const c = countCoverage(items);
+        const total = items.length - c.na;
+        return { id: l, total, owned: c.owned, gaps: c.missing + c.partial, counts: c };
+      }).filter((r) => r.total > 0),
+    [equipment],
+  );
+
+  // ③ 목록 — 계층·상태 필터
+  const scoped = equipment.filter((e) => LIST_COVERAGES.includes(e.coverage) && (!layer || e.layer === layer));
+  const visible = filter === 'all' ? scoped : scoped.filter((e) => e.coverage === filter);
+  const order = (a: EquipmentType, b: EquipmentType) => LAYERS.indexOf(a.layer) - LAYERS.indexOf(b.layer);
+  const groups: Group[] = [
+    {
+      id: 'priority',
+      title: '우선 검토',
+      desc: '정부 계획상 시장이 커지는데 자사 제품이 없거나 일부만 있는 기기',
+      items: visible.filter((e) => (e.coverage === 'missing' || e.coverage === 'partial') && isUp(e)).sort(order),
+    },
+    {
+      id: 'review',
+      title: '검토',
+      desc: '자사 제품이 없거나 일부만 있는 기기 (시장 성장 근거는 아직 없음)',
+      items: visible.filter((e) => (e.coverage === 'missing' || e.coverage === 'partial') && !isUp(e)).sort(order),
+    },
+    {
+      id: 'other',
+      title: '다른 방식으로 공급',
+      desc: '계열사 제품이나 수배전반 구성품(타사 조달)으로 공급하는 기기',
+      items: visible.filter((e) => e.coverage === 'affiliate' || e.coverage === 'sourced').sort(order),
+    },
+    {
+      id: 'developing',
+      title: '개발 중',
+      desc: '자사에서 개발하고 있는 기기',
+      items: visible.filter((e) => e.coverage === 'developing').sort(order),
+    },
+  ];
+
+  // 필터 결과를 화면낭독기에 알림 (첫 화면 제외)
+  const key = `${filter}|${layer ?? ''}`;
+  const lastKey = useRef(key);
+  useEffect(() => {
+    if (lastKey.current === key) return;
+    lastKey.current = key;
+    const f = filter === 'all' ? '' : ` · ${FILTER_LABELS[filter]}`;
+    const l = layer ? ` · ${layer}` : '';
+    announce(`보완 필요 목록${f}${l} — ${visible.length}종`);
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const pickLayer = (l: Layer) => {
+    setLayer((cur) => (cur === l ? null : l));
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    requestAnimationFrame(() => listRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }));
+  };
+  const pickFilter = (f: Filter) => {
+    setFilter(f);
+    if (f !== 'all') requestAnimationFrame(() => listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   };
 
   const exportCsv = () => {
     const csv = buildGapCsv(visible, (c) => COVERAGE_LABELS[c], (l) => LAYER_LABELS[l]);
-    const stamp = todayIso().replace(/-/g, '');
-    downloadText(`lse-gap-list-${stamp}.csv`, csv);
+    downloadText(`lse-lineup-${todayIso().replace(/-/g, '')}.csv`, csv);
   };
+
+  const gapCount = totals.missing + totals.partial;
+  const otherCount = totals.affiliate + totals.sourced;
 
   return (
     <div className="pg pg--wide" data-testid="gap-page">
       <PageHeader
-        crumbs={[{ label: '계통도', to: diagramHref(undefined, 'gap') }, { label: '라인업 현황' }]}
+        crumbs={[{ label: '계통도', to: '/' }, { label: '라인업 현황' }]}
         title="라인업 현황"
-        lead="전압 계층 × 기기 기능별로 자사 제품 보유 현황을 봅니다. 칸을 누르면 해당 기기 목록이, 계층 이름을 누르면 계통도의 그 계층이 열립니다."
-        actions={
-        <dl className="gp-stats">
-          <div className="gp-stat gp-stat--owned">
-            <dt>
-              보유율 {rate.owned}/{rate.total}
-              {totals.na > 0 && (
-                <span className="gp-stat__excl" data-testid="gap-na-excluded">
-                  {' '}
-                  · 해당 없음 {totals.na}종 제외
-                </span>
-              )}
-              {/* 계통도 사이드바(계통별)와 숫자가 다른 이유를 밝힘 (2026-11-23 UX 토론 P0) */}
-              <span className="gp-stat__basis" data-testid="gap-basis">
-                전체 기기 기준 (데이터센터 포함)
-              </span>
-            </dt>
-            <dd>{rate.pct}%</dd>
-          </div>
-          <div className="gp-stat gp-stat--missing">
-            <dt>미보유</dt>
-            <dd>{totals.missing}</dd>
-          </div>
-          <div className="gp-stat gp-stat--partial">
-            <dt>일부 보유</dt>
-            <dd>{totals.partial}</dd>
-          </div>
-          <div className="gp-stat gp-stat--affiliate">
-            <dt>계열사 보유</dt>
-            <dd>{totals.affiliate}</dd>
-          </div>
-          <div className="gp-stat gp-stat--sourced" data-testid="gap-stat-sourced">
-            <dt>패널 구성품</dt>
-            <dd>{totals.sourced}</dd>
-          </div>
-        </dl>
-        }
+        lead="LS ELECTRIC 제품으로 전력계통 기기를 얼마나 갖췄는지, 무엇을 보완해야 하는지 봅니다."
       />
 
-      <section className="pg-card gp-card" aria-labelledby="mx-h">
-        <div className="gp-card__head">
-          <h2 id="mx-h">보유 현황표</h2>
-          <span className="gp-legend">
-            {COVERAGE_ORDER.map((c) => `${COVERAGE_ICONS[c]} ${COVERAGE_SHORT_LABELS[c]}`).join(' · ')} · 숫자 = 기기 종류 수
-          </span>
+      {/* ① 한눈에 */}
+      <section className="gx-kpis" aria-label="한눈에 보기">
+        <div className="gx-kpi gx-kpi--owned">
+          <p className="gx-kpi__label">보유율</p>
+          <p className="gx-kpi__num">
+            {rate.pct}
+            <small>%</small>
+          </p>
+          <p className="gx-kpi__sub">
+            {rate.total}종 중 {rate.owned}종 보유
+          </p>
+          <p className="gx-kpi__basis" data-testid="gap-basis">
+            전체 기기 기준 (데이터센터 포함){totals.na > 0 && <span data-testid="gap-na-excluded"> · 해당 없음 {totals.na}종 제외</span>}
+          </p>
         </div>
-        <div className="gp-scroll" tabIndex={0} role="region" aria-label="보유 현황표 (가로 스크롤)">
-          <table className="gp-matrix" data-testid="gap-matrix">
-            <thead>
-              <tr>
-                <th scope="col" className="gp-matrix__rowhead">
-                  계층
-                </th>
-                {CATEGORY_ORDER.map((c) => (
-                  <th key={c} scope="col">
-                    {CATEGORY_LABELS[c]}
-                  </th>
-                ))}
-                <th scope="col">보유율</th>
-              </tr>
-            </thead>
-            <tbody>
-              {matrix.map((row) => {
-                const r = ownedRate(row.counts);
-                const full = r.total > 0 && r.owned === r.total;
-                return (
-                  <tr key={row.layer} data-layer={row.layer}>
-                    <th scope="row" className="gp-matrix__rowhead">
-                      {/* 계층 이름 = 계통도의 그 계층 밴드로 이동 (디자인 토론 P1 공백 표 진입) */}
-                      <Link
-                        to="/"
-                        state={jumpState(row.layer)}
-                        className="gp-layer-link"
-                        data-testid={`gap-row-jump-${row.layer}`}
-                        title="계통도에서 이 계층 보기"
-                      >
-                        {isMainLayer(row.layer) && <b>{row.layer}</b>} {LAYER_LABELS[row.layer]}
-                        {layerVoltage.get(row.layer) && isMainLayer(row.layer) && (
-                          <span className="gp-matrix__volt"> {layerVoltage.get(row.layer)}</span>
-                        )}
-                        <span className="visually-hidden"> — 계통도에서 보기</span>
-                      </Link>
-                    </th>
-                    {CATEGORY_ORDER.map((cat) => {
-                      const items = row.cells[cat];
-                      if (items.length === 0)
-                        return (
-                          // 빈칸은 점 없이 비워 둔다 — '·'이 많아 시선이 흩어졌음 (2026-11-23 UX 토론)
-                          <td key={cat} className="gp-matrix__empty">
-                            <span className="visually-hidden">없음</span>
-                          </td>
-                        );
-                      const counts = countCoverage(items);
-                      const selected = cell?.layer === row.layer && cell.category === cat;
-                      const present = COVERAGE_ORDER.filter((c) => counts[c] > 0);
-                      // 화면에 보이는 숫자로 시작 (WCAG 2.5.3, 리뷰 R5) — 예: "2 1 · L4 보호: 보유 2, 미보유 1"
-                      const label = `${present.map((c) => counts[c]).join(' ')} · ${row.layer} ${CATEGORY_LABELS[cat]}: ${present
-                        .map((c) => `${COVERAGE_LABELS[c]} ${counts[c]}`)
-                        .join(', ')}`;
-                      return (
-                        <td key={cat}>
-                          <button
-                            type="button"
-                            className="gp-cell"
-                            aria-pressed={selected}
-                            aria-label={label}
-                            title={items.map((e) => e.name).join(', ')}
-                            data-testid={`gap-cell-${row.layer}-${cat}`}
-                            onClick={() => selectCell({ layer: row.layer, category: cat })}
-                          >
-                            {COVERAGE_ORDER.filter((c) => counts[c] > 0).map((c) => (
-                              <CoverageBadge key={c} coverage={c} variant="chip" label={counts[c]} decorative />
-                            ))}
-                          </button>
-                        </td>
-                      );
-                    })}
-                    <td className={`gp-matrix__rate${full ? ' gp-matrix__rate--full' : ''}`}>
-                      {/* 보유율 막대 — 계층별 차이가 한눈에 (2026-11-23 UX 토론). 숫자가 정보, 막대는 보조 */}
-                      <span className="gp-rate">
-                        <span className="gp-rate__bar" aria-hidden="true">
-                          <span style={{ width: `${r.pct}%` }} />
-                        </span>
-                        {r.owned}/{r.total}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <button type="button" className="gx-kpi gx-kpi--gap" onClick={() => pickFilter('all')} data-testid="gap-kpi-gaps">
+          <span className="gx-kpi__label">보완 필요</span>
+          <span className="gx-kpi__num">
+            {gapCount}
+            <small>종</small>
+          </span>
+          <span className="gx-kpi__sub">
+            미보유 {totals.missing} · 일부 보유 {totals.partial}
+          </span>
+        </button>
+        <div className="gx-kpi gx-kpi--other">
+          <p className="gx-kpi__label">다른 방식으로 공급</p>
+          <p className="gx-kpi__num">
+            {otherCount}
+            <small>종</small>
+          </p>
+          <p className="gx-kpi__sub">
+            계열사 {totals.affiliate} · 패널 구성품 {totals.sourced}
+          </p>
+        </div>
+        <div className="gx-kpi gx-kpi--dev">
+          <p className="gx-kpi__label">개발 중</p>
+          <p className="gx-kpi__num">
+            {totals.developing}
+            <small>종</small>
+          </p>
+          <p className="gx-kpi__sub">자사 개발 진행</p>
         </div>
       </section>
 
-      <section className="pg-card gp-card" aria-labelledby="list-h" ref={listRef}>
-        <div className="gp-card__head">
-          <h2 id="list-h">
-            {listTitle} <Count>· {visible.length}종</Count>
-          </h2>
-          {cell && (
-            <Button variant="ghost" size="sm" onClick={clearCell}>
-              칸 선택 해제 ✕
-            </Button>
-          )}
-          <div className="gp-filters" role="group" aria-label="상태 필터">
-            <FilterChip pressed={status === 'all'} testId="gap-filter-all" onClick={() => setStatus('all')}>
-              전체 <Count>{scope.length}</Count>
-            </FilterChip>
-            {chipCoverages.map((c) => (
-              <FilterChip key={c} pressed={status === c} testId={`gap-filter-${c}`} onClick={() => setStatus(c)}>
-                {FILTER_LABELS[c]} <Count>{scopeCounts[c]}</Count>
-              </FilterChip>
-            ))}
-          </div>
-          <Button size="sm" className="gp-csv" onClick={exportCsv} disabled={visible.length === 0}>
-            CSV 내보내기
-          </Button>
+      {/* ② 계층별 */}
+      <section className="pg-card gx-card" aria-labelledby="gx-layers-h" data-testid="gap-matrix">
+        <div className="gx-card__head">
+          <h2 id="gx-layers-h">계층별 보유 현황</h2>
+          <p className="gx-card__hint">막대를 누르면 아래 목록이 그 계층만 보입니다.</p>
         </div>
-        <div className="gp-scroll" tabIndex={0} role="region" aria-label="보완 필요 목록 (가로 스크롤)">
-          <table className="gp-list" data-testid="gap-list">
-            <thead>
-              <tr>
-                <th scope="col">상태</th>
-                <th scope="col">계층</th>
-                <th scope="col">기기</th>
-                <th scope="col">메모</th>
-                <th scope="col">
-                  <span className="visually-hidden">이동</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {visible.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="pg-muted">
-                    이 조건에 해당하는 기기가 없습니다.
-                  </td>
-                </tr>
-              ) : (
-                visible.map((eq) => {
-                  const node = nodeForEquipment(eq.id);
-                  return (
-                    <tr key={eq.id} data-testid={`gap-item-${eq.id}`} data-coverage={eq.coverage}>
-                      <td>
-                        <CoverageBadge coverage={eq.coverage} variant="chip" label={COVERAGE_SHORT_LABELS[eq.coverage]} />
-                      </td>
-                      <td>
-                        <Link to="/" state={jumpState(eq.layer)} className="gp-layer-link" title="계통도에서 이 계층 보기">
-                          {eq.layer}
-                          <span className="visually-hidden"> {LAYER_LABELS[eq.layer]} — 계통도에서 보기</span>
-                        </Link>
-                      </td>
-                      <td>
-                        <Link to={`/equipment/${eq.id}`} className="gp-list__eq">
-                          <b>{eq.name}</b>
-                        </Link>
-                        {eq.abbr && <span className="gp-list__abbr"> {eq.abbr}</span>}
-                      </td>
-                      <td className="gp-list__memo">{gapMemo(eq)}</td>
-                      <td className="gp-list__go">
+        <ul className="gx-legend" aria-label="막대 색 설명">
+          {SEGMENTS.map((s) => (
+            <li key={s.key}>
+              <span className={`gx-sw gx-seg--${s.key}`} aria-hidden="true" /> {s.label}
+            </li>
+          ))}
+        </ul>
+        <ul className="gx-layers">
+          {layers.map((r) => (
+            <li key={r.id}>
+              <button
+                type="button"
+                className="gx-layer"
+                aria-pressed={layer === r.id}
+                onClick={() => pickLayer(r.id)}
+                data-testid={`gap-layer-${r.id}`}
+              >
+                <span className="gx-layer__name">
+                  {isMainLayer(r.id) && <b>{r.id}</b>} {LAYER_LABELS[r.id]}
+                  {isMainLayer(r.id) && layerVoltage.get(r.id) && <small> {layerVoltage.get(r.id)}</small>}
+                </span>
+                <span className="gx-bar" aria-hidden="true">
+                  {SEGMENTS.map((s) => {
+                    const n = s.covs.reduce((a, c) => a + r.counts[c], 0);
+                    return n > 0 ? <span key={s.key} className={`gx-seg gx-seg--${s.key}`} style={{ flexGrow: n }} title={`${s.label} ${n}`} /> : null;
+                  })}
+                </span>
+                <span className="gx-layer__num">
+                  보유 <b>{r.owned}</b>/{r.total}
+                </span>
+                <span className={`gx-layer__gap${r.gaps > 0 ? ' has-gap' : ''}`}>{r.gaps > 0 ? `보완 ${r.gaps}` : '보완 없음'}</span>
+                <span className="visually-hidden">
+                  {' '}
+                  — {SEGMENTS.map((s) => `${s.label} ${s.covs.reduce((a, c) => a + r.counts[c], 0)}`).join(', ')}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ③ 무엇을 볼까 */}
+      <section className="pg-card gx-card" aria-labelledby="gx-list-h" ref={listRef}>
+        <div className="gx-card__head">
+          <h2 id="gx-list-h">
+            보완 대상 기기 <span className="gx-count">{visible.length}종</span>
+          </h2>
+          <button type="button" className="gx-csv" onClick={exportCsv}>
+            CSV 내보내기
+          </button>
+        </div>
+        <div className="gx-filters" role="group" aria-label="상태로 거르기">
+          {FILTERS.map((f) => {
+            const n = f === 'all' ? scoped.length : scoped.filter((e) => e.coverage === f).length;
+            if (f !== 'all' && n === 0) return null;
+            return (
+              <FilterChip key={f} pressed={filter === f} testId={`gap-filter-${f}`} onClick={() => pickFilter(f)}>
+                {FILTER_LABELS[f]} {n}
+              </FilterChip>
+            );
+          })}
+          {layer && (
+            <button type="button" className="gx-layer-chip" onClick={() => setLayer(null)} data-testid="gap-layer-clear">
+              {layer} {LAYER_LABELS[layer]}만 <span aria-hidden="true">✕</span>
+              <span className="visually-hidden"> 계층 거르기 해제</span>
+            </button>
+          )}
+        </div>
+
+        <div className="gx-groups" data-testid="gap-list">
+          {groups
+            .filter((g) => g.items.length > 0)
+            .map((g) => (
+              <section key={g.id} className={`gx-group gx-group--${g.id}`} aria-labelledby={`gx-g-${g.id}`}>
+                <h3 id={`gx-g-${g.id}`} className="gx-group__title">
+                  {g.title} <span className="gx-count">{g.items.length}</span>
+                </h3>
+                <p className="gx-group__desc">{g.desc}</p>
+                <ul className="gx-items">
+                  {g.items.map((e) => {
+                    const node = nodeForEquipment(e.id);
+                    const gr = growth.get(e.id);
+                    const memo = gapMemo(e);
+                    return (
+                      <li key={e.id} className="gx-item" data-testid={`gap-item-${e.id}`} data-coverage={e.coverage}>
+                        <CoverageBadge coverage={e.coverage} variant="chip" label={COVERAGE_SHORT_LABELS[e.coverage]} />
+                        <div className="gx-item__body">
+                          <p className="gx-item__name">
+                            <Link to={`/equipment/${e.id}`}>{e.name}</Link>
+                            {e.abbr && <span className="gx-item__abbr"> {e.abbr}</span>}
+                            <span className="gx-item__layer">{isMainLayer(e.layer) ? e.layer : LAYER_LABELS[e.layer]}</span>
+                            {gr && (gr.direction === 'up' || gr.direction === 'up2') && (
+                              <span className="gx-item__growth" title={gr.reason}>
+                                시장 {GROWTH_SYMBOLS[gr.direction]} {GROWTH_LABELS[gr.direction]}
+                              </span>
+                            )}
+                          </p>
+                          {memo && <p className="gx-item__memo">{memo}</p>}
+                        </div>
                         {node && (
-                          <ButtonLink variant="ghost" size="sm" to={diagramHref(node.id, 'gap')}>
-                            {DIAGRAM_CTA_LABEL}
-                            <span className="visually-hidden"> — {eq.name}</span>
+                          <ButtonLink variant="ghost" size="sm" to={diagramHref(node.id)}>
+                            계통도에서 보기
                           </ButtonLink>
                         )}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ))}
+          {visible.length === 0 && <p className="gx-empty">조건에 맞는 기기가 없습니다.</p>}
         </div>
       </section>
-      {/* 전력시장 연계 (10인 토론 P1): 성장 방향 × 보유 매트릭스. 연간 전력시장 지표는 별도 화면(/market, 계통도 도구줄 '시장 지표')으로 옮김 */}
-      <GapMatrix />
-      <p className="gp-market-link">
-        연간 전력시장 지표(전력소비·설비용량·전원믹스 등)는 <Link to="/market">전력시장 지표 화면</Link>으로 옮겼습니다.
-      </p>
+
+      {/* 자세히: 계층 × 기능 표 (예전 보유 현황표) */}
+      <details className="pg-card gx-card gx-detail">
+        <summary>
+          <h2 className="gx-detail__title">자세히 보기: 계층 × 기능 표</h2>
+          <span className="gx-card__hint">기기 기능(개폐·보호·변성…)별로 나눠 본 표입니다.</span>
+        </summary>
+        <DetailTable equipment={equipment} />
+      </details>
+    </div>
+  );
+}
+
+/** 계층 × 기능 표 — 칸마다 상태별 개수 칩 (마우스를 올리면 기기 이름) */
+function DetailTable({ equipment }: { equipment: EquipmentType[] }) {
+  const matrix = useMemo(() => buildMatrix(equipment), [equipment]);
+  const cats = CATEGORY_ORDER.filter((c) => matrix.some((r) => r.cells[c].length > 0));
+  return (
+    <div className="gx-scroll" tabIndex={0} role="region" aria-label="계층 × 기능 표 (가로 스크롤)">
+      <table className="gx-table">
+        <thead>
+          <tr>
+            <th scope="col">계층</th>
+            {cats.map((c) => (
+              <th key={c} scope="col">
+                {CATEGORY_LABELS[c]}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {matrix
+            .filter((r) => cats.some((c) => r.cells[c].length > 0))
+            .map((r) => (
+              <tr key={r.layer}>
+                <th scope="row">
+                  {isMainLayer(r.layer) && <b>{r.layer}</b>} {LAYER_LABELS[r.layer]}
+                </th>
+                {cats.map((c) => {
+                  const items = r.cells[c];
+                  if (items.length === 0) return <td key={c} />;
+                  const counts = countCoverage(items);
+                  return (
+                    <td key={c} title={items.map((e) => e.name).join(', ')}>
+                      <span className="gx-cell">
+                        {COVERAGE_ORDER.filter((k) => counts[k] > 0).map((k) => (
+                          <CoverageBadge key={k} coverage={k} variant="chip" label={counts[k]} />
+                        ))}
+                      </span>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -360,7 +360,8 @@ test.describe('E2E-3 기획 Gap 확인', () => {
     // 리더 결정(v0.4): 승인 디자인(GapTable.dc.html) 대로 첫 화면 필터는 "전체"
     // v0.6 R3: 공백류 = missing·partial·affiliate·sourced (gapAssessment 필수 범위와 같음)
     const count = (c: Coverage) => equipment.filter((e) => e.coverage === c).length;
-    const gapTotal = count('missing') + count('partial') + count('affiliate') + count('sourced');
+    // 2026-11-23 재설계: 개발 중도 목록('개발 중' 묶음)에 포함
+    const gapTotal = count('missing') + count('partial') + count('affiliate') + count('sourced') + count('developing');
     await page.goto('./#/gap');
     await expect(tid(page, 'gap-page')).toBeVisible();
     await expect(tid(page, 'gap-matrix')).toBeVisible();

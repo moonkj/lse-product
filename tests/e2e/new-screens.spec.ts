@@ -241,7 +241,7 @@ test.describe('UX 1차 묶음 (2026-11-23)', () => {
     await expect(tid(page, 'diagram-review-badge')).toContainText('초안');
     await page.goto('./#/gap');
     await expect(tid(page, 'gap-basis')).toContainText('전체 기기 기준');
-    await expect(page.getByRole('heading', { name: '보유 현황표' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '계층별 보유 현황' })).toBeVisible();
   });
 
   test('단계별도 계통 선택을 따름: 데이터센터 = 수전·변환 / 배전 / 부하, 카드 수 = 표시 숫자', async ({ page }) => {
@@ -332,11 +332,7 @@ test.describe('UX 3차 묶음 (2026-11-23)', () => {
     await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/ux/b3-m-map.png' });
   });
 
-  test('보유 현황표: 빈칸에 점 없음, 보유율 막대', async ({ page }) => {
-    await page.goto('./#/gap');
-    await expect(page.locator('.gp-matrix__empty').first()).not.toContainText('·');
-    await expect(page.locator('.gp-rate__bar').first()).toBeVisible();
-  });
+  // '보유 현황표' 점·막대 검사는 라인업 현황 재설계(아래 describe)로 대체
 
   test('비교: 아래로 스크롤하면 머리글 사진을 접음', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 800 });
@@ -346,5 +342,25 @@ test.describe('UX 3차 묶음 (2026-11-23)', () => {
     await page.evaluate(() => { document.querySelector('.app-main')?.scrollTo({ top: 600 }); window.scrollTo(0, 600); });
     await expect(box).toHaveAttribute('data-scrolled', 'true');
     await expect(page.locator('.cmp-colhead__media').first()).toBeHidden();
+  });
+});
+
+test.describe('라인업 현황 재설계 (2026-11-23)', () => {
+  test('요약 카드 4개 → 계층별 막대(누르면 목록이 그 계층만) → 우선순위 묶음, 상세표는 접힘, 접근성 위반 0', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./#/gap');
+    const kpis = page.locator('.gx-kpi');
+    await expect(kpis).toHaveCount(4);
+    await expect(kpis.nth(1)).toContainText('보완 필요');
+    await expect(page.getByRole('heading', { name: '우선 검토' })).toBeVisible();
+    await page.getByTestId('gap-layer-L1').click();
+    await expect(page.getByTestId('gap-layer-L1')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('gap-layer-clear')).toBeVisible();
+    for (const row of await page.getByTestId('gap-list').getByTestId(/^gap-item-/).all()) await expect(row.locator('.gx-item__layer')).toHaveText('L1');
+    await page.getByTestId('gap-layer-clear').click();
+    await expect(page.getByTestId('gap-layer-clear')).toHaveCount(0);
+    await expect(page.locator('.gx-detail')).not.toHaveAttribute('open', '');
+    const axe = await new AxeBuilder({ page }).include('[data-testid="gap-page"]').analyze();
+    expect(axe.violations.map((v) => v.id)).toEqual([]);
   });
 });
