@@ -47,11 +47,11 @@ async function clickCanvasNode(page: Page, nodeId: string) {
 }
 
 test.describe('E2E-ADM 관리자 모드', () => {
-  test('ADM-1 /#/admin 진입: 제목·"보안 장치가 아닙니다" 안내·기기 목록, 원본 데이터 검사 통과', async ({ page }) => {
+  test('ADM-1 /#/admin 진입: 제목·저장 안내·기기 목록, 원본 데이터 검사 통과', async ({ page }) => {
     await gotoAdmin(page);
     await expect(page).toHaveTitle(/관리자 모드/);
     await expect(page.getByRole('heading', { name: '계통도 관리자 모드' })).toBeVisible();
-    await expect(page.getByRole('note').filter({ hasText: '보안 장치가 아닙니다' })).toContainText('이 브라우저에만 저장');
+    await expect(page.getByRole('note').filter({ hasText: '사이트에 반영' })).toContainText('이 브라우저에만 저장');
     await expect(page.getByRole('heading', { name: `기기 종류 ${equipmentCount}` })).toBeVisible();
     await expect(tid(page, 'admin-undo')).toBeDisabled();
     await expect(tid(page, 'admin-export')).toBeEnabled();
@@ -100,6 +100,48 @@ test.describe('E2E-ADM 관리자 모드', () => {
     await expect.poll(() => downloads.sort()).toEqual(expect.arrayContaining(['diagram.json', 'equipment-types.json']));
     // 노드·연결선이 바뀌었으므로 변경 요약에 검수 대기
     await expect(tid(page, 'admin-tab-changes')).not.toHaveText('변경 내역 0');
+  });
+
+  test('ADM-5 헤더 관리자 탭 → 편집 → 사이트에 반영(비밀번호 틀림 → 안내, 맞으면 반영 요청 완료)', async ({ page }) => {
+    // 반영 API 는 가짜 응답 (실제 저장소에 커밋하지 않음)
+    await page.route('**/api/admin/publish', async (route) => {
+      const body = route.request().postDataJSON() as { password: string; files: Record<string, string> };
+      if (body.password !== 'right-pw') return route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ error: '관리자 비밀번호가 맞지 않습니다' }) });
+      expect(Object.keys(body.files)).toEqual(expect.arrayContaining(['equipment-types.json', 'diagram.json']));
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, sha: 'abc', url: 'https://github.com/moonkj/lse-product/commit/abc' }) });
+    });
+    await page.goto('./#/');
+    await tid(page, 'admin-link').click();
+    await expect(page.getByRole('heading', { name: '계통도 관리자 모드' })).toBeVisible();
+
+    // 바꾼 것이 없으면 반영 창을 열지 않음
+    await tid(page, 'admin-publish').click();
+    await expect(tid(page, 'admin-toast')).toContainText('달라진 내용이 없습니다');
+
+    await tid(page, 'admin-add-equipment').click();
+    const form = tid(page, 'admin-equipment-form');
+    await form.getByLabel(/^이름/).fill('반영 테스트');
+    await form.getByLabel(/^약어/).fill('PUB');
+    await form.getByLabel(/^계층/).selectOption('L6');
+    await form.getByLabel(/^전압/).fill('380V');
+    await form.getByLabel(/^커버리지/).selectOption('na');
+    await form.getByLabel(/^설명/).fill('E2E 테스트용 기기');
+    await form.getByLabel(/^학습 포인트/).fill('테스트 포인트');
+    await tid(page, 'admin-save').click();
+    await tid(page, 'admin-auto-place').click();
+    await tid(page, 'admin-connect-mode').click();
+    await clickCanvasNode(page, 'bus-380');
+
+    await tid(page, 'admin-publish').click();
+    const dlg = tid(page, 'admin-publish-dialog');
+    await expect(dlg).toBeVisible();
+    await tid(page, 'admin-publish-password').fill('wrong');
+    await tid(page, 'admin-publish-submit').click();
+    await expect(tid(page, 'admin-publish-error')).toContainText('비밀번호가 맞지 않습니다');
+    await tid(page, 'admin-publish-password').fill('right-pw');
+    await tid(page, 'admin-publish-submit').click();
+    await expect(tid(page, 'admin-publish-done')).toContainText('분 뒤');
+    await expect(dlg.getByRole('link', { name: /변경 기록/ })).toHaveAttribute('href', /commit\/abc/);
   });
 
   test('ADM-3 모선 범위 밖 기기를 모선에 연결 → 거부 메시지, 연결선 추가 안 됨', async ({ page }) => {

@@ -18,8 +18,8 @@ export function reloadFresh(): void {
   window.location.replace(`${pathname}?v=${Date.now()}${hash}`);
 }
 
-/** 온라인이고 최근 60초 안에 자동 새로고침한 적이 없으면 새 버전으로 새로고침하고 true */
-export function tryAutoFreshReload(): boolean {
+/** 지금 자동 새로고침을 해도 되는지 (온라인 + 최근 60초 안에 한 적 없음) — 부작용 없음 (렌더 중에도 호출 가능) */
+export function canAutoFreshReload(): boolean {
   if (typeof window === 'undefined' || (typeof navigator !== 'undefined' && navigator.onLine === false)) return false;
   let last = 0;
   try {
@@ -27,7 +27,12 @@ export function tryAutoFreshReload(): boolean {
   } catch {
     /* 무시 */
   }
-  if (Date.now() - last < WINDOW_MS) return false;
+  return Date.now() - last >= WINDOW_MS;
+}
+
+/** 온라인이고 최근 60초 안에 자동 새로고침한 적이 없으면 새 버전으로 새로고침하고 true */
+export function tryAutoFreshReload(): boolean {
+  if (!canAutoFreshReload()) return false;
   reloadFresh();
   return true;
 }

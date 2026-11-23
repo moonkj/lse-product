@@ -28,7 +28,19 @@ describe('B10 오프라인·청크 로드 실패 안내', () => {
     expect(isNetworkError(new Error('Cannot read properties of undefined'))).toBe(false);
   });
 
-  it('청크 실패 → 한글 제목·안내 + 다시 시도 버튼, 영문 메시지 없음', () => {
+  it('배포 직후 첫 청크 실패 → 오류 화면 대신 "새 버전을 불러오는 중"만 (곧 자동 새로고침, 2026-11-23 깜빡임 수정)', () => {
+    sessionStorage.removeItem('lse-fresh-reload-at');
+    render(
+      <PageErrorBoundary resetKey="/equipment/vcb">
+        <Boom error={new TypeError('Failed to fetch dynamically imported module: /assets/EquipmentPage-old.js')} />
+      </PageErrorBoundary>,
+    );
+    expect(screen.getByTestId('page-fresh-reload')).toHaveTextContent('새 버전을 불러오는 중');
+    expect(screen.queryByTestId('page-error')).toBeNull();
+  });
+
+  it('청크 실패(자동 새로고침을 이미 한 뒤) → 한글 제목·안내 + 다시 시도 버튼, 영문 메시지 없음', () => {
+    sessionStorage.setItem('lse-fresh-reload-at', String(Date.now()));
     render(
       <PageErrorBoundary resetKey="/product/P1">
         <Boom error={new Error('Unable to preload CSS for /assets/ProductPage.css')} />

@@ -5,6 +5,7 @@ import { checkSpecs, specKeyLabels, type Issue as RuleIssue } from '../../lib/in
 import { todayIso } from '../../lib/labels';
 import { pageHref } from '../../lib/pages/compare';
 import { toJsonText } from '../../lib/admin/draft';
+import PublishDialog from './PublishDialog';
 import { download } from '../../lib/admin/download';
 import {
   SPEC_KIND_LABELS,
@@ -282,6 +283,7 @@ export default function SpecReview() {
   const keyLabels = useMemo(() => (draft ? specKeyLabels(draft) : new Map<string, string>()), [draft]);
   const productIds = useMemo(() => new Set(data.productById.keys()), [data]);
   const docUrls = useMemo(() => new Map([...data.docsByProductId].map(([id, e]) => [id, e.docs.map((d) => d.url)])), [data]);
+  const [publishOpen, setPublishOpen] = useState(false);
 
   if (status === 'error')
     return (
@@ -338,6 +340,19 @@ export default function SpecReview() {
     for (const [name, text] of Object.entries(files)) download(name, text(), name.endsWith('.md') ? 'text/markdown' : 'application/json');
     setExported(Object.keys(files));
     setMsg({ kind: 'info', text: '내보내기 완료 — specs.json, 변경요약.md' });
+  };
+
+  const openPublish = () => {
+    const r = runCheck();
+    if (r.errors.length > 0) {
+      setMsg({ kind: 'error', text: `사양 검사 오류 ${r.errors.length}건 — 고친 뒤 반영할 수 있습니다` });
+      return;
+    }
+    if (changes.length === 0) {
+      setMsg({ kind: 'info', text: '원본과 달라진 사양이 없습니다' });
+      return;
+    }
+    setPublishOpen(true);
   };
 
   const sel = selected ? draft.products[selected] : undefined;
@@ -412,7 +427,10 @@ export default function SpecReview() {
         <button type="button" className="abtn" onClick={runCheck} data-testid="admin-spec-check">
           검사
         </button>
-        <button type="button" className="abtn abtn--primary" onClick={doExport} data-testid="admin-spec-export">
+        <button type="button" className="abtn abtn--primary" onClick={openPublish} data-testid="admin-spec-publish">
+          사이트에 반영
+        </button>
+        <button type="button" className="abtn" onClick={doExport} data-testid="admin-spec-export">
           검사 후 내보내기
         </button>
       </div>
@@ -683,6 +701,14 @@ export default function SpecReview() {
           </section>
         </aside>
       </div>
+      {publishOpen && (
+        <PublishDialog
+          files={{ 'specs.json': files['specs.json']() }}
+          defaultMessage={`사양 ${changes.length}건 수정`}
+          onClose={() => setPublishOpen(false)}
+          onDone={() => setMsg({ kind: 'info', text: '사이트 반영 요청 완료 — 약 4분 뒤 모두에게 보입니다' })}
+        />
+      )}
     </div>
   );
 }

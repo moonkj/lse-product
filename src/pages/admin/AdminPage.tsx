@@ -46,6 +46,7 @@ import BrandLogo from '../../components/common/BrandLogo';
 import SpecReview from './SpecReview';
 import AdminCanvas, { type CanvasHandle, type PlaceTarget, type Tool } from './AdminCanvas';
 import EquipmentForm from './EquipmentForm';
+import PublishDialog from './PublishDialog';
 import { ChangesPanel, CheckPanel, EquipmentList, SelectionPanel, equipmentLabel } from './AdminPanels';
 import './AdminPage.css';
 
@@ -341,6 +342,27 @@ export default function AdminPage() {
     info(`내보내기 완료 — ${files.join(', ')}`);
   };
 
+  // ── 사이트에 반영 (검사 통과한 파일만 저장소에 커밋 → 자동 배포) ──
+  const [publishFiles, setPublishFiles] = useState<Record<string, string> | null>(null);
+  const openPublish = () => {
+    const issues = runCheck();
+    const n = issues.filter((i) => i.level === 'error').length;
+    if (n > 0) {
+      fail(`무결성 검사 오류 ${n}건 — 고친 뒤 반영할 수 있습니다`);
+      return;
+    }
+    if (changes.length === 0 && !imagesChanged) {
+      info('원본과 달라진 내용이 없습니다');
+      return;
+    }
+    const files: Record<string, string> = {
+      'equipment-types.json': fileText('equipment-types.json'),
+      'diagram.json': fileText('diagram.json'),
+    };
+    if (imagesChanged) files['equipment-images.json'] = fileText('equipment-images.json');
+    setPublishFiles(files);
+  };
+
   const onImport = async (list: FileList | null) => {
     if (!list || list.length === 0) return;
     const next: Draft = { ...draft };
@@ -443,7 +465,7 @@ export default function AdminPage() {
           </span>
         </div>
         <p className="admin__warn" role="note">
-          보안 장치가 아닙니다 — 편집은 <strong>이 브라우저에만 저장</strong>되며, 내보내서 저장소에 커밋해야 모두에게 반영됩니다.
+          편집은 먼저 <strong>이 브라우저에만 저장</strong>됩니다. <strong>사이트에 반영</strong>을 누르고 관리자 비밀번호를 넣으면 몇 분 뒤 모든 사용자 화면에 보입니다.
         </p>
         {view === 'diagram' && staleBase && (
           <p className="admin__stale" role="alert">
@@ -487,8 +509,11 @@ export default function AdminPage() {
               e.target.value = '';
             }}
           />
-          <button type="button" className="abtn abtn--primary" onClick={doExport} data-testid="admin-export">
+          <button type="button" className="abtn" onClick={doExport} data-testid="admin-export">
             검사 후 내보내기
+          </button>
+          <button type="button" className="abtn abtn--primary" onClick={openPublish} data-testid="admin-publish">
+            사이트에 반영
           </button>
         </div>
         )}
@@ -841,6 +866,14 @@ export default function AdminPage() {
           </aside>
         )}
       </div>
+      )}
+      {publishFiles && (
+        <PublishDialog
+          files={publishFiles}
+          defaultMessage={changes.length ? `${changes.length}건 수정` : '사진 정보 수정'}
+          onClose={() => setPublishFiles(null)}
+          onDone={() => info(`사이트 반영 요청 완료 — 약 4분 뒤 모두에게 보입니다`)}
+        />
       )}
     </div>
   );

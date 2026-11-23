@@ -97,3 +97,20 @@ test.describe('제품 조회 /products', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });
 });
+
+test.describe('페이지 조각 미리 받기 (자동 배포 뒤 이동 실패 방지, 2026-11-23)', () => {
+  test('첫 화면을 연 뒤 기기 상세·제품·비교 조각을 미리 받고, 관리자 조각은 받지 않음 → 그 뒤 조각 요청이 막혀도 기기 상세로 이동됨', async ({ page }) => {
+    const seen: string[] = [];
+    page.on('request', (r) => seen.push(r.url()));
+    await page.goto('./#/');
+    await expect(page.getByTestId('diagram')).toBeVisible();
+    await expect.poll(() => seen.some((u) => /EquipmentPage-[\w-]+\.js/.test(u)), { timeout: 15_000 }).toBe(true);
+    await expect.poll(() => seen.some((u) => /ProductPage-[\w-]+\.js/.test(u))).toBe(true);
+    expect(seen.some((u) => /AdminPage-[\w-]+\.js/.test(u))).toBe(false);
+    // 새 배포로 예전 조각이 지워진 상황 흉내: 이후 assets 요청을 모두 404
+    await page.route('**/assets/**', (route) => route.fulfill({ status: 404, body: '' }));
+    await page.goto('./#/equipment/vcb');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('진공차단기');
+    await expect(page.getByTestId('page-error')).toHaveCount(0);
+  });
+});

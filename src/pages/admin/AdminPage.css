@@ -1449,3 +1449,34 @@
     max-height: 40vh;
   }
 }
+
+/* "사이트에 반영" 확인 창 (PublishDialog, 2026-11-23) */
+.apub {
+  width: min(440px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+}
+.apub::backdrop { background: rgb(0 0 0 / 0.45); }
+.apub__form { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+.apub__title { margin: 0; font-size: var(--fs-lg, 18px); }
+.apub__files { margin: 0; font-size: var(--fs-sm); color: var(--color-text-muted); }
+.apub__field { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-sm); font-weight: var(--fw-bold); }
+.apub__field input {
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border-strong, var(--color-border));
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: var(--fw-regular, 400);
+}
+.apub__error { margin: 0; color: var(--cov-missing-text); font-size: var(--fs-sm); }
+.apub__done p { margin: 0 0 8px; }
+.apub__done a { color: var(--color-link); }
+.apub__actions { display: flex; justify-content: flex-end; gap: 8px; }
+.apub__actions .abtn { min-height: 36px; }

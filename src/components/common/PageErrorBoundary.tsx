@@ -1,7 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import ErrorDetails, { errorHeading, isNetworkError } from './ErrorDetails';
 import './RootErrorBoundary.css';
-import { reloadFresh, tryAutoFreshReload } from '../../lib/freshReload';
+import { canAutoFreshReload, reloadFresh, tryAutoFreshReload } from '../../lib/freshReload';
 
 interface Props {
   children: ReactNode;
@@ -54,6 +54,13 @@ export default class PageErrorBoundary extends Component<Props, State> {
     const { error, stillOffline } = this.state;
     if (!error) return this.props.children;
     const network = isNetworkError(error);
+    // 배포 직후 페이지 조각 실패 → componentDidCatch 가 곧 새 버전으로 새로고침한다. 그동안 오류 화면을 깜빡이지 않게 로딩 문구만 (2026-11-23 사용자)
+    if (network && canAutoFreshReload())
+      return (
+        <p className="app-main__loading" role="status" data-testid="page-fresh-reload">
+          새 버전을 불러오는 중…
+        </p>
+      );
     return (
       <div role="alert" className="root-error" data-testid="page-error" data-kind={network ? 'network' : undefined}>
         <h1>{errorHeading(error, '이 화면')}</h1>
