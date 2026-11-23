@@ -38,7 +38,8 @@ import {
 } from '../../lib/admin/draft';
 import { changesMarkdown, computeChanges } from '../../lib/admin/diff';
 import { koIssue, validateDraft, type Issue } from '../../lib/admin/integrity';
-import { useAdminStore } from '../../lib/admin/store';
+import { useAdminStore, useAdminStoreDc } from '../../lib/admin/store';
+import { GRID_LABELS, type GridId } from '../../lib/diagram/grid';
 import { download } from '../../lib/admin/download';
 import { computeSpecChanges, specChangesSection } from '../../lib/admin/specs';
 import { useSpecsAdminStore } from '../../lib/admin/specsStore';
@@ -81,10 +82,26 @@ function buildModel(data: AppData, draft: Draft): DiagramModel {
 const isTyping = (el: EventTarget | null) =>
   el instanceof HTMLElement && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
 
+const EQ_ONLY_STD = '기기 추가·수정·삭제는 편집 계통을 "국내 표준"으로 바꾼 뒤 할 수 있습니다 (데이터센터는 배치·연결만)';
+
 /** /#/admin — 계통도 편집 (정적 사이트: 이 브라우저에 초안 저장 → JSON 내보내기 → 저장소 커밋) */
 export default function AdminPage() {
   const data = useData();
-  const { draft, base, past, future, staleBase, restoredAt, saveStatus, commit, undo, redo, resetToBase } = useAdminStore();
+  // 편집할 계통도 (2026-11-23): 국내 표준(diagram.json) / 데이터센터(국내)(diagram-dc.json). 계통도마다 초안·되돌리기가 따로.
+  // 데이터센터 초안의 기기 정보는 국내 표준 초안 것을 그대로 쓴다 — 기기 추가·수정·삭제는 국내 표준에서만
+  const [grid, setGrid] = useState<GridId>('std');
+  const stdStore = useAdminStore();
+  const dcStore = useAdminStoreDc();
+  const dcDraft = useMemo(
+    () => ({ ...dcStore.draft, equipmentTypes: stdStore.draft.equipmentTypes, images: stdStore.draft.images }),
+    [dcStore.draft, stdStore.draft.equipmentTypes, stdStore.draft.images],
+  );
+  const dcBase = useMemo(
+    () => ({ ...dcStore.base, equipmentTypes: stdStore.draft.equipmentTypes, images: stdStore.draft.images }),
+    [dcStore.base, stdStore.draft.equipmentTypes, stdStore.draft.images],
+  );
+  const active = grid === 'dc' ? { ...dcStore, draft: dcDraft, base: dcBase } : stdStore;
+  const { draft, base, past, future, staleBase, restoredAt, saveStatus, commit, undo, redo, resetToBase } = active;
   const model = useMemo(() => buildModel(data, draft), [data, draft]);
   const changes = useMemo(() => computeChanges(base, draft), [base, draft]);
   const ref = useMemo(() => ({ categories: data.categories, products: data.products }), [data]);
@@ -111,6 +128,21 @@ export default function AdminPage() {
   const [exported, setExported] = useState<string[]>([]);
   const [importMsg, setImportMsg] = useState<{ ok: boolean; lines: string[] } | null>(null);
   const [view, setView] = useState<AdminView>('diagram');
+  const [warnHidden, setWarnHidden] = useState(() => {
+    try {
+      return localStorage.getItem('lse-admin-warn-hidden') === '1';
+    } catch {
+      return false;
+    }
+  });
+  const hideWarn = () => {
+    setWarnHidden(true);
+    try {
+      localStorage.setItem('lse-admin-warn-hidden', '1');
+    } catch {
+      /* 저장 불가 — 이번만 숨김 */
+    }
+  };
   const specsUndo = useSpecsAdminStore((s) => s.undo);
   const specsRedo = useSpecsAdminStore((s) => s.redo);
 
@@ -308,16 +340,18 @@ export default function AdminPage() {
 
   // ── 검사·내보내기 ──
   const runCheck = () => {
-    const issues = validateDraft(draft, ref);
+    // 검사는 늘 두 계통도를 함께 (국내 표준 = 기본, 데이터센터 = 보조)
+    const issues = validateDraft(stdStore.draft, ref, undefined, dcStore.draft.diagram);
     setCheck({ issues, at: Date.now() });
     setTab('check');
     return issues;
   };
 
-  const imagesChanged = toJsonText(base.images) !== toJsonText(draft.images);
+  const imagesChanged = grid === 'std' && toJsonText(base.images) !== toJsonText(draft.images);
   const fileText = (f: string) => {
     if (f === 'equipment-types.json') return toJsonText(draft.equipmentTypes);
     if (f === 'diagram.json') return toJsonText(draft.diagram);
+    if (f === 'diagram-dc.json') return toJsonText(dcStore.draft.diagram);
     if (f === 'equipment-images.json') return toJsonText(draft.images);
     const md = changesMarkdown(base, draft, changes);
     // 사양 검수 탭에서 고친 내용이 있으면 같은 요약에 사양 절을 붙인다
@@ -336,7 +370,10 @@ export default function AdminPage() {
       setExported([]);
       return;
     }
-    const files = ['equipment-types.json', 'diagram.json', ...(imagesChanged ? ['equipment-images.json'] : []), '변경요약.md'];
+    const files =
+      grid === 'dc'
+        ? ['diagram-dc.json', '변경요약.md']
+        : ['equipment-types.json', 'diagram.json', ...(imagesChanged ? ['equipment-images.json'] : []), '변경요약.md'];
     files.forEach(downloadFile);
     setExported(files);
     info(`내보내기 완료 — ${files.join(', ')}`);
@@ -355,10 +392,10 @@ export default function AdminPage() {
       info('원본과 달라진 내용이 없습니다');
       return;
     }
-    const files: Record<string, string> = {
-      'equipment-types.json': fileText('equipment-types.json'),
-      'diagram.json': fileText('diagram.json'),
-    };
+    const files: Record<string, string> =
+      grid === 'dc'
+        ? { 'diagram-dc.json': fileText('diagram-dc.json') }
+        : { 'equipment-types.json': fileText('equipment-types.json'), 'diagram.json': fileText('diagram.json') };
     if (imagesChanged) files['equipment-images.json'] = fileText('equipment-images.json');
     setPublishFiles(files);
   };
@@ -449,6 +486,31 @@ export default function AdminPage() {
               </button>
             ))}
           </div>
+          {view === 'diagram' && (
+            <label className="admin__grid">
+              편집 계통
+              <select
+                value={grid}
+                data-testid="admin-grid"
+                onChange={(e) => {
+                  setGrid(e.target.value === 'dc' ? 'dc' : 'std');
+                  setSelection(null);
+                  setTool('select');
+                  setPlaceEquipmentId(undefined);
+                  setConnectFrom(undefined);
+                  setLeft({ kind: 'list' });
+                  setCheck(null);
+                  setExported([]);
+                }}
+              >
+                {(['std', 'dc'] as GridId[]).map((g) => (
+                  <option key={g} value={g}>
+                    {GRID_LABELS[g]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <Link to="/" className="admin__back">
             ← 사용자 화면
           </Link>
@@ -464,9 +526,17 @@ export default function AdminPage() {
                   : ''}
           </span>
         </div>
-        <p className="admin__warn" role="note">
-          편집은 먼저 <strong>이 브라우저에만 저장</strong>됩니다. <strong>사이트에 반영</strong>을 누르고 관리자 비밀번호를 넣으면 몇 분 뒤 모든 사용자 화면에 보입니다.
-        </p>
+        {!warnHidden && (
+          <p className="admin__warn" role="note">
+            <span>
+              편집은 먼저 <strong>이 브라우저에만 저장</strong>됩니다. <strong>사이트에 반영</strong>을 누르고 관리자 비밀번호를 넣으면 몇 분 뒤 모든 사용자 화면에 보입니다.
+            </span>
+            {/* 한 번 읽으면 매번 볼 필요 없음 — 닫으면 이 브라우저에서 다시 안 뜸 (2026-11-23 UX 토론) */}
+            <button type="button" className="admin__warn-close" aria-label="안내 닫기" data-testid="admin-warn-close" onClick={hideWarn}>
+              ×
+            </button>
+          </p>
+        )}
         {view === 'diagram' && staleBase && (
           <p className="admin__stale" role="alert">
             저장된 초안이 만들어진 뒤 원본 데이터(src/data)가 바뀌었습니다. 변경 내역을 확인하고, 필요하면 "초안 초기화" 후 다시 편집하세요.
@@ -529,10 +599,10 @@ export default function AdminPage() {
               <EquipmentList
                 draft={draft}
                 placeEquipmentId={tool === 'place' && placeKind === 'equipment' ? placeEquipmentId : undefined}
-                onAdd={() => setLeft({ kind: 'new' })}
-                onEdit={(id) => setLeft({ kind: 'edit', id })}
+                onAdd={() => (grid === 'dc' ? info(EQ_ONLY_STD) : setLeft({ kind: 'new' }))}
+                onEdit={(id) => (grid === 'dc' ? info(EQ_ONLY_STD) : setLeft({ kind: 'edit', id }))}
                 onPlace={(id) => startPlace(id)}
-                onDelete={onDeleteEquipment}
+                onDelete={(id) => (grid === 'dc' ? info(EQ_ONLY_STD) : onDeleteEquipment(id))}
               />
             ) : (
               <EquipmentForm

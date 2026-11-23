@@ -465,7 +465,51 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* 행 전체가 수정 버튼 (2026-11-23 UX 토론) */
+  padding: 4px 6px;
+  margin: -4px -6px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
+.alist__name:hover { background: var(--color-surface-2); }
+
+/* ⋯ 메뉴 */
+.arow-menu { position: relative; flex: none; }
+.arow-menu__btn { min-width: 30px; justify-content: center; font-weight: var(--fw-bold); }
+.arow-menu__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+.arow-menu__item {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-sm, 6px);
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.arow-menu__item:hover { background: var(--color-surface-2); }
+.arow-menu__item--danger { color: var(--cov-missing-text); }
 
 .alist__name small {
   display: block;
@@ -1481,3 +1525,33 @@
 .apub__done a { color: var(--color-link); }
 .apub__actions { display: flex; justify-content: flex-end; gap: 8px; }
 .apub__actions .abtn { min-height: 36px; }
+
+/* 안내 띠 닫기 (2026-11-23) */
+.admin__warn { display: flex; align-items: center; gap: var(--space-2); }
+.admin__warn > span { flex: 1; }
+.admin__warn-close {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.admin__warn-close:hover { background: rgb(0 0 0 / 0.06); }
+
+/* 편집 계통 선택 (2026-11-23) */
+.admin__grid { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm); font-weight: var(--fw-bold); color: var(--color-text-muted); }
+.admin__grid select {
+  min-height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--color-border-strong, var(--color-border));
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: var(--fw-bold);
+}

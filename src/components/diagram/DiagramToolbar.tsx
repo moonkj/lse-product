@@ -165,8 +165,10 @@ function PrintButton() {
 
 /** 계통도 위 툴바 — 보기 세그먼트 + 줌 컨트롤 + Gap 모드 배너 (도구줄 44px 한 줄, 디자이너 토론 P0-5·6) */
 export default function DiagramToolbar({ mode, total, review }: Props) {
+  // 휴대폰(≤900px): 확대·축소·인쇄·흐름·보기 옵션 줄을 '도구'로 접어 계통도 높이 확보 (2026-11-23 UX 토론). 손가락으로 확대·이동은 그대로
+  const [toolsOpen, setToolsOpen] = useState(false);
   return (
-    <div className={`dtool dtool--${mode}`}>
+    <div className={`dtool dtool--${mode}`} data-tools-open={toolsOpen || undefined}>
       {mode === 'gap' && (
         <div className="dtool__row dtool__banner" role="status">
           <span className="dtool__pill">보완 필요 · 미보유와 일부 보유만 강조 중</span>
@@ -182,6 +184,15 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
         <ViewSwitch />
         <GridSelect />
         <PresetPicker />
+        <button
+          type="button"
+          className="dtool__btn dtool__more"
+          aria-expanded={toolsOpen}
+          data-testid="dtool-more"
+          onClick={() => setToolsOpen((o) => !o)}
+        >
+          도구 <span aria-hidden="true">{toolsOpen ? '▴' : '▾'}</span>
+        </button>
         <ZoomControls total={total} />
         <PrintButton />
         <ReviewBadge review={review} />

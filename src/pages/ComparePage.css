@@ -213,3 +213,6 @@
 .cmp-colhead__inner { height: 100%; }
 .cmp-colhead__actions { margin-top: auto; }
 .cmp-variant--placeholder { visibility: hidden; }
+
+/* 스크롤하면 고정 머리글의 사진을 접음 (2026-11-23) */
+.cmp-scroll[data-scrolled] .cmp-colhead__media { display: none; }

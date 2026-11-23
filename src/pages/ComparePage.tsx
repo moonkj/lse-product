@@ -666,6 +666,27 @@ function EmptyState({ type }: { type: CompareKind | null }) {
 }
 
 export default function ComparePage() {
+  const [scrolled, setScrolled] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  // 넓은 화면은 본문(.app-main)이, 좁은 화면은 표 상자가 스크롤한다 — 둘 다 듣고, 표 윗변이 스크롤 영역 위로 40px 넘게 올라가면 '스크롤됨'
+  useEffect(() => {
+    const box = scrollRef.current;
+    const main = document.querySelector<HTMLElement>('.app-main');
+    const update = () => {
+      if (!box) return;
+      const inner = box.scrollTop > 40;
+      const outer = main ? box.getBoundingClientRect().top < main.getBoundingClientRect().top - 40 : false;
+      setScrolled(inner || outer);
+    };
+    box?.addEventListener('scroll', update, { passive: true });
+    main?.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('scroll', update, { passive: true });
+    return () => {
+      box?.removeEventListener('scroll', update);
+      main?.removeEventListener('scroll', update);
+      window.removeEventListener('scroll', update);
+    };
+  });
   const data = useData();
   const [params] = useSearchParams();
   const location = useLocation();
@@ -843,7 +864,15 @@ export default function ComparePage() {
               {diffText(hiddenCount)}
             </p>
           )}
-          <div className="cmp-scroll" role="region" aria-labelledby="cmp-caption" tabIndex={0}>
+          {/* 아래로 스크롤하면 고정된 열 머리글에서 사진을 접어 이름만 남김 — 머리글이 표를 크게 가리지 않게 (2026-11-23 UX 토론) */}
+          <div
+            className="cmp-scroll"
+            role="region"
+            aria-labelledby="cmp-caption"
+            tabIndex={0}
+            data-scrolled={scrolled || undefined}
+            ref={scrollRef}
+          >
             <table className="cmp-table" data-testid="compare-table" style={{ ['--cmp-cols' as string]: columns.length }}>
               <caption id="cmp-caption" className="visually-hidden">
                 {title} 표 — 열은 비교 항목, 행은 속성

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { COVERAGE_LABELS, LAYER_LABELS, type EquipmentType } from '../../lib/schema';
 import { COVERAGE_ICONS } from '../../lib/labels';
 import { nodeKind, nodeName, type Draft } from '../../lib/admin/draft';
@@ -7,6 +7,59 @@ import { ENTITY_LABELS, KIND_LABELS, type Change, type ChangeEntity } from '../.
 import type { Issue } from '../../lib/admin/integrity';
 
 // ───────────────────────── 기기 목록 ─────────────────────────
+/** 기기 행 ⋯ 메뉴 — 배치(노드 하나 더)·삭제. Esc·바깥 누르기로 닫힘 */
+function RowMenu({ name, canDelete, onPlace, onDelete }: { name: string; canDelete: boolean; onPlace: () => void; onDelete: () => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const down = (ev: PointerEvent) => {
+      if (!ref.current?.contains(ev.target as Node)) setOpen(false);
+    };
+    const key = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', down);
+    document.addEventListener('keydown', key);
+    return () => {
+      document.removeEventListener('pointerdown', down);
+      document.removeEventListener('keydown', key);
+    };
+  }, [open]);
+  return (
+    <span className="arow-menu" ref={ref}>
+      <button type="button" className="abtn abtn--sm arow-menu__btn" aria-expanded={open} aria-label={`${name} 더 보기`} onClick={() => setOpen((o) => !o)}>
+        ⋯
+      </button>
+      {open && (
+        <span className="arow-menu__panel" role="group" aria-label={`${name} 작업`}>
+          <button
+            type="button"
+            className="arow-menu__item"
+            onClick={() => {
+              setOpen(false);
+              onPlace();
+            }}
+          >
+            {name} 배치
+          </button>
+          <button
+            type="button"
+            className="arow-menu__item arow-menu__item--danger"
+            onClick={() => {
+              setOpen(false);
+              onDelete();
+            }}
+            title={canDelete ? undefined : '노드가 남아 있으면 삭제할 수 없습니다'}
+          >
+            {name} 기기 종류 삭제
+          </button>
+        </span>
+      )}
+    </span>
+  );
+}
+
 export function EquipmentList({
   draft,
   placeEquipmentId,
@@ -68,30 +121,21 @@ export function EquipmentList({
               <span className={`alist__cov alist__cov--${e.coverage}`} title={COVERAGE_LABELS[e.coverage]} aria-label={COVERAGE_LABELS[e.coverage]}>
                 {COVERAGE_ICONS[e.coverage]}
               </span>
-              <span className="alist__name">
+              {/* 행(이름)을 누르면 수정 — 배치·삭제는 ⋯ 메뉴로 (2026-11-23 UX 토론: 80행마다 버튼 3개·빨간 삭제가 반복됐음) */}
+              <button type="button" className="alist__name" onClick={() => onEdit(e.id)} data-testid={`admin-eq-edit-${e.id}`}>
                 <strong>{e.abbr ?? e.name}</strong>
                 {e.abbr && <span> {e.name}</span>}
                 <small>
                   {e.layer} · {n > 0 ? `노드 ${n}` : <em className="alist__unplaced">미배치</em>}
                 </small>
-              </span>
-              <span className="alist__actions">
+                <span className="visually-hidden"> 수정</span>
+              </button>
+              {n === 0 && (
                 <button type="button" className="abtn abtn--sm" onClick={() => onPlace(e.id)} aria-label={`${e.name} 배치`}>
                   배치
                 </button>
-                <button type="button" className="abtn abtn--sm" onClick={() => onEdit(e.id)} aria-label={`${e.name} 수정`}>
-                  수정
-                </button>
-                <button
-                  type="button"
-                  className="abtn abtn--sm abtn--danger"
-                  onClick={() => onDelete(e.id)}
-                  aria-label={`${e.name} 기기 종류 삭제`}
-                  title={n > 0 ? '노드가 남아 있으면 삭제할 수 없습니다' : undefined}
-                >
-                  삭제
-                </button>
-              </span>
+              )}
+              <RowMenu name={e.name} canDelete={n === 0} onPlace={() => onPlace(e.id)} onDelete={() => onDelete(e.id)} />
             </li>
           );
         })}

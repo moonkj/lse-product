@@ -18,6 +18,8 @@ import { diagramHref, layerStyle, nodeForEquipment, productsForEquipment } from 
 import NotFoundPage from './NotFoundPage';
 import './pages.css';
 import './EquipmentPage.css';
+import { useSpecs } from '../components/compare/useSpecs';
+import { specLabel, specValueText } from '../lib/pages/compare';
 
 /** 자료 목록을 보일 제품 수 / 제품당 자료 수 */
 const DOC_PRODUCTS_MAX = 5;
@@ -26,6 +28,8 @@ const DOCS_PER_PRODUCT = 3;
 export default function EquipmentPage() {
   const { id = '' } = useParams();
   const eq = useData().equipmentTypeById.get(id);
+  const specsState = useSpecs('equipment');
+  const specs = specsState.status === 'ready' ? specsState.map : undefined;
 
   useEffect(() => {
     if (eq) document.title = pageTitle(eq.name);
@@ -50,7 +54,7 @@ export default function EquipmentPage() {
         ]}
       />
 
-      <section className="pg-hero" aria-labelledby="equipment-title">
+      <section className="pg-hero pg-hero--compact" aria-labelledby="equipment-title">
         <div className={`pg-hero__media${eq.coverage === 'missing' ? ' pg-hero__media--missing' : ''}`}>
           <EquipmentVisual eq={eq} alt={`${eq.name} 대표 사진`} />
         </div>
@@ -112,7 +116,11 @@ export default function EquipmentPage() {
                       <ProductVisual product={p} eq={eq} className="eqp-product__img" thumb />
                       <span className="eqp-product__body">
                         <b className="eqp-product__name">{p.name}</b>
-                        <span className="eqp-product__meta">{p.categoryPath.join(' › ')}</span>
+                        {/* 같은 기기 안이라 분류 경로는 반복 정보 — 대표 정격 2개로 바꿈 (2026-11-23 UX 토론). 사양이 없으면 마지막 분류만 */}
+                        <span className="eqp-product__meta">
+                          {(specs?.get(p.id)?.items ?? []).slice(0, 2).map((it) => `${specLabel(it.key, it.label)} ${specValueText(it)}`).join(' · ') ||
+                            p.categoryPath[p.categoryPath.length - 1]}
+                        </span>
                         {p.discontinued && (
                           <Tag dot className="eqp-product__off">
                             단종

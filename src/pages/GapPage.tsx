@@ -201,8 +201,8 @@ export default function GapPage() {
                       const items = row.cells[cat];
                       if (items.length === 0)
                         return (
+                          // 빈칸은 점 없이 비워 둔다 — '·'이 많아 시선이 흩어졌음 (2026-11-23 UX 토론)
                           <td key={cat} className="gp-matrix__empty">
-                            <span aria-hidden="true">·</span>
                             <span className="visually-hidden">없음</span>
                           </td>
                         );
@@ -232,7 +232,13 @@ export default function GapPage() {
                       );
                     })}
                     <td className={`gp-matrix__rate${full ? ' gp-matrix__rate--full' : ''}`}>
-                      {r.owned}/{r.total}
+                      {/* 보유율 막대 — 계층별 차이가 한눈에 (2026-11-23 UX 토론). 숫자가 정보, 막대는 보조 */}
+                      <span className="gp-rate">
+                        <span className="gp-rate__bar" aria-hidden="true">
+                          <span style={{ width: `${r.pct}%` }} />
+                        </span>
+                        {r.owned}/{r.total}
+                      </span>
                     </td>
                   </tr>
                 );

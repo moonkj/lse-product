@@ -310,3 +310,41 @@ test.describe('UX 2차 묶음 (2026-11-23)', () => {
     await expect(page).toHaveURL(/#\/market/);
   });
 });
+
+test.describe('UX 3차 묶음 (2026-11-23)', () => {
+  test('관리자 버튼은 헤더가 아니라 화면 오른쪽 맨 아래', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./#/products');
+    await expect(page.getByRole('navigation', { name: '화면' }).getByText('관리자')).toHaveCount(0);
+    const b = (await tid(page, 'admin-link').boundingBox())!;
+    expect(b.x + b.width).toBeGreaterThan(1440 - 40);
+    expect(b.y + b.height).toBeGreaterThan(900 - 40);
+    await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/ux/b3-products.png' });
+  });
+
+  test('휴대폰 계통도: 도구 줄은 접혀 있고 "도구"로 펼침', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./#/');
+    await expect(tid(page, 'zoom-in')).toBeHidden();
+    await tid(page, 'dtool-more').click();
+    await expect(tid(page, 'zoom-in')).toBeVisible();
+    await expect(tid(page, 'flow-toggle')).toBeVisible();
+    await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/ux/b3-m-map.png' });
+  });
+
+  test('보유 현황표: 빈칸에 점 없음, 보유율 막대', async ({ page }) => {
+    await page.goto('./#/gap');
+    await expect(page.locator('.gp-matrix__empty').first()).not.toContainText('·');
+    await expect(page.locator('.gp-rate__bar').first()).toBeVisible();
+  });
+
+  test('비교: 아래로 스크롤하면 머리글 사진을 접음', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 800 });
+    await page.goto('./#/compare?type=equipment&ids=vcb,acb');
+    const box = page.locator('.cmp-scroll');
+    await expect(page.locator('.cmp-colhead__media').first()).toBeVisible();
+    await page.evaluate(() => { document.querySelector('.app-main')?.scrollTo({ top: 600 }); window.scrollTo(0, 600); });
+    await expect(box).toHaveAttribute('data-scrolled', 'true');
+    await expect(page.locator('.cmp-colhead__media').first()).toBeHidden();
+  });
+});

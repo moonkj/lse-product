@@ -45,6 +45,9 @@
 .gp-matrix__volt { color: var(--color-text-muted); }
 .gp-matrix__empty { color: var(--color-muted-dot); }
 .gp-matrix__rate { font-weight: var(--fw-bold); white-space: nowrap; }
+.gp-rate { display: inline-flex; align-items: center; gap: 8px; }
+.gp-rate__bar { display: inline-block; width: 56px; height: 6px; border-radius: 3px; background: var(--color-surface-2); overflow: hidden; }
+.gp-rate__bar > span { display: block; height: 100%; border-radius: 3px; background: var(--cov-owned); }
 .gp-matrix__rate--full { color: var(--cov-owned-text); }
 
 .gp-cell {

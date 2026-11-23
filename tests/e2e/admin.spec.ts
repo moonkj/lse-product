@@ -144,6 +144,32 @@ test.describe('E2E-ADM 관리자 모드', () => {
     await expect(dlg.getByRole('link', { name: /변경 기록/ })).toHaveAttribute('href', /commit\/abc/);
   });
 
+  test('ADM-6 편집 계통 → 데이터센터(국내): 노드 이동 → 변경 내역 → 사이트에 반영은 diagram-dc.json 만, 기기 수정은 국내 표준에서만', async ({ page }) => {
+    let sent: string[] = [];
+    await page.route('**/api/admin/publish', async (route) => {
+      sent = Object.keys((route.request().postDataJSON() as { files: Record<string, string> }).files);
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, sha: 'd1', url: 'https://github.com/moonkj/lse-product/commit/d1' }) });
+    });
+    await gotoAdmin(page);
+    await tid(page, 'admin-grid').selectOption('dc');
+    const node = canvas(page).getByTestId('diagram-node-dc-sst');
+    await expect(node).toBeVisible();
+    await expect(canvas(page).getByTestId('diagram-node-n-gen')).toHaveCount(0);
+    // 데이터센터에서는 기기 수정 대신 안내
+    await page.getByTestId('admin-eq-edit-vcb').click();
+    await expect(tid(page, 'admin-toast')).toContainText('국내 표준');
+    // SST 노드를 왼쪽으로 한 칸
+    await node.dispatchEvent('click');
+    await node.focus();
+    await page.keyboard.press('ArrowLeft');
+    await expect(tid(page, 'admin-tab-changes')).not.toHaveText('변경 내역 0');
+    await tid(page, 'admin-publish').click();
+    await tid(page, 'admin-publish-password').fill('pw');
+    await tid(page, 'admin-publish-submit').click();
+    await expect(tid(page, 'admin-publish-done')).toBeVisible();
+    expect(sent).toEqual(['diagram-dc.json']);
+  });
+
   test('ADM-3 모선 범위 밖 기기를 모선에 연결 → 거부 메시지, 연결선 추가 안 됨', async ({ page }) => {
     const bus = diagram.nodes.find((n) => n.id === 'bus-380')!;
     const linked = new Set(diagram.edges.filter((e) => e.from === bus.id || e.to === bus.id).flatMap((e) => [e.from, e.to]));

@@ -23,7 +23,7 @@ export default function Header() {
         </span>
       </Link>
 
-      {/* 화면 메뉴: 계통도 · 제품 조회 · 라인업 현황(구 공백 표) · 관리자. 계통맵/단계별·제품/Gap 전환은 계통도 도구줄.
+      {/* 화면 메뉴: 계통도 · 제품 조회 · 라인업 현황(구 공백 표). 관리자는 화면 오른쪽 맨 아래(AdminCorner, 2026-11-23 사용자). 계통맵/단계별·제품/Gap 전환은 계통도 도구줄.
           현재 화면 = 흰 알약 채움 + 네이비 굵은 글자(도구줄 눌림 상태와 같은 '채움 = 선택' 문법) */}
       <nav className="app-nav" aria-label="화면">
         <Link to="/" className="app-nav__link" aria-current={pathname === '/' ? 'page' : undefined}>
@@ -64,14 +64,6 @@ export default function Header() {
             <path d="M3 9.5h18M3 15h18M9 4v16" />
           </svg>
           라인업 현황
-        </Link>
-        {/* 관리자 = 제품맵 편집(계통도·기기·사양) → "사이트에 반영"으로 저장소에 커밋 (2026-11-23 사용자 요청) */}
-        <Link to="/admin" className="app-nav__link" data-testid="admin-link">
-          <svg className="app-nav__icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-4-4L4 16v4z" />
-            <path d="M13.5 6.5l4 4" />
-          </svg>
-          관리자
         </Link>
       </nav>
 

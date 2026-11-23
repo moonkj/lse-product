@@ -1097,3 +1097,29 @@
   }
   .app-header__search { flex: 1 1 0; min-width: 160px; }
 }
+
+/* 관리자 버튼 — 화면 오른쪽 맨 아래 (2026-11-23 사용자). 눈에 덜 띄게 작게, 휴대폰은 ☰ 메뉴 안에 있어 숨김 */
+.admin-corner {
+  position: fixed;
+  right: 12px;
+  bottom: 10px;
+  z-index: 46;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-chip, 999px);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgb(0 0 0 / 0.12));
+}
+.admin-corner:hover { color: var(--color-link); border-color: var(--color-brand-2); }
+.admin-corner svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 600px) {
+  .admin-corner { display: none; }
+}

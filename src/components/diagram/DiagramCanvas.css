@@ -1527,3 +1527,12 @@
     .dtool:not(.dtool--stage) .vswitch__btn { min-width: 34px; padding: 0 8px; }
   }
 }
+
+/* 휴대폰 도구 접기 (2026-11-23 UX 토론) — 넓은 화면에서는 '도구' 버튼 없음 */
+.dtool__more { display: none; }
+@media (max-width: 900px) {
+  .dtool__more { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; }
+  .dtool:not([data-tools-open]):not(.dtool--stage) .dtool__main > :is(.dtool__zoom, .dtool__btn:not(.dtool__more), .dtool__review, .dtool__hint, .dtool__clear, .dtool__end) {
+    display: none;
+  }
+}

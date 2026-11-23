@@ -4,7 +4,7 @@
  * 관리자 화면의 "사이트에 반영": 고친 데이터 파일을 GitHub 저장소 main 에 한 커밋으로 올린다 → deploy.yml 이 자동 배포(약 3~4분).
  * - 비밀번호: Pages Secret ADMIN_PASSWORD 와 같아야 한다 (틀리면 1초 늦게 401 — 무작정 대입 늦추기).
  * - GitHub 토큰: Pages Secret ADMIN_GH_TOKEN (fine-grained, 이 저장소 Contents 읽기·쓰기만). 브라우저에는 절대 보내지 않는다.
- * - 올릴 수 있는 파일은 src/data 의 정해진 4개뿐(ALLOWED). 각 파일은 JSON 으로 읽혀야 하고 2MB 이하.
+ * - 올릴 수 있는 파일은 src/data 의 정해진 5개뿐(ALLOWED, 데이터센터 계통도 포함). 각 파일은 JSON 으로 읽혀야 하고 2MB 이하.
  * - 두 Secret 은 deploy.yml 이 GitHub Secret 에서 `wrangler pages secret put` 으로 등록.
  * - 관리자 화면은 로컬 개발 서버에서도 쓰므로 CORS 는 * (비밀번호가 보호).
  */
@@ -22,7 +22,7 @@ export interface PublishContext {
   env: Env;
 }
 
-export const ALLOWED = ['equipment-types.json', 'diagram.json', 'equipment-images.json', 'specs.json'] as const;
+export const ALLOWED = ['equipment-types.json', 'diagram.json', 'diagram-dc.json', 'equipment-images.json', 'specs.json'] as const;
 export const MAX_FILE_BYTES = 2_000_000;
 const DATA_DIR = 'src/data/';
 const GH = 'https://api.github.com';

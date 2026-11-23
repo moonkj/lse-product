@@ -36,13 +36,13 @@ const toAdmin = (level: Issue['level']) => (i: RuleIssue): Issue => ({
 });
 
 /** 초안 전체 검사 (DI 규칙과 같은 기준) */
-export function validateDraft(draft: Draft, ref: RefData, today = todayIso()): Issue[] {
+export function validateDraft(draft: Draft, ref: RefData, today = todayIso(), dcDiagram: unknown = diagramDcJson): Issue[] {
   const r = checkDataset({
     equipmentTypes: draft.equipmentTypes,
     diagram: draft.diagram,
     images: draft.images,
-    // 데이터센터 계통도(관리자 편집 대상 아님)도 함께 — 그쪽에만 있는 기기(SST 등)가 "배치 안 됨"으로 잡히지 않게
-    extraDiagrams: { 'diagram-dc.json': diagramDcJson },
+    // 데이터센터 계통도(관리자 데이터센터 초안 또는 원본)도 함께 — 그쪽에만 있는 기기(SST 등)가 "배치 안 됨"으로 잡히지 않게
+    extraDiagrams: { 'diagram-dc.json': dcDiagram },
     categories: ref.categories,
     products: ref.products,
     today,

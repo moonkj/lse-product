@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useLayoutEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import LayerNav from './LayerNav';
 import DetailPanel from '../panel/DetailPanel';
@@ -108,6 +108,14 @@ export default function AppLayout() {
       {panelCol && !panelRail && <PanelResizer />}
       <CompareTray />
       {showNav && <FirstGuide />}
+      {/* 관리자 = 화면 오른쪽 맨 아래 작은 버튼 (2026-11-23 사용자: 헤더 메뉴에서 이동). 휴대폰은 ☰ 메뉴 안 */}
+      <Link to="/admin" className="admin-corner" data-testid="admin-link" title="관리자 — 제품맵 편집">
+        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-4-4L4 16v4z" />
+          <path d="M13.5 6.5l4 4" />
+        </svg>
+        관리자
+      </Link>
       <LiveRegion />
     </div>
   );

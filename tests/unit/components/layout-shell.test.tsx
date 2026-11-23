@@ -105,8 +105,7 @@ describe('교육 탭 제거 (2026-11-18 사용자 결정)', () => {
     expect(screen.queryByTestId('view-mode-product')).toBeNull();
     const nav = screen.getByRole('navigation', { name: '화면' });
     const links = Array.from(nav.querySelectorAll('a'));
-    expect(links.map((a) => a.textContent)).toEqual(['계통도', '제품 조회', '라인업 현황', '관리자']);
-    expect(screen.getByTestId('admin-link')).toHaveAttribute('href', '/admin');
+    expect(links.map((a) => a.textContent)).toEqual(['계통도', '제품 조회', '라인업 현황']); // 관리자는 화면 오른쪽 아래(AdminCorner)
     expect(screen.getByTestId('products-link')).toHaveAttribute('href', '/products');
     expect(links[0]).toHaveAttribute('aria-current', 'page');
     expect(screen.getByTestId('gap-table-link')).toHaveAttribute('href', '/gap');
