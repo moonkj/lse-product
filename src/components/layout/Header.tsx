@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SearchBox from './SearchBox';
 import BrandLogo from '../common/BrandLogo';
 import { useUiStore } from '../../store/useUiStore';
@@ -9,6 +9,8 @@ export default function Header() {
   const { pathname } = useLocation();
   const present = useUiStore((s) => s.present);
   const togglePresent = useUiStore((s) => s.togglePresent);
+  const openGuide = useUiStore((s) => s.openGuide);
+  const navigate = useNavigate();
 
   return (
     <header className="app-header">
@@ -91,6 +93,25 @@ export default function Header() {
       </button>
 
       <ThemeToggle />
+
+      {/* 사용법 = 첫 화면 길잡이 다시 보기 (2026-11-23). 계통맵이 아니면 계통맵으로 간 뒤 연다 */}
+      <button
+        type="button"
+        className="theme-toggle help-toggle"
+        data-testid="help-toggle"
+        title="사용법 보기"
+        onClick={() => {
+          if (pathname !== '/' || window.location.hash.includes('view=stage')) navigate('/');
+          window.setTimeout(openGuide, pathname === '/' ? 0 : 400);
+        }}
+      >
+        <svg className="theme-toggle__icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4" />
+          <path d="M12 17h.01" />
+        </svg>
+        <span className="theme-toggle__label">사용법</span>
+      </button>
 
       {/* QR — 헤더 맨 오른쪽 (2026-11-19 사용자) */}
       <QrButton />

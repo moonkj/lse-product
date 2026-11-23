@@ -47,6 +47,13 @@ export interface UiState {
    */
   emptyPanelOpen: boolean;
   setEmptyPanelOpen: (open: boolean) => void;
+  /**
+   * 첫 화면 길잡이(말풍선 3단계, 2026-11-23) 열림. 처음 주소로 처음 오면 자동으로 열리고(시작 카드와 같은 저장 키 — 닫으면 다시 안 뜸),
+   * 헤더 '사용법' 버튼으로 언제든 다시 연다. 저장하지 않는다.
+   */
+  guideOpen: boolean;
+  openGuide: () => void;
+  closeGuide: () => void;
   togglePresent: () => void;
   setPresent: (on: boolean) => void;
   dismissStartCard: () => void;
@@ -58,6 +65,7 @@ function initial() {
     startCardDismissed: read(START_CARD_KEY),
     entryClean: typeof window === 'undefined' ? false : isCleanEntry(window.location),
     emptyPanelOpen: false,
+    guideOpen: false,
   };
 }
 
@@ -72,6 +80,11 @@ export const useUiStore = create<UiState>()((set, get) => ({
   dismissStartCard: () => {
     write(START_CARD_KEY, true);
     set({ startCardDismissed: true });
+  },
+  openGuide: () => set({ guideOpen: true }),
+  closeGuide: () => {
+    write(START_CARD_KEY, true);
+    set({ guideOpen: false, startCardDismissed: true });
   },
 }));
 

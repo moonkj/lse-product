@@ -806,6 +806,11 @@
   .theme-toggle {
     margin-left: auto;
   }
+
+  /* 휴대폰 세로는 헤더가 빠듯해 사용법 버튼 숨김 (첫 방문 길잡이는 그대로 뜸) */
+  .help-toggle {
+    display: none;
+  }
 }
 
 .present-toggle__icon {

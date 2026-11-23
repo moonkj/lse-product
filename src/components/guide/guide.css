@@ -1,0 +1,83 @@
+/* 첫 화면 길잡이 말풍선 (FirstGuide, 2026-11-23) — 화면을 어둡게 덮지 않고 대상 테두리만 강조 */
+.fguide {
+  position: fixed;
+  z-index: 70;
+  width: min(320px, calc(100vw - 32px));
+  padding: 14px 16px 12px;
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.22);
+}
+.fguide__count {
+  margin: 0 0 4px;
+  color: var(--color-link);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+.fguide__title {
+  margin: 0 0 6px;
+  font-size: 16px;
+  line-height: 1.35;
+}
+.fguide__body {
+  margin: 0 0 12px;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--color-text);
+  word-break: keep-all;
+}
+.fguide__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fguide__spacer { flex: 1; }
+.fguide__skip {
+  min-height: 36px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.fguide__btn {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-strong, var(--color-border));
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+.fguide__btn--primary {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+.fguide__ring {
+  position: fixed;
+  z-index: 69;
+  border: 3px solid var(--color-focus, var(--color-brand));
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.6);
+  pointer-events: none;
+}
+@media (max-width: 900px), (pointer: coarse) {
+  .fguide__btn,
+  .fguide__skip { min-height: 44px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fguide { animation: fguide-in 160ms ease-out; }
+  @keyframes fguide-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+}

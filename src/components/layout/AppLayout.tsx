@@ -1,4 +1,4 @@
-import { Suspense, useLayoutEffect } from 'react';
+import { Suspense, useEffect, useLayoutEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import LayerNav from './LayerNav';
@@ -13,6 +13,8 @@ import { shellGrid, useCompactDensity, usePanelRail } from './shellLayout';
 import { useRouteFocus } from './useRouteFocus';
 import './AppLayout.css';
 import { setActiveGrid, useGrid } from '../../lib/diagram/grid';
+import FirstGuide from '../guide/FirstGuide';
+import { useUiStore } from '../../store/useUiStore';
 
 /** 지연 로딩되는 페이지 청크를 받는 동안 */
 function PageLoading() {
@@ -66,6 +68,16 @@ export default function AppLayout() {
     return () => ro.disconnect();
   }, []);
 
+  // 첫 화면 길잡이: 처음 주소(파라미터 없음)로 처음 온 사람에게만, 계통맵이 그려진 뒤 자동으로 (공유 링크로 온 사람은 방해하지 않음)
+  const guideSeen = useUiStore((s) => s.startCardDismissed);
+  const entryClean = useUiStore((s) => s.entryClean);
+  const openGuide = useUiStore((s) => s.openGuide);
+  useEffect(() => {
+    if (!showNav || guideSeen || !entryClean) return;
+    const t = window.setTimeout(openGuide, 800);
+    return () => window.clearTimeout(t);
+  }, [showNav, guideSeen, entryClean, openGuide]);
+
   const skipToMain = (e: React.MouseEvent) => {
     // HashRouter 에서 href="#main" 은 라우트로 해석되므로 기본 동작을 막고 포커스만 이동
     e.preventDefault();
@@ -95,6 +107,7 @@ export default function AppLayout() {
       {showPanel && <DetailPanel />}
       {panelCol && !panelRail && <PanelResizer />}
       <CompareTray />
+      {showNav && <FirstGuide />}
       <LiveRegion />
     </div>
   );

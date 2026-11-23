@@ -151,3 +151,53 @@ test.describe('계통 종류: 데이터센터(국내) (2026-11-23)', () => {
     await expect(page.getByTestId('grid-select')).toHaveValue('dc');
   });
 });
+
+test.describe('첫 화면 길잡이 (말풍선 3단계, 2026-11-23)', () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
+
+  test('처음 주소로 처음 오면 3단계 안내 → 다음·이전·시작하기, 닫으면 다시 안 뜸, 헤더 사용법으로 다시 열기, 접근성 위반 0', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./');
+    const g = tid(page, 'first-guide');
+    await expect(g).toBeVisible();
+    await expect(g).toHaveAttribute('data-step', '1');
+    await expect(g).toContainText('수요처부터 고르세요');
+    await expect(tid(page, 'first-guide-next')).toBeFocused();
+    // 말풍선이 가리키는 버튼(수요처) 바로 아래
+    const t = (await tid(page, 'preset-trigger').boundingBox())!;
+    const b = (await g.boundingBox())!;
+    expect(b.y).toBeGreaterThan(t.y + t.height - 1);
+    const axe = await new AxeBuilder({ page }).include('[data-testid="first-guide"]').analyze();
+    expect(axe.violations.map((v) => v.id)).toEqual([]);
+    await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/guide1.png' });
+
+    await tid(page, 'first-guide-next').click();
+    await expect(g).toContainText('기기를 눌러 보세요');
+    await tid(page, 'first-guide-prev').click();
+    await expect(g).toHaveAttribute('data-step', '1');
+    await tid(page, 'first-guide-next').click();
+    await tid(page, 'first-guide-next').click();
+    await expect(g).toContainText('보는 방식을 바꿔 보세요');
+    await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/guide3.png' });
+    await expect(tid(page, 'first-guide-next')).toHaveText('시작하기');
+    await tid(page, 'first-guide-next').click();
+    await expect(g).toHaveCount(0);
+
+    await page.reload();
+    await expect(tid(page, 'diagram')).toBeVisible();
+    await page.waitForTimeout(1200);
+    await expect(g).toHaveCount(0);
+
+    await tid(page, 'help-toggle').click();
+    await expect(g).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(g).toHaveCount(0);
+  });
+
+  test('공유 링크(?node=)로 처음 오면 길잡이를 띄우지 않음', async ({ page }) => {
+    await page.goto('./#/?node=n-vcb');
+    await expect(tid(page, 'detail-panel')).toBeVisible();
+    await page.waitForTimeout(1200);
+    await expect(tid(page, 'first-guide')).toHaveCount(0);
+  });
+});
