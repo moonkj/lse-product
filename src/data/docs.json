@@ -6576,18 +6576,6 @@
         }
       ]
     },
-    "EN-P00062": {
-      "source": "www",
-      "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Protection!Measurement!Meter/Measurement/GIMAC-i",
-      "docs": [
-        {
-          "type": "catalog",
-          "title": "[Device] Digital Protection_Measurement_EN",
-          "url": "https://www.ls-electric.com/ko/cat/%5BDevice%5D_Digital_Protection_Measurement_EN_C16902-26-202607.pdf",
-          "lang": "en"
-        }
-      ]
-    },
     "EN-P00024": {
       "source": "www",
       "deepLink": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Low_Voltage/MCB_%26_CP/MCB",

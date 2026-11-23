@@ -2878,21 +2878,6 @@
     "docs": []
   },
   {
-    "id": "EN-P00062",
-    "name": "GIMAC-i",
-    "categoryCode": "AAA016002",
-    "categoryPath": [
-      "영문 사이트",
-      "Protection/Measurement/Meter",
-      "Measurement"
-    ],
-    "url": "https://www.ls-electric.com/products/view/Smart_Power_Solution/Protection!Measurement!Meter/Measurement/GIMAC-i",
-    "source": "en",
-    "business": "power",
-    "discontinued": false,
-    "docs": []
-  },
-  {
     "id": "EN-P00024",
     "name": "BK/RK-Series MCB",
     "categoryCode": "AAA014004",
