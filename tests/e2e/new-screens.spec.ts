@@ -63,7 +63,8 @@ test.describe('제품 조회 /products', () => {
     await expect(page).toHaveURL(/q=susol/);
     await expect(tid(page, 'pcard-P01021')).toBeVisible();
 
-    await tid(page, 'pfil-ul').check();
+    await tid(page, 'pfil-ul').click(); // 주소로 상태를 그리는 체크박스 — check() 의 즉시 확인 대신 아래에서 기다림
+    await expect(tid(page, 'pfil-ul')).toBeChecked();
     await expect(page).toHaveURL(/ul=1/);
     await expect(tid(page, 'pcard-P01021')).toHaveCount(0);
 
@@ -264,5 +265,48 @@ test.describe('UX 1차 묶음 (2026-11-23)', () => {
     await basis.locator('summary').click();
     await expect(basis.getByText('실적 방법')).toBeVisible();
     await expect(tid(page, 'mai-yoy-generation')).toHaveText(/[▲▼–] \d/);
+  });
+});
+
+test.describe('UX 2차 묶음 (2026-11-23)', () => {
+  test('제품 조회: 0개 필터는 누를 수 없음, 고른 조건 칩 → 하나씩 풀기·모두 지우기', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./#/products?stage=L4&ul=1');
+    await expect(page.getByTestId('pfil-stage-L2')).toBeDisabled();
+    const chips = page.getByTestId('products-chips');
+    await expect(chips).toContainText('L4 수전설비');
+    await expect(chips).toContainText('북미 UL');
+    await chips.getByRole('button', { name: '북미 UL 조건 지우기' }).click();
+    await expect(page).not.toHaveURL(/ul=1/);
+    await expect(page.getByTestId('pfil-ul')).not.toBeChecked();
+    await page.getByTestId('products-chips-clear').click();
+    await expect(page).not.toHaveURL(/stage=/);
+    await expect(chips).toHaveCount(0);
+  });
+
+  test('휴대폰 제품 조회: 검색창이 필터보다 위', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./#/products');
+    const s = (await page.getByTestId('products-search').boundingBox())!;
+    const f = (await page.locator('#pfil').boundingBox())!;
+    expect(s.y).toBeLessThan(f.y);
+  });
+
+  test('계통도 보기 옵션: 계획 켜기·끄기, 시장 지표로 이동, Esc 로 닫힘 / 패널 열려도 범례 한 줄', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./#/?node=n-vcb');
+    await expect(page.getByTestId('detail-panel')).toBeVisible();
+    expect((await page.getByTestId('legend-card').boundingBox())!.height).toBeLessThanOrEqual(48);
+    const opt = page.getByTestId('view-options');
+    await opt.click();
+    await expect(page.getByTestId('plan-toggle')).toBeFocused();
+    await page.getByTestId('plan-toggle').click();
+    await expect(page.getByTestId('plan-toggle')).toHaveAttribute('aria-checked', 'true');
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('view-options-panel')).toHaveCount(0);
+    await expect(opt).toBeFocused();
+    await opt.click();
+    await page.getByTestId('market-link').click();
+    await expect(page).toHaveURL(/#\/market/);
   });
 });

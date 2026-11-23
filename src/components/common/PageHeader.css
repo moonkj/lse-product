@@ -10,6 +10,7 @@
 .pg-crumbs {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 6px;
   margin: 0;
   padding: 0;
@@ -17,6 +18,7 @@
   font-size: var(--fs-sm);
   color: var(--color-text-muted);
 }
+.pg-crumbs li { display: inline-flex; align-items: center; } /* 휴대폰에서 링크만 44px 로 커져 줄이 어긋나던 문제 (2026-11-23) */
 .pg-crumbs li + li::before { content: '›'; margin-right: 6px; }
 .pg-crumbs [aria-current='page'] { color: var(--color-text); }
 

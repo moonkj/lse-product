@@ -49,8 +49,9 @@ function FacetGroup({ title, facet, options, selected, counts, onToggle }: Facet
         const n = counts.get(o.value) ?? 0;
         const on = selected.includes(o.value);
         return (
+          // 0개 항목은 눌러도 결과가 없으므로 흐리게 + 누를 수 없게 (이미 고른 것은 풀 수 있게 남김, 2026-11-23 UX 토론)
           <label key={o.value} className="pfil__opt" data-empty={!on && n === 0 ? true : undefined}>
-            <input type="checkbox" checked={on} onChange={() => onToggle(o.value)} data-testid={`pfil-${facet}-${o.value}`} />
+            <input type="checkbox" checked={on} disabled={!on && n === 0} onChange={() => onToggle(o.value)} data-testid={`pfil-${facet}-${o.value}`} />
             <span className="pfil__opt-label">{o.label}</span>
             <span className="pfil__opt-n">{n}</span>
           </label>
@@ -85,13 +86,9 @@ function ProductCard({ row, specs }: { row: ProductRow; specs?: SpecsMap }) {
         {row.equipment.length > 0 && (
           <>
             {' · 기기: '}
-            {row.equipment.slice(0, 2).map((e, i) => (
-              <span key={e.id}>
-                {i > 0 && ', '}
-                <Link to={`/equipment/${e.id}`}>{e.abbr ?? e.name}</Link>
-              </span>
-            ))}
-            {row.equipment.length > 2 && ` 외 ${row.equipment.length - 2}`}
+            {/* 카드 높이를 맞추려 기기는 하나만 (나머지는 '외 N') — 2026-11-23 UX 토론 */}
+            <Link to={`/equipment/${row.equipment[0].id}`}>{row.equipment[0].abbr ?? row.equipment[0].name}</Link>
+            {row.equipment.length > 1 && ` 외 ${row.equipment.length - 1}`}
           </>
         )}
       </p>
@@ -100,7 +97,7 @@ function ProductCard({ row, specs }: { row: ProductRow; specs?: SpecsMap }) {
           {items.map((it) => (
             <div key={it.key} className="pcard__spec">
               <dt>{specLabel(it.key, it.label)}</dt>
-              <dd>{specValueText(it)}</dd>
+              <dd title={specValueText(it)}>{specValueText(it)}</dd>
             </div>
           ))}
         </dl>
@@ -138,7 +135,9 @@ export default function ProductsPage() {
   useEffect(() => setQDraft(filters.q), [filters.q]);
   useEffect(() => setLimit(PAGE_SIZE), [params]);
 
-  const update = (patch: Partial<ProductFilters>) => setParams(productFiltersToParams({ ...filters, ...patch }), { replace: true });
+  // 늘 최신 주소 값에 합친다 — 검색어 반영(0.25초 지연)이 그사이 누른 필터를 예전 값으로 되돌리던 문제 (2026-11-23)
+  const update = (patch: Partial<ProductFilters>) =>
+    setParams((prev) => productFiltersToParams({ ...parseProductFilters(prev), ...patch }), { replace: true });
   // 검색어는 타이핑을 잠시 멈추면 주소에 반영
   useEffect(() => {
     if (qDraft === filters.q) return;
@@ -259,6 +258,57 @@ export default function ProductsPage() {
             {specsState.status === 'loading' && <span className="pres__note"> · 사양 불러오는 중…</span>}
             {specsState.status === 'error' && <span className="pres__note"> · 사양 데이터를 불러오지 못했습니다</span>}
           </p>
+
+          {active > 0 && (
+            // 고른 조건을 결과 위에 모아 보여 주고 하나씩 풀 수 있게 (2026-11-23 UX 토론)
+            <ul className="pchips" aria-label="적용한 조건" data-testid="products-chips">
+              {filters.q && (
+                <li>
+                  <button type="button" className="pchip" onClick={() => { setQDraft(''); update({ q: '' }); }}>
+                    검색: {filters.q} <span aria-hidden="true">✕</span>
+                    <span className="visually-hidden"> 조건 지우기</span>
+                  </button>
+                </li>
+              )}
+              {filters.business.map((v) => (
+                <li key={`b-${v}`}>
+                  <button type="button" className="pchip" onClick={() => update({ business: filters.business.filter((x) => x !== v) })}>
+                    {BUSINESS_LABELS[v]} <span aria-hidden="true">✕</span>
+                    <span className="visually-hidden"> 조건 지우기</span>
+                  </button>
+                </li>
+              ))}
+              {filters.stage.map((v) => (
+                <li key={`s-${v}`}>
+                  <button type="button" className="pchip" onClick={() => update({ stage: filters.stage.filter((x) => x !== v) })}>
+                    {STAGE_FILTER_LABELS[v]} <span aria-hidden="true">✕</span>
+                    <span className="visually-hidden"> 조건 지우기</span>
+                  </button>
+                </li>
+              ))}
+              {filters.voltage.map((v) => (
+                <li key={`v-${v}`}>
+                  <button type="button" className="pchip" onClick={() => update({ voltage: filters.voltage.filter((x) => x !== v) })}>
+                    {VOLTAGE_LABELS[v]} <span aria-hidden="true">✕</span>
+                    <span className="visually-hidden"> 조건 지우기</span>
+                  </button>
+                </li>
+              ))}
+              {filters.ul && (
+                <li>
+                  <button type="button" className="pchip" onClick={() => update({ ul: false })}>
+                    북미 UL <span aria-hidden="true">✕</span>
+                    <span className="visually-hidden"> 조건 지우기</span>
+                  </button>
+                </li>
+              )}
+              <li>
+                <button type="button" className="pfil__clear" data-testid="products-chips-clear" onClick={() => { setQDraft(''); setParams(new URLSearchParams(), { replace: true }); }}>
+                  모두 지우기
+                </button>
+              </li>
+            </ul>
+          )}
 
           {result.length === 0 ? (
             <div className="pres__empty" role="status">

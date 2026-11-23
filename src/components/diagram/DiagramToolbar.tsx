@@ -10,8 +10,7 @@ import { printDiagram } from '../../lib/diagram/print';
 import FlowToggle from './FlowToggle';
 import SupplyPill from './SupplyPill';
 import PresetPicker from '../market/PresetPicker';
-import PlanToggle from '../market/PlanToggle';
-import MarketButton from '../market/MarketButton';
+import ViewOptions from './ViewOptions';
 import ViewSwitch from '../stage/ViewSwitch';
 import GridSelect from './GridSelect';
 
@@ -190,8 +189,8 @@ export default function DiagramToolbar({ mode, total, review }: Props) {
         {/* 오른쪽 끝 슬롯 — 리더 통합 시 <FlowToggle />(D 담당, ⚡ 흐름)·<SupplyPill />(E 담당, 수급 알약)을 이 안에 넣는다 */}
         <div className="dtool__end" data-testid="dtool-end">
           <FlowToggle />
-          <PlanToggle />
-          <MarketButton />
+          {/* 계획·시장 지표는 '보기 옵션'으로 묶음 (2026-11-23 UX 토론) */}
+          <ViewOptions />
           <SupplyPill />
         </div>
       </div>
