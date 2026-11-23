@@ -161,18 +161,19 @@ test.describe('첫 화면 길잡이 (말풍선 3단계, 2026-11-23)', () => {
     const g = tid(page, 'first-guide');
     await expect(g).toBeVisible();
     await expect(g).toHaveAttribute('data-step', '1');
-    await expect(g).toContainText('수요처부터 고르세요');
+    await expect(g).toContainText('자사 제품을 확인하세요');
     await expect(tid(page, 'first-guide-next')).toBeFocused();
-    // 말풍선이 가리키는 버튼(수요처) 바로 아래
-    const t = (await tid(page, 'preset-trigger').boundingBox())!;
-    const b = (await g.boundingBox())!;
-    expect(b.y).toBeGreaterThan(t.y + t.height - 1);
+    // 첫 단계는 자사 보유 기기(초록 ✓)를 가리킴 — 테두리 강조가 보유 기기 상자 위
+    const ring = (await page.locator('.fguide__ring').boundingBox())!;
+    const owned = await page.evaluate(([x, y]) => document.elementsFromPoint(x, y).find((e) => e.classList.contains('dnode'))?.getAttribute('data-coverage'), [ring.x + ring.width / 2, ring.y + ring.height / 2]);
+    expect(owned).toBe('owned');
     const axe = await new AxeBuilder({ page }).include('[data-testid="first-guide"]').analyze();
     expect(axe.violations.map((v) => v.id)).toEqual([]);
     await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/guide1.png' });
 
     await tid(page, 'first-guide-next').click();
-    await expect(g).toContainText('기기를 눌러 보세요');
+    await expect(g).toContainText('필요하면 수요처를');
+    await expect(g).toContainText('꼭 고르지 않아도');
     await tid(page, 'first-guide-prev').click();
     await expect(g).toHaveAttribute('data-step', '1');
     await tid(page, 'first-guide-next').click();
