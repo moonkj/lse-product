@@ -10,6 +10,9 @@ import { ampsOptions, variantFor } from '../../../src/lib/draw/ratings';
 import { balancePhases, circuitAmps, phaseSummary } from '../../../src/lib/draw/load';
 import { recommendCable, voltageDrop } from '../../../src/lib/draw/cable';
 import { panelShortCircuitKA } from '../../../src/lib/draw/validate';
+import { shortCircuitAt } from '../../../src/lib/draw/sc';
+import { scheduleCsv, SCHEDULE_HEAD } from '../../../src/lib/draw/schedule';
+import { updateEdge } from '../../../src/lib/draw/ops';
 import { splitItem } from '../../../src/lib/draw/ops';
 import { PRESETS } from '../../../src/lib/draw/presets';
 import { decodeDiagram, encodeDiagram } from '../../../src/lib/draw/share';
@@ -351,3 +354,71 @@ function productRatingsVariant(name: string, label: string): string {
   const s = specs.get(pid(name))!;
   return s.variants!.find((v) => v.label.startsWith(label))!.id;
 }
+
+describe('피더·보호협조·회로표', () => {
+  // 변압기 → 저압반 → 모선 → 분전반 (모선 → 분전반 선이 피더)
+  const build = () => {
+    const tr = { ...makeNode('equipment', 0, 0, 'cast-tr'), kVA: 1000 };
+    const lv = makeNode('panel', 0, 160, 'lv-swgr');
+    const bus = makeNode('bus', 0, 340);
+    const pb = makeNode('panel', 0, 420, 'panelboard');
+    return fillProducts(chain(tr, lv, bus, pb), specs);
+  };
+  it('분전반 단락전류: 피더 정보가 없으면 계산 안 함, 35mm² 50m 넣으면 변압기 바로 아래보다 작게', () => {
+    let d = build();
+    const pb = d.nodes[3];
+    expect(shortCircuitAt(d, pb.id).kind).toBe('missing');
+    d = updateEdge(d, d.edges[2].id, { cable: 35, lengthM: 50 });
+    const sc = shortCircuitAt(d, pb.id);
+    expect(sc.kind).toBe('ok');
+    const ka = sc.kind === 'ok' ? sc.ka : 0;
+    // Zt=0.00866Ω, Rc=0.0225·50/35=0.0321Ω, Xc=0.004Ω → |Z|≈0.0345Ω → ≈6.4kA
+    expect(ka).toBeGreaterThan(5.5);
+    expect(ka).toBeLessThan(7.5);
+    expect(panelShortCircuitKA(d, d.nodes[1].id)).toBeCloseTo(25.3, 1);
+  });
+  it('보호협조: 하위 주차단기가 보내는 회로보다 크면 경고 → 하위를 1.6배 이하로, 비가 작으면 참고', () => {
+    let d = build();
+    const lv = d.nodes[1];
+    const pb = d.nodes[3];
+    const feederItem = lv.items!.find((i) => i.eq === 'mccb')!; // 250A
+    d = updateEdge(d, d.edges[2].id, { feeder: feederItem.id });
+    d = updateItem(d, lv.id, feederItem.id, { amps: 100 });
+    const pbMain = pb.items!.find((i) => i.eq === 'branch-mccb')!;
+    d = updateItem(d, pb.id, pbMain.id, { amps: 125 });
+    const w = rules(d).find((i) => i.key.endsWith(':19a'))!;
+    expect(w.message).toContain('125A가 위쪽');
+    expect(w.fix?.label).toContain('60A로');
+    d = applyDFix(d, w.fix!.fix);
+    expect(rules(d).find((i) => i.key.endsWith(':19a'))).toBeUndefined();
+    d = updateItem(d, pb.id, pbMain.id, { amps: 75 });
+    expect(rules(d).find((i) => i.key.endsWith(':19b'))?.severity).toBe('info');
+  });
+  it('피더 전선이 보내는 차단기보다 가늘면 경고 → 권장 굵기', () => {
+    let d = build();
+    const lv = d.nodes[1];
+    const feederItem = lv.items!.find((i) => i.eq === 'mccb')!;
+    d = updateEdge(d, d.edges[2].id, { feeder: feederItem.id, cable: 16, lengthM: 30 });
+    const w = rules(d).find((i) => i.rule === 'DRW-20')!;
+    expect(w.fix?.label).toBe('피더 전선 120mm²로'); // 250A → 120mm²(269A)
+    expect(rules(applyDFix(d, w.fix!.fix)).find((i) => i.rule === 'DRW-20')).toBeUndefined();
+  });
+  it('공유 코드에 피더 전선·길이·보내는 회로', () => {
+    let d = build();
+    const feederItem = d.nodes[1].items!.find((i) => i.eq === 'mccb')!;
+    d = updateEdge(d, d.edges[2].id, { feeder: feederItem.id, cable: 120, lengthM: 30 });
+    const back = decodeDiagram(encodeDiagram(d))!;
+    const e = back.edges[2];
+    expect(e).toMatchObject({ cable: 120, lengthM: 30 });
+    expect(back.nodes[1].items!.find((i) => i.id === e.feeder)?.eq).toBe('mccb');
+  });
+  it('회로표 CSV: 반마다 제목·요약·머리글·회로 행', () => {
+    const d = build();
+    const csv = scheduleCsv(d, specs, '2026-11-26');
+    expect(csv.charCodeAt(0)).toBe(0xfeff);
+    expect(csv).toContain('저압 배전반 (저압 배전반 · 380V');
+    expect(csv).toContain('예상 단락전류 약 25.3kA');
+    expect(csv.split(SCHEDULE_HEAD.join(',')).length - 1).toBe(2);
+    expect(csv).toContain('주,주차단기,ACB 기중차단기');
+  });
+});

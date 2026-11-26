@@ -464,3 +464,6 @@
 .pnl__bad { color: var(--cov-missing-text, #b42318); font-weight: 700; }
 .pnl__warn { color: var(--cov-partial-text, #8a5a00); font-weight: 700; }
 .pnl__table select[data-testid='panel-cable'] { min-width: 86px; }
+
+.drw-feeder { display: flex; flex-direction: column; gap: 8px; }
+.pnl__head-actions { flex-wrap: wrap; justify-content: flex-end; }

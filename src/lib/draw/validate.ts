@@ -11,15 +11,21 @@
  *  15 상 최대 부하 전류 > 주차단기 정격
  *  16 반 안 차단기 차단용량 < 예상 단락전류 (위 변압기 %Z 기준)  17 고른 전선이 차단기 정격보다 가늚
  *  18 전압강하 5% 초과 → 굵은 전선
+ *  19 반 → 반 피더: 하위 주차단기가 상위 보내는 차단기보다 크거나 1.6배 차이가 안 남 (보호협조)
+ *  20 피더 전선이 보내는 차단기 정격보다 가늚
  */
 import { getData, type SpecsMap } from '../../data/load';
 import type { Coverage } from '../schema';
 import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builder/specParse';
 import { candidateProducts, isInstrumentProduct, smallestVariant } from '../builder/validate';
-import { ampsInRange, ampsOptions, stdAtLeast, variantFor, RATED_EQ } from './ratings';
+import { ampsInRange, ampsOptions, stdAtLeast, variantFor, RATED_EQ, STD_A } from './ratings';
 import { UNBALANCE_LIMIT, circuitAmps, phaseSummary } from './load';
 import { VDROP_WARN, cableAmps, cableForDrop, recommendCable, voltageDrop } from './cable';
 import { itemKA, variantForKA } from './ratings';
+import { shortCircuitKA } from './sc';
+
+/** 보호협조: 상위 차단기 정격이 하위의 이 배수 이상이면 전류 선택 차단 가능성이 높다고 본다 (간이 기준) */
+export const SELECTIVITY_RATIO = 1.6;
 import {
   eqName,
   isOffLine,
@@ -42,6 +48,7 @@ export type DFix =
   | { type: 'setItemEq'; node: string; item: string; eq: string }
   | { type: 'setItem'; node: string; item: string; patch: Partial<PanelItem> }
   | { type: 'balancePhases'; node: string }
+  | { type: 'setEdge'; edge: string; patch: Partial<DEdge> }
   | { type: 'addItem'; node: string; eq: string }
   | { type: 'removeItem'; node: string; item: string }
   | { type: 'insertBetween'; edge: string; eq: string; hv?: VoltageId; lv?: VoltageId };
@@ -125,10 +132,7 @@ function coverageIssue(out: DIssue[], key: string, label: string, eq: string, no
 /** 변압기 아래쪽으로 이어진 상자 찾기 — node 에서 위(전원 쪽)로 올라가며 처음 만나는 변압기 */
 /** 반의 예상 단락전류 (kA) — 변압기 바로 아래 반(사이에 다른 반 없음)만: 변압기 2차 단락전류 (무한 모선·전선 임피던스 무시, 보수적). 다른 반을 거친 반은 전선 임피던스를 몰라 계산하지 않음 */
 export function panelShortCircuitKA(d: Diagram, nodeId: string): number | undefined {
-  const tr = upstreamTransformer(d, nodeId);
-  const lv = tr?.lv ? voltageOf(tr.lv) : undefined;
-  if (!tr?.kVA || !lv || lv.dc) return undefined;
-  return trShortCircuitKA(tr.kVA, lv.kV, tr.pctZ ?? 6);
+  return shortCircuitKA(d, nodeId);
 }
 
 export function upstreamTransformer(d: Diagram, nodeId: string): DNode | undefined {
@@ -395,6 +399,61 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
           }
         }
       }
+    }
+  }
+
+  // 19·20 반 → 반 피더 (보호협조·피더 전선)
+  for (const e of d.edges) {
+    const a = byId.get(e.from);
+    if (a?.kind !== 'panel') continue;
+    // 아래로 모선을 지나 이어진 반들
+    const downs: { b: DNode; via: DEdge }[] = [];
+    const b0 = byId.get(e.to);
+    if (b0?.kind === 'panel') downs.push({ b: b0, via: e });
+    else if (b0?.kind === 'bus') for (const e2 of d.edges.filter((x) => x.from === b0.id)) {
+      const b = byId.get(e2.to);
+      if (b?.kind === 'panel') downs.push({ b, via: e2 });
+    }
+    const pa = panelTypeById(a.eq);
+    if (!pa) continue;
+    for (const { b, via } of downs) {
+      const pb = panelTypeById(b.eq);
+      if (!pb) continue;
+      const up = (via.feeder && a.items?.find((i) => i.id === via.feeder)) || (e.feeder && a.items?.find((i) => i.id === e.feeder)) || a.items?.find((i) => pa.main.includes(i.eq));
+      const down = b.items?.find((i) => pb.main.includes(i.eq));
+      if (!up?.amps || !down?.amps) continue;
+      const upName = `${nodeTitle(a)} ${up === a.items?.find((i) => pa.main.includes(i.eq)) ? '주차단기' : up.name || eqName(up.eq)}`;
+      if (down.amps > up.amps) {
+        out.push({
+          key: `${via.id}:19a`,
+          rule: 'DRW-19',
+          severity: 'warn',
+          message: `보호협조: '${nodeTitle(b)}' 주차단기 ${down.amps}A가 위쪽 ${upName} ${up.amps}A보다 큽니다. 고장 때 위쪽이 먼저 떨어질 수 있습니다.`,
+          node: b.id,
+          edge: via.id,
+          fix: { label: `'${nodeTitle(b)}' 주차단기를 ${[...STD_A].reverse().find((x) => x * SELECTIVITY_RATIO <= up.amps!) ?? up.amps}A로`, fix: { type: 'setItem', node: b.id, item: down.id, patch: { amps: [...STD_A].reverse().find((x) => x * SELECTIVITY_RATIO <= up.amps!) ?? up.amps } } },
+        });
+      } else if (up.amps < down.amps * SELECTIVITY_RATIO)
+        out.push({
+          key: `${via.id}:19b`,
+          rule: 'DRW-19',
+          severity: 'info',
+          message: `보호협조 참고: 위쪽 ${upName} ${up.amps}A와 '${nodeTitle(b)}' 주차단기 ${down.amps}A의 정격 비가 ${(up.amps / down.amps).toFixed(2)}배입니다. 1.6배 이상이면 선택 차단이 쉬워집니다 (제조사 선택차단표로 확인).`,
+          node: b.id,
+          edge: via.id,
+        });
+      const feederCable = via.cable ?? e.cable;
+      const rec = recommendCable(up.amps);
+      if (feederCable && rec && feederCable < rec)
+        out.push({
+          key: `${via.id}:20`,
+          rule: 'DRW-20',
+          severity: 'warn',
+          message: `'${nodeTitle(a)}' → '${nodeTitle(b)}' 피더 전선 ${feederCable}mm²가 보내는 차단기 ${up.amps}A보다 가늡니다.`,
+          node: b.id,
+          edge: via.id,
+          fix: { label: `피더 전선 ${rec}mm²로`, fix: { type: 'setEdge', edge: via.id, patch: { cable: rec } } },
+        });
     }
   }
 

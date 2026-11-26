@@ -81,6 +81,12 @@ export interface DEdge {
   id: string;
   from: string;
   to: string;
+  /** 피더 전선 굵기 (mm²) — 단락전류·전압강하 */
+  cable?: number;
+  /** 피더 길이 (m) */
+  lengthM?: number;
+  /** 위쪽 반에서 이 선으로 보내는 회로(품목 id) — 보호협조 확인 */
+  feeder?: string;
 }
 
 export interface Diagram {
@@ -251,6 +257,17 @@ export function nodeTitle(n: DNode): string {
   if (n.kind === 'panel') return panelTypeById(n.eq)?.label ?? '반';
   const e = n.eq ? getData().equipmentTypeById.get(n.eq) : undefined;
   return e?.name ?? '기기';
+}
+
+/** 선의 '보내는 반' — 선이 반에서 나오면 그 반, 모선에서 나오면 그 모선을 먹이는 반 */
+export function feederSource(d: Diagram, e: DEdge): DNode | undefined {
+  const from = d.nodes.find((n) => n.id === e.from);
+  if (from?.kind === 'panel') return from;
+  if (from?.kind === 'bus') {
+    const inc = d.edges.find((x) => x.to === from.id && d.nodes.find((n) => n.id === x.from)?.kind === 'panel');
+    return inc ? d.nodes.find((n) => n.id === inc.from) : undefined;
+  }
+  return undefined;
 }
 
 /** 선 양 끝에서 본 상자 전압 — 변압기는 선이 붙은 쪽(1차/2차) */

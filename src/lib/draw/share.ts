@@ -6,7 +6,7 @@
 import { getData } from '../../data/load';
 import { clampQty } from '../builder/validate';
 import { CABLE_SIZES } from './cable';
-import { CANVAS_H, CANVAS_W, VOLTAGES, emptyDiagram, newId, panelTypeById, type DNode, type Diagram, type PanelItem, type VoltageId } from './model';
+import { CANVAS_H, CANVAS_W, VOLTAGES, emptyDiagram, feederSource, newId, panelTypeById, type DEdge, type DNode, type Diagram, type PanelItem, type VoltageId } from './model';
 
 const KINDS: DNode['kind'][] = ['source', 'bus', 'equipment', 'panel'];
 const MAX_NODES = 300;
@@ -39,7 +39,15 @@ export function encodeDiagram(d: Diagram): string {
     }
     return p;
   });
-  const edges = d.edges.map((e) => [idx.get(e.from), idx.get(e.to)]).filter((x): x is [number, number] => x[0] !== undefined && x[1] !== undefined);
+  const edges = d.edges
+    .map((e) => {
+      const from = feederSource(d, e);
+      const fi = e.feeder ? (from?.items ?? []).findIndex((i) => i.id === e.feeder) : -1;
+      const p: (number | undefined)[] = [idx.get(e.from), idx.get(e.to), e.cable ?? 0, e.lengthM ?? 0, fi];
+      while (p.length > 2 && (p[p.length - 1] === 0 || p[p.length - 1] === -1)) p.pop();
+      return p;
+    })
+    .filter((x): x is number[] => x[0] !== undefined && x[1] !== undefined);
   return toBase64Url(JSON.stringify({ v: 1, n: d.name, s: nodes, e: edges }));
 }
 
@@ -114,7 +122,14 @@ export function decodeDiagram(code: string): Diagram | null {
     if (!Array.isArray(e)) continue;
     const a = ids[e[0] as number];
     const b = ids[e[1] as number];
-    if (a && b && a !== b && !d.edges.some((x) => x.from === a && x.to === b)) d.edges.push({ id: newId('e'), from: a, to: b });
+    if (!a || !b || a === b || d.edges.some((x) => x.from === a && x.to === b)) continue;
+    const edge: DEdge = { id: newId('e'), from: a, to: b };
+    if (typeof e[2] === 'number' && CABLE_SIZES.some((c) => c.mm2 === e[2])) edge.cable = e[2];
+    const len = num(e[3], 0.1, 5000);
+    if (len && e[3]) edge.lengthM = len;
+    d.edges.push(edge);
+    const fromNode = feederSource(d, edge);
+    if (typeof e[4] === 'number' && fromNode?.items?.[e[4]]) edge.feeder = fromNode.items[e[4]].id;
   }
   return d;
 }

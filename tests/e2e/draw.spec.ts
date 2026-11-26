@@ -292,4 +292,43 @@ test.describe('단선도 그리기', () => {
     await expect(r1.getByTestId('panel-cable')).toHaveValue('10');
   });
 
+  test('피더: 선에 보내는 회로·전선·길이 → 아래 분전반 단락전류, 회로표 CSV·인쇄', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await tid(page, 'draw-preset').selectOption('substation');
+    const pbNode = page.locator('[data-kind="panel"][data-eq="panelboard"]');
+    await pbNode.dblclick();
+    const ed = tid(page, 'panel-editor');
+    await expect(ed.getByTestId('panel-isc-missing')).toBeVisible();
+    await ed.getByTestId('panel-close').click();
+    // 모선 → 분전반 선 고르기
+    await page.waitForTimeout(400);
+    const edgeId = await page.evaluate(() => {
+      const s = JSON.parse(localStorage.getItem('lse-draw:v1')!);
+      const dg = s.diagrams[s.currentId];
+      const pb = dg.nodes.find((n: { eq?: string }) => n.eq === 'panelboard');
+      return dg.edges.find((e: { to: string }) => e.to === pb.id).id as string;
+    });
+    await page.locator(`[data-testid="draw-edge-${edgeId}"] .drw-edge__hit`).dispatchEvent('pointerdown');
+    const feeder = tid(page, 'draw-feeder');
+    await expect(feeder).toBeVisible();
+    await feeder.getByTestId('draw-feeder-item').selectOption({ index: 2 });
+    await feeder.getByTestId('draw-feeder-cable').selectOption('35');
+    await feeder.getByTestId('draw-feeder-length').fill('50');
+    await expect(feeder.getByTestId('draw-feeder-isc')).toContainText('kA (피더 전선 1구간 반영)');
+    await pbNode.dblclick();
+    await expect(ed.getByTestId('panel-isc')).toContainText('피더 전선 반영');
+    const [csv] = await Promise.all([page.waitForEvent('download'), ed.getByTestId('panel-csv').click()]);
+    expect(csv.suggestedFilename()).toMatch(/^회로표_.*\.csv$/);
+    await ed.getByTestId('panel-print').click();
+    const inner = page.frameLocator('iframe[data-print-frame]');
+    await expect(inner.locator('table')).toHaveCount(1);
+    await expect(inner.locator('svg')).toHaveCount(1);
+    await expect(inner.locator('h1')).toContainText('분전반');
+    await ed.getByTestId('panel-close').click();
+    await tid(page, 'draw-bom-toggle').click();
+    const [all] = await Promise.all([page.waitForEvent('download'), tid(page, 'draw-schedule-csv').click()]);
+    expect(all.suggestedFilename()).toMatch(/^회로표_.*\.csv$/);
+  });
+
 });

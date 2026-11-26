@@ -4,7 +4,7 @@ import { COVERAGE_LABELS } from '../schema';
 import { csvCell } from '../pages/catalog';
 import { candidateProducts, clampQty, DISCLAIMER, isInstrumentProduct } from '../builder/validate';
 import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builder/specParse';
-import { TRANSFORMERS, eqName, isTransformer, makeNode, newId, nodeSize, nodeTitle, panelTypeById, snap, voltageLabel, voltageOf, type DNode, type Diagram, type PanelItem } from './model';
+import { TRANSFORMERS, eqName, isTransformer, makeNode, newId, nodeSize, nodeTitle, panelTypeById, snap, voltageLabel, voltageOf, type DEdge, type DNode, type Diagram, type PanelItem } from './model';
 import { upstreamTransformer } from './validate';
 import { ampsOptions, defaultRating, itemSpecText, stdAtLeast, variantFor } from './ratings';
 import { balancePhases } from './load';
@@ -49,6 +49,10 @@ export function connect(d: Diagram, a: string, b: string): Diagram {
 
 export function removeEdge(d: Diagram, id: string): Diagram {
   return touch(d, { edges: d.edges.filter((e) => e.id !== id) });
+}
+
+export function updateEdge(d: Diagram, id: string, patch: Partial<DEdge>): Diagram {
+  return touch(d, { edges: d.edges.map((e) => (e.id === id ? { ...e, ...patch } : e)) });
 }
 
 export function reverseEdge(d: Diagram, id: string): Diagram {
@@ -140,6 +144,8 @@ export function applyDFix(d: Diagram, f: DFix): Diagram {
       return updateItem(d, f.node, f.item, f.patch);
     case 'balancePhases':
       return balanceNode(d, f.node);
+    case 'setEdge':
+      return updateEdge(d, f.edge, f.patch);
     case 'addItem':
       return addItem(d, f.node, f.eq);
     case 'removeItem':

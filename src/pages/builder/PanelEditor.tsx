@@ -12,7 +12,10 @@ import { eqName, panelTypeById, voltageLabel, type DNode, type Diagram, type Pan
 import { addItems, balanceNode, fillProducts, moveItem, removeItem, setItemQty, splitItem, updateItem, updateNode } from '../../lib/draw/ops';
 import { PHASES, UNBALANCE_LIMIT, circuitAmps, isThreePhase, phaseSummary } from '../../lib/draw/load';
 import { CABLE_SIZES, VDROP_INFO, VDROP_WARN, recommendCable, voltageDrop } from '../../lib/draw/cable';
-import { panelShortCircuitKA } from '../../lib/draw/validate';
+import { shortCircuitAt } from '../../lib/draw/sc';
+import { printHtml, scheduleCsv, scheduleHtml } from '../../lib/draw/schedule';
+import { downloadText } from '../../lib/pages/catalog';
+import { todayIso } from '../../lib/labels';
 import { itemKA } from '../../lib/draw/ratings';
 import { POLED_EQ, RATED_EQ, ampsOptions, itemSpecText, variantFor, variantOptions } from '../../lib/draw/ratings';
 import type { DFix, DIssue } from '../../lib/draw/validate';
@@ -41,7 +44,10 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
   const lowV = n.v === '0.38' || n.v === '0.22';
   const ps = phaseSummary(items, mainIdx >= 0 ? items[mainIdx].id : undefined);
   const maxKW = Math.max(ps.kW.R, ps.kW.S, ps.kW.T, 0.0001);
-  const isc = lowV ? panelShortCircuitKA(d, n.id) : undefined;
+  const scInfo = lowV ? shortCircuitAt(d, n.id) : undefined;
+  const isc = scInfo?.kind === 'ok' ? scInfo.ka : undefined;
+  const sldRef = useRef<HTMLDivElement>(null);
+  const fileBase = `회로표_${(n.label ?? pt.label).replace(/[\\/:*?"<>|\s]+/g, '_')}_${todayIso()}`;
 
   useEffect(() => {
     const dlg = ref.current;
@@ -67,12 +73,40 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
             {isc ? (
               <>
                 {' '}
-                · <span data-testid="panel-isc">예상 단락전류 약 {isc.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}kA</span>
+                · <span data-testid="panel-isc">예상 단락전류 약 {isc.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}kA{scInfo?.kind === 'ok' && scInfo.feeders ? ` (피더 전선 반영)` : ''}</span>
+              </>
+            ) : scInfo?.kind === 'missing' ? (
+              <>
+                {' '}
+                · <span data-testid="panel-isc-missing">단락전류: 이 반으로 오는 선에 피더 전선 굵기·길이를 넣으면 계산합니다</span>
               </>
             ) : null}
           </p>
         </div>
         <div className="pnl__head-actions">
+          <button
+            type="button"
+            className="btn btn--secondary btn--sm"
+            onClick={() => {
+              downloadText(`${fileBase}.csv`, scheduleCsv(d, specs, todayIso(), [n]), 'text/csv;charset=utf-8');
+              announce('회로표 CSV를 내려받았습니다');
+            }}
+            data-testid="panel-csv"
+          >
+            회로표 CSV
+          </button>
+          <button
+            type="button"
+            className="btn btn--secondary btn--sm"
+            onClick={() => {
+              const svg = sldRef.current?.querySelector('svg')?.outerHTML ?? '';
+              printHtml(scheduleHtml(d, n, specs, todayIso(), svg), 'panel-print-frame');
+              announce('회로표 인쇄 창을 열었습니다');
+            }}
+            data-testid="panel-print"
+          >
+            회로표 인쇄
+          </button>
           <button type="button" className="btn btn--secondary btn--sm" onClick={fillThis} disabled={!specs} data-testid="panel-fill">
             이 반 제품·정격 채우기
           </button>
@@ -83,7 +117,7 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
       </div>
 
       <div className="pnl__body">
-        <section className="pnl__sld" aria-label="반 안 결선도">
+        <section className="pnl__sld" aria-label="반 안 결선도" ref={sldRef}>
           <InnerDiagram items={items} mainIdx={mainIdx} specs={specs} voltage={voltageLabel(n.v)} issues={issues.filter((i) => i.node === n.id && i.severity !== 'info')} />
         </section>
 
@@ -471,7 +505,7 @@ function InnerDiagram({ items, mainIdx, specs, voltage, issues }: { items: Panel
   const busY = main ? 118 : 30;
   return (
     <div className="pnl__sldscroll" tabIndex={0} role="group" aria-label="반 안 결선도 (옆으로 넘겨 보기)">
-      <svg width={width} height={busY + 150} role="img" aria-label={`반 안 결선도: 주차단기 ${main ? abbr(main.eq) : '없음'}, 분기 ${branches.length}회로`} data-testid="panel-sld">
+      <svg width={width} height={busY + 150} viewBox={`0 0 ${width} ${busY + 150}`} role="img" aria-label={`반 안 결선도: 주차단기 ${main ? abbr(main.eq) : '없음'}, 분기 ${branches.length}회로`} data-testid="panel-sld">
         <text x={8} y={16} className="pnl-t2">
           {voltage} 인입
         </text>

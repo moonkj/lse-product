@@ -21,6 +21,7 @@ import {
   PANEL_TYPES,
   VOLTAGES,
   eqName,
+  feederSource,
   isOffLine,
   isTransformer,
   makeNode,
@@ -29,6 +30,7 @@ import {
   panelTypeById,
   voltageLabel,
   voltageOf,
+  type DEdge,
   type DNode,
   type Diagram,
   type VoltageId,
@@ -48,11 +50,16 @@ import {
   removeItem,
   removeNode,
   reverseEdge,
+  updateEdge,
   setItemQty,
   updateItem,
   updateNode,
 } from '../../lib/draw/ops';
 import { PRESETS } from '../../lib/draw/presets';
+import { shortCircuitAt } from '../../lib/draw/sc';
+import { CABLE_SIZES, recommendCable } from '../../lib/draw/cable';
+import { RATED_EQ } from '../../lib/draw/ratings';
+import { scheduleCsv } from '../../lib/draw/schedule';
 import { edgePath, portPoint } from '../../lib/draw/geometry';
 import { decodeDiagram, diagramShareUrl } from '../../lib/draw/share';
 import { diagramSvg } from '../../lib/draw/exportSvg';
@@ -766,7 +773,7 @@ function Palette({ onPick }: { onPick: (code: string) => void }) {
 interface InspectorProps {
   d: Diagram;
   node?: DNode;
-  edge?: { id: string; from: string; to: string };
+  edge?: DEdge;
   issues: DIssue[];
   specs?: SpecsMap;
   onCommit: (d: Diagram, say?: string) => void;
@@ -798,6 +805,11 @@ function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, 
         <p className="drw-panel__meta">
           {a ? nodeTitle(a) : '?'} → {b ? nodeTitle(b) : '?'}
         </p>
+        {a?.kind === 'panel' || (a?.kind === 'bus' && b?.kind === 'panel') || edge.cable ? (
+          <EdgeFeeder d={d} edge={edge} onCommit={onCommit} />
+        ) : (
+          <p className="drw-panel__note">반에서 다른 반으로 가는 선(피더)이면 전선 굵기·길이를 넣어 아래 반의 단락전류를 계산할 수 있습니다.</p>
+        )}
         {list.length > 0 && <IssueList issues={list} onApply={onApply} />}
         <div className="drw-panel__actions">
           <button type="button" className="btn btn--secondary btn--sm" onClick={() => onCommit(reverseEdge(d, edge.id), '선 방향을 바꿨습니다')}>
@@ -940,6 +952,60 @@ function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, 
         </button>
       </div>
     </aside>
+  );
+}
+
+/** 선(피더) 정보 — 보내는 회로, 전선 굵기·길이, 아래 반 예상 단락전류 */
+function EdgeFeeder({ d, edge, onCommit }: { d: Diagram; edge: DEdge; onCommit: (d: Diagram, say?: string) => void }) {
+  const a = feederSource(d, edge);
+  const b = d.nodes.find((n) => n.id === edge.to);
+  const set = (patch: Partial<DEdge>) => onCommit(updateEdge(d, edge.id, patch));
+  const feederItems = a?.kind === 'panel' ? (a.items ?? []).filter((i) => RATED_EQ.has(i.eq)) : [];
+  const feederA = feederItems.find((i) => i.id === edge.feeder)?.amps;
+  const sc = b ? shortCircuitAt(d, b.id) : undefined;
+  return (
+    <div className="drw-feeder" data-testid="draw-feeder">
+      <h3 className="drw-panel__h">피더</h3>
+      {feederItems.length > 0 && (
+        <label className="drw-field">
+          보내는 회로 ({a ? nodeTitle(a) : ''})
+          <select value={edge.feeder ?? ''} onChange={(e) => set({ feeder: e.target.value || undefined })} data-testid="draw-feeder-item">
+            <option value="">(주차단기 기준)</option>
+            {feederItems.map((i) => (
+              <option key={i.id} value={i.id}>
+                {[i.name, eqName(i.eq), i.amps ? `${i.amps}A` : ''].filter(Boolean).join(' · ')}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      <div className="drw-fields">
+        <label className="drw-field">
+          전선 (mm²)
+          <select value={edge.cable ?? ''} onChange={(e) => set({ cable: Number(e.target.value) || undefined })} data-testid="draw-feeder-cable">
+            <option value="">{feederA && recommendCable(feederA) ? `권장 ${recommendCable(feederA)}` : '(모름)'}</option>
+            {CABLE_SIZES.map((c) => (
+              <option key={c.mm2} value={c.mm2}>
+                {c.mm2}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="drw-field">
+          길이 (m)
+          <input type="number" min={0} step={1} value={edge.lengthM ?? ''} onChange={(e) => set({ lengthM: Number(e.target.value) > 0 ? Math.min(5000, Number(e.target.value)) : undefined })} data-testid="draw-feeder-length" />
+        </label>
+      </div>
+      {b?.kind === 'panel' && sc && (
+        <p className="drw-panel__note" data-testid="draw-feeder-isc">
+          {sc.kind === 'ok'
+            ? `'${nodeTitle(b)}' 예상 단락전류 약 ${sc.ka.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}kA${sc.feeders ? ` (피더 전선 ${sc.feeders}구간 반영)` : ''}`
+            : sc.kind === 'missing'
+              ? '전선 굵기와 길이를 넣으면 아래 반의 예상 단락전류를 계산합니다.'
+              : '위쪽에 변압기가 없어 단락전류를 계산하지 않습니다.'}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -1086,6 +1152,19 @@ function Bom({ d, specs, onCsv }: { d: Diagram; specs?: SpecsMap; onCsv: () => v
       <div className="bld-bom__head">
         <h2 id="drw-bom-h">제품 목록 {rows.length}</h2>
         <div className="bld-bom__actions">
+          {d.nodes.some((n) => n.kind === 'panel') && (
+            <button
+              type="button"
+              className="btn btn--secondary btn--sm"
+              onClick={() => {
+                downloadText(`회로표_${d.name.replace(/[\\/:*?"<>|\s]+/g, '_')}_${todayIso()}.csv`, scheduleCsv(d, specs, todayIso()), 'text/csv;charset=utf-8');
+                announce('모든 반의 회로표 CSV를 내려받았습니다');
+              }}
+              data-testid="draw-schedule-csv"
+            >
+              회로표 CSV (모든 반)
+            </button>
+          )}
           <button type="button" className="btn btn--secondary btn--sm" onClick={onCsv} data-testid="draw-csv">
             CSV 내려받기
           </button>
