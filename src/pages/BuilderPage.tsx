@@ -673,6 +673,7 @@ export default function BuilderPage() {
   const [params] = useSearchParams();
   const [mode, setMode] = useState<Mode>(() => {
     if (params.get('b')) return 'template';
+    if (params.get('d')) return 'draw';
     try {
       return localStorage.getItem(MODE_KEY) === 'template' ? 'template' : 'draw';
     } catch {
@@ -681,6 +682,7 @@ export default function BuilderPage() {
   });
   useEffect(() => {
     if (params.get('b')) setMode('template');
+    if (params.get('d')) setMode('draw');
   }, [params]);
   useEffect(() => {
     document.title = pageTitle('계통 구성');

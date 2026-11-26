@@ -296,6 +296,12 @@
 .drw-conns li { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
 .drw-conns button { border: 0; background: none; color: var(--color-brand); font: inherit; font-size: 12px; cursor: pointer; text-decoration: underline; }
 
+/* 휴대폰: 고른 상자 빠른 동작 (데스크톱은 숨김) */
+.drw-mobilebar { display: none; }
+/* 단선도 인쇄용 그림 (화면에서는 숨김) */
+.drw-print { display: none; }
+.drw-bar--out { margin-top: calc(var(--space-2) * -1); }
+
 /* 화면 모드 탭 (단선도 그리기 / 템플릿 점검) */
 .bld-modes { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--color-border); border-radius: 999px; background: var(--color-surface-2); align-self: flex-start; }
 .bld-modes button { padding: 7px 16px; border: 0; border-radius: 999px; background: none; color: var(--color-text); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
@@ -312,8 +318,42 @@
   .drw-wrap { order: 1; height: 60dvh; min-height: 360px; }
   .drw-panel { order: 3; }
   .drw-bar__zoom { margin-left: 0; }
+  .drw-mobilebar {
+    order: 1;
+    position: sticky;
+    bottom: 8px;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+  }
+  .drw-mobilebar b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  .drw-mobilebar button {
+    min-height: 40px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .drw-port { width: 22px; height: 22px; margin-left: -11px; bottom: -11px; }
+  /* 휴대폰은 아래 요약 막대를 고정하지 않음 — 빠른 막대와 겹치지 않게 */
+  .drw .drw-summary { position: static; }
 }
 @media print {
+  html.print-diagram body * { visibility: hidden !important; }
+  html.print-diagram .drw-print,
+  html.print-diagram .drw-print * { visibility: visible !important; }
+  html.print-diagram .drw-print { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
+  html.print-diagram .drw-print svg { width: 100%; height: auto; }
   .drw-bar,
   .drw-palette,
   .drw-panel,

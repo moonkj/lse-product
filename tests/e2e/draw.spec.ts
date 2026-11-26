@@ -132,4 +132,72 @@ test.describe('단선도 그리기', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(0);
   });
+  test('공유 링크: 복사한 링크를 새 브라우저에서 열면 사본으로 추가, 잘린 링크는 안내', async ({ page, browser, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await tid(page, 'draw-preset').selectOption('substation');
+    await tid(page, 'draw-share').click();
+    await expect(tid(page, 'draw-share-note')).toContainText('복사했습니다');
+    const url = await page.evaluate(() => navigator.clipboard.readText());
+    expect(url).toContain('#/builder?d=');
+    const other = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+    const p2 = await other.newPage();
+    await p2.setViewportSize({ width: 1600, height: 1000 });
+    await p2.goto(url);
+    await expect(p2.getByTestId('draw-share-note')).toContainText('사본으로 추가');
+    await expect(p2.getByTestId('builder-mode-draw')).toHaveAttribute('aria-selected', 'true');
+    await expect(p2.locator('.drw-node')).toHaveCount(9);
+    await expect(p2.getByTestId('draw-pick').locator('option:checked')).toHaveText('수전설비 단선도 (공유)');
+    expect(p2.url()).not.toContain('d=');
+    await p2.goto(url.slice(0, url.indexOf('d=') + 8));
+    await expect(p2.getByTestId('draw-share-note')).toContainText('읽을 수 없습니다');
+    await other.close();
+  });
+
+  test('그림 내려받기(PNG·SVG)와 단선도 인쇄', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await expect(tid(page, 'draw-png')).toBeDisabled();
+    await tid(page, 'draw-preset').selectOption('datacenter');
+    const [svg] = await Promise.all([page.waitForEvent('download'), tid(page, 'draw-svg').click()]);
+    expect(svg.suggestedFilename()).toMatch(/^단선도_.*\.svg$/);
+    const [png] = await Promise.all([page.waitForEvent('download'), tid(page, 'draw-png').click()]);
+    expect(png.suggestedFilename()).toMatch(/^단선도_.*\.png$/);
+    const pngPath = SHOT + 'drw-export.png';
+    await png.saveAs(pngPath);
+    // 인쇄: print 대화상자 대신 호출 여부만
+    await page.evaluate(() => {
+      (window as unknown as { __printed: number }).__printed = 0;
+      window.print = () => {
+        (window as unknown as { __printed: number }).__printed++;
+        // 인쇄 중에는 그림만 보이는 상태
+        (window as unknown as { __svg: boolean }).__svg = !!document.querySelector('.drw-print svg') && document.documentElement.classList.contains('print-diagram');
+      };
+    });
+    await tid(page, 'draw-print').click();
+    await expect.poll(() => page.evaluate(() => (window as unknown as { __printed: number }).__printed)).toBe(1);
+    expect(await page.evaluate(() => (window as unknown as { __svg: boolean }).__svg)).toBe(true);
+    await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('print-diagram'))).toBe(false);
+  });
+
+  test('휴대폰: 상자를 누르면 아래 빠른 막대(연결하기·지우기·자세히), 연결하기로 잇기', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./#/builder');
+    await tid(page, 'draw-pal-source-').click();
+    await page.locator('.drw-canvas').click({ position: { x: 5, y: 5 } });
+    await tid(page, 'draw-pal-panel-mv-swgr').click();
+    const mv = page.locator('[data-eq="mv-swgr"]');
+    const src = page.locator('[data-kind="source"]');
+    await src.click();
+    const bar = tid(page, 'draw-mobilebar');
+    await expect(bar).toBeVisible();
+    await bar.getByRole('button', { name: '연결하기' }).click();
+    await mv.click();
+    await expect(page.locator('.drw-edge')).toHaveCount(1);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+    await page.screenshot({ path: SHOT + 'drw-mobile.png' });
+  });
+
 });

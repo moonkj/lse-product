@@ -5,7 +5,7 @@
  * 마우스 없이: 상자는 버튼(Tab), 방향키 이동, Delete 지우기, '연결하기' → 대상 상자 누르기.
  */
 import { useEffect, useMemo, useRef, useState, type DragEvent, type PointerEvent as RPointerEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getData, productImageUrl, type SpecsMap } from '../../data/load';
 import CoverageBadge from '../../components/common/CoverageBadge';
 import { useSpecs } from '../../components/compare/useSpecs';
@@ -16,7 +16,6 @@ import { downloadText } from '../../lib/pages/catalog';
 import { maxOf, productRatings } from '../../lib/builder/specParse';
 import { QTY_MAX, candidateProducts, isInstrumentProduct } from '../../lib/builder/validate';
 import {
-  BUS_H,
   CANVAS_H,
   CANVAS_W,
   PANEL_TYPES,
@@ -54,6 +53,9 @@ import {
   updateNode,
 } from '../../lib/draw/ops';
 import { PRESETS } from '../../lib/draw/presets';
+import { edgePath, portPoint } from '../../lib/draw/geometry';
+import { decodeDiagram, diagramShareUrl } from '../../lib/draw/share';
+import { diagramSvg } from '../../lib/draw/exportSvg';
 import { useCurrentDiagram, useDrawStore } from '../../lib/draw/store';
 import './DrawEditor.css';
 
@@ -240,6 +242,84 @@ export default function DrawEditor() {
   const selNode = sel?.type === 'node' ? d.nodes.find((n) => n.id === sel.id) : undefined;
   const selEdge = sel?.type === 'edge' ? d.edges.find((e) => e.id === sel.id) : undefined;
 
+  const [note, setNote] = useState<{ kind: 'loaded' | 'bad' | 'copied' | 'manual'; url?: string } | null>(null);
+  const [params, setParams] = useSearchParams();
+  const code = params.get('d');
+  // 공유 링크(#/builder?d=…)로 들어오면 사본으로 추가
+  useEffect(() => {
+    if (!code) return;
+    const shared = decodeDiagram(code);
+    if (shared) {
+      useDrawStore.getState().create(shared);
+      setNote({ kind: 'loaded' });
+      announce('공유받은 단선도를 사본으로 추가했습니다');
+    } else setNote({ kind: 'bad' });
+    setParams({}, { replace: true });
+  }, [code, setParams]);
+
+  const copyShare = async () => {
+    const url = diagramShareUrl(d);
+    try {
+      await navigator.clipboard.writeText(url);
+      setNote({ kind: 'copied' });
+      announce('공유 링크를 복사했습니다');
+    } catch {
+      setNote({ kind: 'manual', url });
+    }
+  };
+  const fileBase = `단선도_${d.name.replace(/[\\/:*?"<>|\s]+/g, '_')}_${todayIso()}`;
+  const svgText = () => diagramSvg(d, issues, todayIso());
+  const downloadSvg = () => {
+    downloadText(`${fileBase}.svg`, svgText(), 'image/svg+xml;charset=utf-8');
+    announce('단선도 그림(SVG)을 내려받았습니다');
+  };
+  const downloadPng = () => {
+    const svg = svgText();
+    const m = svg.match(/width="(\d+(?:\.\d+)?)" height="(\d+(?:\.\d+)?)"/);
+    const w = m ? Number(m[1]) : 1200;
+    const h = m ? Number(m[2]) : 800;
+    const img = new Image();
+    const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }));
+    img.onload = () => {
+      const scale = 2;
+      const c = document.createElement('canvas');
+      c.width = w * scale;
+      c.height = h * scale;
+      const ctx = c.getContext('2d')!;
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      c.toBlob((blob) => {
+        if (!blob) return;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${fileBase}.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        announce('단선도 그림(PNG)을 내려받았습니다');
+      }, 'image/png');
+    };
+    img.src = url;
+  };
+  const [printing, setPrinting] = useState(false);
+  const printDiagram = () => {
+    setPrinting(true);
+    document.documentElement.classList.add('print-diagram');
+    const done = () => {
+      document.documentElement.classList.remove('print-diagram');
+      setPrinting(false);
+      window.removeEventListener('afterprint', done);
+    };
+    window.addEventListener('afterprint', done);
+    setTimeout(() => {
+      window.print();
+      // 일부 브라우저는 afterprint 를 보내지 않음
+      setTimeout(done, 500);
+    }, 50);
+  };
+
   const exportCsv = () => {
     const rows = diagramBom(d, specs);
     downloadText(`단선도_${d.name.replace(/[\\/:*?"<>|\s]+/g, '_')}_${todayIso()}.csv`, diagramBomCsv(d, rows, todayIso()), 'text/csv;charset=utf-8');
@@ -327,6 +407,36 @@ export default function DrawEditor() {
           </button>
         </span>
       </div>
+      <div className="drw-bar drw-bar--out" role="toolbar" aria-label="내보내기">
+        <button type="button" className="btn btn--secondary btn--sm" onClick={copyShare} disabled={!d.nodes.length} data-testid="draw-share">
+          공유 링크 복사
+        </button>
+        <button type="button" className="btn btn--secondary btn--sm" onClick={downloadPng} disabled={!d.nodes.length} data-testid="draw-png">
+          그림 PNG
+        </button>
+        <button type="button" className="btn btn--secondary btn--sm" onClick={downloadSvg} disabled={!d.nodes.length} data-testid="draw-svg">
+          그림 SVG
+        </button>
+        <button type="button" className="btn btn--secondary btn--sm" onClick={printDiagram} disabled={!d.nodes.length} data-testid="draw-print">
+          단선도 인쇄
+        </button>
+      </div>
+      {note && (
+        <div className={`bld-share-note${note.kind === 'bad' ? ' is-bad' : ''}`} role="status" data-testid="draw-share-note">
+          {note.kind === 'loaded' && <span>공유받은 단선도를 내 목록에 사본으로 추가했습니다. 원래 단선도들은 그대로 있습니다.</span>}
+          {note.kind === 'bad' && <span>공유 링크를 읽을 수 없습니다. 링크가 잘렸는지 확인하세요.</span>}
+          {note.kind === 'copied' && <span>공유 링크를 복사했습니다. 받는 사람이 열면 이 단선도가 사본으로 추가됩니다.</span>}
+          {note.kind === 'manual' && (
+            <label>
+              복사가 막혀 있습니다. 아래 링크를 직접 복사하세요.
+              <input readOnly value={note.url} onFocus={(e) => e.currentTarget.select()} data-testid="draw-share-url" />
+            </label>
+          )}
+          <button type="button" className="bld-share-note__x" onClick={() => setNote(null)} aria-label="알림 닫기">
+            ×
+          </button>
+        </div>
+      )}
 
       {connectFrom && (
         <p className="drw-connecting" role="status" data-testid="draw-connecting">
@@ -410,6 +520,23 @@ export default function DrawEditor() {
           </div>
         </div>
 
+        {selNode && (
+          <div className="drw-mobilebar" data-testid="draw-mobilebar">
+            <b>{nodeTitle(selNode)}</b>
+            {!(selNode.kind === 'equipment' && isOffLine(selNode.eq)) && (
+              <button type="button" onClick={() => (setConnectFrom(selNode.id), announce('이을 상자를 누르세요'))}>
+                연결하기
+              </button>
+            )}
+            <button type="button" onClick={() => commit(removeNode(d, selNode.id), `'${nodeTitle(selNode)}'을(를) 지웠습니다`)}>
+              지우기
+            </button>
+            <button type="button" onClick={() => document.querySelector('.drw-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+              자세히 ↓
+            </button>
+          </div>
+        )}
+
         <Inspector
           d={d}
           node={selNode}
@@ -441,36 +568,9 @@ export default function DrawEditor() {
         </button>
       </div>
       {showBom && <Bom d={d} specs={specs} onCsv={exportCsv} />}
+      {printing && <div className="drw-print" aria-hidden="true" dangerouslySetInnerHTML={{ __html: svgText() }} />}
     </div>
   );
-}
-
-/* ── 선 그리기 ── */
-function center(n: DNode) {
-  const s = nodeSize(n);
-  return { x: n.x + s.w / 2, y: n.y + s.h / 2 };
-}
-function portPoint(n: DNode) {
-  const s = nodeSize(n);
-  return { x: n.x + s.w / 2, y: n.y + s.h };
-}
-function edgePath(a: DNode, b: DNode): string {
-  const sa = nodeSize(a);
-  const sb = nodeSize(b);
-  const clamp = (v: number, n: DNode, s: { w: number }) => Math.min(n.x + s.w - 12, Math.max(n.x + 12, v));
-  let x1 = a.x + sa.w / 2;
-  let x2 = b.x + sb.w / 2;
-  if (a.kind === 'bus') x1 = clamp(center(b).x, a, sa);
-  if (b.kind === 'bus') x2 = clamp(center(a).x, b, sb);
-  const y1 = a.y + (a.kind === 'bus' ? BUS_H : sa.h);
-  const y2 = b.y;
-  if (y2 >= y1) {
-    const ym = y1 + Math.max(10, (y2 - y1) / 2);
-    return `M${x1},${y1} V${ym} H${x2} V${y2}`;
-  }
-  // 아래 상자가 위에 있으면 옆으로 돌아간다
-  const side = Math.max(a.x + sa.w, b.x + sb.w) + 30;
-  return `M${x1},${y1} V${y1 + 16} H${side} V${y2 - 16} H${x2} V${y2}`;
 }
 
 /* ── 상자 ── */

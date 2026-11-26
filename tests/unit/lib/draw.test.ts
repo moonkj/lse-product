@@ -7,6 +7,8 @@ import { PANEL_TYPES, emptyDiagram, makeNode, sideVoltage, type Diagram } from '
 import { validateDiagram, summarizeDiagram, pickTransformer } from '../../../src/lib/draw/validate';
 import { addItem, addNode, applyDFix, connect, diagramBom, fillProducts, insertBetween, removeNode } from '../../../src/lib/draw/ops';
 import { PRESETS } from '../../../src/lib/draw/presets';
+import { decodeDiagram, encodeDiagram } from '../../../src/lib/draw/share';
+import { diagramSvg } from '../../../src/lib/draw/exportSvg';
 
 const specs = new Map(Object.entries((specsJson as { products: Record<string, ProductSpecs> }).products));
 const pid = (name: string) => [...getData().productById.values()].find((p) => p.name === name)!.id;
@@ -142,5 +144,45 @@ describe('제품 목록·요약', () => {
     expect(s.nodes).toBe(d.nodes.length);
     expect(s.attention).toBe(0);
     expect(s.notOwned).toBeGreaterThan(0); // 전동기·조명 부하 = 사업 범위 밖
+  });
+});
+
+describe('공유 링크·그림', () => {
+  const strip = (d: Diagram) => ({
+    nodes: d.nodes.map(({ id: _i, items, ...n }) => ({ ...n, items: items?.map(({ id: _j, ...it }) => it) })),
+    edges: d.edges.map((e) => [d.nodes.findIndex((n) => n.id === e.from), d.nodes.findIndex((n) => n.id === e.to)]),
+  });
+  it('예시 3종: 코드 → 단선도가 같은 배치·구성·선 (이름엔 "(공유)")', () => {
+    for (const p of PRESETS) {
+      const d = fillProducts(p.make(), specs);
+      const back = decodeDiagram(encodeDiagram(d))!;
+      expect(back.name).toBe(`${d.name} (공유)`);
+      expect(strip(back), p.id).toEqual(strip(d));
+      expect(encodeDiagram(d).length, p.id).toBeLessThan(6000);
+    }
+  });
+  it('모르는 기기·반·전압·제품은 버리고 숫자는 범위 안으로, 깨진 코드는 null', () => {
+    const d = chain(makeNode('source', 0, 0), makeNode('panel', 0, 120, 'mv-swgr'));
+    d.nodes.push({ id: 'x', kind: 'equipment', x: 99999, y: -5, eq: 'nope' });
+    d.nodes[1] = { ...d.nodes[1], product: 'P-NOPE', v: 'zz' as never, items: [...d.nodes[1].items!, { id: 'q', eq: 'nope' }] };
+    const back = decodeDiagram(encodeDiagram(d))!;
+    expect(back.nodes).toHaveLength(2);
+    expect(back.nodes[1].product).toBeUndefined();
+    expect(back.nodes[1].v).toBeUndefined();
+    expect(back.nodes[1].items!.some((i) => i.eq === 'nope')).toBe(false);
+    expect(back.edges).toHaveLength(1);
+    expect(decodeDiagram('%%%')).toBeNull();
+    expect(decodeDiagram(encodeDiagram(d).slice(0, 12))).toBeNull();
+  });
+  it('그림(SVG): 상자·선·반 안 구성·제목·안내 문구, 오류 선은 빨간 점선, 글자는 이스케이프', () => {
+    const d = chain(makeNode('source', 0, 0), makeNode('panel', 0, 120, 'mv-swgr'), { ...makeNode('panel', 0, 300, 'lv-swgr'), label: 'A&B <반>' });
+    const svg = diagramSvg(d, rules(d), '2026-11-26');
+    expect(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(true);
+    expect((svg.match(/<path /g) ?? []).length).toBe(2);
+    expect(svg).toContain('stroke-dasharray="8 5"');
+    expect(svg).toContain('ACB');
+    expect(svg).toContain('A&amp;B &lt;반&gt;');
+    expect(svg).toContain('2026-11-26');
+    expect(svg).toContain('설계 검토');
   });
 });
