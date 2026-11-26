@@ -1,5 +1,5 @@
 /* 계통 구성 시뮬레이션 (/builder) — 2026-11-26 1단계 */
-.bld { --bld-panel-w: 340px; --page-w: 1480px; }
+.bld { --bld-panel-w: 340px; }
 .bld-disclaimer {
   margin: 0;
   padding: 10px 14px;

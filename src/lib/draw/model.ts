@@ -72,8 +72,10 @@ export interface DNode {
   lv?: VoltageId;
   kVA?: number;
   pctZ?: number;
-  /** 모선 길이(px) */
+  /** 상자 너비(px) — 모선은 길이. 없으면 기본 크기 */
   w?: number;
+  /** 상자 높이(px) — 없으면 기본 크기 (모선은 고정) */
+  h?: number;
   /** 부하 기기 상자의 부하 (kW, 1대 기준) */
   loadKW?: number;
   /** 반의 수용률 (0.1~1, 없으면 1) — 이 반 회로 부하 합에 곱한다 (상 전류·주차단기·위쪽 합산 모두 같은 값) */
@@ -105,10 +107,10 @@ export interface Diagram {
 
 export const GRID = 20;
 export const snap = (n: number) => Math.round(n / GRID) * GRID;
-export const NODE_W = 150;
-export const NODE_H = 92;
-export const PANEL_W = 190;
-export const PANEL_H = 112;
+export const NODE_W = 160;
+export const NODE_H = 108;
+export const PANEL_W = 200;
+export const PANEL_H = 120;
 export const BUS_H = 14;
 export const BUS_W = 420;
 export const SOURCE_W = 150;
@@ -116,11 +118,21 @@ export const SOURCE_H = 56;
 export const CANVAS_W = 2400;
 export const CANVAS_H = 1800;
 
-export function nodeSize(n: DNode): { w: number; h: number } {
-  if (n.kind === 'bus') return { w: n.w ?? BUS_W, h: BUS_H };
-  if (n.kind === 'panel') return { w: PANEL_W, h: PANEL_H };
-  if (n.kind === 'source') return { w: SOURCE_W, h: SOURCE_H };
+/** 상자 크기 한도 (사용자가 끌어서 조정) */
+export const SIZE_MIN = { w: 100, h: 48 };
+export const SIZE_MAX = { w: 640, h: 480 };
+
+export function defaultSize(kind: DNode['kind']): { w: number; h: number } {
+  if (kind === 'bus') return { w: BUS_W, h: BUS_H };
+  if (kind === 'panel') return { w: PANEL_W, h: PANEL_H };
+  if (kind === 'source') return { w: SOURCE_W, h: SOURCE_H };
   return { w: NODE_W, h: NODE_H };
+}
+
+export function nodeSize(n: DNode): { w: number; h: number } {
+  const def = defaultSize(n.kind);
+  if (n.kind === 'bus') return { w: n.w ?? def.w, h: BUS_H };
+  return { w: n.w ?? def.w, h: n.h ?? def.h };
 }
 
 /** 변압기 기기 — 기본 1차/2차 전압 */

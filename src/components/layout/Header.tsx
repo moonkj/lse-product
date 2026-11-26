@@ -79,6 +79,17 @@ export default function Header() {
           </svg>
           계통 구성
         </Link>
+        <Link
+          to="/counter"
+          className="app-nav__link"
+          data-testid="counter-link"
+          aria-current={pathname.startsWith('/counter') ? 'page' : undefined}
+        >
+          <svg className="app-nav__icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M4 20 L10 14 M14 10 L20 4 M15 4h5v5 M9 20H4v-5" />
+          </svg>
+          경쟁 대응
+        </Link>
       </nav>
 
       <SearchBox />
@@ -120,7 +131,7 @@ export default function Header() {
         <span className="theme-toggle__label">사용법</span>
       </button>
 
-      {/* 휴대폰(≤600px) 전용 ☰ 메뉴 — 위 화면 메뉴가 숨겨지는 폭 */}
+      {/* 휴대폰·태블릿(≤900px) ☰ 메뉴 — 위 화면 메뉴가 숨겨지는 폭 */}
       <MobileMenu />
 
       {/* QR — 헤더 맨 오른쪽 (2026-11-19 사용자) */}

@@ -1,7 +1,7 @@
 /* 상세 페이지 공용 (제품·기기·공백 표) — 디자인 v1 시각 언어 */
 .pg {
   width: 100%;
-  max-width: var(--page-w, 1200px); /* 페이지 폭 토큰 1개 (기기·제품·비교·공백 표 공용) */
+  max-width: var(--page-w, none); /* 페이지 폭 토큰 1개 — 2026-11-26 전체 폭 */
   margin: 0 auto;
   padding: var(--space-5) var(--space-6) var(--space-10);
   display: flex;

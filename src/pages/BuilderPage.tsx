@@ -673,7 +673,7 @@ export default function BuilderPage() {
   const [params] = useSearchParams();
   const [mode, setMode] = useState<Mode>(() => {
     if (params.get('b')) return 'template';
-    if (params.get('d')) return 'draw';
+    if (params.get('d') || params.get('preset')) return 'draw';
     try {
       return localStorage.getItem(MODE_KEY) === 'template' ? 'template' : 'draw';
     } catch {
@@ -682,7 +682,7 @@ export default function BuilderPage() {
   });
   useEffect(() => {
     if (params.get('b')) setMode('template');
-    if (params.get('d')) setMode('draw');
+    if (params.get('d') || params.get('preset')) setMode('draw');
   }, [params]);
   useEffect(() => {
     document.title = pageTitle('계통 구성');
@@ -697,7 +697,7 @@ export default function BuilderPage() {
     { id: 'template', label: '템플릿 점검' },
   ];
   return (
-    <div className="pg pg--wide bld" data-testid="builder-page">
+    <div className={`pg pg--wide bld${mode === 'draw' ? ' bld--draw' : ''}`} data-testid="builder-page">
       <PageHeader
         crumbs={[{ label: '계통도', to: '/' }, { label: '계통 구성' }]}
         title="계통 구성"

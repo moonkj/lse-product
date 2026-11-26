@@ -26,6 +26,10 @@ import {
   isTransformer,
   makeNode,
   nodeSize,
+  defaultSize,
+  snap,
+  SIZE_MAX,
+  SIZE_MIN,
   nodeTitle,
   panelTypeById,
   voltageLabel,
@@ -105,7 +109,8 @@ export default function DrawEditor() {
     if (!w || !d.nodes.length) return;
     const maxX = Math.max(...d.nodes.map((n) => n.x + nodeSize(n).w)) + 60;
     const maxY = Math.max(...d.nodes.map((n) => n.y + nodeSize(n).h)) + 60;
-    const z = Math.max(0.5, Math.min(1, Math.floor(Math.min(w.clientWidth / maxX, w.clientHeight / maxY) * 10) / 10));
+    // 너비는 꼭 맞추고, 세로로 긴 단선도는 75% 아래로 줄이지 않는다 (글자가 너무 작아지지 않게 — 세로는 스크롤)
+    const z = Math.max(0.5, Math.min(1, Math.floor(Math.min(w.clientWidth / maxX, Math.max(w.clientHeight / maxY, 0.75)) * 10) / 10));
     setZoom(z);
     w.scrollTo({ left: 0, top: 0 });
   };
@@ -205,6 +210,31 @@ export default function DrawEditor() {
     else onNodeClick(n);
   };
 
+  /* ── 상자 크기 조정 (오른쪽 아래 손잡이, 모선은 오른쪽 끝) ── */
+  const sizing = useRef<{ id: string; sx: number; sy: number; w: number; h: number; before: Diagram } | null>(null);
+  const onResizeDown = (ev: RPointerEvent, n: DNode) => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    const s0 = nodeSize(n);
+    sizing.current = { id: n.id, sx: ev.clientX, sy: ev.clientY, w: s0.w, h: s0.h, before: d };
+    (ev.currentTarget as HTMLElement).setPointerCapture(ev.pointerId);
+  };
+  const onResizeMove = (ev: RPointerEvent) => {
+    const g = sizing.current;
+    if (!g) return;
+    const cur = useDrawStore.getState().diagrams[useDrawStore.getState().currentId];
+    const n = cur.nodes.find((x) => x.id === g.id);
+    if (!n) return;
+    const w = snap(g.w + (ev.clientX - g.sx) / zoom);
+    const h = snap(g.h + (ev.clientY - g.sy) / zoom);
+    st.replace(updateNode(cur, g.id, n.kind === 'bus' ? { w: Math.min(2000, Math.max(160, w)) } : { w: Math.min(SIZE_MAX.w, Math.max(SIZE_MIN.w, w)), h: Math.min(SIZE_MAX.h, Math.max(SIZE_MIN.h, h)) }));
+  };
+  const onResizeUp = () => {
+    const g = sizing.current;
+    sizing.current = null;
+    if (g) st.commitFrom(g.before);
+  };
+
   const onNodeClick = (n: DNode) => {
     if (connectFrom && connectFrom !== n.id) {
       commit(connect(d, connectFrom, n.id), `'${nodeTitle(d.nodes.find((x) => x.id === connectFrom)!)}'와 '${nodeTitle(n)}'을(를) 이었습니다`);
@@ -274,6 +304,17 @@ export default function DrawEditor() {
   const saveError = useDrawStore((s) => s.saveError);
   const [params, setParams] = useSearchParams();
   const code = params.get('d');
+  const presetParam = params.get('preset');
+  // 경쟁 대응 화면의 '단선도 예시로 열기' (#/builder?preset=datacenter) — 정격을 다 불러온 뒤 새 단선도로
+  useEffect(() => {
+    if (!presetParam || !specs) return;
+    const p = PRESETS.find((x) => x.id === presetParam);
+    if (p) {
+      useDrawStore.getState().create(fillProducts(p.make(), specs));
+      announce(`${p.label} 예시로 새 단선도를 만들었습니다`);
+    }
+    setParams({}, { replace: true });
+  }, [presetParam, specs, setParams]);
   // 공유 링크(#/builder?d=…)로 들어오면 사본으로 추가
   useEffect(() => {
     if (!code) return;
@@ -590,6 +631,9 @@ export default function DrawEditor() {
                   key={n.id}
                   n={n}
                   note={nodeNote(n)}
+                  onResizeDown={(e) => onResizeDown(e, n)}
+                  onResizeMove={onResizeMove}
+                  onResizeUp={onResizeUp}
                   issues={nodeIssues(n.id)}
                   selected={sel?.type === 'node' && sel.id === n.id}
                   connectTarget={!!connectFrom && connectFrom !== n.id}
@@ -680,6 +724,9 @@ export default function DrawEditor() {
 interface NodeBoxProps {
   n: DNode;
   note?: string;
+  onResizeDown: (e: RPointerEvent) => void;
+  onResizeMove: (e: RPointerEvent) => void;
+  onResizeUp: () => void;
   issues: DIssue[];
   selected: boolean;
   connectTarget: boolean;
@@ -694,7 +741,7 @@ interface NodeBoxProps {
   onPortUp: (e: RPointerEvent) => void;
 }
 
-function NodeBox({ n, note, issues, selected, connectTarget, onPointerDown, onPointerMove, onPointerUp, onKeyDown, onClick, onDoubleClick, onPortDown, onPortMove, onPortUp }: NodeBoxProps) {
+function NodeBox({ n, note, onResizeDown, onResizeMove, onResizeUp, issues, selected, connectTarget, onPointerDown, onPointerMove, onPointerUp, onKeyDown, onClick, onDoubleClick, onPortDown, onPortMove, onPortUp }: NodeBoxProps) {
   const s = nodeSize(n);
   const errors = issues.filter((i) => i.severity === 'error').length;
   const warns = issues.filter((i) => i.severity === 'warn').length;
@@ -722,6 +769,7 @@ function NodeBox({ n, note, issues, selected, connectTarget, onPointerDown, onPo
         type="button"
         className="drw-node__body"
         data-node={n.id}
+        title={[title, sub, p?.name, note].filter(Boolean).join(' · ')}
         aria-pressed={selected}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -777,6 +825,17 @@ function NodeBox({ n, note, issues, selected, connectTarget, onPointerDown, onPo
       </button>
       {!(n.kind === 'equipment' && isOffLine(n.eq)) && (
         <span className="drw-port" title="끌어서 다른 상자에 놓으면 선이 이어집니다" onPointerDown={onPortDown} onPointerMove={onPortMove} onPointerUp={onPortUp} data-testid={`draw-port-${n.id}`} aria-hidden="true" />
+      )}
+      {selected && (
+        <span
+          className={`drw-resize${n.kind === 'bus' ? ' drw-resize--bus' : ''}`}
+          title="끌어서 상자 크기 조정"
+          onPointerDown={onResizeDown}
+          onPointerMove={onResizeMove}
+          onPointerUp={onResizeUp}
+          data-testid={`draw-resize-${n.id}`}
+          aria-hidden="true"
+        />
       )}
     </div>
   );
@@ -956,11 +1015,27 @@ function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, 
         <p className="drw-panel__note">계전기·계측기·감시 기기는 PT·CT나 통신으로 연결되므로 선을 잇지 않아도 됩니다.</p>
       )}
 
-      {n.kind === 'bus' && (
+      {n.kind === 'bus' ? (
         <label className="drw-field">
           모선 길이 (px)
           <input type="number" min={160} max={2000} step={20} value={n.w ?? 420} onChange={(ev) => set({ w: Math.min(2000, Math.max(160, Number(ev.target.value) || 420)) })} data-testid="draw-bus-w" />
         </label>
+      ) : (
+        <div className="drw-fields drw-size" role="group" aria-label="상자 크기">
+          <label className="drw-field">
+            너비 (px)
+            <input type="number" min={SIZE_MIN.w} max={SIZE_MAX.w} step={20} value={nodeSize(n).w} onChange={(ev) => set({ w: Math.min(SIZE_MAX.w, Math.max(SIZE_MIN.w, Number(ev.target.value) || defaultSize(n.kind).w)) })} data-testid="draw-w" />
+          </label>
+          <label className="drw-field">
+            높이 (px)
+            <input type="number" min={SIZE_MIN.h} max={SIZE_MAX.h} step={20} value={nodeSize(n).h} onChange={(ev) => set({ h: Math.min(SIZE_MAX.h, Math.max(SIZE_MIN.h, Number(ev.target.value) || defaultSize(n.kind).h)) })} data-testid="draw-h" />
+          </label>
+          {(n.w || n.h) && (
+            <button type="button" className="drw-size__reset" onClick={() => set({ w: undefined, h: undefined }, '상자 크기를 기본으로 되돌렸습니다')} data-testid="draw-size-reset">
+              기본 크기
+            </button>
+          )}
+        </div>
       )}
 
       {products.length > 0 && (

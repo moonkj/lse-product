@@ -26,12 +26,12 @@ function fromBase64Url(code: string): string {
 
 /** 짧게: 상자 [kind번호, x, y, eq, product, v, label, qty, hv, lv, kVA, pctZ, w, items[[eq, product, qty]]] */
 type PackedItem = [string, string?, number?, string?, number?, number?, string?, number?, string?, number?, number?];
-type PackedNode = [number, number, number, string?, string?, string?, string?, number?, string?, string?, number?, number?, number?, PackedItem[]?, number?, number?];
+type PackedNode = [number, number, number, string?, string?, string?, string?, number?, string?, string?, number?, number?, number?, PackedItem[]?, number?, number?, number?];
 
 export function encodeDiagram(d: Diagram): string {
   const idx = new Map(d.nodes.map((n, i) => [n.id, i]));
   const nodes: PackedNode[] = d.nodes.map((n) => {
-    const p: PackedNode = [KINDS.indexOf(n.kind), n.x, n.y, n.eq ?? '', n.product ?? '', n.v ?? '', n.label ?? '', n.qty ?? 0, n.hv ?? '', n.lv ?? '', n.kVA ?? 0, n.pctZ ?? 0, n.w ?? 0, (n.items ?? []).map((i) => [i.eq, i.product ?? '', i.qty ?? 0, i.variant ?? '', i.amps ?? 0, i.poles ?? 0, i.name ?? '', i.loadKW ?? 0, i.phase ?? '', i.cable ?? 0, i.lengthM ?? 0] as PackedItem), n.loadKW ?? 0, n.demand ?? 0];
+    const p: PackedNode = [KINDS.indexOf(n.kind), n.x, n.y, n.eq ?? '', n.product ?? '', n.v ?? '', n.label ?? '', n.qty ?? 0, n.hv ?? '', n.lv ?? '', n.kVA ?? 0, n.pctZ ?? 0, n.w ?? 0, (n.items ?? []).map((i) => [i.eq, i.product ?? '', i.qty ?? 0, i.variant ?? '', i.amps ?? 0, i.poles ?? 0, i.name ?? '', i.loadKW ?? 0, i.phase ?? '', i.cable ?? 0, i.lengthM ?? 0] as PackedItem), n.loadKW ?? 0, n.demand ?? 0, n.h ?? 0];
     // 끝의 빈 값은 잘라 짧게
     while (p.length > 3) {
       const last = p[p.length - 1];
@@ -78,7 +78,7 @@ export function decodeDiagram(code: string, opts: { suffix?: string; loose?: boo
       ids.push(null);
       continue;
     }
-    const [k, x, y, eq, product, volt, label, qty, hv, lv, kVA, pctZ, w, items, loadKW, demand] = raw as PackedNode;
+    const [k, x, y, eq, product, volt, label, qty, hv, lv, kVA, pctZ, w, items, loadKW, demand, h] = raw as PackedNode;
     const kind = KINDS[k as number];
     if (!kind || (kind === 'equipment' && !okEq(eq)) || (kind === 'panel' && !panelTypeById(eq))) {
       ids.push(null);
@@ -98,6 +98,12 @@ export function decodeDiagram(code: string, opts: { suffix?: string; loose?: boo
     const z = num(pctZ, 0.5, 20);
     if (z && pctZ) n.pctZ = z;
     if (kind === 'bus') n.w = num(w, 160, 2000) ?? 420;
+    else {
+      const ww = num(w, 100, 640);
+      if (ww && w) n.w = ww;
+      const hh = num(h, 48, 480);
+      if (hh && h) n.h = hh;
+    }
     const lk = num(loadKW, 0.01, 1_000_000);
     if (kind === 'equipment' && lk && loadKW) n.loadKW = lk;
     const dm = num(demand, 0.1, 1);

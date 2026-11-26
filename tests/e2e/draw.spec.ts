@@ -358,4 +358,35 @@ test.describe('단선도 그리기', () => {
     await expect(page.locator('[data-eq="motor"]')).toContainText('200kW');
   });
 
+  test('상자 크기 조정(손잡이·숫자), 넓은 화면은 전체 폭, 긴 이름은 두 줄', async ({ page }) => {
+    await page.setViewportSize({ width: 2000, height: 1100 });
+    await page.goto('./#/builder');
+    await tid(page, 'draw-preset').selectOption('grid');
+    // 넓은 화면: 캔버스 창이 1000px 넘게
+    const wrapW = await tid(page, 'draw-canvas-wrap').evaluate((el) => el.getBoundingClientRect().width);
+    expect(wrapW).toBeGreaterThan(1100);
+    const rmu = page.locator('[data-eq="auto-switch"]');
+    await rmu.click();
+    const before = (await rmu.boundingBox())!;
+    const id = (await rmu.getAttribute('data-node'))!;
+    const handle = tid(page, `draw-resize-${id}`);
+    const hb = (await handle.boundingBox())!;
+    await page.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(hb.x + 80, hb.y + 40, { steps: 5 });
+    await page.mouse.up();
+    await expect.poll(async () => (await rmu.boundingBox())!.width).toBeGreaterThan(before.width + 30);
+    await tid(page, 'draw-w').fill('300');
+    await expect.poll(async () => Math.round((await rmu.boundingBox())!.width)).toBeGreaterThan(before.width + 60);
+    await tid(page, 'draw-size-reset').click();
+    await expect.poll(async () => Math.round((await rmu.boundingBox())!.width)).toBe(Math.round(before.width));
+    // 긴 제품명이 상자 밖으로 넘치지 않음
+    const overflow = await rmu.evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      return [...el.querySelectorAll('span')].some((s) => s.getBoundingClientRect().bottom > box.bottom + 1);
+    });
+    expect(overflow).toBe(false);
+    await page.screenshot({ path: SHOT + 'drw-wide.png' });
+  });
+
 });

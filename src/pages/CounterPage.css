@@ -1,0 +1,63 @@
+/* 경쟁 대응 (/counter) — 2026-11-26 */
+.cnt-input { display: flex; flex-direction: column; gap: var(--space-2); }
+.cnt-input__label { font-weight: 700; font-size: 14px; }
+.cnt-input__box {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  resize: vertical;
+}
+.cnt-samples { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.cnt-samples__label { font-size: 12px; color: var(--color-text-muted); font-weight: 700; margin-right: 2px; }
+.cnt-chip {
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.cnt-chip:hover { border-color: var(--color-brand); }
+.cnt-note { margin: 0; font-size: 12px; color: var(--color-text-muted); }
+.cnt-results { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-3); }
+.cnt-found { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; font-size: 14px; }
+.cnt-found p { margin: 0; }
+.cnt-tag { display: inline-block; margin: 0 4px 4px 0; padding: 2px 10px; border-radius: 999px; background: var(--color-brand); color: #fff; font-size: 13px; font-weight: 700; }
+.cnt-muted { color: var(--color-text-muted); font-size: 13px; margin: 0; }
+.cnt-project__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.pg .cnt-project__head h2 { margin: 0; font-size: 16px; }
+.cnt-bundle { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.cnt-bundle__item { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text); text-decoration: none; font-size: 13px; }
+.cnt-bundle__item:hover { border-color: var(--color-brand); }
+.cnt-hits { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-3); }
+.cnt-hit { display: flex; flex-direction: column; gap: 6px; border-left: 4px solid var(--color-border); }
+.cnt-hit--owned { border-left-color: var(--cov-owned); }
+.cnt-hit--partial,
+.cnt-hit--affiliate,
+.cnt-hit--sourced,
+.cnt-hit--developing { border-left-color: var(--cov-partial); }
+.cnt-hit--missing,
+.cnt-hit--na { border-left-color: var(--cov-missing); }
+.cnt-hit__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.pg .cnt-hit__title { margin: 0; font-size: 16px; }
+.cnt-hit__title a { color: var(--color-text); text-decoration: none; }
+.cnt-hit__title a:hover { text-decoration: underline; }
+.cnt-hit__resp,
+.cnt-hit__why,
+.cnt-hit__more { margin: 0; font-size: 13px; }
+.cnt-hit__why { color: var(--color-text-muted); }
+.cnt-products { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.cnt-product { display: inline-block; padding: 4px 10px; border-radius: var(--radius-md); background: var(--color-surface-2); color: var(--color-brand); font-size: 13px; text-decoration: none; }
+.cnt-product:hover { text-decoration: underline; }
+.cnt-none { margin: 0; font-size: 14px; }
+@media (max-width: 600px) {
+  .cnt-hits { grid-template-columns: minmax(0, 1fr); }
+}

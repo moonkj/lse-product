@@ -199,7 +199,7 @@
   --control-h-touch: 44px;
   --focus-ring-w: 2px;
   --focus-ring-offset: 2px;
-  --page-w: 1200px;
+  --page-w: none; /* 2026-11-26 사용자: 계통도처럼 모든 화면이 전체 폭 사용 (예전 1200px) */
   --band-tone-a: #ffffff;
   --band-tone-b: #f2f4f7;
   --band-side: #eaf1fa;

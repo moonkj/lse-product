@@ -651,3 +651,13 @@ describe('3회차 마무리: 자동 상·수량 회로 고정·새 피더 극수
     expect(f2).toMatchObject({ eq: 'acb' });
   });
 });
+
+describe('상자 크기', () => {
+  it('사용자 크기는 선 경로·그림·공유 코드에 반영', () => {
+    let d = chain(makeNode('panel', 0, 0, 'lv-swgr'), makeNode('equipment', 0, 300, 'mccb'));
+    d = updateNode(d, d.nodes[0].id, { w: 320, h: 200 });
+    const back = decodeDiagram(encodeDiagram(d))!;
+    expect(back.nodes[0]).toMatchObject({ w: 320, h: 200 });
+    expect(diagramSvg(d)).toContain('width="320" height="200"');
+  });
+});

@@ -17,6 +17,8 @@ const loaders = {
   market: () => import('./pages/MarketPage'),
   // 계통 구성 시뮬레이션 (2026-11-26 1단계)
   builder: () => import('./pages/BuilderPage'),
+  // 경쟁 대응 — 경쟁사 뉴스·제품명 → 자사 대응 제품 (2026-11-26)
+  counter: () => import('./pages/CounterPage'),
 };
 const EquipmentPage = lazy(loaders.equipment);
 const ProductPage = lazy(loaders.product);
@@ -25,6 +27,7 @@ const ComparePage = lazy(loaders.compare);
 const ProductsPage = lazy(loaders.products);
 const MarketPage = lazy(loaders.market);
 const BuilderPage = lazy(loaders.builder);
+const CounterPage = lazy(loaders.counter);
 
 /**
  * 첫 화면을 그린 뒤 한가할 때 페이지 조각을 미리 받아 둔다 (2026-11-23 사용자: 기기 상세로 넘어갈 때 가끔 "불러오지 못했습니다"가 깜빡임).
@@ -59,6 +62,7 @@ export default function App() {
         <Route path="products" element={<ProductsPage />} />
         <Route path="market" element={<MarketPage />} />
         <Route path="builder" element={<BuilderPage />} />
+        <Route path="counter" element={<CounterPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

@@ -12,6 +12,7 @@ const LINKS: { to: string; label: string; match: (p: string) => boolean; testId:
   { to: '/products', label: '제품 조회', match: (p) => p.startsWith('/product'), testId: 'mmenu-products' },
   { to: '/gap', label: '라인업 현황', match: (p) => p.startsWith('/gap'), testId: 'mmenu-gap' },
   { to: '/builder', label: '계통 구성', match: (p) => p.startsWith('/builder'), testId: 'mmenu-builder' },
+  { to: '/counter', label: '경쟁 대응', match: (p) => p.startsWith('/counter'), testId: 'mmenu-counter' },
   { to: '/admin', label: '관리자', match: (p) => p.startsWith('/admin'), testId: 'mmenu-admin' },
 ];
 

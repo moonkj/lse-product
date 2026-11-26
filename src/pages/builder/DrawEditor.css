@@ -480,3 +480,42 @@
 .pnl__vd select { min-height: 30px; padding: 3px 6px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text); font: inherit; font-size: 12px; }
 .pnl__vd .pnl__hint { flex-basis: auto; }
 .drw-undo-link { border: 0; background: none; padding: 0; color: var(--color-brand); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+
+/* 상자 글자: 이름·제품은 두 줄까지 (2026-11-26 잘림 수정), 넘치면 말줄임 — 전체는 마우스를 올리면 보임 */
+.drw-node--equipment .drw-node__body { justify-content: flex-start; padding-top: 8px; overflow: hidden; }
+.drw-node__title,
+.drw-node__product {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.drw-node__product { line-height: 1.3; }
+.drw-node--panel .drw-node__items { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; }
+.drw-node--panel .drw-node__product { -webkit-line-clamp: 1; flex: none; }
+/* 크기 조정 손잡이 (고른 상자만) */
+.drw-resize {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-brand);
+  border-radius: 3px;
+  background: var(--color-surface);
+  cursor: nwse-resize;
+  touch-action: none;
+  z-index: 3;
+}
+.drw-resize--bus { right: -8px; bottom: -1px; height: 16px; width: 10px; cursor: ew-resize; }
+.drw-size { align-items: end; }
+.drw-size__reset { grid-column: 1 / -1; justify-self: start; border: 0; background: none; padding: 0; color: var(--color-brand); font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; }
+
+/* 단선도 그리기는 화면 전체 폭 사용 (2026-11-26: 넓은 모니터에서 가운데 1480px 만 쓰던 문제) */
+.pg.bld--draw { max-width: none; padding-inline: var(--space-5); }
+@media (min-width: 1600px) {
+  .drw-grid { grid-template-columns: 240px minmax(0, 1fr) 380px; }
+}
