@@ -90,6 +90,14 @@ export function isInstrumentProduct(productId: string): boolean {
   return instrumentIds.has(productId);
 }
 
+type VariantRatings = ReturnType<typeof productRatings>['variants'][number];
+/** 필요한 값(need) 이상을 내는 옵션 중 가장 작은 것 (예: 22.9kV → 24kV 옵션, 1,519A → 2000A 프레임) */
+export function smallestVariant(variants: VariantRatings[], kind: 'kV' | 'A' | 'kA', need: number): VariantRatings | undefined {
+  return variants
+    .filter((x) => x[kind].length && Math.max(...x[kind]) >= need)
+    .sort((x, y) => Math.max(...x[kind]) - Math.max(...y[kind]))[0];
+}
+
 export interface Ctx {
   row: Row;
   slot: Pick<Slot, 'id' | 'label' | 'accepts' | 'default' | 'hint' | 'rating' | 'transformer' | 'required'>;
@@ -196,24 +204,48 @@ function checkPlacement(target: Target, p: Placement | undefined, ctx: Ctx, b: B
   // 계전기·계측기: 정격은 PT·CT 2차 입력값이라 계통 정격 판단(05~08)을 하지 않음
   if (isInstrumentProduct(product.id)) return;
   const r = productRatings(spec);
-  const betterFix = () => {
-    const alt = candidateProducts(p.eq!).find((x) => x.id !== product.id && productFits(x, ctx, b, t, specs) && specs?.has(x.id));
-    return alt ? { label: `${alt.name}(으)로 바꾸기`, fix: { type: 'setProduct' as const, target, product: alt.id } } : undefined;
+  const rowKV = ctx.row.kV * 0.95;
+  const needA = trSecondaryA(b.params.kVA, t.params.lvKV);
+  const needKA = trShortCircuitKA(b.params.kVA, t.params.lvKV, b.params.pctZ);
+  /**
+   * 대체 제품 제안 — 같은 기기의 자사 제품 중 조건에 맞는 것, 그중 '모자란 정격'을 가장 알맞게(넘치지 않게) 채우는 제품.
+   * 옵션(variant)이 있으면 어떤 옵션을 고르면 되는지까지 알려 준다 (예: Susol VCB 24kV).
+   */
+  const betterFix = (kind: 'kV' | 'A' | 'kA') => {
+    const need = kind === 'kV' ? rowKV : kind === 'A' ? needA : needKA;
+    const alts = candidateProducts(p.eq!)
+      .filter((x) => x.id !== product.id && specs?.has(x.id) && productFits(x, ctx, b, t, specs))
+      .map((x) => {
+        const xr = productRatings(specs!.get(x.id));
+        const v = smallestVariant(xr.variants, kind, need);
+        const enough = (v ? v[kind] : xr[kind]).filter((n) => n >= need);
+        return { x, v, score: enough.length ? Math.min(...enough) : Infinity };
+      })
+      .sort((m, n) => m.score - n.score);
+    const best = alts[0];
+    if (!best) return undefined;
+    return { label: `${best.x.name}${best.v ? ` ${best.v.label}` : ''}(으)로 바꾸기`, fix: { type: 'setProduct' as const, target, product: best.x.id } };
   };
   // 05 정격전압
   const kV = maxOf(r.kV);
-  if (ctx.row.acdc !== 'dc' && kV !== undefined && kV < ctx.row.kV * 0.95)
+  if (ctx.row.acdc !== 'dc' && kV !== undefined && kV < rowKV)
     out.push({
       key: `${key}:05`,
       rule: 'BLD-05',
       severity: 'error',
       message: `${product.name} 정격전압은 최대 ${fmt(kV, 1)}kV라 ${ctx.row.voltage} 구간에 맞지 않습니다.`,
       target,
-      fix: betterFix(),
+      fix: betterFix('kV'),
     });
+  else if (ctx.row.acdc !== 'dc' && kV !== undefined && !ctx.slot.transformer) {
+    // 제품은 맞지만 낮은 전압 옵션도 있는 경우 — 고를 옵션 안내
+    const v = smallestVariant(r.variants, 'kV', rowKV);
+    if (v && r.variants.some((x) => x.kV.length && Math.max(...x.kV) < rowKV))
+      out.push({ key: `${key}:05i`, rule: 'BLD-05', severity: 'info', message: `참고: ${ctx.row.voltage} 구간에는 ${product.name} ${v.label} 이상 옵션을 고르세요.`, target });
+  }
   // 06·07 변압기 2차 기준 정격전류·차단용량
   if (ctx.slot.rating === 'trSecondary') {
-    const need = trSecondaryA(b.params.kVA, t.params.lvKV);
+    const need = needA;
     const a = maxOf(r.A);
     if (a !== undefined && a < need)
       out.push({
@@ -222,10 +254,10 @@ function checkPlacement(target: Target, p: Placement | undefined, ctx: Ctx, b: B
         severity: 'warn',
         message: `변압기 ${fmt(b.params.kVA)}kVA의 2차 정격전류는 약 ${fmt(need)}A입니다. ${product.name}은(는) 최대 ${fmt(a)}A라 부족합니다.`,
         target,
-        fix: betterFix(),
+        fix: betterFix('A'),
       });
     else if (a !== undefined) {
-      const v = r.variants.filter((x) => x.A.length && Math.max(...x.A) >= need).sort((x, y) => Math.max(...x.A) - Math.max(...y.A))[0];
+      const v = smallestVariant(r.variants, 'A', need);
       out.push({
         key: `${key}:06i`,
         rule: 'BLD-06',
@@ -234,7 +266,7 @@ function checkPlacement(target: Target, p: Placement | undefined, ctx: Ctx, b: B
         target,
       });
     }
-    const isc = trShortCircuitKA(b.params.kVA, t.params.lvKV, b.params.pctZ);
+    const isc = needKA;
     const ka = maxOf(r.kA);
     if (ka !== undefined && ka < isc)
       out.push({
@@ -243,7 +275,7 @@ function checkPlacement(target: Target, p: Placement | undefined, ctx: Ctx, b: B
         severity: 'warn',
         message: `예상 단락전류 약 ${fmt(isc, 1)}kA(변압기 %Z ${b.params.pctZ}% 가정)보다 ${product.name} 차단용량(최대 ${fmt(ka)}kA)이 작습니다.`,
         target,
-        fix: betterFix(),
+        fix: betterFix('kA'),
       });
   }
   // 08 변압기 용량

@@ -34,6 +34,25 @@
 .bld-tpl[aria-pressed='true'] { border: 2px solid var(--color-brand); background: var(--color-surface-2); padding: 9px 13px; }
 .bld-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
 
+/* 공유 링크 알림 */
+.bld-share-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--cov-owned);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  font-size: 13px;
+}
+.bld-share-note.is-bad { border-left-color: var(--color-danger, #d64545); }
+.bld-share-note > span, .bld-share-note > label { flex: 1; min-width: 0; }
+.bld-share-note label { display: flex; flex-direction: column; gap: 4px; }
+.bld-share-note input { width: 100%; padding: 6px 8px; border: 1px solid var(--color-border); border-radius: var(--radius-sm, 6px); background: var(--color-surface); color: var(--color-text); font: inherit; font-size: 12px; }
+.bld-share-note__x { flex: none; width: 28px; height: 28px; border: 0; border-radius: 50%; background: transparent; color: var(--color-text-muted); font-size: 18px; cursor: pointer; }
+.bld-share-note__x:hover { background: var(--color-surface); color: var(--color-text); }
+
 /* 3단 배치 */
 .bld-grid {
   display: grid;

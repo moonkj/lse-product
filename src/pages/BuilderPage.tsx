@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getData, productImageUrl, type SpecsMap } from '../data/load';
 import PageHeader from '../components/common/PageHeader';
 import CoverageBadge from '../components/common/CoverageBadge';
@@ -25,6 +25,7 @@ import { isInstrumentProduct,
 } from '../lib/builder/validate';
 import { buildBom, bomCsv } from '../lib/builder/bom';
 import { useBuilderStore, useCurrentBuild } from '../lib/builder/store';
+import { decodeBuild, shareUrl } from '../lib/builder/share';
 import './pages.css';
 import './BuilderPage.css';
 
@@ -58,6 +59,34 @@ export default function BuilderPage() {
   const summary = summarize(build, t, issues);
   const [selected, setSelected] = useState<Target | null>(null);
   const [showBom, setShowBom] = useState(false);
+  const [params, setParams] = useSearchParams();
+  const [shareNote, setShareNote] = useState<{ kind: 'loaded' | 'bad' | 'copied' | 'manual'; url?: string } | null>(null);
+
+  // 공유 링크(#/builder?b=…)로 들어오면 그 구성을 불러온다 — 되돌리기로 원래 구성에 돌아갈 수 있다
+  const code = params.get('b');
+  useEffect(() => {
+    if (!code) return;
+    const shared = decodeBuild(code);
+    if (shared) {
+      const st = useBuilderStore.getState();
+      st.setTemplate(shared.template);
+      useBuilderStore.getState().commit(shared);
+      setShareNote({ kind: 'loaded' });
+      announce('공유받은 구성을 불러왔습니다');
+    } else setShareNote({ kind: 'bad' });
+    setParams({}, { replace: true });
+  }, [code, setParams]);
+
+  const copyShare = async () => {
+    const url = shareUrl(build);
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareNote({ kind: 'copied' });
+      announce('공유 링크를 복사했습니다');
+    } catch {
+      setShareNote({ kind: 'manual', url });
+    }
+  };
 
   useEffect(() => {
     document.title = pageTitle('계통 구성');
@@ -168,8 +197,27 @@ export default function BuilderPage() {
           <button type="button" className="btn btn--secondary btn--md" onClick={() => (commit(emptyBuild(t)), setSelected(null), announce('모든 칸을 비웠습니다'))} data-testid="builder-reset">
             초기화
           </button>
+          <button type="button" className="btn btn--secondary btn--md" onClick={copyShare} data-testid="builder-share">
+            공유 링크 복사
+          </button>
         </div>
       </div>
+      {shareNote && (
+        <div className={`bld-share-note${shareNote.kind === 'bad' ? ' is-bad' : ''}`} role="status" data-testid="builder-share-note">
+          {shareNote.kind === 'loaded' && <span>공유받은 구성을 불러왔습니다. 원래 구성은 ↶ 되돌리기로 돌아갈 수 있습니다.</span>}
+          {shareNote.kind === 'bad' && <span>공유 링크를 읽을 수 없습니다. 링크가 잘렸는지 확인하세요.</span>}
+          {shareNote.kind === 'copied' && <span>공유 링크를 복사했습니다. 받는 사람이 열면 이 구성이 그대로 보입니다.</span>}
+          {shareNote.kind === 'manual' && (
+            <label>
+              복사가 막혀 있습니다. 아래 링크를 직접 복사하세요.
+              <input readOnly value={shareNote.url} onFocus={(e) => e.currentTarget.select()} data-testid="builder-share-url" />
+            </label>
+          )}
+          <button type="button" className="bld-share-note__x" onClick={() => setShareNote(null)} aria-label="알림 닫기">
+            ×
+          </button>
+        </div>
+      )}
 
       <div className="bld-grid">
         <Palette t={t} onPick={placeFromPalette} />
@@ -378,7 +426,7 @@ function SlotCard({ target, label, hint, required, eq, product, issues, selected
             {img ? <img src={img} alt="" loading="lazy" /> : <CoverageBadge coverage={e.coverage} variant="icon" />}
           </span>
           <span className="bld-slot__eq">{e.abbr ?? e.name}</span>
-          <span className="bld-slot__product">{p ? p.name : e.coverage === 'owned' || e.coverage === 'partial' ? '제품 미선택' : COVERAGE_LABELS[e.coverage]}</span>
+          <span className="bld-slot__product">{p ? p.name : e.coverage === 'owned' || e.coverage === 'partial' ? (candidateProducts(e.id).length ? '제품 미선택' : '일괄 공급') : COVERAGE_LABELS[e.coverage]}</span>
         </>
       ) : (
         <span className="bld-slot__empty">{hint ? `여기엔 보통 ${hint.split(/[—(]/)[0].trim()}` : '비어 있음'}</span>
@@ -424,6 +472,7 @@ function Panel({ t, build, selected, ctx, placement, issues, allIssues, specsLoa
     );
   }
   const eq = placement?.eq;
+  const eqInfo = eq ? eqById(eq) : undefined;
   const products = eq && ctx.slot.accepts.includes(eq) ? candidateProducts(eq) : [];
   return (
     <aside className="bld-panel" aria-label={`${ctx.slot.label} 칸`} data-testid="builder-panel">
@@ -462,7 +511,7 @@ function Panel({ t, build, selected, ctx, placement, issues, allIssues, specsLoa
         <>
           <h3 className="bld-panel__h">자사 제품 {products.length > 0 && <small>{products.length}개</small>}</h3>
           {products.length === 0 ? (
-            <p className="bld-panel__none">고를 수 있는 자사 제품이 없습니다.</p>
+            <p className="bld-panel__none">{eqInfo && (eqInfo.coverage === 'owned' || eqInfo.coverage === 'partial') ? '자사 보유 기기지만 제품맵에 개별 제품으로 올라 있지 않습니다 (시스템·일괄 공급).' : '고를 수 있는 자사 제품이 없습니다.'}</p>
           ) : (
             <ul className="bld-products" role="radiogroup" aria-label="제품">
               {products.map((p) => {

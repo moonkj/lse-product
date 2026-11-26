@@ -3,7 +3,7 @@ import { getData, type SpecsMap } from '../../data/load';
 import { COVERAGE_LABELS } from '../schema';
 import { csvCell } from '../pages/catalog';
 import { slotsOf, type Template } from './templates';
-import { DISCLAIMER, type Build } from './validate';
+import { DISCLAIMER, candidateProducts, type Build } from './validate';
 
 export interface BomRow {
   key: string;
@@ -44,7 +44,7 @@ export function buildBom(b: Build, t: Template, specs?: SpecsMap): BomRow[] {
       slot,
       equipment: eq.abbr ? `${eq.name} (${eq.abbr})` : eq.name,
       coverage: COVERAGE_LABELS[eq.coverage],
-      product: product?.name ?? (eq.coverage === 'owned' || eq.coverage === 'partial' ? '(제품 미선택)' : '자사 제품 없음'),
+      product: product?.name ?? (eq.coverage === 'owned' || eq.coverage === 'partial' ? (candidateProducts(eqId).length ? '(제품 미선택)' : '(개별 제품 없음 · 일괄 공급)') : '자사 제품 없음'),
       rating: ratingText(productId, specs),
       qty: 1,
     });

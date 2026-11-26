@@ -5,6 +5,7 @@ import { getData } from '../../../src/data/load';
 import { TEMPLATES, equipmentOf, slotsOf, templateById } from '../../../src/lib/builder/templates';
 import { parseNumbers, productRatings, trSecondaryA, trShortCircuitKA } from '../../../src/lib/builder/specParse';
 import { applyFix, candidateProducts, defaultBuild, emptyBuild, summarize, validateBuild, type Build } from '../../../src/lib/builder/validate';
+import { decodeBuild, encodeBuild } from '../../../src/lib/builder/share';
 import type { ProductSpecs } from '../../../src/lib/schema';
 
 const specs = new Map(Object.entries((specsJson as { products: Record<string, ProductSpecs> }).products));
@@ -12,8 +13,8 @@ const sub = templateById('substation')!;
 const rules = (b: Build) => validateBuild(b, sub, specs);
 
 describe('템플릿', () => {
-  it('3개(수전설비·저압 배전반·데이터센터), 칸이 받는 기기는 모두 실제 기기, 칸 id 는 템플릿 안에서 고유', () => {
-    expect(TEMPLATES.map((t) => t.id)).toEqual(['substation', 'lv-panel', 'datacenter']);
+  it('4개(수전설비·저압 배전반·전체 계통 L1~L7·데이터센터), 칸이 받는 기기는 모두 실제 기기, 칸 id 는 템플릿 안에서 고유', () => {
+    expect(TEMPLATES.map((t) => t.id)).toEqual(['substation', 'lv-panel', 'grid', 'datacenter']);
     const eq = getData().equipmentTypeById;
     for (const t of TEMPLATES) {
       for (const id of equipmentOf(t)) expect(eq.has(id), `${t.id} ${id}`).toBe(true);
@@ -152,6 +153,36 @@ describe('확인 규칙', () => {
       }
     }
     expect(checked).toBeGreaterThan(0);
+  });
+  it('전체 계통(L1~L7): 7개 계층이 위에서 아래로, 기본 구성은 오류·경고 0', () => {
+    const g = templateById('grid')!;
+    expect(g.rows.map((r) => r.label.split(' ')[0])).toEqual(['L1', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7']);
+    const issues = validateBuild(defaultBuild(g, specs), g, specs);
+    expect(issues.filter((i) => i.severity !== 'info')).toEqual([]);
+  });
+  it('대체 제안은 맞는 옵션까지: 22.9kV에 Metasol VCB(최대 17.5kV) → "Susol VCB 24kV(으)로 바꾸기", Susol VCB 를 넣으면 24kV 이상 옵션 안내', () => {
+    const d = getData();
+    const id = (name: string) => [...d.productById.values()].find((p) => p.name === name)!.id;
+    const base = defaultBuild(sub, specs);
+    const bad = { ...base, slots: { ...base.slots, vcb: { eq: 'vcb', product: id('Metasol VCB') } } };
+    const e = rules(bad).find((i) => i.rule === 'BLD-05' && i.severity === 'error')!;
+    expect(e.fix?.label).toBe('Susol VCB 24kV(으)로 바꾸기');
+    const fixed = applyFix(bad, e.fix!.fix);
+    expect(rules(fixed).filter((i) => i.rule === 'BLD-05' && i.severity === 'error')).toEqual([]);
+    expect(rules(fixed).find((i) => i.key === 'slot:vcb:05i')?.message).toContain('Susol VCB 24kV 이상');
+  });
+  it('공유 코드: 구성 → 코드 → 같은 구성, 모르는 칸·기기·제품은 버림, 깨진 코드는 null', () => {
+    for (const t of TEMPLATES) {
+      const b = defaultBuild(t, specs);
+      expect(decodeBuild(encodeBuild(b)), t.id).toEqual(b);
+    }
+    const b = defaultBuild(sub, specs);
+    const junk = { ...b, slots: { ...b.slots, nope: { eq: 'vcb' }, vcb: { eq: 'vcb', product: 'P-NOPE' } } };
+    const back = decodeBuild(encodeBuild(junk))!;
+    expect(back.slots.nope).toBeUndefined();
+    expect(back.slots.vcb).toEqual({ eq: 'vcb' });
+    expect(decodeBuild('%%%')).toBeNull();
+    expect(decodeBuild(encodeBuild(b).slice(0, 10))).toBeNull();
   });
   it('요약: 채운 칸·확인할 점·보유 아닌 기기 수', () => {
     const s = summarize(defaultBuild(sub, specs), sub, rules(defaultBuild(sub, specs)));
