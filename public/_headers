@@ -1,0 +1,6 @@
+# Cloudflare Pages 응답 헤더 (2026-11-26)
+# 경쟁 대응 사전 — 시장 뉴스 대시보드(lse-news)가 빌드 때 받는 공개 파일
+/counter-index.json
+  Cache-Control: public, max-age=300
+  Access-Control-Allow-Origin: *
+  Content-Type: application/json; charset=utf-8

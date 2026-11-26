@@ -48,3 +48,19 @@ describe('경쟁 대응 매칭', () => {
     expect(r.competitors).toEqual([]);
   });
 });
+
+describe('사전 원본·기준 예시 (counter-dict.json)', () => {
+  it('기준 예시대로 매칭 (뉴스 사이트 Python 구현과 같은 결과 기준)', async () => {
+    const dict = (await import('../../../src/data/counter-dict.json')).default as { examples: { q: string; competitors: string[]; top?: string[]; includes?: string[]; excludes?: string[]; projects?: string[] }[] };
+    expect(dict.examples.length).toBeGreaterThanOrEqual(5);
+    for (const ex of dict.examples) {
+      const r = matchText(ex.q);
+      const ids = r.hits.map((h) => h.eq);
+      expect(r.competitors.map((c) => c.id), ex.q).toEqual(ex.competitors);
+      if (ex.top) expect(ids.slice(0, ex.top.length).sort(), ex.q).toEqual([...ex.top].sort());
+      for (const i of ex.includes ?? []) expect(ids, ex.q).toContain(i);
+      for (const x of ex.excludes ?? []) expect(ids, ex.q).not.toContain(x);
+      for (const p of ex.projects ?? []) expect(r.projects.map((x) => x.id), ex.q).toContain(p);
+    }
+  });
+});
