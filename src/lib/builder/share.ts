@@ -4,13 +4,13 @@
  */
 import { getData } from '../../data/load';
 import { templateById } from './templates';
-import type { Build, Extra, Placement } from './validate';
+import { clampQty, type Build, type Extra, type Placement } from './validate';
 
 interface Packed {
   v: 1;
   t: string;
-  s: Record<string, [string, string?]>;
-  x: [string, string, string, string?][];
+  s: Record<string, [string, string?, number?]>;
+  x: [string, string, string, string?, number?][];
   p: [number, number];
 }
 
@@ -29,12 +29,12 @@ function fromBase64Url(code: string): string {
 
 export function encodeBuild(b: Build): string {
   const s: Packed['s'] = {};
-  for (const [id, p] of Object.entries(b.slots)) if (p.eq) s[id] = p.product ? [p.eq, p.product] : [p.eq];
+  for (const [id, p] of Object.entries(b.slots)) if (p.eq) s[id] = p.qty && p.qty > 1 ? [p.eq, p.product ?? '', p.qty] : p.product ? [p.eq, p.product] : [p.eq];
   const packed: Packed = {
     v: 1,
     t: b.template,
     s,
-    x: b.extras.map((e) => (e.product ? [e.id, e.row, e.eq, e.product] : [e.id, e.row, e.eq])),
+    x: b.extras.map((e) => (e.qty && e.qty > 1 ? [e.id, e.row, e.eq, e.product ?? '', e.qty] : e.product ? [e.id, e.row, e.eq, e.product] : [e.id, e.row, e.eq])),
     p: [b.params.kVA, b.params.pctZ],
   };
   return toBase64Url(JSON.stringify(packed));
@@ -59,12 +59,12 @@ export function decodeBuild(code: string): Build | null {
   const slots: Record<string, Placement> = {};
   for (const [id, pair] of Object.entries(v.s ?? {})) {
     if (!slotIds.has(id) || !Array.isArray(pair) || !okEq(pair[0])) continue;
-    slots[id] = okProduct(pair[1]) ? { eq: pair[0], product: pair[1] } : { eq: pair[0] };
+    slots[id] = { eq: pair[0], ...(okProduct(pair[1]) ? { product: pair[1] } : {}), ...(typeof pair[2] === 'number' && clampQty(pair[2]) > 1 ? { qty: clampQty(pair[2]) } : {}) };
   }
   const extras: Extra[] = [];
   for (const e of Array.isArray(v.x) ? v.x.slice(0, 40) : []) {
     if (!Array.isArray(e) || typeof e[0] !== 'string' || !rowIds.has(e[1]) || !okEq(e[2])) continue;
-    extras.push(okProduct(e[3]) ? { id: e[0], row: e[1], eq: e[2], product: e[3] } : { id: e[0], row: e[1], eq: e[2] });
+    extras.push({ id: e[0], row: e[1], eq: e[2], ...(okProduct(e[3]) ? { product: e[3] } : {}), ...(typeof e[4] === 'number' && clampQty(e[4]) > 1 ? { qty: clampQty(e[4]) } : {}) });
   }
   const num = (n: unknown, def: number, min: number, max: number) => (typeof n === 'number' && Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : def);
   const [kVA, pctZ] = Array.isArray(v.p) ? v.p : [];

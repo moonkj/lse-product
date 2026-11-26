@@ -24,13 +24,19 @@ export const DISCLAIMER =
 export interface Placement {
   eq?: string;
   product?: string;
+  /** 수량 (없으면 1) — 같은 기기를 여러 대 쓰는 칸 (분기 차단기 4개 등) */
+  qty?: number;
 }
 export interface Extra {
   id: string;
   row: string;
   eq: string;
   product?: string;
+  qty?: number;
 }
+
+export const QTY_MAX = 99;
+export const clampQty = (n: unknown): number => (typeof n === 'number' && Number.isFinite(n) ? Math.min(QTY_MAX, Math.max(1, Math.round(n))) : 1);
 export interface Build {
   template: string;
   slots: Record<string, Placement>;
@@ -42,7 +48,8 @@ export type Target = { kind: 'slot'; id: string } | { kind: 'extra'; id: string 
 export type Fix =
   | { type: 'setEq'; target: Target; eq: string }
   | { type: 'setProduct'; target: Target; product: string }
-  | { type: 'clear'; target: Target };
+  | { type: 'clear'; target: Target }
+  | { type: 'setQty'; target: Target; qty: number };
 
 export interface Issue {
   key: string;
@@ -341,7 +348,7 @@ export function applyFix(b: Build, fix: Fix): Build {
     return next;
   }
   if (fix.type === 'setEq') {
-    if (fix.target.kind === 'slot') next.slots[fix.target.id] = { eq: fix.eq };
+    if (fix.target.kind === 'slot') next.slots[fix.target.id] = { eq: fix.eq, ...(next.slots[fix.target.id]?.qty ? { qty: next.slots[fix.target.id]!.qty } : {}) };
     else {
       const x = next.extras.find((e) => e.id === fix.target.id);
       if (x) {
@@ -352,6 +359,13 @@ export function applyFix(b: Build, fix: Fix): Build {
     return next;
   }
   const p = get(fix.target);
+  if (fix.type === 'setQty') {
+    if (!p?.eq) return b;
+    const qty = clampQty(fix.qty);
+    if (fix.target.kind === 'slot') next.slots[fix.target.id] = { ...p, qty: qty > 1 ? qty : undefined };
+    else (p as Extra).qty = qty > 1 ? qty : undefined;
+    return next;
+  }
   if (p) {
     if (fix.target.kind === 'slot') next.slots[fix.target.id] = { ...p, product: fix.product };
     else (p as Extra).product = fix.product;

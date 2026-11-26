@@ -6,6 +6,7 @@ import { TEMPLATES, equipmentOf, slotsOf, templateById } from '../../../src/lib/
 import { parseNumbers, productRatings, trSecondaryA, trShortCircuitKA } from '../../../src/lib/builder/specParse';
 import { applyFix, candidateProducts, defaultBuild, emptyBuild, summarize, validateBuild, type Build } from '../../../src/lib/builder/validate';
 import { decodeBuild, encodeBuild } from '../../../src/lib/builder/share';
+import { buildBom } from '../../../src/lib/builder/bom';
 import type { ProductSpecs } from '../../../src/lib/schema';
 
 const specs = new Map(Object.entries((specsJson as { products: Record<string, ProductSpecs> }).products));
@@ -183,6 +184,18 @@ describe('확인 규칙', () => {
     expect(back.slots.vcb).toEqual({ eq: 'vcb' });
     expect(decodeBuild('%%%')).toBeNull();
     expect(decodeBuild(encodeBuild(b).slice(0, 10))).toBeNull();
+  });
+  it('수량: 1~99로 제한, 제품 목록·공유 코드에 반영, 기기를 바꿔도 수량 유지', () => {
+    const b = defaultBuild(sub, specs);
+    const target = { kind: 'slot' as const, id: 'lv-main' };
+    const q4 = applyFix(b, { type: 'setQty', target, qty: 4 });
+    expect(q4.slots['lv-main'].qty).toBe(4);
+    expect(applyFix(b, { type: 'setQty', target, qty: 500 }).slots['lv-main'].qty).toBe(99);
+    expect(applyFix(q4, { type: 'setQty', target, qty: 1 }).slots['lv-main'].qty).toBeUndefined();
+    expect(applyFix(q4, { type: 'setEq', target, eq: 'acb' }).slots['lv-main'].qty).toBe(4);
+    expect(applyFix(b, { type: 'setQty', target: { kind: 'slot', id: 'nope' }, qty: 3 })).toBe(b);
+    expect(buildBom(q4, sub, specs).find((r) => r.key === 'lv-main')?.qty).toBe(4);
+    expect(decodeBuild(encodeBuild(q4))).toEqual(q4);
   });
   it('요약: 채운 칸·확인할 점·보유 아닌 기기 수', () => {
     const s = summarize(defaultBuild(sub, specs), sub, rules(defaultBuild(sub, specs)));

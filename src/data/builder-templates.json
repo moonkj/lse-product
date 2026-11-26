@@ -1,5 +1,5 @@
 {
-  "note": "계통 구성 시뮬레이션(/builder) 템플릿 — 2026-11-26 1단계, 2단계에 전체 계통(L1~L7) 추가·데이터센터 보강. 줄(row) = 계통의 한 구간, 칸(slot) = 기기 하나. accepts = 그 칸에 맞는 기기 id, default = '기본 구성 채우기'와 고치기 제안에 쓰는 기기. rating 'trSecondary' = 변압기 2차 정격전류로 정격전류·차단용량을 확인하는 칸. rules = 템플릿 고유 확인 규칙(requires: if 칸이 차면 then 칸도 필요 / minCount: 같은 기기 최소 개수 / oneOf: 칸들 중 하나만).",
+  "note": "계통 구성 시뮬레이션(/builder) 템플릿 — 2026-11-26 1단계, 2단계에 전체 계통(L1~L7) 추가·데이터센터 보강. 줄(row) = 계통의 한 구간, 칸(slot) = 기기 하나. accepts = 그 칸에 맞는 기기 id, default = '기본 구성 채우기'와 고치기 제안에 쓰는 기기. rating 'trSecondary' = 변압기 2차 정격전류로 정격전류·차단용량을 확인하는 칸. rules = 템플릿 고유 확인 규칙(requires: if 칸이 차면 then 칸도 필요 / minCount: 같은 기기 최소 개수 / oneOf: 칸들 중 하나만). 380/220V 줄은 단상 220V 기기도 쓰므로 정격전압 기준을 0.22kV로 둔다.",
   "templates": [
     {
       "id": "substation",
@@ -293,7 +293,7 @@
           "id": "branch",
           "label": "분전반",
           "voltage": "380/220V",
-          "kV": 0.38,
+          "kV": 0.22,
           "slots": [
             {
               "id": "panel",
@@ -660,7 +660,7 @@
           "id": "l7",
           "label": "L7 말단 부하",
           "voltage": "380/220V",
-          "kV": 0.38,
+          "kV": 0.22,
           "slots": [
             {
               "id": "panel",

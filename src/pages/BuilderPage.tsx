@@ -8,7 +8,7 @@ import { announce } from '../lib/announce';
 import { COVERAGE_LABELS, COVERAGE_ORDER, pageTitle, todayIso } from '../lib/labels';
 import { downloadText } from '../lib/pages/catalog';
 import { TEMPLATES, equipmentOf, slotsOf, templateById, type Row, type Template } from '../lib/builder/templates';
-import { isInstrumentProduct,
+import { isInstrumentProduct, QTY_MAX,
   DISCLAIMER,
   applyFix,
   candidateProducts,
@@ -240,6 +240,7 @@ export default function BuilderPage() {
                         required={slot.required}
                         eq={build.slots[slot.id]?.eq}
                         product={build.slots[slot.id]?.product}
+                        qty={build.slots[slot.id]?.qty}
                         issues={issuesFor(target)}
                         selected={sameTarget(selected, target)}
                         onSelect={() => setSelected(target)}
@@ -262,6 +263,7 @@ export default function BuilderPage() {
                           required={false}
                           eq={x.eq}
                           product={x.product}
+                          qty={x.qty}
                           issues={issuesFor(target)}
                           selected={sameTarget(selected, target)}
                           onSelect={() => setSelected(target)}
@@ -371,6 +373,7 @@ interface SlotCardProps {
   required: boolean;
   eq?: string;
   product?: string;
+  qty?: number;
   issues: Issue[];
   selected: boolean;
   onSelect: () => void;
@@ -379,7 +382,7 @@ interface SlotCardProps {
 }
 
 /** 칸 하나 — 누르면 선택, 끌어 놓기 대상, Delete 로 비우기 */
-function SlotCard({ target, label, hint, required, eq, product, issues, selected, onSelect, onDropEq, onClear }: SlotCardProps) {
+function SlotCard({ target, label, hint, required, eq, product, qty, issues, selected, onSelect, onDropEq, onClear }: SlotCardProps) {
   const [over, setOver] = useState(false);
   const errors = issues.filter((i) => i.severity === 'error').length;
   const warns = issues.filter((i) => i.severity === 'warn').length;
@@ -425,7 +428,10 @@ function SlotCard({ target, label, hint, required, eq, product, issues, selected
           <span className="bld-slot__pic" aria-hidden="true">
             {img ? <img src={img} alt="" loading="lazy" /> : <CoverageBadge coverage={e.coverage} variant="icon" />}
           </span>
-          <span className="bld-slot__eq">{e.abbr ?? e.name}</span>
+          <span className="bld-slot__eq">
+            {e.abbr ?? e.name}
+            {qty && qty > 1 ? <span className="bld-slot__qty" aria-label={`${qty}대`}> ×{qty}</span> : null}
+          </span>
           <span className="bld-slot__product">{p ? p.name : e.coverage === 'owned' || e.coverage === 'partial' ? (candidateProducts(e.id).length ? '제품 미선택' : '일괄 공급') : COVERAGE_LABELS[e.coverage]}</span>
         </>
       ) : (
@@ -445,7 +451,7 @@ interface PanelProps {
   build: Build;
   selected: Target | null;
   ctx: Ctx | null;
-  placement?: { eq?: string; product?: string };
+  placement?: { eq?: string; product?: string; qty?: number };
   issues: Issue[];
   allIssues: Issue[];
   specsLoading: boolean;
@@ -544,6 +550,30 @@ function Panel({ t, build, selected, ctx, placement, issues, allIssues, specsLoa
             </p>
           )}
         </>
+      )}
+
+      {eq && ctx.slot.accepts.includes(eq) && (
+        <div className="bld-qty">
+          <span className="bld-qty__label" id="bld-qty-l">수량</span>
+          <div className="bld-qty__ctl" role="group" aria-labelledby="bld-qty-l">
+            <button type="button" aria-label="수량 줄이기" disabled={(placement?.qty ?? 1) <= 1} onClick={() => onApply({ type: 'setQty', target: selected, qty: (placement?.qty ?? 1) - 1 })} data-testid="builder-qty-minus">
+              −
+            </button>
+            <input
+              type="number"
+              min={1}
+              max={QTY_MAX}
+              aria-label="수량"
+              value={placement?.qty ?? 1}
+              onChange={(e) => onApply({ type: 'setQty', target: selected, qty: Number(e.target.value) || 1 })}
+              data-testid="builder-qty"
+            />
+            <button type="button" aria-label="수량 늘리기" disabled={(placement?.qty ?? 1) >= QTY_MAX} onClick={() => onApply({ type: 'setQty', target: selected, qty: (placement?.qty ?? 1) + 1 })} data-testid="builder-qty-plus">
+              ＋
+            </button>
+          </div>
+          <small>대 · 제품 목록·CSV에 반영</small>
+        </div>
       )}
 
       <h3 className="bld-panel__h">확인할 점</h3>

@@ -147,4 +147,21 @@ test.describe('계통 구성 시뮬레이션', () => {
     await expect(p2.getByTestId('builder-share-note')).toContainText('읽을 수 없습니다');
     await other.close();
   });
+  test('2단계: 수량 — 분기 칸 ＋ 두 번이면 ×3, 제품 목록 수량 3, 새로고침해도 유지', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await tid(page, 'builder-tpl-lv-panel').click();
+    await tid(page, 'builder-fill').click();
+    await tid(page, 'builder-slot-feeder-1').click();
+    await tid(page, 'builder-qty-plus').click();
+    await tid(page, 'builder-qty-plus').click();
+    await expect(tid(page, 'builder-qty')).toHaveValue('3');
+    await expect(tid(page, 'builder-slot-feeder-1')).toContainText('×3');
+    await tid(page, 'builder-bom-toggle').click();
+    await expect(tid(page, 'builder-bom').locator('tr', { hasText: '분기 1' }).locator('td').last()).toHaveText('3');
+    await page.waitForTimeout(400);
+    await page.reload();
+    await expect(tid(page, 'builder-slot-feeder-1')).toContainText('×3');
+  });
+
 });

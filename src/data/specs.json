@@ -9289,6 +9289,1887 @@
       "extractedAt": "2026-11-19",
       "reviewed": false,
       "note": "MV CTTS 판넬 정격(p5) 기준. 내아크 ~40kA/0.5s (A-FLR)"
+    },
+    "P03077": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60",
+          "unit": "Hz",
+          "page": 8
+        }
+      ],
+      "variantAxis": "기종",
+      "variants": [
+        {
+          "id": "lbs",
+          "label": "부하개폐기 LBS (LSJ-L-M-24-6)",
+          "page": 8,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "24",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "630",
+              "unit": "A",
+              "page": 8
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "20 (1초), 피크 52",
+              "unit": "kA",
+              "page": 8
+            },
+            {
+              "key": "loadBreakingCurrent",
+              "label": "부하차단전류",
+              "value": "630",
+              "unit": "A",
+              "page": 8
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "50 (상대지간) / 60 (동상극간)",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "125 (상대지간) / 145 (동상극간)",
+              "unit": "kV",
+              "page": 8
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3phase",
+              "page": 8
+            }
+          ]
+        },
+        {
+          "id": "ass",
+          "label": "고장구간자동개폐기 ASS (LSJ-J-M-25-2)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "25.8",
+              "unit": "kV",
+              "page": 9
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "200",
+              "unit": "A",
+              "page": 9
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "900",
+              "unit": "A",
+              "page": 9
+            },
+            {
+              "key": "shortTimeCurrent",
+              "label": "정격 단시간 전류",
+              "value": "10 (1초 sym) / 3.5 (10초 sym) / 15 (순시 Asym)",
+              "unit": "kA",
+              "page": 9
+            },
+            {
+              "key": "powerFreqWithstand",
+              "label": "상용주파 내전압",
+              "value": "50 (대지간·상호간) / 60 (동상 단자간)",
+              "unit": "kV",
+              "page": 9
+            },
+            {
+              "key": "impulseWithstand",
+              "label": "뇌임펄스 내전압",
+              "value": "125 (대지간·상호간) / 145 (동상 단자간)",
+              "unit": "kV",
+              "page": 9
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "KEMC 1126",
+              "page": 9
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[LBS & ASS]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BLBS__ASS%5D_KO_C09501-02-201903.pdf",
+        "page": 8
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "부하개폐기(LBS) 정격 p8, 고장구간자동개폐기(ASS) 정격 p9 기준. 제품에 직접 연결된 문서는 없어 같은 분류(AAA015007)의 카테고리 공통 카탈로그 [LBS & ASS](2019-03)를 사용. LBS는 고장전류 차단 기능이 없어 정격차단전류 항목이 없음(단시간전류·부하차단전류만). ASS의 정격차단전류는 카탈로그 표기가 900A(A 단위)임에 주의"
+    },
+    "P01103": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "AC 600",
+          "unit": "V",
+          "page": 5
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 5
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "1000~5000 (수평모선), 1000/1500 (수직모선)",
+          "unit": "A",
+          "page": 5
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "80kA/1sec max (순시단락 176kA max)",
+          "page": 5
+        },
+        {
+          "key": "phases",
+          "label": "상 및 선식",
+          "value": "3상 3선식, 3상 4선식",
+          "page": 5
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "외부 IP40, 내부 IP20",
+          "page": 5
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC61439-1, BSEN61439-1, AS 3439-1",
+          "page": 5
+        }
+      ],
+      "source": {
+        "title": "[Solution 2000 MCC]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSolution_2000_MCC%5D_KO_C80011-01-201902.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "Technical Data(p5) 기준. 정격전류는 모선 정격전류(수평모선 3000A 이상은 복모선)"
+    },
+    "P01227": {
+      "items": [
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 61643-11, KS C IEC 61643-11, UL1449 (AC Din) / IEC 61643-11 (DC Din, Box)",
+          "page": 4
+        },
+        {
+          "key": "responseTime",
+          "label": "응답시간",
+          "value": "≤25ns",
+          "page": 4
+        }
+      ],
+      "variantAxis": "타입",
+      "variants": [
+        {
+          "id": "ac-din-385",
+          "label": "AC Din type Uc 385V (BK05S-T3·BK10S~40S-T2·BK12S-T1)",
+          "page": 4,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "220/380 (Un)",
+              "unit": "V",
+              "page": 4
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "385 (N-PE 255)",
+              "unit": "V",
+              "page": 4
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "10/20/30/40 (Class II)",
+              "unit": "kA",
+              "page": 4
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "5 (BK05S-T3) / 20/40/60/80 (Class II)",
+              "unit": "kA",
+              "page": 4
+            },
+            {
+              "key": "impulseCurrent",
+              "label": "임펄스전류(Iimp)",
+              "value": "12.5 (BK12S-T1, 10/350)",
+              "unit": "kA",
+              "page": 4
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1, 1+N, 2, 3, 3+N, 4P",
+              "page": 4
+            }
+          ]
+        },
+        {
+          "id": "ac-din-460-275",
+          "label": "AC Din type Uc 460V / 275V (BK10S~40S-T2, BK20S-T2)",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "254/440 (Uc460V) / 220 (Uc275V)",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "460 (N-PE 255) / 275",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "10/20/30/40 (Uc460V) / 20 (Uc275V)",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "20/40/60/80 (Uc460V) / 40 (Uc275V)",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1, 1+N, 2, 3, 3+N, 4P",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "dc-din",
+          "label": "DC Din type (BK10S-DC24~BK20S-DC1500)",
+          "page": 9,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "DC24/DC48/DC110/DC600/DC1000/DC1500",
+              "unit": "V",
+              "page": 9
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "DC45/DC65/DC220/DC700/DC1200/DC1500",
+              "unit": "V",
+              "page": 9
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "10 (DC24·48) / 20 (DC110~1500)",
+              "unit": "kA",
+              "page": 9
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "20 (DC24·48) / 40 (DC110~1500)",
+              "unit": "kA",
+              "page": 9
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P / 2P / 3P",
+              "page": 9
+            }
+          ]
+        },
+        {
+          "id": "box",
+          "label": "Box type (BK20SB-T2, BK40SB-T2)",
+          "page": 11,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "220 (2W+G·3W+G) / 380 (3W+G) / 380/220 (4W+G)",
+              "unit": "V",
+              "page": 11
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "385 / 460",
+              "unit": "V",
+              "page": 11
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "20 (BK20SB) / 40 (BK40SB)",
+              "unit": "kA",
+              "page": 11
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "40 (BK20SB) / 80 (BK40SB)",
+              "unit": "kA",
+              "page": 11
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[SPD]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+        "page": 4
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[SPD] 카탈로그(C01551-08) BK series 제품정격 p4(AC Din Uc385V), p5(AC Din Uc460·275V), p9(DC Din), p11(Box) 기준. 모델별 값은 옵션 안에 범위·목록으로 정리"
+    },
+    "P01060": {
+      "items": [
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 16
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IP20",
+          "page": 16
+        },
+        {
+          "key": "responseTime",
+          "label": "응답시간",
+          "value": "25ns",
+          "page": 16
+        }
+      ],
+      "variantAxis": "계통·모델",
+      "variants": [
+        {
+          "id": "spl",
+          "label": "단상 2W+G SPL (SPL3-20S, SPL2-40S/80S)",
+          "page": 16,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "110, 220 (SPL3) / 220 (SPL2)",
+              "unit": "V",
+              "page": 16
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "275 (SPL3) / 385 (SPL2)",
+              "unit": "V",
+              "page": 16
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2W+G",
+              "page": 16
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "- (SPL3) / 20/40 (SPL2)",
+              "unit": "kA",
+              "page": 16
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "- (SPL3) / 40/80 (SPL2)",
+              "unit": "kA",
+              "page": 16
+            }
+          ]
+        },
+        {
+          "id": "spt-220",
+          "label": "삼상 3W+G SPT AC 220V",
+          "page": 17,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "220",
+              "unit": "V",
+              "page": 17
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "385",
+              "unit": "V",
+              "page": 17
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3W+G",
+              "page": 17
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "20/40 (SPT2)",
+              "unit": "kA",
+              "page": 17
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "40/80 (SPT2) / 120/160 (SPT1)",
+              "unit": "kA",
+              "page": 17
+            },
+            {
+              "key": "impulseCurrent",
+              "label": "임펄스전류(Iimp)",
+              "value": "6.5 (SPT1)",
+              "unit": "kA",
+              "page": 17
+            }
+          ]
+        },
+        {
+          "id": "spt-380",
+          "label": "삼상 3W+G SPT AC 380V",
+          "page": 17,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "380",
+              "unit": "V",
+              "page": 17
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "385",
+              "unit": "V",
+              "page": 17
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3W+G",
+              "page": 17
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "20/40 (SPT2)",
+              "unit": "kA",
+              "page": 17
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "40/80 (SPT2) / 120/160 (SPT1)",
+              "unit": "kA",
+              "page": 17
+            },
+            {
+              "key": "impulseCurrent",
+              "label": "임펄스전류(Iimp)",
+              "value": "6.5 (SPT1)",
+              "unit": "kA",
+              "page": 17
+            }
+          ]
+        },
+        {
+          "id": "spt-440",
+          "label": "삼상 3W+G SPT AC 440V",
+          "page": 18,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "440",
+              "unit": "V",
+              "page": 18
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "385",
+              "unit": "V",
+              "page": 18
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "3W+G",
+              "page": 18
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "20/40 (SPT2)",
+              "unit": "kA",
+              "page": 18
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "40/80 (SPT2) / 120/160 (SPT1)",
+              "unit": "kA",
+              "page": 18
+            },
+            {
+              "key": "impulseCurrent",
+              "label": "임펄스전류(Iimp)",
+              "value": "6.5 (SPT1)",
+              "unit": "kA",
+              "page": 18
+            }
+          ]
+        },
+        {
+          "id": "spy-127",
+          "label": "삼상 4W+G SPY AC 127/220V",
+          "page": 18,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "127/220",
+              "unit": "V",
+              "page": 18
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "385",
+              "unit": "V",
+              "page": 18
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "4W+G",
+              "page": 18
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "20/40 (SPY2)",
+              "unit": "kA",
+              "page": 18
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "40/80 (SPY2) / 120/160/200 (SPY1)",
+              "unit": "kA",
+              "page": 18
+            },
+            {
+              "key": "impulseCurrent",
+              "label": "임펄스전류(Iimp)",
+              "value": "6.5 (SPY1-120·160S) / 12.5 (SPY1-200S)",
+              "unit": "kA",
+              "page": 18
+            }
+          ]
+        },
+        {
+          "id": "spy-220",
+          "label": "삼상 4W+G SPY AC 220/380V",
+          "page": 19,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "220/380",
+              "unit": "V",
+              "page": 19
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "385",
+              "unit": "V",
+              "page": 19
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "4W+G",
+              "page": 19
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "20/40 (SPY2)",
+              "unit": "kA",
+              "page": 19
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "40/80 (SPY2) / 120/160/200 (SPY1)",
+              "unit": "kA",
+              "page": 19
+            },
+            {
+              "key": "impulseCurrent",
+              "label": "임펄스전류(Iimp)",
+              "value": "6.5 (SPY1-120·160S) / 12.5 (SPY1-200S)",
+              "unit": "kA",
+              "page": 19
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[SPD]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+        "page": 16
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[SPD] 카탈로그(C01551-08) SP 시리즈(Box type) 제품정격 p16~19 기준. Iimp 12.5/25kA Class I 전용 모델(SPx1-13·25)은 p19~20에 별도 표가 있으나 여기서는 생략"
+    },
+    "P03085": {
+      "items": [
+        {
+          "key": "sccr",
+          "label": "단락전류정격(SCCR)",
+          "value": "200",
+          "unit": "kA",
+          "page": 45
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "47~63",
+          "unit": "Hz",
+          "page": 45
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "ANSI/UL1449 5th edition Type 1, CSA C22.2",
+          "page": 45
+        }
+      ],
+      "variantAxis": "서지 용량",
+      "variants": [
+        {
+          "id": "50ka",
+          "label": "USPB 50kA",
+          "page": 45,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "110~600 (Un, 120/208Y~347/600Y, 240·480·600D 등)",
+              "unit": "V",
+              "page": 46
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "150, 320, 420, 550, 690",
+              "unit": "V",
+              "page": 45
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "10",
+              "unit": "kA",
+              "page": 45
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "50",
+              "unit": "kA",
+              "page": 45
+            }
+          ]
+        },
+        {
+          "id": "100ka",
+          "label": "USPB 100kA",
+          "page": 45,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "110~600 (Un, 120/208Y~347/600Y, 240·480D 등)",
+              "unit": "V",
+              "page": 48
+            },
+            {
+              "key": "mcov",
+              "label": "최대연속동작전압(Uc)",
+              "value": "150, 320, 420, 550",
+              "unit": "V",
+              "page": 45
+            },
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "20",
+              "unit": "kA",
+              "page": 45
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "100",
+              "unit": "kA",
+              "page": 45
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[SPD]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+        "page": 45
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[SPD] 카탈로그(C01551-08) USPB Series 제품정격 p45, 모델별 Un·MCOV p46~49 기준"
+    },
+    "P03086": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "110~600 (Un, 120/208Y~347/600Y, 240·480·600D, 120/240·240/480H 등)",
+          "unit": "V",
+          "page": 52
+        },
+        {
+          "key": "mcov",
+          "label": "최대연속동작전압(Uc)",
+          "value": "150, 320, 420, 550, 690",
+          "unit": "V",
+          "page": 51
+        },
+        {
+          "key": "nominalDischarge",
+          "label": "공칭방전전류(In)",
+          "value": "10",
+          "unit": "kA",
+          "page": 51
+        },
+        {
+          "key": "maxDischarge",
+          "label": "최대방전전류(Imax)",
+          "value": "100, 150, 200, 250, 300",
+          "unit": "kA",
+          "page": 51
+        },
+        {
+          "key": "sccr",
+          "label": "단락전류정격(SCCR)",
+          "value": "200",
+          "unit": "kA",
+          "page": 51
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "47~63",
+          "unit": "Hz",
+          "page": 51
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "ANSI/UL1449 5th edition Type 1 & Type 2, CSA C22.2, UL1283",
+          "page": 51
+        }
+      ],
+      "source": {
+        "title": "[SPD]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+        "page": 51
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[SPD] 카탈로그(C01551-08) USPC Series 제품정격 p51, 모델별 Un·MCOV p52~53 기준"
+    },
+    "P01252": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "230 / 400 (Ue)",
+          "unit": "V",
+          "page": 56
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "500",
+          "unit": "V",
+          "page": 56
+        },
+        {
+          "key": "shortCircuitCurrent",
+          "label": "단락전류(Isc)",
+          "value": "25",
+          "unit": "kA",
+          "page": 56
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 56
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "1, 2, 3, 4",
+          "unit": "P",
+          "page": 56
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IP20",
+          "page": 56
+        }
+      ],
+      "variantAxis": "모델",
+      "variants": [
+        {
+          "id": "sd10-t2",
+          "label": "SD10-T2",
+          "page": 56,
+          "items": [
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "10",
+              "unit": "kA",
+              "page": 56
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "20",
+              "unit": "kA",
+              "page": 56
+            }
+          ]
+        },
+        {
+          "id": "sd20-t2",
+          "label": "SD20-T2",
+          "page": 56,
+          "items": [
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "20",
+              "unit": "kA",
+              "page": 56
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "40",
+              "unit": "kA",
+              "page": 56
+            }
+          ]
+        },
+        {
+          "id": "sd30-t2",
+          "label": "SD30-T2",
+          "page": 56,
+          "items": [
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "30",
+              "unit": "kA",
+              "page": 56
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "60",
+              "unit": "kA",
+              "page": 56
+            }
+          ]
+        },
+        {
+          "id": "sd40-t2",
+          "label": "SD40-T2",
+          "page": 56,
+          "items": [
+            {
+              "key": "nominalDischarge",
+              "label": "공칭방전전류(In)",
+              "value": "40",
+              "unit": "kA",
+              "page": 56
+            },
+            {
+              "key": "maxDischarge",
+              "label": "최대방전전류(Imax)",
+              "value": "80",
+              "unit": "kA",
+              "page": 56
+            }
+          ]
+        },
+        {
+          "id": "sd13-t1",
+          "label": "SD13-T1",
+          "page": 56,
+          "items": [
+            {
+              "key": "impulseCurrent",
+              "label": "임펄스전류(Iimp)",
+              "value": "12.5",
+              "unit": "kA",
+              "page": 56
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[SPD]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+        "page": 56
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[SPD] 카탈로그(C01551-08) SPD 전용 외부분리기 제품정격 p56 기준"
+    },
+    "EN-P00009": {
+      "items": [
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "Max. AC 480",
+          "unit": "V",
+          "page": 4
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "AC 600",
+          "unit": "V",
+          "page": 4
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "60 (special 50)",
+          "unit": "Hz",
+          "page": 4
+        },
+        {
+          "key": "shortTimeCurrent",
+          "label": "정격 단시간 전류",
+          "value": "42kA/0.5 sec (special 65kA/1sec)",
+          "page": 4
+        },
+        {
+          "key": "auxPower",
+          "label": "제어전원",
+          "value": "110, 220 V",
+          "page": 4
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IEC IP20 NEMA TYPE 1 (special IP42)",
+          "page": 4
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "JEM1195, IEC61439-1&2, NEMA, ICS2'232",
+          "page": 4
+        }
+      ],
+      "variantAxis": "타입",
+      "variants": [
+        {
+          "id": "gcc-h",
+          "label": "GCC-H Type",
+          "page": 4,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "600~2000 (수평모선), 400/600/800/1000 (수직모선)",
+              "unit": "A",
+              "page": 4
+            }
+          ]
+        },
+        {
+          "id": "gcc-v",
+          "label": "GCC-V Type",
+          "page": 4,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "600~3500 (수평모선), 400/600/800/1000 (수직모선)",
+              "unit": "A",
+              "page": 4
+            }
+          ]
+        },
+        {
+          "id": "gcc-n",
+          "label": "GCC-N Type",
+          "page": 4,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "600~4000 (수평모선), 600/800/1000 (수직모선)",
+              "unit": "A",
+              "page": 4
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[Solution Power MCC]",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCC%5D_EN_C80002-01-201809.pdf",
+        "page": 4
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "Standard rating(p4) 기준. 이 카탈로그는 GCC-H/V/N 타입 MCC 카탈로그(docs.json이 Solution Power MCC에 연결한 문서). 표에서 모선 전류 행의 상위 항목명이 'Rated voltage'로 되어 있으나 내용상 모선 정격전류(A)"
+    },
+    "P03087": {
+      "items": [],
+      "variantAxis": "모델",
+      "variants": [
+        {
+          "id": "la63hd",
+          "label": "LA63Hd",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240/415VAC, 70/125VDC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1~63",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "10",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P, 4P",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "KC 60898-1",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "la63l",
+          "label": "LA63L",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240/415VAC, 70/125VDC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1~63",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "AC 1~4A: 70 / 6~32A: 25 / 40~63A: 15, DC 15",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P, 4P",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "KC 60947-2",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "la63ld",
+          "label": "LA63Ld",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240/415VAC, 70/125VDC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1~63",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "AC 1~4A: 70 / 6~32A: 25 / 40~63A: 15, DC 15",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P, 4P",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "KC 60947-2",
+              "page": 5
+            }
+          ],
+          "note": "2026년 4분기 출시 예정(카탈로그 주)"
+        },
+        {
+          "id": "la100h",
+          "label": "LA100H",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240/415VAC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "63, 80, 100",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "10",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P, 4P",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "KC 60898-1",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "la63hdcd",
+          "label": "LA63HDCd (DC)",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "250/500/750/1000VDC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1~63",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "10",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P, 4P",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "IEC 60947-2",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "la63hs",
+          "label": "LA63Hs (UL1077)",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240, 277, 120/240, 480Y/277VAC, 65/125VDC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1~63",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "AC 1~32A: 14 / AC 1~63A: 7.5/10, DC 10",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P, 4P",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "UL1077",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "la63hu",
+          "label": "LA63HU (UL489)",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240, 277, 120/240, 480Y/277VAC, 65/125VDC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1~63",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "AC 1~32A: 14 / AC 1~63A: 10, DC 10",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P, 2P, 3P",
+              "page": 5
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "UL489",
+              "page": 5
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[MCB] L-Series MCB_RCBO",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_L-Series_MCB_RCBO_KO_C015X1-03-202609.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[MCB] L-Series MCB_RCBO 카탈로그 기종일람표(p5) 기준. 제품에 직접 연결된 문서는 없어 같은 분류의 카테고리 공통 카탈로그(C015X1-03) 사용"
+    },
+    "P03088": {
+      "items": [
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "KC 61009-1",
+          "page": 5
+        }
+      ],
+      "variantAxis": "모델",
+      "variants": [
+        {
+          "id": "lb40nn",
+          "label": "LB40NN",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240VAC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "6~40",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "6",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "sensitivity",
+              "label": "정격감도전류",
+              "value": "10, 30",
+              "unit": "mA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P+N",
+              "page": 5
+            },
+            {
+              "key": "leakageType",
+              "label": "누전동작 타입",
+              "value": "AC, A",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "lb40nb",
+          "label": "LB40NB",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240/415VAC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "6~40",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "6",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "sensitivity",
+              "label": "정격감도전류",
+              "value": "30",
+              "unit": "mA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "1P+N, 3P+N",
+              "page": 5
+            },
+            {
+              "key": "leakageType",
+              "label": "누전동작 타입",
+              "value": "B",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "lb63h",
+          "label": "LB63H",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "240VAC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "6~63",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "10",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "sensitivity",
+              "label": "정격감도전류",
+              "value": "30, 100, 300",
+              "unit": "mA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "2P",
+              "page": 5
+            },
+            {
+              "key": "leakageType",
+              "label": "누전동작 타입",
+              "value": "AC, A",
+              "page": 5
+            }
+          ]
+        },
+        {
+          "id": "lb63h4",
+          "label": "LB63H4",
+          "page": 5,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "415VAC",
+              "unit": "V",
+              "page": 5
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "6~63",
+              "unit": "A",
+              "page": 5
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "10",
+              "unit": "kA",
+              "page": 5
+            },
+            {
+              "key": "sensitivity",
+              "label": "정격감도전류",
+              "value": "30, 100, 300",
+              "unit": "mA",
+              "page": 5
+            },
+            {
+              "key": "poles",
+              "label": "극수",
+              "value": "4P",
+              "page": 5
+            },
+            {
+              "key": "leakageType",
+              "label": "누전동작 타입",
+              "value": "AC, A",
+              "page": 5
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[MCB] L-Series MCB_RCBO",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_L-Series_MCB_RCBO_KO_C015X1-03-202609.pdf",
+        "page": 5
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[MCB] L-Series MCB_RCBO 카탈로그 기종일람표(p5) RCBO 기준. 제품에 직접 연결된 문서는 없어 카테고리 공통 카탈로그 사용"
+    },
+    "P02208": {
+      "items": [
+        {
+          "key": "frame",
+          "label": "프레임",
+          "value": "63",
+          "unit": "AF",
+          "page": 6
+        },
+        {
+          "key": "ratedVoltage",
+          "label": "정격전압",
+          "value": "AC 240 (1P) / AC 415 (2P·3P·4P), DC 60 (1P) / DC 125 (2P~4P)",
+          "unit": "V",
+          "page": 6
+        },
+        {
+          "key": "ratedCurrent",
+          "label": "정격전류",
+          "value": "1~63",
+          "unit": "A",
+          "page": 6
+        },
+        {
+          "key": "breakingCapacity",
+          "label": "정격차단전류",
+          "value": "10 (IEC 60947-2 Icu, IEC 60898-1)",
+          "unit": "kA",
+          "page": 6
+        },
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "AC 500",
+          "unit": "V",
+          "page": 6
+        },
+        {
+          "key": "impulseVoltage",
+          "label": "정격임펄스내전압",
+          "value": "6",
+          "unit": "kV",
+          "page": 6
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 6
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "1P, 2P, 3P, 4P",
+          "page": 6
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "IEC 60947-2, IEC 60898-1 (CE, KC, SEMKO CB, 선급)",
+          "page": 6
+        }
+      ],
+      "source": {
+        "title": "[MCB and CP] 분전반용",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+        "page": 6
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[MCB and CP] 분전반용 카탈로그(C01531-15) BK63H 정격 p6 기준. 제품에 직접 연결된 문서는 없어 카테고리 공통 카탈로그 사용"
+    },
+    "P02209": {
+      "items": [
+        {
+          "key": "frame",
+          "label": "프레임",
+          "value": "63",
+          "unit": "AF",
+          "page": 14
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "1P, 2P, 3P",
+          "page": 14
+        },
+        {
+          "key": "frequency",
+          "label": "정격주파수",
+          "value": "50/60",
+          "unit": "Hz",
+          "page": 14
+        }
+      ],
+      "variantAxis": "인증",
+      "variants": [
+        {
+          "id": "iec",
+          "label": "BK63HU / BK63HU (Q class) CE(IEC)",
+          "page": 14,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "AC 240 (1P) / AC 440 (2P·3P), DC 60 (1P) / DC 125 (2P·3P)",
+              "unit": "V",
+              "page": 14
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1~63",
+              "unit": "A",
+              "page": 14
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "1P 10 / 2·3P 6 (IEC 60947-2), UL489 10",
+              "unit": "kA",
+              "page": 14
+            },
+            {
+              "key": "insulationVoltage",
+              "label": "정격절연전압",
+              "value": "AC 500",
+              "unit": "V",
+              "page": 14
+            },
+            {
+              "key": "impulseVoltage",
+              "label": "정격임펄스내전압",
+              "value": "6",
+              "unit": "kV",
+              "page": 14
+            }
+          ]
+        },
+        {
+          "id": "ul489",
+          "label": "BK63HU UL489",
+          "page": 24,
+          "items": [
+            {
+              "key": "ratedVoltage",
+              "label": "정격전압",
+              "value": "277 (120/240V), 120/240, 480Y/277 (240V), 240 VAC / DC 60, 125",
+              "unit": "V",
+              "page": 24
+            },
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "1~63",
+              "unit": "A",
+              "page": 24
+            },
+            {
+              "key": "breakingCapacity",
+              "label": "정격차단전류",
+              "value": "10",
+              "unit": "kA",
+              "page": 24
+            },
+            {
+              "key": "standards",
+              "label": "적용 규격",
+              "value": "UL489, UL486E",
+              "page": 24
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[MCB and CP] 분전반용",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+        "page": 14
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[MCB and CP] 분전반용 카탈로그(C01531-15) BK63HU/BK63HU(Q class) CE(IEC) 정격 p14, BK63HU UL489 정격 p24 기준"
+    },
+    "P01059": {
+      "items": [
+        {
+          "key": "insulationVoltage",
+          "label": "정격절연전압",
+          "value": "AC 250 / DC 65 (1극), AC 250 / DC 125 (2극), AC 250 (3극)",
+          "unit": "V",
+          "page": 34
+        },
+        {
+          "key": "breakingCapacity",
+          "label": "정격차단전류",
+          "value": "1.5 (IEC60947-2) / 2.5 (IEC60934)",
+          "unit": "kA",
+          "page": 34
+        },
+        {
+          "key": "poles",
+          "label": "극수",
+          "value": "1, 2, 3",
+          "unit": "P",
+          "page": 34
+        },
+        {
+          "key": "ipRating",
+          "label": "보호등급(IP)",
+          "value": "IP20",
+          "page": 34
+        },
+        {
+          "key": "standards",
+          "label": "적용 규격",
+          "value": "CE, CB(IEC60947-2) / UL(UL 1077) / CCC(GB 17701) / KC(IEC 60934)",
+          "page": 34
+        }
+      ],
+      "variantAxis": "동작특성",
+      "variants": [
+        {
+          "id": "fm",
+          "label": "LCP-3□FM (중속형)",
+          "page": 34,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "0.1, 0.3, 0.5, 1, 2, 3, 5, 7, 10, 15, 20, 25, 30",
+              "unit": "A",
+              "page": 34
+            }
+          ]
+        },
+        {
+          "id": "fi",
+          "label": "LCP-3□FI (순시형)",
+          "page": 34,
+          "items": [
+            {
+              "key": "ratedCurrent",
+              "label": "정격전류",
+              "value": "2, 3, 5, 7, 10, 15, 20, 30",
+              "unit": "A",
+              "page": 34
+            }
+          ]
+        }
+      ],
+      "source": {
+        "title": "[MCB and CP] 분전반용",
+        "url": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+        "page": 34
+      },
+      "extractedAt": "2026-11-26",
+      "reviewed": false,
+      "note": "[MCB and CP] 분전반용 카탈로그(C01531-15) 회로보호기 LCP 제품정격 p34 기준 (카탈로그 표기 1500A/2500A를 kA로 환산). 정격(사용)전압 행은 없고 정격절연전압만 표기. docs.json의 LCP 사용설명서 대신 카탈로그 사용"
     }
   }
 }

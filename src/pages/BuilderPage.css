@@ -333,3 +333,14 @@
   .bld-grid { display: block; }
   .bld-summary { position: static; box-shadow: none; }
 }
+
+/* 수량 (2단계) */
+.bld-slot__qty { color: var(--color-brand); font-weight: 700; }
+.bld-qty { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: var(--space-3) 0 0; }
+.bld-qty__label { font-weight: 700; font-size: 14px; }
+.bld-qty__ctl { display: inline-flex; align-items: stretch; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+.bld-qty__ctl button { width: 36px; min-height: 36px; border: 0; background: var(--color-surface-2); color: var(--color-text); font-size: 16px; cursor: pointer; }
+.bld-qty__ctl button:disabled { opacity: 0.4; cursor: default; }
+.bld-qty__ctl input { width: 56px; border: 0; border-inline: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); font: inherit; text-align: center; -moz-appearance: textfield; }
+.bld-qty__ctl input::-webkit-inner-spin-button, .bld-qty__ctl input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.bld-qty small { color: var(--color-text-muted); font-size: 12px; }

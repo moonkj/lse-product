@@ -445,13 +445,26 @@
           "url": "https://www.ls-electric.com/ko/cat/HPDT/%5BLCP%5D%20%EC%82%AC%EC%9A%A9%EC%84%A4%EB%AA%85%EC%84%9C_Manual_KO_202506.pdf",
           "lang": "ko",
           "updatedAt": "2025-06-17"
+        },
+        {
+          "type": "catalog",
+          "title": "[MCB and CP] 분전반용",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+          "lang": "ko"
         }
       ]
     },
     "P01060": {
       "source": "www",
       "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA014008&p_code=P01060",
-      "docs": []
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[SPD]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+          "lang": "ko"
+        }
+      ]
     },
     "P01062": {
       "source": "www",
@@ -2667,6 +2680,12 @@
           "url": "https://www.ls-electric.com/ko/cat/HPDT/%5BSPD%5D_BK20S-AC_Manual_KR_EN_20251015.pdf",
           "lang": "ko",
           "updatedAt": "2026-01-30"
+        },
+        {
+          "type": "catalog",
+          "title": "[SPD]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+          "lang": "ko"
         }
       ]
     },
@@ -3094,7 +3113,14 @@
     "P01252": {
       "source": "www",
       "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA014008&p_code=P01252",
-      "docs": []
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[SPD]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+          "lang": "ko"
+        }
+      ]
     },
     "P01255": {
       "source": "www",
@@ -5770,12 +5796,26 @@
     "P02208": {
       "source": "www",
       "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA014004&p_code=P02208",
-      "docs": []
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[MCB and CP] 분전반용",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+          "lang": "ko"
+        }
+      ]
     },
     "P02209": {
       "source": "www",
       "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA014004&p_code=P02209",
-      "docs": []
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[MCB and CP] 분전반용",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCB_and_CP%5D_%EB%B6%84%EC%A0%84%EB%B0%98%EC%9A%A9_KO_C01531-15-202611.pdf",
+          "lang": "ko"
+        }
+      ]
     },
     "P02210": {
       "source": "www",
@@ -5984,7 +6024,14 @@
     "P03077": {
       "source": "www",
       "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA015007&p_code=P03077",
-      "docs": []
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[LBS & ASS]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BLBS__ASS%5D_KO_C09501-02-201903.pdf",
+          "lang": "ko"
+        }
+      ]
     },
     "P03078": {
       "source": "www",
@@ -6165,6 +6212,12 @@
           "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
           "lang": "ko",
           "updatedAt": "2026-01-02"
+        },
+        {
+          "type": "catalog",
+          "title": "[SPD]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+          "lang": "ko"
         }
       ]
     },
@@ -6185,18 +6238,38 @@
           "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-07-202510.pdf",
           "lang": "ko",
           "updatedAt": "2026-01-02"
+        },
+        {
+          "type": "catalog",
+          "title": "[SPD]",
+          "url": "https://www.ls-electric.com/ko/cat/%5BSPD%5D_KO_C01551-08-202610.pdf",
+          "lang": "ko"
         }
       ]
     },
     "P03087": {
       "source": "www",
       "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA014004&p_code=P03087",
-      "docs": []
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[MCB] L-Series MCB_RCBO",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_L-Series_MCB_RCBO_KO_C015X1-03-202609.pdf",
+          "lang": "ko"
+        }
+      ]
     },
     "P03088": {
       "source": "www",
       "deepLink": "https://www.ls-electric.com/ko/download?c_code=AAA014004&p_code=P03088",
-      "docs": []
+      "docs": [
+        {
+          "type": "catalog",
+          "title": "[MCB] L-Series MCB_RCBO",
+          "url": "https://www.ls-electric.com/ko/cat/%5BMCB%5D_L-Series_MCB_RCBO_KO_C015X1-03-202609.pdf",
+          "lang": "ko"
+        }
+      ]
     },
     "P21020": {
       "source": "www",

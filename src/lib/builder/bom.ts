@@ -34,7 +34,7 @@ function ratingText(productId: string | undefined, specs?: SpecsMap): string {
 export function buildBom(b: Build, t: Template, specs?: SpecsMap): BomRow[] {
   const d = getData();
   const rows: BomRow[] = [];
-  const add = (key: string, section: string, slot: string, eqId: string, productId?: string) => {
+  const add = (key: string, section: string, slot: string, eqId: string, productId?: string, qty = 1) => {
     const eq = d.equipmentTypeById.get(eqId);
     if (!eq) return;
     const product = productId ? d.productById.get(productId) : undefined;
@@ -46,16 +46,16 @@ export function buildBom(b: Build, t: Template, specs?: SpecsMap): BomRow[] {
       coverage: COVERAGE_LABELS[eq.coverage],
       product: product?.name ?? (eq.coverage === 'owned' || eq.coverage === 'partial' ? (candidateProducts(eqId).length ? '(제품 미선택)' : '(개별 제품 없음 · 일괄 공급)') : '자사 제품 없음'),
       rating: ratingText(productId, specs),
-      qty: 1,
+      qty,
     });
   };
   for (const { row, slot } of slotsOf(t)) {
     const p = b.slots[slot.id];
-    if (p?.eq) add(slot.id, `${row.label} ${row.voltage}`, slot.label, p.eq, p.product);
+    if (p?.eq) add(slot.id, `${row.label} ${row.voltage}`, slot.label, p.eq, p.product, p.qty ?? 1);
   }
   for (const x of b.extras) {
     const row = t.rows.find((r) => r.id === x.row);
-    if (row) add(x.id, `${row.label} ${row.voltage}`, row.addable?.label.replace(/ 추가$/, '') ?? '추가', x.eq, x.product);
+    if (row) add(x.id, `${row.label} ${row.voltage}`, row.addable?.label.replace(/ 추가$/, '') ?? '추가', x.eq, x.product, x.qty ?? 1);
   }
   return rows;
 }
