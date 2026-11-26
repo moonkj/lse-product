@@ -6,6 +6,11 @@ import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const tid = (page: Page, id: string) => page.getByTestId(id);
+/** 2026-11-26 3차: 기본 탭이 '단선도 그리기'라 칸 채우기 화면은 '템플릿 점검' 탭으로 */
+async function openTemplate(page: Page) {
+  await page.goto('./#/builder');
+  await tid(page, 'builder-mode-template').click();
+}
 
 test.describe('계통 구성 시뮬레이션', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
@@ -14,6 +19,7 @@ test.describe('계통 구성 시뮬레이션', () => {
     await page.setViewportSize({ width: 1600, height: 1000 });
     await page.goto('./#/');
     await tid(page, 'builder-link').click();
+    await tid(page, 'builder-mode-template').click();
     await expect(tid(page, 'builder-page')).toBeVisible();
     await expect(page.getByRole('note')).toContainText('설계 검토나 적합성 판정이 아닙니다');
     await expect(tid(page, 'builder-tpl-substation')).toHaveAttribute('aria-pressed', 'true');
@@ -29,7 +35,7 @@ test.describe('계통 구성 시뮬레이션', () => {
 
   test('22.9kV 주차단기 칸에 ACB 를 끌어 놓으면 오류 + 이유, "VCB로 바꾸기"로 고치면 사라지고 되돌리기로 다시', async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 1000 });
-    await page.goto('./#/builder');
+    await openTemplate(page);
     await tid(page, 'builder-fill').click();
     await tid(page, 'builder-pal-acb').dragTo(tid(page, 'builder-slot-vcb'));
     await expect(tid(page, 'builder-slot-vcb')).toHaveAttribute('data-state', 'error');
@@ -45,7 +51,7 @@ test.describe('계통 구성 시뮬레이션', () => {
 
   test('칸을 눌러 기기·제품 고르기(마우스 없이도), Delete 로 비우면 "변압기 없이" 경고 → 넣기 제안', async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 1000 });
-    await page.goto('./#/builder');
+    await openTemplate(page);
     await tid(page, 'builder-fill').click();
     const tr = tid(page, 'builder-slot-tr');
     await tr.focus();
@@ -61,7 +67,7 @@ test.describe('계통 구성 시뮬레이션', () => {
 
   test('변압기 용량을 키우면 저압 주차단기 정격 안내가 바뀌고, 제품 목록·CSV 내보내기, 새로고침해도 구성 유지', async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 1000 });
-    await page.goto('./#/builder');
+    await openTemplate(page);
     await tid(page, 'builder-fill').click();
     await tid(page, 'builder-slot-tr').click();
     await tid(page, 'builder-kva').fill('2000');
@@ -79,7 +85,7 @@ test.describe('계통 구성 시뮬레이션', () => {
 
   test('데이터센터: 예비 SST 를 비우면 N+1 경고, UPS 는 미보유 안내', async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 1000 });
-    await page.goto('./#/builder');
+    await openTemplate(page);
     await tid(page, 'builder-tpl-datacenter').click();
     await tid(page, 'builder-fill').click();
     await tid(page, 'builder-slot-ups').click();
@@ -92,7 +98,7 @@ test.describe('계통 구성 시뮬레이션', () => {
 
   test('휴대폰: 기기 목록 없이 칸 → 아래 패널에서 고르기, 가로 넘침 없음', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('./#/builder');
+    await openTemplate(page);
     await expect(tid(page, 'builder-page')).toBeVisible();
     await tid(page, 'builder-slot-vcb').click();
     await tid(page, 'builder-panel').getByTestId('builder-eq-vcb').click();
@@ -102,7 +108,7 @@ test.describe('계통 구성 시뮬레이션', () => {
   });
   test('2단계: 전체 계통(L1~L7) 템플릿 — 8줄(L1 발전·송전 ~ L7 말단), 기본 구성 채우면 확인할 점 0', async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 1000 });
-    await page.goto('./#/builder');
+    await openTemplate(page);
     await tid(page, 'builder-tpl-grid').click();
     await expect(page.locator('.bld-row')).toHaveCount(8);
     await expect(tid(page, 'builder-row-l1')).toContainText('345kV');
@@ -120,7 +126,7 @@ test.describe('계통 구성 시뮬레이션', () => {
   test('2단계: 공유 링크 — 복사한 링크를 새 브라우저에서 열면 같은 구성, 되돌리기로 원래 구성', async ({ page, browser, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.setViewportSize({ width: 1600, height: 1000 });
-    await page.goto('./#/builder');
+    await openTemplate(page);
     await tid(page, 'builder-tpl-datacenter').click();
     await tid(page, 'builder-fill').click();
     await tid(page, 'builder-slot-sst-spare').click();
@@ -149,7 +155,7 @@ test.describe('계통 구성 시뮬레이션', () => {
   });
   test('2단계: 수량 — 분기 칸 ＋ 두 번이면 ×3, 제품 목록 수량 3, 새로고침해도 유지', async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 1000 });
-    await page.goto('./#/builder');
+    await openTemplate(page);
     await tid(page, 'builder-tpl-lv-panel').click();
     await tid(page, 'builder-fill').click();
     await tid(page, 'builder-slot-feeder-1').click();

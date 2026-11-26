@@ -28,6 +28,7 @@ import { useBuilderStore, useCurrentBuild } from '../lib/builder/store';
 import { decodeBuild, shareUrl } from '../lib/builder/share';
 import './pages.css';
 import './BuilderPage.css';
+import DrawEditor from './builder/DrawEditor';
 
 /**
  * 계통 구성 시뮬레이션 (/builder) — 2026-11-26 1단계.
@@ -44,7 +45,7 @@ const eqLabel = (id: string) => {
 };
 const sameTarget = (a: Target | null, b: Target | undefined) => !!a && !!b && a.kind === b.kind && a.id === b.id;
 
-export default function BuilderPage() {
+function TemplateBuilder() {
   const templateId = useBuilderStore((s) => s.templateId);
   const setTemplate = useBuilderStore((s) => s.setTemplate);
   const commit = useBuilderStore((s) => s.commit);
@@ -161,15 +162,7 @@ export default function BuilderPage() {
   };
 
   return (
-    <div className="pg pg--wide bld" data-testid="builder-page">
-      <PageHeader
-        crumbs={[{ label: '계통도', to: '/' }, { label: '계통 구성' }]}
-        title="계통 구성"
-        lead="템플릿을 고르고 칸마다 자사 기기·제품을 넣어 계통을 구성해 봅니다. 잘못 넣은 곳은 이유와 함께 고치는 방법을 알려 줍니다."
-      />
-      <p className="bld-disclaimer" role="note">
-        {DISCLAIMER}
-      </p>
+    <div className="bld-template" data-testid="builder-template">
 
       <div className="bld-top">
         <div className="bld-templates" role="group" aria-label="템플릿">
@@ -668,3 +661,63 @@ function Bom({ t, build, specs, onCsv }: { t: Template; build: Build; specs?: Sp
   );
 }
 
+
+const MODE_KEY = 'lse-builder-mode';
+type Mode = 'draw' | 'template';
+
+/**
+ * 계통 구성 (/builder) — 2026-11-26 3차: 기본은 '단선도 그리기'(자유 캔버스·반 안 구성), 기존 칸 채우기는 '템플릿 점검' 탭.
+ * 공유 링크(?b=…)는 템플릿 점검 구성이라 그 탭으로 연다.
+ */
+export default function BuilderPage() {
+  const [params] = useSearchParams();
+  const [mode, setMode] = useState<Mode>(() => {
+    if (params.get('b')) return 'template';
+    try {
+      return localStorage.getItem(MODE_KEY) === 'template' ? 'template' : 'draw';
+    } catch {
+      return 'draw';
+    }
+  });
+  useEffect(() => {
+    if (params.get('b')) setMode('template');
+  }, [params]);
+  useEffect(() => {
+    document.title = pageTitle('계통 구성');
+    try {
+      localStorage.setItem(MODE_KEY, mode);
+    } catch {
+      /* 저장 불가 */
+    }
+  }, [mode]);
+  const tabs: { id: Mode; label: string }[] = [
+    { id: 'draw', label: '단선도 그리기' },
+    { id: 'template', label: '템플릿 점검' },
+  ];
+  return (
+    <div className="pg pg--wide bld" data-testid="builder-page">
+      <PageHeader
+        crumbs={[{ label: '계통도', to: '/' }, { label: '계통 구성' }]}
+        title="계통 구성"
+        lead={
+          mode === 'draw'
+            ? '전원·모선·반·기기 상자를 캔버스에 놓고 선으로 이어 단선도를 그립니다. 반을 누르면 안에 들어갈 차단기·계측기 등을 구성할 수 있고, 잘못 이은 곳은 이유와 함께 고치는 방법을 알려 줍니다.'
+            : '템플릿을 고르고 칸마다 자사 기기·제품을 넣어 계통을 구성해 봅니다. 잘못 넣은 곳은 이유와 함께 고치는 방법을 알려 줍니다.'
+        }
+      />
+      <p className="bld-disclaimer" role="note">
+        {DISCLAIMER}
+      </p>
+      <div className="bld-modes" role="tablist" aria-label="계통 구성 방식">
+        {tabs.map((t) => (
+          <button key={t.id} type="button" role="tab" aria-selected={mode === t.id} aria-controls={`bld-mode-${t.id}`} id={`bld-tab-${t.id}`} onClick={() => setMode(t.id)} data-testid={`builder-mode-${t.id}`}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <div role="tabpanel" id={`bld-mode-${mode}`} aria-labelledby={`bld-tab-${mode}`}>
+        {mode === 'draw' ? <DrawEditor /> : <TemplateBuilder />}
+      </div>
+    </div>
+  );
+}
