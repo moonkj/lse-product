@@ -10,7 +10,8 @@ import CoverageBadge from '../components/common/CoverageBadge';
 import { pageTitle } from '../lib/labels';
 import { LAYER_LABELS } from '../lib/schema';
 import { candidateProducts } from '../lib/builder/validate';
-import { RESPONSE_LABEL, matchText } from '../lib/counter/match';
+import { RESPONSE_LABEL, matchArticle, matchText } from '../lib/counter/match';
+import { articleUrlOf, slugWords, splitPasted, type Article } from '../lib/counter/article';
 import './pages.css';
 import './CounterPage.css';
 
@@ -44,7 +45,38 @@ export default function CounterPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.get('q')]);
 
-  const result = useMemo(() => matchText(text), [text]);
+  // 기사 주소면 서버 함수(/api/article)로 본문까지 받아 판단. 못 받으면 주소의 단어로만
+  const url = articleUrlOf(text);
+  const [fetched, setFetched] = useState<{ url: string; article?: Article; error?: string } | undefined>();
+  useEffect(() => {
+    if (!url) return;
+    if (fetched?.url === url) return;
+    const ctl = new AbortController();
+    const t = setTimeout(async () => {
+      setFetched({ url });
+      try {
+        const res = await fetch(new URL(`api/article?url=${encodeURIComponent(url)}`, document.baseURI).toString(), { signal: ctl.signal });
+        const body = (await res.json().catch(() => ({}))) as Partial<Article> & { error?: string };
+        if (!res.ok || (!body.title && !body.body)) setFetched({ url, error: body.error || `본문을 받지 못했습니다 (${res.status}).` });
+        else setFetched({ url, article: { url, title: body.title ?? '', description: body.description ?? '', body: body.body ?? '' } });
+      } catch (e) {
+        if ((e as Error)?.name !== 'AbortError') setFetched({ url, error: '본문을 받지 못했습니다 (연결 실패).' });
+      }
+    }, 300);
+    return () => {
+      clearTimeout(t);
+      ctl.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
+  const state = url ? (fetched?.url === url ? fetched : { url }) : undefined;
+  const pasted = useMemo(() => splitPasted(text), [text]);
+  const result = useMemo(() => {
+    if (state?.article) return matchArticle(`${state.article.title} ${state.article.description}`, state.article.body);
+    if (url) return matchText(slugWords(url));
+    return pasted.body ? matchArticle(pasted.title, pasted.body) : matchText(text);
+  }, [state?.article, url, pasted, text]);
+  const loading = !!url && !state?.article && !state?.error;
   const data = getData();
   const empty = !text.trim();
 
@@ -53,19 +85,19 @@ export default function CounterPage() {
       <PageHeader
         crumbs={[{ label: '계통도', to: '/' }, { label: '경쟁 대응' }]}
         title="경쟁 대응"
-        lead="경쟁사 뉴스 제목·요약이나 경쟁사 제품명을 넣으면, 그 제품군에 대응하는 자사 기기와 제품을 보유 상태와 함께 보여 줍니다. 프로젝트성 기사면 그 계통의 대응 제품 묶음도 보여 줍니다."
+        lead="경쟁사 뉴스 기사 주소(본문까지 읽음)나 제목·본문, 경쟁사 제품명을 넣으면, 그 제품군에 대응하는 자사 기기와 제품을 보유 상태와 함께 보여 줍니다. 프로젝트성 기사면 그 계통의 대응 제품 묶음도 보여 줍니다."
       />
 
       <section className="pg-card cnt-input" aria-labelledby="cnt-q-label">
         <label id="cnt-q-label" htmlFor="cnt-q" className="cnt-input__label">
-          뉴스 제목·요약 또는 경쟁사 제품명
+          뉴스 기사 주소, 기사 제목·본문, 또는 경쟁사 제품명
         </label>
         <textarea
           id="cnt-q"
           className="cnt-input__box"
-          rows={3}
+          rows={4}
           value={text}
-          placeholder="예: Schneider Electric launches new Masterpact air circuit breaker for data centers"
+          placeholder={'기사 주소(https://…)를 넣으면 본문까지 읽어 판단합니다.\n또는 첫 줄에 제목, 다음 줄부터 본문을 붙여 넣으세요.'}
           onChange={(e) => setText(e.target.value)}
           data-testid="counter-input"
         />
@@ -78,11 +110,37 @@ export default function CounterPage() {
           ))}
         </div>
         <p className="cnt-note" role="note">
-          키워드·경쟁사 시리즈명 사전으로 자동 연결한 참고 결과입니다. 실제 대응 가능 여부와 사양 비교는 제품 카탈로그와 사업부 확인이 필요합니다.
+          제목에서 찾은 말을 가장 크게, 본문에서만 찾은 말은 낮은 비중으로 봅니다 (본문에서만 한 번 스친 일반어는 뺌). 키워드·경쟁사 시리즈명 사전으로 자동 연결한 참고 결과입니다. 실제 대응 가능 여부와 사양 비교는 제품 카탈로그와 사업부 확인이 필요합니다.
         </p>
       </section>
 
-      {!empty && (
+      {!empty && (url || pasted.body) && (
+        <section className="pg-card cnt-source" aria-live="polite" data-testid="counter-source">
+          {url ? (
+            loading ? (
+              <p className="cnt-muted">기사 본문을 읽는 중…</p>
+            ) : state?.article ? (
+              <>
+                <p>
+                  <b>기사 본문까지 읽어 판단했습니다.</b> <span className="cnt-muted">본문 {state.article.body.length.toLocaleString()}자</span>
+                </p>
+                <p className="cnt-source__title" data-testid="counter-article-title">{state.article.title || '(제목 없음)'}</p>
+                {state.article.description && <p className="cnt-muted cnt-source__desc">{state.article.description}</p>}
+              </>
+            ) : (
+              <p data-testid="counter-article-error">
+                <b>본문을 읽지 못해 주소의 단어로만 판단했습니다.</b> <span className="cnt-muted">{state?.error} 기사 제목과 본문을 직접 붙여 넣으면 더 정확합니다.</span>
+              </p>
+            )
+          ) : (
+            <p>
+              <b>첫 줄을 제목, 나머지를 본문으로 보고 판단했습니다.</b> <span className="cnt-muted">본문 {pasted.body.length.toLocaleString()}자</span>
+            </p>
+          )}
+        </section>
+      )}
+
+      {!empty && !loading && (
         <div className="cnt-results" aria-live="polite" data-testid="counter-results">
           <div className="cnt-found">
             {result.competitors.length > 0 ? (
@@ -160,7 +218,15 @@ export default function CounterPage() {
                           경쟁사 '{adj.name}'은(는) 자사 사업 범위 밖이라, 함께 쓰이는 자사 기기로 연관 대응합니다.
                         </>
                       ) : (
-                        <>찾은 말: {h.terms.map((t) => `'${t}'`).join(', ')}</>
+                        <>
+                          {h.terms.some((t) => !h.bodyTerms?.includes(t)) && <>찾은 말: {h.terms.filter((t) => !h.bodyTerms?.includes(t)).map((t) => `'${t}'`).join(', ')}</>}
+                          {h.bodyTerms?.length ? (
+                            <span className={h.terms.length > h.bodyTerms.length ? 'cnt-muted' : undefined}>
+                              {h.terms.length > h.bodyTerms.length ? ' · 본문: ' : '본문에서 찾은 말: '}
+                              {h.bodyTerms.map((t) => `'${t}'`).join(', ')}
+                            </span>
+                          ) : null}
+                        </>
                       )}
                     </p>
                     {products.length > 0 ? (

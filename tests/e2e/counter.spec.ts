@@ -69,4 +69,41 @@ test.describe('경쟁 대응', () => {
     await tid(page, 'mobile-menu-toggle').click();
     await expect(tid(page, 'mmenu-counter')).toBeVisible();
   });
+
+  test('기사 주소 → 본문까지 읽어 판단 (본문 근거 표시), 못 읽으면 주소 단어로 + 안내', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.route('**/api/article?**', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          url: 'https://news.example.com/abb-motor',
+          title: 'ABB launches intelligent low voltage motor',
+          description: 'Built-in sensors',
+          body: 'The motor pairs with ABB variable speed drives. A variable speed drive cuts energy use in pumps. Combined with the drive, users save energy.',
+        }),
+      }),
+    );
+    await page.goto('./#/counter');
+    await tid(page, 'counter-input').fill('https://news.example.com/abb-motor');
+    await expect(tid(page, 'counter-article-title')).toHaveText('ABB launches intelligent low voltage motor');
+    await expect(tid(page, 'counter-hit-lv-drive')).toContainText("본문에서 찾은 말");
+    const axe = await new AxeBuilder({ page }).include('[data-testid="counter-page"]').analyze();
+    expect(axe.violations.map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([]);
+    await page.screenshot({ path: SHOT + 'counter-article.png', fullPage: true });
+
+    await page.unroute('**/api/article?**');
+    await page.route('**/api/article?**', (route) => route.fulfill({ status: 502, contentType: 'application/json', body: JSON.stringify({ error: '기사 사이트가 403 로 응답했습니다.' }) }));
+    await tid(page, 'counter-input').fill('https://news.example.com/siemens-sinamics-drive-launch');
+    await expect(tid(page, 'counter-article-error')).toContainText('주소의 단어로만');
+    await expect(tid(page, 'counter-hit-lv-drive')).toBeVisible();
+  });
+
+  test('붙여 넣은 제목+본문: 첫 줄 제목, 나머지 본문으로 판단', async ({ page }) => {
+    await page.goto('./#/counter');
+    await tid(page, 'counter-input').fill('New order announced\nSchneider Electric will supply switchgear for a data center campus. The data center opens in 2027.');
+    await expect(tid(page, 'counter-source')).toContainText('첫 줄을 제목');
+    await expect(tid(page, 'counter-competitor')).toHaveText('Schneider Electric');
+    await expect(tid(page, 'counter-project-datacenter')).toBeVisible();
+  });
 });
