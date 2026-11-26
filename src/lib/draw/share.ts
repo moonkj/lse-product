@@ -23,12 +23,13 @@ function fromBase64Url(code: string): string {
 }
 
 /** 짧게: 상자 [kind번호, x, y, eq, product, v, label, qty, hv, lv, kVA, pctZ, w, items[[eq, product, qty]]] */
-type PackedNode = [number, number, number, string?, string?, string?, string?, number?, string?, string?, number?, number?, number?, [string, string?, number?][]?];
+type PackedItem = [string, string?, number?, string?, number?, number?, string?];
+type PackedNode = [number, number, number, string?, string?, string?, string?, number?, string?, string?, number?, number?, number?, PackedItem[]?];
 
 export function encodeDiagram(d: Diagram): string {
   const idx = new Map(d.nodes.map((n, i) => [n.id, i]));
   const nodes: PackedNode[] = d.nodes.map((n) => {
-    const p: PackedNode = [KINDS.indexOf(n.kind), n.x, n.y, n.eq ?? '', n.product ?? '', n.v ?? '', n.label ?? '', n.qty ?? 0, n.hv ?? '', n.lv ?? '', n.kVA ?? 0, n.pctZ ?? 0, n.w ?? 0, (n.items ?? []).map((i) => [i.eq, i.product ?? '', i.qty ?? 0] as [string, string, number])];
+    const p: PackedNode = [KINDS.indexOf(n.kind), n.x, n.y, n.eq ?? '', n.product ?? '', n.v ?? '', n.label ?? '', n.qty ?? 0, n.hv ?? '', n.lv ?? '', n.kVA ?? 0, n.pctZ ?? 0, n.w ?? 0, (n.items ?? []).map((i) => [i.eq, i.product ?? '', i.qty ?? 0, i.variant ?? '', i.amps ?? 0, i.poles ?? 0, i.name ?? ''] as PackedItem)];
     // 끝의 빈 값은 잘라 짧게
     while (p.length > 3) {
       const last = p[p.length - 1];
@@ -86,8 +87,21 @@ export function decodeDiagram(code: string): Diagram | null {
     if (kind === 'panel')
       n.items = (Array.isArray(items) ? items : [])
         .slice(0, 60)
-        .filter((i): i is [string, string?, number?] => Array.isArray(i) && okEq(i[0]))
-        .map((i): PanelItem => ({ id: newId('i'), eq: i[0], ...(okProduct(i[1]) ? { product: i[1] } : {}), ...(clampQty(i[2]) > 1 ? { qty: clampQty(i[2]) } : {}) }));
+        .filter((i): i is PackedItem => Array.isArray(i) && okEq(i[0]))
+        .map((i): PanelItem => {
+          const amps = num(i[4], 0.1, 10000);
+          const poles = [1, 2, 3, 4].includes(i[5] as number) ? (i[5] as 1 | 2 | 3 | 4) : undefined;
+          return {
+            id: newId('i'),
+            eq: i[0],
+            ...(okProduct(i[1]) ? { product: i[1] } : {}),
+            ...(clampQty(i[2]) > 1 ? { qty: clampQty(i[2]) } : {}),
+            ...(typeof i[3] === 'string' && i[3] && okProduct(i[1]) ? { variant: i[3].slice(0, 60) } : {}),
+            ...(amps && i[4] ? { amps } : {}),
+            ...(poles ? { poles } : {}),
+            ...(typeof i[6] === 'string' && i[6].trim() ? { name: i[6].trim().slice(0, 30) } : {}),
+          };
+        });
     d.nodes.push(n);
     ids.push(n.id);
   }

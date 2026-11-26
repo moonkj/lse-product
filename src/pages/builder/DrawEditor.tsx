@@ -57,6 +57,8 @@ import { edgePath, portPoint } from '../../lib/draw/geometry';
 import { decodeDiagram, diagramShareUrl } from '../../lib/draw/share';
 import { diagramSvg } from '../../lib/draw/exportSvg';
 import { useCurrentDiagram, useDrawStore } from '../../lib/draw/store';
+import PanelEditor from './PanelEditor';
+import { itemSpecText } from '../../lib/draw/ratings';
 import './DrawEditor.css';
 
 const DRAG_TYPE = 'text/x-lse-draw';
@@ -79,6 +81,7 @@ export default function DrawEditor() {
   const [connectFrom, setConnectFrom] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [showBom, setShowBom] = useState(false);
+  const [panelOpen, setPanelOpen] = useState<string | null>(null);
   const [name, setName] = useState(d.name);
   const canvasRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -502,6 +505,7 @@ export default function DrawEditor() {
                     // 키보드(Enter·Space)로 누른 경우만 — 마우스는 pointerup 에서 처리
                     if (e.detail === 0) onNodeClick(n);
                   }}
+                  onDoubleClick={() => n.kind === 'panel' && setPanelOpen(n.id)}
                   onPortDown={(e) => onPortDown(e, n)}
                   onPortMove={onPortMove}
                   onPortUp={onPortUp}
@@ -547,6 +551,7 @@ export default function DrawEditor() {
           onApply={apply}
           onSelect={setSel}
           onConnect={(id) => (setConnectFrom(id), announce('이을 상자를 누르세요'))}
+          onOpenPanel={setPanelOpen}
         />
       </div>
 
@@ -568,6 +573,9 @@ export default function DrawEditor() {
         </button>
       </div>
       {showBom && <Bom d={d} specs={specs} onCsv={exportCsv} />}
+      {panelOpen && d.nodes.some((x) => x.id === panelOpen && x.kind === 'panel') && (
+        <PanelEditor d={d} n={d.nodes.find((x) => x.id === panelOpen)!} specs={specs} issues={issues} onCommit={commit} onApply={apply} onClose={() => setPanelOpen(null)} />
+      )}
       {printing && <div className="drw-print" aria-hidden="true" dangerouslySetInnerHTML={{ __html: svgText() }} />}
     </div>
   );
@@ -584,12 +592,13 @@ interface NodeBoxProps {
   onPointerUp: () => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onClick: (e: React.MouseEvent) => void;
+  onDoubleClick: () => void;
   onPortDown: (e: RPointerEvent) => void;
   onPortMove: (e: RPointerEvent) => void;
   onPortUp: (e: RPointerEvent) => void;
 }
 
-function NodeBox({ n, issues, selected, connectTarget, onPointerDown, onPointerMove, onPointerUp, onKeyDown, onClick, onPortDown, onPortMove, onPortUp }: NodeBoxProps) {
+function NodeBox({ n, issues, selected, connectTarget, onPointerDown, onPointerMove, onPointerUp, onKeyDown, onClick, onDoubleClick, onPortDown, onPortMove, onPortUp }: NodeBoxProps) {
   const s = nodeSize(n);
   const errors = issues.filter((i) => i.severity === 'error').length;
   const warns = issues.filter((i) => i.severity === 'warn').length;
@@ -623,6 +632,7 @@ function NodeBox({ n, issues, selected, connectTarget, onPointerDown, onPointerM
         onPointerUp={onPointerUp}
         onKeyDown={onKeyDown}
         onClick={onClick}
+        onDoubleClick={onDoubleClick}
         data-testid={`draw-node-${n.id}`}
         data-kind={n.kind}
         data-eq={n.eq}
@@ -742,6 +752,7 @@ interface InspectorProps {
   onApply: (f: DFix, say?: string) => void;
   onSelect: (s: Sel) => void;
   onConnect: (id: string) => void;
+  onOpenPanel: (id: string) => void;
 }
 
 function fitNote(productId: string, v: VoltageId | undefined, specs?: SpecsMap): { ok: boolean | null; text: string } {
@@ -755,7 +766,7 @@ function fitNote(productId: string, v: VoltageId | undefined, specs?: SpecsMap):
   return kv >= vo.kV * 0.95 ? { ok: true, text: '전압 맞음' } : { ok: false, text: `최대 ${kv}kV — 안 맞음` };
 }
 
-function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, onConnect }: InspectorProps) {
+function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, onConnect, onOpenPanel }: InspectorProps) {
   if (edge) {
     const a = d.nodes.find((n) => n.id === edge.from);
     const b = d.nodes.find((n) => n.id === edge.to);
@@ -873,7 +884,7 @@ function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, 
         <QtyField value={n.qty ?? 1} onChange={(q) => set({ qty: q > 1 ? q : undefined })} testId="draw-qty" />
       )}
 
-      {pt && <PanelItems d={d} n={n} specs={specs} issues={issues} onCommit={onCommit} onApply={onApply} />}
+      {pt && <PanelItems d={d} n={n} specs={specs} issues={issues} onCommit={onCommit} onApply={onApply} onOpen={() => onOpenPanel(n.id)} />}
 
       <h3 className="drw-panel__h">확인할 점</h3>
       {list.length === 0 ? <p className="drw-panel__ok">이 상자에는 확인할 점이 없습니다.</p> : <IssueList issues={list} onApply={onApply} />}
@@ -939,7 +950,7 @@ function QtyField({ value, onChange, testId, label = '수량' }: { value: number
 }
 
 /** 반 안 구성 — 품목마다 기기·제품·수량, 순서 바꾸기, 빼기 / 넣을 수 있는 기기 목록에서 넣기 */
-function PanelItems({ d, n, specs, issues, onCommit, onApply }: { d: Diagram; n: DNode; specs?: SpecsMap; issues: DIssue[]; onCommit: (d: Diagram, say?: string) => void; onApply: (f: DFix, say?: string) => void }) {
+function PanelItems({ d, n, specs, issues, onCommit, onApply, onOpen }: { d: Diagram; n: DNode; specs?: SpecsMap; issues: DIssue[]; onCommit: (d: Diagram, say?: string) => void; onApply: (f: DFix, say?: string) => void; onOpen: () => void }) {
   const pt = panelTypeById(n.eq)!;
   const [add, setAdd] = useState(pt.accepts[0]);
   useEffect(() => setAdd(pt.accepts[0]), [pt]);
@@ -949,6 +960,9 @@ function PanelItems({ d, n, specs, issues, onCommit, onApply }: { d: Diagram; n:
       <h3 id={`drw-items-${n.id}`} className="drw-panel__h">
         반 안 구성 <small>{items.length}종 · {items.reduce((s, i) => s + (i.qty ?? 1), 0)}개</small>
       </h3>
+      <button type="button" className="btn btn--primary btn--sm drw-items__open" onClick={onOpen} data-testid="draw-panel-open">
+        반 안 구성 열기 (회로표·결선도)
+      </button>
       {items.length === 0 && <p className="drw-panel__note">비어 있습니다. 아래에서 기기를 넣으세요.</p>}
       <ol className="drw-items__list">
         {items.map((it, idx) => {
@@ -974,6 +988,9 @@ function PanelItems({ d, n, specs, issues, onCommit, onApply }: { d: Diagram; n:
                   </button>
                 </span>
               </div>
+              {(it.name || itemSpecText(it, specs)) && (
+                <span className="drw-item__spec">{[it.name, itemSpecText(it, specs)].filter(Boolean).join(' · ')}</span>
+              )}
               <div className="drw-item__row">
                 {products.length > 0 ? (
                   <select aria-label={`${eqName(it.eq)} 제품`} value={it.product ?? ''} onChange={(e) => onCommit(updateItem(d, n.id, it.id, { product: e.target.value || undefined }))} data-testid="draw-item-product">

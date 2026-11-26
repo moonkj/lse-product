@@ -200,4 +200,47 @@ test.describe('단선도 그리기', () => {
     await page.screenshot({ path: SHOT + 'drw-mobile.png' });
   });
 
+  test('분전반 안 구성: 회로표에서 회로명·제품·프레임·정격·극수, 회로 일괄 넣기, 분기>주차단기 경고 → 고치기, 결선도', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await expect(tid(page, 'draw-fill')).toBeEnabled();
+    await tid(page, 'draw-pal-panel-panelboard').click();
+    await tid(page, 'draw-panel-open').click();
+    const ed = tid(page, 'panel-editor');
+    await expect(ed).toBeVisible();
+    await expect(ed.getByTestId('panel-sld')).toBeVisible();
+    await ed.getByTestId('panel-fill').click();
+    // 주차단기 행: 분전반용 차단기, 정격 100A, 4P
+    const main = ed.getByTestId('panel-row-0');
+    await expect(main.getByTestId('panel-product')).toHaveValue(/.+/);
+    await expect(main.getByTestId('panel-amps')).toHaveValue('100');
+    await expect(main.getByTestId('panel-poles')).toHaveValue('4');
+    // 회로 4개 넣기
+    await ed.getByTestId('panel-add-eq').selectOption('mcb-rcbo');
+    await ed.getByTestId('panel-add-count').fill('4');
+    await ed.getByTestId('panel-add').click();
+    await expect(ed.locator('tbody tr')).toHaveCount(7);
+    // 회로명·정격 바꾸기
+    const r1 = ed.getByTestId('panel-row-1');
+    await r1.getByTestId('panel-name').fill('1층 콘센트');
+    await r1.getByTestId('panel-amps').selectOption('20');
+    await expect(r1.getByTestId('panel-amps')).toHaveValue('20');
+    await expect(ed.getByTestId('panel-sld')).toContainText('1층 콘센트');
+    // 분기를 주차단기보다 크게 → 경고 → 고치기
+    await r1.getByTestId('panel-amps').selectOption('50');
+    await main.getByTestId('panel-amps').selectOption('40');
+    await expect(ed.getByTestId('panel-issues')).toContainText('주차단기 40A보다');
+    await page.screenshot({ path: SHOT + 'drw-panel-editor.png' });
+    await ed.getByTestId('panel-fix').first().click();
+    await expect(ed.getByTestId('panel-issues')).toHaveCount(0);
+    const axe = await new AxeBuilder({ page }).include('[data-testid="panel-editor"]').analyze();
+    expect(axe.violations.map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([]);
+    await ed.getByTestId('panel-close').click();
+    await expect(ed).toHaveCount(0);
+    // 캔버스 반 상자에 정격이 보임
+    await expect(page.locator('[data-eq="panelboard"]')).toContainText('ELCB');
+    await tid(page, 'draw-bom-toggle').click();
+    await expect(tid(page, 'draw-bom')).toContainText('1층 콘센트');
+  });
+
 });

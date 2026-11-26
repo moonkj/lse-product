@@ -9,6 +9,7 @@
  */
 import { getData } from '../../data/load';
 import type { Layer } from '../schema';
+import { RATED_EQ, defaultRating } from './ratings';
 
 /** 전압 단계 id — 'dc0.8' 은 800V DC */
 export type VoltageId = '345' | '154' | '22.9' | '6.6' | '3.3' | '0.38' | '0.22' | 'dc0.8';
@@ -36,6 +37,14 @@ export interface PanelItem {
   eq: string;
   product?: string;
   qty?: number;
+  /** 회로 이름 (예: 1층 전등, 콘센트 A) */
+  name?: string;
+  /** 제품 옵션(프레임) id — specs.json variants */
+  variant?: string;
+  /** 정격전류 (A) */
+  amps?: number;
+  /** 극수 */
+  poles?: 1 | 2 | 3 | 4;
 }
 
 export interface DNode {
@@ -201,7 +210,14 @@ export function makeNode(kind: DNode['kind'], x: number, y: number, eq?: string)
   if (kind === 'bus') return { ...base, v: '0.38', w: BUS_W };
   if (kind === 'panel') {
     const pt = panelTypeById(eq) ?? PANEL_TYPES[1];
-    return { ...base, eq: pt.id, v: pt.v, items: pt.defaults.map((d) => ({ id: newId('i'), eq: d.eq, ...(d.qty && d.qty > 1 ? { qty: d.qty } : {}) })) };
+    let branch = 0;
+    let mainSeen = false;
+    const items = pt.defaults.map((d): PanelItem => {
+      const isMain = !mainSeen && pt.main.includes(d.eq);
+      if (isMain) mainSeen = true;
+      return { id: newId('i'), eq: d.eq, ...(d.qty && d.qty > 1 ? { qty: d.qty } : {}), ...defaultRating(pt.id, d.eq, isMain), ...(isMain || !RATED_EQ.has(d.eq) ? {} : { name: `회로 ${++branch}` }) };
+    });
+    return { ...base, eq: pt.id, v: pt.v, items };
   }
   const tr = eq ? TRANSFORMERS[eq] : undefined;
   if (tr) return { ...base, eq, hv: tr.hv, lv: tr.lv, kVA: tr.kVA, pctZ: 6 };

@@ -51,7 +51,7 @@ function nodeSvg(n: DNode, state?: 'error' | 'warn'): string {
     return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}" fill="#eef2ff" stroke="${stroke}" stroke-width="1.5"/>${t(cx, y + h / 2 + 5, clip(`⚡ ${title}`, w - 16, 13), 13, 'text-anchor="middle" font-weight="700"')}`;
   }
   if (n.kind === 'panel') {
-    const items = (n.items ?? []).map((i) => `${getData().equipmentTypeById.get(i.eq)?.abbr ?? eqName(i.eq)}${i.qty && i.qty > 1 ? `×${i.qty}` : ''}`).join(' · ');
+    const items = (n.items ?? []).map((i) => `${getData().equipmentTypeById.get(i.eq)?.abbr ?? eqName(i.eq)}${i.amps ? ` ${i.amps}A` : ''}${i.qty && i.qty > 1 ? `×${i.qty}` : ''}`).join(' · ');
     const lines = wrap(items || '안이 비어 있음', w - 16, 11, 3);
     return [
       `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#fff" stroke="${stroke}" stroke-width="2"/>`,

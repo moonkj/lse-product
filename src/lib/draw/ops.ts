@@ -6,6 +6,7 @@ import { candidateProducts, clampQty, DISCLAIMER, isInstrumentProduct } from '..
 import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builder/specParse';
 import { TRANSFORMERS, eqName, isTransformer, makeNode, newId, nodeSize, nodeTitle, panelTypeById, snap, voltageLabel, voltageOf, type DNode, type Diagram, type PanelItem } from './model';
 import { upstreamTransformer } from './validate';
+import { ampsOptions, defaultRating, itemSpecText, stdAtLeast, variantFor } from './ratings';
 import type { DFix } from './validate';
 
 const touch = (d: Diagram, patch: Partial<Diagram>): Diagram => ({ ...d, ...patch, updatedAt: new Date().toISOString() });
@@ -47,7 +48,26 @@ export function reverseEdge(d: Diagram, id: string): Diagram {
 const mapItems = (d: Diagram, node: string, f: (items: PanelItem[]) => PanelItem[]): Diagram =>
   touch(d, { nodes: d.nodes.map((n) => (n.id === node && n.kind === 'panel' ? { ...n, items: f(n.items ?? []) } : n)) });
 
-export const addItem = (d: Diagram, node: string, eq: string) => mapItems(d, node, (items) => [...items, { id: newId('i'), eq }]);
+export const addItem = (d: Diagram, node: string, eq: string) => addItems(d, node, eq, 1);
+/** 회로 여러 개 넣기 — 반 종류에 맞는 기본 정격·극수, 회로 이름은 '회로 n' */
+export function addItems(d: Diagram, node: string, eq: string, count: number, base?: Partial<PanelItem>): Diagram {
+  const n = d.nodes.find((x) => x.id === node);
+  const pt = panelTypeById(n?.eq);
+  return mapItems(d, node, (items) => {
+    const hasMain = !!pt && items.some((i) => pt.main.includes(i.eq));
+    const isMain = !!pt && !hasMain && pt.main.includes(eq);
+    const def = pt ? defaultRating(pt.id, eq, isMain) : {};
+    const start = items.filter((i) => !(pt?.main.includes(i.eq) && items.find((x) => pt.main.includes(x.eq)) === i)).length;
+    const add = Array.from({ length: Math.max(1, Math.min(48, count)) }, (_, k) => ({
+      id: newId('i'),
+      eq,
+      ...def,
+      ...(isMain ? {} : { name: `회로 ${start + k + 1}` }),
+      ...base,
+    }));
+    return [...items, ...add];
+  });
+}
 export const removeItem = (d: Diagram, node: string, item: string) => mapItems(d, node, (items) => items.filter((i) => i.id !== item));
 export const updateItem = (d: Diagram, node: string, item: string, patch: Partial<PanelItem>) =>
   mapItems(d, node, (items) => items.map((i) => (i.id === item ? { ...i, ...patch } : i)));
@@ -94,7 +114,9 @@ export function applyDFix(d: Diagram, f: DFix): Diagram {
     case 'setProduct':
       return f.item ? updateItem(d, f.node, f.item, { product: f.product }) : updateNode(d, f.node, { product: f.product });
     case 'setItemEq':
-      return updateItem(d, f.node, f.item, { eq: f.eq, product: undefined });
+      return updateItem(d, f.node, f.item, { eq: f.eq, product: undefined, variant: undefined });
+    case 'setItem':
+      return updateItem(d, f.node, f.item, f.patch);
     case 'addItem':
       return addItem(d, f.node, f.eq);
     case 'removeItem':
@@ -152,7 +174,11 @@ export function diagramBom(d: Diagram, specs?: SpecsMap): DBomRow[] {
     const where = nodeTitle(n);
     const extra = n.kind === 'equipment' && isTransformer(n.eq) ? ` ${voltageLabel(n.hv)}/${voltageLabel(n.lv)} ${n.kVA ?? ''}kVA` : n.kind === 'panel' ? ' (함체)' : '';
     add(n.id, where, n.eq, n.product, n.qty ?? 1, extra);
-    for (const it of n.items ?? []) add(`${n.id}:${it.id}`, where, it.eq, it.product, it.qty ?? 1);
+    for (const it of n.items ?? []) {
+      add(`${n.id}:${it.id}`, it.name ? `${where} › ${it.name}` : where, it.eq, it.product, it.qty ?? 1);
+      const spec = itemSpecText(it, specs);
+      if (spec) rows[rows.length - 1].rating = spec;
+    }
   }
   return rows;
 }
@@ -169,9 +195,10 @@ export function diagramBomCsv(d: Diagram, rows: DBomRow[], today: string): strin
  */
 export function fillProducts(d: Diagram, specs?: SpecsMap): Diagram {
   if (!specs) return d;
-  const pick = (eq: string, v: DNode['v'], needA?: number, needKA?: number): string | undefined => {
+  const pick = (eq: string, v: DNode['v'], needA?: number, needKA?: number, prefer?: string): string | undefined => {
     const vo = voltageOf(v);
-    const list = candidateProducts(eq);
+    // 분전반 안 품목은 '분전반용' 제품을 먼저
+    const list = [...candidateProducts(eq)].sort((a, b) => (prefer ? Number(b.name.includes(prefer)) - Number(a.name.includes(prefer)) : 0));
     const ok = list.filter((p) => {
       const s = specs.get(p.id);
       if (!s) return false;
@@ -199,7 +226,28 @@ export function fillProducts(d: Diagram, specs?: SpecsMap): Diagram {
       const lv = tr?.lv ? voltageOf(tr.lv) : undefined;
       const need = tr?.kVA && lv && !lv.dc ? { a: trSecondaryA(tr.kVA, lv.kV), ka: trShortCircuitKA(tr.kVA, lv.kV, tr.pctZ ?? 6) } : undefined;
       const mainId = n.items.find((i) => pt?.main.includes(i.eq))?.id;
-      next = { ...next, items: n.items.map((i) => (i.product ? i : { ...i, product: pick(i.eq, n.v, i.id === mainId && pt?.id === 'lv-swgr' ? need?.a : undefined, i.id === mainId && pt?.id === 'lv-swgr' ? need?.ka : undefined) })) };
+      const prefer = pt?.id === 'panelboard' ? '분전반' : undefined;
+      next = { ...next, items: n.items.map((i) => (i.product ? i : { ...i, product: pick(i.eq, n.v, i.id === mainId && pt?.id === 'lv-swgr' ? need?.a : undefined, i.id === mainId && pt?.id === 'lv-swgr' ? need?.ka : undefined, prefer) })) };
+    }
+    // 정격전류·극수·프레임이 비어 있으면 기본값 (저압반 주차단기는 변압기 2차 정격전류 이상)
+    if (n.kind === 'panel' && next.items?.length) {
+      const pt = panelTypeById(n.eq);
+      const tr = upstreamTransformer(d, n.id);
+      const lv = tr?.lv ? voltageOf(tr.lv) : undefined;
+      const needA = tr?.kVA && lv && !lv.dc ? trSecondaryA(tr.kVA, lv.kV) : undefined;
+      const mainId = next.items.find((i) => pt?.main.includes(i.eq))?.id;
+      const items = next.items.map((i) => {
+        if (!pt) return i;
+        const isMain = i.id === mainId;
+        const def = defaultRating(pt.id, i.eq, isMain);
+        let amps = i.amps ?? (isMain && pt.id === 'lv-swgr' && needA ? stdAtLeast(needA) : def.amps);
+        const opts = amps ? ampsOptions(i.product, undefined, specs) : [];
+        if (amps && opts.length && !opts.includes(amps)) amps = opts.find((a) => a >= amps!) ?? opts[opts.length - 1];
+        const variant = i.variant ?? (i.product ? variantFor(i.product, amps, specs)?.id : undefined);
+        const patch = { amps, poles: i.poles ?? def.poles, variant };
+        return patch.amps === i.amps && patch.poles === i.poles && patch.variant === i.variant ? i : { ...i, ...patch };
+      });
+      if (items.some((x, k) => x !== next.items![k])) next = { ...next, items };
     }
     if (next !== n) changed = true;
     return next;

@@ -5,7 +5,8 @@ import { getData } from '../../../src/data/load';
 import type { ProductSpecs } from '../../../src/lib/schema';
 import { PANEL_TYPES, emptyDiagram, makeNode, sideVoltage, type Diagram } from '../../../src/lib/draw/model';
 import { validateDiagram, summarizeDiagram, pickTransformer } from '../../../src/lib/draw/validate';
-import { addItem, addNode, applyDFix, connect, diagramBom, fillProducts, insertBetween, removeNode } from '../../../src/lib/draw/ops';
+import { addItem, addItems, addNode, applyDFix, connect, diagramBom, fillProducts, insertBetween, removeNode, updateItem } from '../../../src/lib/draw/ops';
+import { ampsOptions, variantFor } from '../../../src/lib/draw/ratings';
 import { PRESETS } from '../../../src/lib/draw/presets';
 import { decodeDiagram, encodeDiagram } from '../../../src/lib/draw/share';
 import { diagramSvg } from '../../../src/lib/draw/exportSvg';
@@ -184,5 +185,70 @@ describe('공유 링크·그림', () => {
     expect(svg).toContain('A&amp;B &lt;반&gt;');
     expect(svg).toContain('2026-11-26');
     expect(svg).toContain('설계 검토');
+  });
+});
+
+describe('반 안 구성 (회로표)', () => {
+  it('분전반: 기본 품목에 정격·극수·회로명, 회로 여러 개 넣기', () => {
+    let d = chain(makeNode('panel', 0, 0, 'panelboard'));
+    const n = d.nodes[0];
+    const main = n.items!.find((i) => i.eq === 'branch-mccb')!;
+    expect(main).toMatchObject({ amps: 100, poles: 4 });
+    expect(main.name).toBeUndefined();
+    expect(n.items!.find((i) => i.eq === 'elcb')).toMatchObject({ amps: 30, poles: 2, name: '회로 1' });
+    d = addItems(d, n.id, 'mcb-rcbo', 3);
+    const added = d.nodes[0].items!.slice(-3);
+    expect(added.map((i) => i.name)).toEqual(['회로 3', '회로 4', '회로 5']);
+    expect(added.every((i) => i.amps === 20 && i.poles === 2)).toBe(true);
+  });
+  it('정격 후보: 분전반용 차단기 50AF 프레임 → 5~50A, 60A 를 고르면 100AF 프레임', () => {
+    const p = pid('분전반용 차단기');
+    const f50 = variantFor(p, 40, specs)!;
+    expect(f50.label).toContain('50AF');
+    expect(ampsOptions(p, f50.id, specs)).toEqual([5, 10, 15, 20, 30, 40, 50]);
+    expect(variantFor(p, 60, specs)!.label).toContain('100AF');
+  });
+  it('분기 회로가 주차단기보다 크면 경고 → 주차단기를 올리기', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'panelboard')), specs);
+    const n = d.nodes[0];
+    const br = n.items!.find((i) => i.eq === 'elcb')!;
+    d = updateItem(d, n.id, br.id, { amps: 125, variant: undefined });
+    const w = rules(d).find((i) => i.rule === 'DRW-10')!;
+    expect(w.message).toContain('125A가 주차단기 100A보다');
+    const fixed = applyDFix(d, w.fix!.fix);
+    expect(rules(fixed).find((i) => i.rule === 'DRW-10')).toBeUndefined();
+  });
+  it('고른 정격이 프레임 범위 밖이면 경고 → 맞는 프레임으로', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'panelboard')), specs);
+    const n = d.nodes[0];
+    const main = n.items!.find((i) => i.eq === 'branch-mccb')!;
+    const f30 = variantFor(main.product, 20, specs)!; // 30AF
+    d = updateItem(d, n.id, main.id, { variant: f30.id, amps: 100 });
+    const w = rules(d).find((i) => i.rule === 'DRW-11')!;
+    expect(w.fix?.label).toContain('100AF');
+    expect(rules(applyDFix(d, w.fix!.fix)).find((i) => i.rule === 'DRW-11')).toBeUndefined();
+  });
+  it('변압기 1,000kVA 아래 저압반: 제품 채우기는 주차단기 1,600A, 낮추면 경고 → 올리기', () => {
+    let d = fillProducts(chain(makeNode('equipment', 0, 0, 'cast-tr'), makeNode('panel', 0, 160, 'lv-swgr')), specs);
+    const n = d.nodes[1];
+    const main = n.items!.find((i) => i.eq === 'acb')!;
+    expect(main.amps).toBe(1600);
+    expect(main.variant).toBeTruthy();
+    d = updateItem(d, n.id, main.id, { amps: 800 });
+    const w = rules(d).find((i) => i.rule === 'DRW-12')!;
+    expect(w.fix?.label).toBe('1600A로 올리기');
+    expect(rules(applyDFix(d, w.fix!.fix)).find((i) => i.rule === 'DRW-12')).toBeUndefined();
+  });
+  it('회로명·프레임·정격·극수는 제품 목록과 공유 코드에 그대로', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'panelboard')), specs);
+    const n = d.nodes[0];
+    const br = n.items!.find((i) => i.eq === 'elcb')!;
+    d = updateItem(d, n.id, br.id, { name: '1층 콘센트' });
+    const row = diagramBom(d, specs).find((r) => r.key === `${n.id}:${br.id}`)!;
+    expect(row.where).toContain('1층 콘센트');
+    expect(row.rating).toMatch(/2P · 30A/);
+    const back = decodeDiagram(encodeDiagram(d))!;
+    const it = back.nodes[0].items!.find((i) => i.name === '1층 콘센트')!;
+    expect(it).toMatchObject({ amps: 30, poles: 2, eq: 'elcb', variant: br.variant });
   });
 });

@@ -5,11 +5,14 @@
  *  05 발전기가 ATS 없이 연결 → ATS 넣기                06 반 안에 넣을 수 없는 기기 → 바꾸기·빼기
  *  07 반에 주차단기 없음 → 넣기                        08 특고압반 VCB 에 보호계전기 없음 → 넣기
  *  09 변압기 아래 저압 주차단기 정격전류·차단용량 (변압기 용량 기준)
+ *  10 반 안 분기 회로 정격전류 > 주차단기 정격전류   11 고른 정격전류가 제품·옵션 범위 밖 → 맞는 옵션
+ *  12 변압기 아래 저압반 주차단기에 고른 정격전류 < 변압기 2차 정격전류
  */
 import { getData, type SpecsMap } from '../../data/load';
 import type { Coverage } from '../schema';
 import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builder/specParse';
 import { candidateProducts, isInstrumentProduct, smallestVariant } from '../builder/validate';
+import { ampsInRange, ampsOptions, stdAtLeast, variantFor, RATED_EQ } from './ratings';
 import {
   eqName,
   isOffLine,
@@ -30,6 +33,7 @@ import {
 export type DFix =
   | { type: 'setProduct'; node: string; item?: string; product: string }
   | { type: 'setItemEq'; node: string; item: string; eq: string }
+  | { type: 'setItem'; node: string; item: string; patch: Partial<PanelItem> }
   | { type: 'addItem'; node: string; eq: string }
   | { type: 'removeItem'; node: string; item: string }
   | { type: 'insertBetween'; edge: string; eq: string; hv?: VoltageId; lv?: VoltageId };
@@ -237,6 +241,55 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
         coverageIssue(out, `${n.id}:${it.id}`, label, it.eq, n.id, it.id);
         ratingIssues(out, `${n.id}:${it.id}`, label, it.eq, it.product, n.v, specs, n.id, it.id);
         if (it === mainItem && pt.id === 'lv-swgr') mainBreakerCheck(out, d, n, label, it.eq, it.product, specs, it.id);
+        // 11 정격전류가 제품·옵션 범위 밖
+        if (it.amps && it.product && !ampsInRange(it, specs)) {
+          const v = variantFor(it.product, it.amps, specs);
+          const opts = ampsOptions(it.product, it.variant, specs);
+          out.push({
+            key: `${n.id}:${it.id}:11`,
+            rule: 'DRW-11',
+            severity: 'warn',
+            message: `${label}: ${it.amps}A는 고른 제품·프레임 범위(${Math.min(...opts)}~${Math.max(...opts)}A) 밖입니다.`,
+            node: n.id,
+            item: it.id,
+            fix: v ? { label: `${v.label}(으)로 바꾸기`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { variant: v.id } } } : undefined,
+          });
+        }
+      }
+      // 10 분기 > 주차단기
+      if (mainItem?.amps)
+        for (const it of items) {
+          if (it === mainItem || !it.amps || !RATED_EQ.has(it.eq) || it.amps <= mainItem.amps) continue;
+          const up = stdAtLeast(it.amps);
+          out.push({
+            key: `${n.id}:${it.id}:10`,
+            rule: 'DRW-10',
+            severity: 'warn',
+            message: `${title} › ${it.name || eqName(it.eq)} ${it.amps}A가 주차단기 ${mainItem.amps}A보다 큽니다. 분기 회로는 주차단기보다 작아야 보호협조가 됩니다.`,
+            node: n.id,
+            item: it.id,
+            fix: { label: `주차단기를 ${up}A로`, fix: { type: 'setItem', node: n.id, item: mainItem.id, patch: { amps: up, variant: variantFor(mainItem.product, up, specs)?.id ?? mainItem.variant } } },
+          });
+        }
+      // 12 변압기 2차 전류보다 작은 주차단기 정격
+      if (pt.id === 'lv-swgr' && mainItem?.amps) {
+        const tr = upstreamTransformer(d, n.id);
+        const lv = tr?.lv ? voltageOf(tr.lv) : undefined;
+        if (tr?.kVA && lv && !lv.dc) {
+          const need = trSecondaryA(tr.kVA, lv.kV);
+          if (mainItem.amps < need) {
+            const up = stdAtLeast(need);
+            out.push({
+              key: `${n.id}:${mainItem.id}:12`,
+              rule: 'DRW-12',
+              severity: 'warn',
+              message: `${title} 주차단기 ${mainItem.amps}A가 ${nodeTitle(tr)} ${fmt(tr.kVA)}kVA 2차 정격전류 약 ${fmt(need)}A보다 작습니다.`,
+              node: n.id,
+              item: mainItem.id,
+              fix: { label: `${up}A로 올리기`, fix: { type: 'setItem', node: n.id, item: mainItem.id, patch: { amps: up, variant: variantFor(mainItem.product, up, specs)?.id ?? mainItem.variant } } },
+            });
+          }
+        }
       }
     }
   }
