@@ -6,7 +6,7 @@ import { candidateProducts, clampQty, DISCLAIMER, isInstrumentProduct } from '..
 import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builder/specParse';
 import { TRANSFORMERS, eqName, isTransformer, makeNode, newId, nodeSize, nodeTitle, panelTypeById, snap, voltageLabel, voltageOf, type DEdge, type DNode, type Diagram, type PanelItem } from './model';
 import { upstreamTransformer } from './validate';
-import { ampsOptions, defaultRating, itemSpecText, stdAtLeast, variantFor } from './ratings';
+import { ampsOptions, defaultRating, itemSpecText, kaText, stdAtLeast, variantFor, variantLabel } from './ratings';
 import { balancePhases } from './load';
 
 /** 반 하나의 단상 회로를 상에 고르게 나눈다 */
@@ -146,12 +146,25 @@ export function applyDFix(d: Diagram, f: DFix): Diagram {
       return balanceNode(d, f.node);
     case 'setEdge':
       return updateEdge(d, f.edge, f.patch);
+    case 'setNode':
+      return updateNode(d, f.node, f.patch);
     case 'addItem':
       return addItem(d, f.node, f.eq);
     case 'removeItem':
       return removeItem(d, f.node, f.item);
     case 'insertBetween':
       return insertBetween(d, f.edge, f.eq, f.hv, f.lv);
+    case 'multi':
+      return f.fixes.reduce((acc, x) => applyDFix(acc, x), d);
+    case 'addFeeder': {
+      // 보내는 반에 피더 회로를 넣고 그 선의 보내는 회로로 고정
+      const id = newId('i');
+      const next = mapItems(d, f.node, (items) => [
+        ...items,
+        { id, eq: f.eq, amps: f.amps, poles: f.poles ?? 3, name: f.name, ...(f.product ? { product: f.product } : {}), ...(f.variant ? { variant: f.variant } : {}) },
+      ]);
+      return updateEdge(next, f.edge, { feeder: id, ...(f.cable ? { cable: f.cable } : {}) });
+    }
   }
 }
 
@@ -160,6 +173,8 @@ export function applyDFix(d: Diagram, f: DFix): Diagram {
 export interface DBomRow {
   key: string;
   where: string;
+  /** 발주용 형식: 제품 · 프레임 · 정격 · 극수 · 차단용량 */
+  format: string;
   equipment: string;
   coverage: string;
   product: string;
@@ -190,6 +205,7 @@ export function diagramBom(d: Diagram, specs?: SpecsMap): DBomRow[] {
     rows.push({
       key,
       where,
+      format: p?.name ?? '',
       equipment: eqName(eq) + extra,
       coverage: COVERAGE_LABELS[e.coverage],
       product: p?.name ?? (e.coverage === 'owned' || e.coverage === 'partial' ? '(제품 미선택)' : '자사 제품 없음'),
@@ -204,17 +220,47 @@ export function diagramBom(d: Diagram, specs?: SpecsMap): DBomRow[] {
     const extra = n.kind === 'equipment' && isTransformer(n.eq) ? ` ${voltageLabel(n.hv)}/${voltageLabel(n.lv)} ${n.kVA ?? ''}kVA` : n.kind === 'panel' ? ' (함체)' : '';
     add(n.id, where, n.eq, n.product, n.qty ?? 1, extra);
     for (const it of n.items ?? []) {
+      const before = rows.length;
       add(`${n.id}:${it.id}`, it.name ? `${where} › ${it.name}` : where, it.eq, it.product, it.qty ?? 1);
+      if (rows.length === before) continue;
+      const row = rows[rows.length - 1];
       const spec = itemSpecText(it, specs);
-      if (spec) rows[rows.length - 1].rating = spec;
+      if (spec) row.rating = spec;
+      row.format = [row.format, variantLabel(it, specs), it.amps ? `${it.amps}A` : '', it.poles ? `${it.poles}P` : '', kaText(it, specs)].filter(Boolean).join(' · ');
     }
   }
   return rows;
 }
 
+/** 형식별 합계 — 같은 기기·형식은 한 줄로, 수량을 더한다 (발주·견적용) */
+export interface DFormatRow {
+  key: string;
+  equipment: string;
+  coverage: string;
+  format: string;
+  qty: number;
+  where: string[];
+}
+export function bomByFormat(rows: DBomRow[]): DFormatRow[] {
+  const map = new Map<string, DFormatRow>();
+  for (const r of rows) {
+    const key = `${r.equipment}|${r.format || r.product}`;
+    const m = map.get(key);
+    const at = r.where.split(' › ')[0];
+    if (m) {
+      m.qty += r.qty;
+      if (!m.where.includes(at)) m.where.push(at);
+    } else map.set(key, { key, equipment: r.equipment, coverage: r.coverage, format: r.format || r.product, qty: r.qty, where: [at] });
+  }
+  return [...map.values()];
+}
+
 export function diagramBomCsv(d: Diagram, rows: DBomRow[], today: string): string {
-  const head = [[`단선도 — ${d.name}`], [`기준일 ${today} · 상자 ${d.nodes.length} · 선 ${d.edges.length}`], [DISCLAIMER], [], ['위치', '기기', '보유 상태', '선택 제품', '대표 정격', '수량']];
-  const body = rows.map((r) => [r.where, r.equipment, r.coverage, r.product, r.rating, String(r.qty)]);
+  const head = [[`단선도 — ${d.name}`], [`기준일 ${today} · 상자 ${d.nodes.length} · 선 ${d.edges.length}`], [DISCLAIMER], [], ['위치', '기기', '보유 상태', '선택 제품', '형식(발주용)', '대표 정격', '수량']];
+  const body = rows.map((r) => [r.where, r.equipment, r.coverage, r.product, r.format, r.rating, String(r.qty)]);
+  const sum = bomByFormat(rows);
+  body.push([], ['형식별 합계'], ['기기', '보유 상태', '형식', '수량', '위치']);
+  for (const s of sum) body.push([s.equipment, s.coverage, s.format, String(s.qty), s.where.join(', ')]);
   return '﻿' + [...head, ...body].map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
 }
 

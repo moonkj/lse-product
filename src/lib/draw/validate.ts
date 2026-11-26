@@ -1,5 +1,5 @@
 /**
- * 단선도 그리기 — 확인 규칙 (DRW-01~09). 결과는 안내이며 설계 검토가 아니다 (DISCLAIMER 공용).
+ * 단선도 그리기 — 확인 규칙 (DRW-01~23). 결과는 안내이며 설계 검토가 아니다 (DISCLAIMER 공용).
  *  01 연결 안 된 상자          02 선 양 끝 전압이 다름 → 사이에 변압기 넣기
  *  03 제품 정격전압 < 상자 전압 → 맞는 제품·옵션       04 자사 보유가 아닌 기기 (안내)
  *  05 발전기가 ATS 없이 연결 → ATS 넣기                06 반 안에 넣을 수 없는 기기 → 바꾸기·빼기
@@ -13,20 +13,28 @@
  *  18 전압강하 5% 초과 → 굵은 전선
  *  19 반 → 반 피더: 하위 주차단기가 상위 보내는 차단기보다 크거나 1.6배 차이가 안 남 (보호협조)
  *  20 피더 전선이 보내는 차단기 정격보다 가늚
+ *  21 변압기 아래 합산 부하(÷역률 0.9) > 변압기 용량 → 용량 올리기 (80% 넘으면 참고)
+ *  22 반 아래쪽까지 합산한 부하 전류 > 그 반 주차단기
+ *  23 아래 반·부하로 가는 선에 보내는 회로를 정할 수 없음 (부하 중복 합산 가능) — 참고
  */
 import { getData, type SpecsMap } from '../../data/load';
 import type { Coverage } from '../schema';
 import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builder/specParse';
 import { candidateProducts, isInstrumentProduct, smallestVariant } from '../builder/validate';
-import { ampsInRange, ampsOptions, stdAtLeast, variantFor, RATED_EQ, STD_A } from './ratings';
-import { UNBALANCE_LIMIT, circuitAmps, phaseSummary } from './load';
+import { ampsInRange, ampsOptions, stdAtLeast, variantFor, RATED_EQ } from './ratings';
+import { PF, STD_KVA, UNBALANCE_LIMIT, circuitAmps, downstreamKW, ownKW, phaseSummary, transformerLoadPct } from './load';
 import { VDROP_WARN, cableAmps, cableForDrop, recommendCable, voltageDrop } from './cable';
 import { itemKA, variantForKA } from './ratings';
 import { shortCircuitKA } from './sc';
+import { cumulativeFeederDrop, feederCableFor, feederMap, pinFeederFixes, worstIncomingFeeder } from './feeder';
+
+/** 저압 반 전류: 380V 삼상, 220V 반은 단상 */
+const panelAmps = (kw: number, v?: string) => (v === '0.22' ? (kw * 1000) / (220 * PF) : (kw * 1000) / (Math.sqrt(3) * 380 * PF));
 
 /** 보호협조: 상위 차단기 정격이 하위의 이 배수 이상이면 전류 선택 차단 가능성이 높다고 본다 (간이 기준) */
 export const SELECTIVITY_RATIO = 1.6;
 import {
+  feederSource as feederSourceOf,
   eqName,
   isOffLine,
   isTransformer,
@@ -49,6 +57,9 @@ export type DFix =
   | { type: 'setItem'; node: string; item: string; patch: Partial<PanelItem> }
   | { type: 'balancePhases'; node: string }
   | { type: 'setEdge'; edge: string; patch: Partial<DEdge> }
+  | { type: 'setNode'; node: string; patch: Partial<DNode> }
+  | { type: 'multi'; fixes: DFix[] }
+  | { type: 'addFeeder'; node: string; edge: string; eq: string; amps: number; poles?: 1 | 2 | 3 | 4; cable?: number; name?: string; product?: string; variant?: string }
   | { type: 'addItem'; node: string; eq: string }
   | { type: 'removeItem'; node: string; item: string }
   | { type: 'insertBetween'; edge: string; eq: string; hv?: VoltageId; lv?: VoltageId };
@@ -208,6 +219,24 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
       coverageIssue(out, n.id, title, n.eq, n.id);
       ratingIssues(out, n.id, title, n.eq, n.product, isTransformer(n.eq) ? n.hv : n.v, specs, n.id);
       if (n.eq === 'acb') mainBreakerCheck(out, d, n, title, n.eq, n.product, specs);
+      // 21 변압기 용량 vs 아래 합산 부하
+      if (isTransformer(n.eq) && n.kVA) {
+        const pct = transformerLoadPct(d, n);
+        if (pct !== undefined && pct > 100) {
+          const need = (downstreamKW(d, n.id) / PF) * 1.0;
+          // 고친 뒤 바로 80% 참고가 다시 뜨지 않게 80% 여유로 제안
+          const up = STD_KVA.find((k) => k >= need / 0.8) ?? Math.ceil(need / 0.8);
+          out.push({
+            key: `${n.id}:21`,
+            rule: 'DRW-21',
+            severity: 'warn',
+            message: `'${title}' 아래 합산 부하 약 ${fmt(need)}kVA(역률 0.9 가정)가 용량 ${fmt(n.kVA)}kVA의 ${fmt(pct)}%입니다.`,
+            node: n.id,
+            fix: { label: `${fmt(up)}kVA로 올리기`, fix: { type: 'setNode', node: n.id, patch: { kVA: up } } },
+          });
+        } else if (pct !== undefined && pct > 80)
+          out.push({ key: `${n.id}:21i`, rule: 'DRW-21', severity: 'info', message: `참고: '${title}' 부하율 약 ${fmt(pct)}%입니다. 증설 여유를 생각하면 80% 안쪽이 좋습니다.`, node: n.id });
+      }
       if (n.eq === 'vcb')
         out.push({ key: `${n.id}:08s`, rule: 'DRW-08', severity: 'info', message: `'${title}': VCB는 보통 보호계전기와 함께 특고압 수배전반 안에 넣습니다. 반 상자로 그리면 안의 구성까지 확인할 수 있습니다.`, node: n.id });
       // 05 발전기 → ATS
@@ -291,6 +320,25 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
             fix: { label: `주차단기를 ${up}A로`, fix: { type: 'setItem', node: n.id, item: mainItem.id, patch: { amps: up, variant: variantFor(mainItem.product, up, specs)?.id ?? mainItem.variant } } },
           });
         }
+      // 22 아래쪽 반·부하까지 합산한 전류 vs 주차단기 (아래로 이어진 부하가 있을 때만)
+      if ((n.v === '0.38' || n.v === '0.22') && mainItem?.amps) {
+        const total = downstreamKW(d, n.id);
+        if (total > ownKW(n, d) + 1e-9) {
+          const ia = panelAmps(total, n.v);
+          if (ia > mainItem.amps) {
+            const up = stdAtLeast(ia);
+            out.push({
+              key: `${n.id}:22`,
+              rule: 'DRW-22',
+              severity: 'warn',
+              message: `${title} 아래쪽까지 합산한 부하 ${fmt(total, 1)}kW의 전류 약 ${fmt(ia)}A가 주차단기 ${mainItem.amps}A보다 큽니다.`,
+              node: n.id,
+              item: mainItem.id,
+              fix: { label: `주차단기를 ${up}A로`, fix: { type: 'setItem', node: n.id, item: mainItem.id, patch: { amps: up, variant: variantFor(mainItem.product, up, specs)?.id ?? mainItem.variant } } },
+            });
+          }
+        }
+      }
       // 13~15 부하·상 (저압반)
       if (n.v === '0.38' || n.v === '0.22') {
         for (const it of items) {
@@ -310,7 +358,8 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
           }
         }
         const ps = phaseSummary(items, mainItem?.id);
-        if (ps.unbalance > UNBALANCE_LIMIT)
+        const demand = n.demand ?? 1;
+        if (n.v !== '0.22' && ps.unbalance > UNBALANCE_LIMIT)
           out.push({
             key: `${n.id}:14`,
             rule: 'DRW-14',
@@ -319,13 +368,13 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
             node: n.id,
             fix: { label: '상 자동 배분', fix: { type: 'balancePhases', node: n.id } },
           });
-        if (mainItem?.amps && ps.maxPhaseA > mainItem.amps) {
-          const up = stdAtLeast(ps.maxPhaseA);
+        if (mainItem?.amps && ps.maxPhaseA * demand > mainItem.amps) {
+          const up = stdAtLeast(ps.maxPhaseA * demand);
           out.push({
             key: `${n.id}:15`,
             rule: 'DRW-15',
             severity: 'warn',
-            message: `${title} 부하가 가장 큰 상 전류 약 ${fmt(ps.maxPhaseA, 0)}A가 주차단기 ${mainItem.amps}A보다 큽니다.`,
+            message: `${title} 부하가 가장 큰 상 전류 약 ${fmt(ps.maxPhaseA * demand, 0)}A${demand < 1 ? `(수용률 ${demand} 적용)` : ''}가 주차단기 ${mainItem.amps}A보다 큽니다.`,
             node: n.id,
             item: mainItem.id,
             fix: { label: `주차단기를 ${up}A로`, fix: { type: 'setItem', node: n.id, item: mainItem.id, patch: { amps: up, variant: variantFor(mainItem.product, up, specs)?.id ?? mainItem.variant } } },
@@ -335,6 +384,24 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
       // 16 차단용량 / 17 전선 / 18 전압강하 (저압반)
       if (n.v === '0.38' || n.v === '0.22') {
         const isc = panelShortCircuitKA(d, n.id);
+        const limit18 = d.vdLimit ?? VDROP_WARN;
+        const feederVd18 = cumulativeFeederDrop(d, n.id);
+        const feederOver = feederVd18 > limit18;
+        const worst = feederOver ? worstIncomingFeeder(d, n.id) : undefined;
+        const upstreamOver = worst ? cumulativeFeederDrop(d, worst.from) > limit18 : false;
+        if (feederOver && !upstreamOver) {
+          const others = worst ? cumulativeFeederDrop(d, worst.from) : 0;
+          const thick = worst ? feederCableFor(d, worst, Math.max(0.5, limit18 / 2 - others)) : undefined;
+          out.push({
+            key: `${n.id}:18f`,
+            rule: 'DRW-18',
+            severity: 'warn',
+            message: `${title}까지 간선 전압강하만 약 ${fmt(feederVd18, 1)}%로 기준 ${limit18}%를 넘습니다. 이 반으로 오는 피더 전선을 굵게 하세요.`,
+            node: n.id,
+            edge: worst?.id,
+            fix: worst && thick ? { label: `피더 전선 ${thick}SQ로`, fix: { type: 'setEdge', edge: worst.id, patch: { cable: thick } } } : undefined,
+          });
+        }
         for (const it of items) {
           const lbl = `${title} › ${it === mainItem ? '주차단기' : it.name || eqName(it.eq)}`;
           if (isc && RATED_EQ.has(it.eq) && it.product && it.eq !== 'busway') {
@@ -345,7 +412,7 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
                 key: `${n.id}:${it.id}:16`,
                 rule: 'DRW-16',
                 severity: 'warn',
-                message: `${lbl}: 차단용량 ${fmt(ka, 1)}kA가 이 반의 예상 단락전류 약 ${fmt(isc, 1)}kA보다 작습니다 (위 변압기 %Z 기준, 전선 임피던스 무시).`,
+                message: `${lbl}: 차단용량 ${fmt(ka, 1)}kA가 이 반의 예상 단락전류 약 ${fmt(isc, 1)}kA보다 작습니다 (변압기 %Z와 입력한 피더 전선 기준).`,
                 node: n.id,
                 item: it.id,
                 fix: v ? { label: `${v.label}(으)로 바꾸기`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { variant: v.id } } } : undefined,
@@ -359,22 +426,26 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
               key: `${n.id}:${it.id}:17`,
               rule: 'DRW-17',
               severity: 'warn',
-              message: `${lbl}: 전선 ${it.cable}mm²(허용 약 ${cableAmps(it.cable)}A)가 차단기 ${it.amps}A보다 가늘어 과전류 때 전선을 보호하지 못합니다.`,
+              message: `${lbl}: 전선 ${it.cable}SQ(허용 약 ${cableAmps(it.cable)}A)가 차단기 ${it.amps}A보다 가늘어 과전류 때 전선을 보호하지 못합니다.`,
               node: n.id,
               item: it.id,
-              fix: { label: `${rec}mm²로`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { cable: rec } } },
+              fix: { label: `${rec}SQ로`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { cable: rec } } },
             });
           const vd = voltageDrop(it);
-          if (vd !== undefined && vd > VDROP_WARN) {
-            const thick = cableForDrop(it);
+          const limit = d.vdLimit ?? VDROP_WARN;
+          const feederVd = cumulativeFeederDrop(d, n.id);
+          if (!feederOver && vd !== undefined && vd + feederVd > limit) {
+            const thick = cableForDrop(it, limit, feederVd);
+            const byRating = !it.loadKW;
             out.push({
               key: `${n.id}:${it.id}:18`,
               rule: 'DRW-18',
-              severity: 'warn',
-              message: `${lbl}: 전선 ${it.lengthM}m 전압강하가 약 ${fmt(vd, 1)}%입니다. 5% 이하가 되게 전선을 굵게 하거나 길이를 줄이세요.`,
+              // 부하를 안 적었으면 차단기 정격으로 계산한 값이라 참고로만
+              severity: byRating ? 'info' : 'warn',
+              message: `${lbl}: 전압강하 약 ${fmt(vd + feederVd, 1)}%${feederVd ? ` (간선 ${fmt(feederVd, 1)}% + 분기 ${fmt(vd, 1)}%)` : ''}로 기준 ${limit}%를 넘습니다.${byRating ? ' 부하를 안 적어 차단기 정격 전류로 계산했습니다.' : ''}`,
               node: n.id,
               item: it.id,
-              fix: thick ? { label: `${thick}mm²로`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { cable: thick } } } : undefined,
+              fix: thick ? { label: `${thick}SQ로`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { cable: thick } } } : undefined,
             });
           }
         }
@@ -419,7 +490,9 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
     for (const { b, via } of downs) {
       const pb = panelTypeById(b.eq);
       if (!pb) continue;
-      const up = (via.feeder && a.items?.find((i) => i.id === via.feeder)) || (e.feeder && a.items?.find((i) => i.id === e.feeder)) || a.items?.find((i) => pa.main.includes(i.eq));
+      const fm = feederMap(d).get(via.id);
+      const upFeeder = fm?.item;
+      const up = upFeeder ?? a.items?.find((i) => pa.main.includes(i.eq));
       const down = b.items?.find((i) => pb.main.includes(i.eq));
       if (!up?.amps || !down?.amps) continue;
       const upName = `${nodeTitle(a)} ${up === a.items?.find((i) => pa.main.includes(i.eq)) ? '주차단기' : up.name || eqName(up.eq)}`;
@@ -431,7 +504,19 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
           message: `보호협조: '${nodeTitle(b)}' 주차단기 ${down.amps}A가 위쪽 ${upName} ${up.amps}A보다 큽니다. 고장 때 위쪽이 먼저 떨어질 수 있습니다.`,
           node: b.id,
           edge: via.id,
-          fix: { label: `'${nodeTitle(b)}' 주차단기를 ${[...STD_A].reverse().find((x) => x * SELECTIVITY_RATIO <= up.amps!) ?? up.amps}A로`, fix: { type: 'setItem', node: b.id, item: down.id, patch: { amps: [...STD_A].reverse().find((x) => x * SELECTIVITY_RATIO <= up.amps!) ?? up.amps } } },
+          // 하위를 낮추면 하위 과부하 경고와 부딪치므로, 위쪽 보내는 회로를 올리는 쪽을 제안
+          fix: {
+            label: upFeeder
+              ? `위쪽 ${upFeeder.name || eqName(upFeeder.eq)}를 ${stdAtLeast(down.amps * SELECTIVITY_RATIO)}A로 (이 선에 고정)`
+              : `'${nodeTitle(a)}'에 ${stdAtLeast(down.amps * SELECTIVITY_RATIO)}A 피더 회로 넣기`,
+            fix: {
+              type: 'multi',
+              fixes: pinFeederFixes(d, via, a, upFeeder, stdAtLeast(down.amps * SELECTIVITY_RATIO), {
+                name: `${nodeTitle(b)} 피더`,
+                variantOf: (p, amps) => variantFor(p, amps, specs)?.id,
+              }),
+            },
+          },
         });
       } else if (up.amps < down.amps * SELECTIVITY_RATIO)
         out.push({
@@ -443,17 +528,37 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
           edge: via.id,
         });
       const feederCable = via.cable ?? e.cable;
-      const rec = recommendCable(up.amps);
+      // 보내는 회로를 알 때만 그 정격으로, 모르면 아래 반 주차단기 정격으로 판단
+      const guard = upFeeder?.amps ?? down.amps;
+      const rec = recommendCable(guard);
       if (feederCable && rec && feederCable < rec)
         out.push({
           key: `${via.id}:20`,
           rule: 'DRW-20',
           severity: 'warn',
-          message: `'${nodeTitle(a)}' → '${nodeTitle(b)}' 피더 전선 ${feederCable}mm²가 보내는 차단기 ${up.amps}A보다 가늡니다.`,
+          message: `'${nodeTitle(a)}' → '${nodeTitle(b)}' 피더 전선 ${feederCable}SQ가 ${upFeeder ? '보내는 차단기' : '아래 반 주차단기'} ${guard}A보다 가늡니다.`,
           node: b.id,
           edge: via.id,
-          fix: { label: `피더 전선 ${rec}mm²로`, fix: { type: 'setEdge', edge: via.id, patch: { cable: rec } } },
+          fix: { label: `피더 전선 ${rec}SQ로`, fix: { type: 'setEdge', edge: via.id, patch: { cable: rec } } },
         });
+    }
+  }
+
+  // 23 보내는 회로를 정할 수 없는 피더 — 위쪽 회로에 부하를 적었으면 아래 부하와 중복될 수 있다
+  {
+    const fm = feederMap(d);
+    for (const e of d.edges) {
+      const to = byId.get(e.to);
+      const src = to && to.kind !== 'bus' ? feederSourceOf(d, e) : undefined;
+      if (!src || fm.has(e.id) || !(src.items ?? []).some((i) => i.loadKW) || !downstreamKW(d, e.to)) continue;
+      out.push({
+        key: `${e.id}:23`,
+        rule: 'DRW-23',
+        severity: 'info',
+        message: `'${nodeTitle(src)}' → '${nodeTitle(to!)}' 선에 보내는 회로를 정할 수 없습니다. 선을 눌러 '보내는 회로'를 고르면 부하가 두 번 더해지지 않습니다.`,
+        node: to!.id,
+        edge: e.id,
+      });
     }
   }
 

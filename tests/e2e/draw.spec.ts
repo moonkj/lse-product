@@ -258,9 +258,13 @@ test.describe('단선도 그리기', () => {
     await expect(ed.locator('tbody tr')).toHaveCount(6);
     await expect(ed.getByTestId('panel-row-1').getByTestId('panel-name')).toHaveValue('회로 1-1');
     await expect(ed.getByTestId('panel-row-4').getByTestId('panel-name')).toHaveValue('회로 1-4');
-    // 부하를 모두 R상에 → 불평형
+    // 부하를 적으면 가장 가벼운 상에 자동으로 붙는다 → 일부러 모두 R상에 → 불평형
     for (const k of [1, 2, 3]) {
       await ed.getByTestId(`panel-row-${k}`).getByTestId('panel-kw').fill('3');
+    }
+    await expect(ed.getByTestId('panel-unbalance')).toHaveText('0%');
+    for (const k of [1, 2, 3]) {
+      await ed.getByTestId(`panel-row-${k}`).getByTestId('panel-phase-sel').selectOption('R');
     }
     await expect(ed.getByTestId('panel-issues')).toContainText('설비불평형률');
     await ed.getByTestId('panel-balance').click();
@@ -281,7 +285,7 @@ test.describe('단선도 그리기', () => {
     await page.locator('[data-kind="panel"][data-eq="panelboard"]').dblclick();
     await expect(ed.getByTestId('panel-isc')).toHaveCount(0);
     const r1 = ed.getByTestId('panel-row-1');
-    await expect(r1.getByTestId('panel-cable').locator('option').first()).toHaveText('권장 4');
+    await expect(r1.getByTestId('panel-cable').locator('option').first()).toHaveText('권장 4SQ');
     await r1.getByTestId('panel-kw').fill('4');
     await r1.getByTestId('panel-length').fill('100');
     await expect(r1.getByTestId('panel-vdrop')).toContainText('%');
@@ -329,6 +333,29 @@ test.describe('단선도 그리기', () => {
     await tid(page, 'draw-bom-toggle').click();
     const [all] = await Promise.all([page.waitForEvent('download'), tid(page, 'draw-schedule-csv').click()]);
     expect(all.suggestedFilename()).toMatch(/^회로표_.*\.csv$/);
+  });
+
+  test('1회차: 부하 입력 → 변압기 부하율, 형식별 합계, 파일 저장·불러오기', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await tid(page, 'draw-preset').selectOption('substation');
+    await page.locator('[data-eq="motor"]').click();
+    await tid(page, 'draw-load').fill('200');
+    await expect(page.locator('[data-eq="cast-tr"]')).toContainText('부하율');
+    await page.locator('[data-eq="cast-tr"]').click();
+    await expect(tid(page, 'draw-downstream')).toContainText('변압기 부하율');
+    await tid(page, 'draw-bom-toggle').click();
+    await tid(page, 'draw-bom-format').click();
+    await expect(tid(page, 'draw-bom-format-table')).toContainText('MCCB');
+    const [file] = await Promise.all([page.waitForEvent('download'), tid(page, 'draw-save-file').click()]);
+    expect(file.suggestedFilename()).toMatch(/\.json$/);
+    const path = SHOT + 'drw-file.json';
+    await file.saveAs(path);
+    const before = await tid(page, 'draw-pick').locator('option').count();
+    await tid(page, 'draw-load-file').setInputFiles(path);
+    await expect(tid(page, 'draw-share-note')).toContainText('불러와');
+    await expect(tid(page, 'draw-pick').locator('option')).toHaveCount(before + 1);
+    await expect(page.locator('[data-eq="motor"]')).toContainText('200kW');
   });
 
 });

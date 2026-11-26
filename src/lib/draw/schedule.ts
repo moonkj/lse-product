@@ -11,7 +11,7 @@ import { circuitAmps, isThreePhase, phaseSummary } from './load';
 import { recommendCable, voltageDrop } from './cable';
 import { shortCircuitKA } from './sc';
 
-export const SCHEDULE_HEAD = ['No', '회로명', '기기', '제품', '프레임·형식', '정격전류(A)', '극수', '부하(kW)', '상', '부하전류(A)', '차단용량(kA)', '전선(mm²)', '길이(m)', '전압강하(%)', '수량'];
+export const SCHEDULE_HEAD = ['No', '회로명', '기기', '제품', '프레임·형식', '정격전류(A)', '극수', '부하(kW)', '상', '부하전류(A)', '차단용량(kA)', '전선(SQ)', '길이(m)', '전압강하(%)', '수량'];
 
 const f1 = (n: number | undefined) => (n === undefined || !Number.isFinite(n) ? '' : String(Math.round(n * 10) / 10));
 
@@ -37,7 +37,7 @@ export function scheduleRows(n: DNode, specs?: SpecsMap): string[][] {
       isMain || !it.loadKW ? '' : isThreePhase(it) ? 'RST' : (it.phase ?? 'R'),
       it.loadKW ? f1(circuitAmps(it)) : '',
       rated ? f1(itemKA(it, specs)) : '',
-      cable ? `${cable}${it.cable ? '' : ' (권장)'}` : '',
+      cable ? `${cable}SQ${it.cable ? '' : ' (권장)'}` : '',
       it.lengthM ? String(it.lengthM) : '',
       isMain ? '' : f1(voltageDrop(it)),
       String(it.qty ?? 1),

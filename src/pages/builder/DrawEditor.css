@@ -467,3 +467,16 @@
 
 .drw-feeder { display: flex; flex-direction: column; gap: 8px; }
 .pnl__head-actions { flex-wrap: wrap; justify-content: flex-end; }
+
+.drw-file { cursor: pointer; }
+.drw-file:focus-within { outline: 3px solid var(--color-focus, var(--color-brand)); outline-offset: 2px; }
+.drw-bom-modes { margin: 0 auto 0 12px; }
+.drw-bom-modes button { padding: 5px 12px; font-size: 13px; }
+.drw-bom-modes button[aria-pressed='true'] { background: var(--color-brand); color: #fff; }
+.pnl__demand { width: 64px; min-height: 28px; padding: 2px 6px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text); font: inherit; font-size: 14px; font-weight: 700; }
+
+.pnl__vd { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; flex-basis: 100%; font-size: 12px; color: var(--color-text-muted); }
+.pnl__vd label { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.pnl__vd select { min-height: 30px; padding: 3px 6px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); color: var(--color-text); font: inherit; font-size: 12px; }
+.pnl__vd .pnl__hint { flex-basis: auto; }
+.drw-undo-link { border: 0; background: none; padding: 0; color: var(--color-brand); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }

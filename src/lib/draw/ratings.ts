@@ -66,6 +66,13 @@ export function itemKA(it: PanelItem, specs?: SpecsMap): number | undefined {
   const list = v && v.kA.length ? v.kA : r.kA;
   return list.length ? Math.max(...list) : undefined;
 }
+/** 차단용량 표시 — 프레임을 안 골랐으면 제품 최대값이라 '최대' 를 붙인다 */
+export function kaText(it: PanelItem, specs?: SpecsMap): string {
+  const ka = itemKA(it, specs);
+  if (ka === undefined) return '';
+  return it.variant ? `${ka}kA` : `최대 ${ka}kA`;
+}
+
 /** 차단용량 need kA 이상인 가장 작은 옵션 */
 export function variantForKA(productId: string | undefined, needKA: number, amps: number | undefined, specs?: SpecsMap): { id: string; label: string } | undefined {
   const s = productId ? specs?.get(productId) : undefined;
@@ -102,10 +109,10 @@ export function defaultRating(panelType: string, eq: string, isMain: boolean): {
   const poles = POLED_EQ.has(eq) ? (isMain ? (panelType === 'mcc' ? 3 : 4) : panelType === 'panelboard' ? 2 : 3) : undefined;
   let amps: number | undefined;
   // 저압 배전반 주차단기는 위 변압기 용량으로 정한다 (제품 채우기)
-  if (isMain) amps = panelType === 'panelboard' ? 100 : panelType === 'mcc' ? 400 : panelType === 'mv-swgr' ? 630 : undefined;
+  if (isMain) amps = panelType === 'panelboard' ? 100 : panelType === 'mcc' ? 225 : panelType === 'mv-swgr' ? 630 : undefined;
   else
     amps =
       ({ 'mcb-rcbo': 20, elcb: 30, 'branch-mccb': 30, mms: 25, ms: 18, busway: 1000, lbs: 630, alts: 630, vcb: 630 } as Record<string, number>)[eq] ??
-      (panelType === 'lv-swgr' ? 225 : panelType === 'panelboard' ? 50 : 100);
+      (panelType === 'lv-swgr' ? 400 : panelType === 'panelboard' ? 50 : 100);
   return { amps, poles };
 }

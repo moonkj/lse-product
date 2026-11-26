@@ -10,13 +10,14 @@ import { announce } from '../../lib/announce';
 import { candidateProducts } from '../../lib/builder/validate';
 import { eqName, panelTypeById, voltageLabel, type DNode, type Diagram, type PanelItem } from '../../lib/draw/model';
 import { addItems, balanceNode, fillProducts, moveItem, removeItem, setItemQty, splitItem, updateItem, updateNode } from '../../lib/draw/ops';
-import { PHASES, UNBALANCE_LIMIT, circuitAmps, isThreePhase, phaseSummary } from '../../lib/draw/load';
-import { CABLE_SIZES, VDROP_INFO, VDROP_WARN, recommendCable, voltageDrop } from '../../lib/draw/cable';
+import { NO_LOAD_EQ, PHASES, UNBALANCE_LIMIT, circuitAmps, downstreamKW, isThreePhase, phaseSummary } from '../../lib/draw/load';
+import { CABLE_SIZES, VDROP_WARN, recommendCable, voltageDrop } from '../../lib/draw/cable';
+import { VDROP_LIMITS, cumulativeFeederDrop } from '../../lib/draw/feeder';
 import { shortCircuitAt } from '../../lib/draw/sc';
 import { printHtml, scheduleCsv, scheduleHtml } from '../../lib/draw/schedule';
 import { downloadText } from '../../lib/pages/catalog';
 import { todayIso } from '../../lib/labels';
-import { itemKA } from '../../lib/draw/ratings';
+import { itemKA, kaText } from '../../lib/draw/ratings';
 import { POLED_EQ, RATED_EQ, ampsOptions, itemSpecText, variantFor, variantOptions } from '../../lib/draw/ratings';
 import type { DFix, DIssue } from '../../lib/draw/validate';
 
@@ -46,6 +47,8 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
   const maxKW = Math.max(ps.kW.R, ps.kW.S, ps.kW.T, 0.0001);
   const scInfo = lowV ? shortCircuitAt(d, n.id) : undefined;
   const isc = scInfo?.kind === 'ok' ? scInfo.ka : undefined;
+  const feederVd = lowV ? cumulativeFeederDrop(d, n.id) : 0;
+  const vdLimit = d.vdLimit ?? VDROP_WARN;
   const sldRef = useRef<HTMLDivElement>(null);
   const fileBase = `회로표_${(n.label ?? pt.label).replace(/[\\/:*?"<>|\s]+/g, '_')}_${todayIso()}`;
 
@@ -143,6 +146,36 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                 <dt>최대 상 전류</dt>
                 <dd>{ps.maxPhaseA ? `${Math.round(ps.maxPhaseA)}A` : '—'}</dd>
               </div>
+              {(() => {
+                const all = downstreamKW(d, n.id);
+                return all > ps.totalKW * (n.demand ?? 1) + 1e-9 ? (
+                  <div>
+                    <dt>아래쪽 포함</dt>
+                    <dd data-testid="panel-downstream">{all.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}kW</dd>
+                  </div>
+                ) : null;
+              })()}
+              <div>
+                <dt>
+                  <label htmlFor={`pnl-demand-${n.id}`}>수용률</label>
+                </dt>
+                <dd>
+                  <input
+                    id={`pnl-demand-${n.id}`}
+                    type="number"
+                    className="pnl__demand"
+                    min={0.1}
+                    max={1}
+                    step={0.05}
+                    value={n.demand ?? 1}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      onCommit(updateNode(d, n.id, { demand: v > 0 && v < 1 ? Math.max(0.1, v) : undefined }));
+                    }}
+                    data-testid="panel-demand"
+                  />
+                </dd>
+              </div>
               <div className={ps.unbalance > UNBALANCE_LIMIT ? 'is-warn' : undefined}>
                 <dt>설비불평형률</dt>
                 <dd data-testid="panel-unbalance">{ps.counted ? `${Math.round(ps.unbalance)}%` : '—'}</dd>
@@ -151,7 +184,21 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
             <button type="button" className="btn btn--secondary btn--sm" onClick={() => onCommit(balanceNode(d, n.id), '단상 회로를 상에 고르게 나눴습니다')} disabled={!ps.counted} data-testid="panel-balance">
               상 자동 배분
             </button>
-            {!ps.counted && <p className="pnl__hint">회로마다 부하(kW)를 적으면 상별 부하와 불평형률을 계산합니다 (역률 0.9 가정).</p>}
+            {!ps.counted && <p className="pnl__hint">회로마다 부하(kW)를 적으면 상별 부하와 불평형률을 계산합니다 (역률 0.9 가정). 전동기 회로는 보호 차단기(MMS·MCCB)에만 적습니다.</p>}
+            <div className="pnl__vd">
+              <label>
+                전압강하 기준 (단선도 전체)
+                <select value={vdLimit} onChange={(e) => onCommit({ ...d, vdLimit: Number(e.target.value), updatedAt: new Date().toISOString() })} data-testid="panel-vdlimit">
+                  {VDROP_LIMITS.map((x) => (
+                    <option key={x.pct} value={x.pct}>
+                      {x.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <span data-testid="panel-feeder-vd">{feederVd ? `이 반까지 간선 전압강하 약 ${feederVd.toFixed(1)}% (회로표의 강하는 간선 포함)` : '선(피더)에 전선 굵기·길이를 넣으면 간선 전압강하도 더해 계산합니다'}</span>
+              <span className="pnl__hint">* 표시는 부하를 적지 않아 차단기 정격 전류로 계산한 값입니다.</span>
+            </div>
           </section>
         )}
 
@@ -191,7 +238,7 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                 {lowV && <th scope="col">부하(kW)</th>}
                 {lowV && <th scope="col">상</th>}
                 {lowV && <th scope="col">차단용량</th>}
-                {lowV && <th scope="col">전선(mm²)</th>}
+                {lowV && <th scope="col">전선(SQ)</th>}
                 {lowV && <th scope="col">길이(m)</th>}
                 {lowV && <th scope="col">전압강하</th>}
                 <th scope="col">수량</th>
@@ -309,8 +356,10 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                     </td>
                     {lowV && (
                       <td>
-                        {isMain ? (
-                          <span className="pnl__none">—</span>
+                        {isMain || NO_LOAD_EQ.has(it.eq) ? (
+                          <span className="pnl__none" title={NO_LOAD_EQ.has(it.eq) ? '부하는 이 회로의 보호 차단기(MMS·MCCB 등)에 적습니다' : undefined}>
+                            —
+                          </span>
                         ) : (
                           <input
                             type="number"
@@ -321,7 +370,12 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                             value={it.loadKW ?? ''}
                             placeholder="kW"
                             title={it.loadKW ? `약 ${circuitAmps(it).toFixed(1)}A` : undefined}
-                            onChange={(e) => set(it, { loadKW: Number(e.target.value) > 0 ? Math.min(100000, Number(e.target.value)) : undefined })}
+                            onChange={(e) => {
+                              const kw = Number(e.target.value) > 0 ? Math.min(100000, Number(e.target.value)) : undefined;
+                              // 단상 회로에 처음 부하를 적으면 지금 가장 가벼운 상에 붙인다
+                              const phase = kw && !it.phase && !isThreePhase(it) && n.v !== '0.22' ? PHASES.reduce((m, x) => (ps.kW[x] < ps.kW[m] ? x : m), 'R' as PanelItem['phase'] & string) : it.phase;
+                              set(it, { loadKW: kw, phase });
+                            }}
                             data-testid="panel-kw"
                           />
                         )}
@@ -334,7 +388,8 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                         ) : isThreePhase(it) ? (
                           <span className="pnl__none">RST</span>
                         ) : (
-                          <select aria-label={`${idx + 1}행 상`} value={it.phase ?? 'R'} onChange={(e) => set(it, { phase: e.target.value as PanelItem['phase'] })} data-testid="panel-phase-sel">
+                          <select aria-label={`${idx + 1}행 상`} value={it.phase ?? ''} onChange={(e) => set(it, { phase: (e.target.value || undefined) as PanelItem['phase'] })} data-testid="panel-phase-sel">
+                            <option value="">자동</option>
                             {PHASES.map((ph) => (
                               <option key={ph} value={ph}>
                                 {ph}
@@ -348,7 +403,7 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                       <td className="pnl__num">
                         {(() => {
                           const ka = RATED_EQ.has(it.eq) ? itemKA(it, specs) : undefined;
-                          return ka === undefined ? <span className="pnl__none">—</span> : <span className={isc && ka < isc ? 'pnl__bad' : undefined}>{ka}kA</span>;
+                          return ka === undefined ? <span className="pnl__none">—</span> : <span className={isc && ka < isc ? 'pnl__bad' : undefined}>{kaText(it, specs)}</span>;
                         })()}
                       </td>
                     )}
@@ -363,10 +418,10 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                             onChange={(e) => set(it, { cable: Number(e.target.value) || undefined })}
                             data-testid="panel-cable"
                           >
-                            <option value="">{recommendCable(it.amps) ? `권장 ${recommendCable(it.amps)}` : '-'}</option>
+                            <option value="">{recommendCable(it.amps) ? `권장 ${recommendCable(it.amps)}SQ` : '-'}</option>
                             {CABLE_SIZES.map((c) => (
                               <option key={c.mm2} value={c.mm2}>
-                                {c.mm2}
+                                {c.mm2}SQ
                               </option>
                             ))}
                           </select>
@@ -397,7 +452,12 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                         {(() => {
                           const vd = isMain ? undefined : voltageDrop(it);
                           if (vd === undefined) return <span className="pnl__none">—</span>;
-                          return <span className={vd > VDROP_WARN ? 'pnl__bad' : vd > VDROP_INFO ? 'pnl__warn' : undefined}>{vd.toFixed(1)}%</span>;
+                          const total = vd + feederVd;
+                          return (
+                            <span className={total > vdLimit ? 'pnl__bad' : total > vdLimit * 0.6 ? 'pnl__warn' : undefined} title={feederVd ? `간선 ${feederVd.toFixed(1)}% + 분기 ${vd.toFixed(1)}%` : undefined}>
+                              {total.toFixed(1)}%{!it.loadKW ? '*' : ''}
+                            </span>
+                          );
                         })()}
                       </td>
                     )}

@@ -12,7 +12,10 @@ import { recommendCable, voltageDrop } from '../../../src/lib/draw/cable';
 import { panelShortCircuitKA } from '../../../src/lib/draw/validate';
 import { shortCircuitAt } from '../../../src/lib/draw/sc';
 import { scheduleCsv, SCHEDULE_HEAD } from '../../../src/lib/draw/schedule';
-import { updateEdge } from '../../../src/lib/draw/ops';
+import { updateEdge, bomByFormat, updateNode } from '../../../src/lib/draw/ops';
+import { feederMap, feederPlan, feederVoltageDrop, cumulativeFeederDrop, pinFeederFixes } from '../../../src/lib/draw/feeder';
+import { downstreamKW, transformerLoadPct } from '../../../src/lib/draw/load';
+import { diagramFile, readDiagramFile } from '../../../src/lib/draw/share';
 import { splitItem } from '../../../src/lib/draw/ops';
 import { PRESETS } from '../../../src/lib/draw/presets';
 import { decodeDiagram, encodeDiagram } from '../../../src/lib/draw/share';
@@ -337,7 +340,7 @@ describe('차단용량·전선·전압강하', () => {
     const elcb = pb.items!.find((i) => i.eq === 'elcb')!;
     d = updateItem(d, pb.id, elcb.id, { cable: 2.5 }); // 30A 차단기에 2.5mm²(24A)
     const w17 = rules(d).find((i) => i.rule === 'DRW-17')!;
-    expect(w17.fix?.label).toBe('4mm²로');
+    expect(w17.fix?.label).toBe('4SQ로');
     d = applyDFix(d, w17.fix!.fix);
     d = updateItem(d, pb.id, elcb.id, { lengthM: 100, loadKW: 4 }); // 4kW 단상 ≈ 20.2A, 100m, 4mm² → ≈ 8.2%
     const it = d.nodes[2].items!.find((i) => i.id === elcb.id)!;
@@ -388,9 +391,12 @@ describe('피더·보호협조·회로표', () => {
     d = updateItem(d, pb.id, pbMain.id, { amps: 125 });
     const w = rules(d).find((i) => i.key.endsWith(':19a'))!;
     expect(w.message).toContain('125A가 위쪽');
-    expect(w.fix?.label).toContain('60A로');
+    // 하위를 낮추면 하위 과부하와 부딪치므로 위쪽 보내는 회로를 125×1.6 → 200A로 올리는 제안
+    expect(w.fix?.label).toBe('위쪽 회로 1를 200A로 (이 선에 고정)');
     d = applyDFix(d, w.fix!.fix);
     expect(rules(d).find((i) => i.key.endsWith(':19a'))).toBeUndefined();
+    // 수량 4 회로였으므로 고치기는 1개를 떼어 200A 로 고정 → 그 고정된 회로를 100A 로 낮춰 비를 줄임
+    d = updateItem(d, lv.id, d.edges[2].feeder!, { amps: 100 });
     d = updateItem(d, pb.id, pbMain.id, { amps: 75 });
     expect(rules(d).find((i) => i.key.endsWith(':19b'))?.severity).toBe('info');
   });
@@ -400,7 +406,7 @@ describe('피더·보호협조·회로표', () => {
     const feederItem = lv.items!.find((i) => i.eq === 'mccb')!;
     d = updateEdge(d, d.edges[2].id, { feeder: feederItem.id, cable: 16, lengthM: 30 });
     const w = rules(d).find((i) => i.rule === 'DRW-20')!;
-    expect(w.fix?.label).toBe('피더 전선 120mm²로'); // 250A → 120mm²(269A)
+    expect(w.fix?.label).toBe('피더 전선 240SQ로'); // 저압반 분기 기본 400A → 240SQ(400A)
     expect(rules(applyDFix(d, w.fix!.fix)).find((i) => i.rule === 'DRW-20')).toBeUndefined();
   });
   it('공유 코드에 피더 전선·길이·보내는 회로', () => {
@@ -420,5 +426,228 @@ describe('피더·보호협조·회로표', () => {
     expect(csv).toContain('예상 단락전류 약 25.3kA');
     expect(csv.split(SCHEDULE_HEAD.join(',')).length - 1).toBe(2);
     expect(csv).toContain('주,주차단기,ACB 기중차단기');
+  });
+});
+
+describe('1회차: 부하 합산·변압기 용량·형식 목록·파일', () => {
+  const build = () => {
+    const tr = { ...makeNode('equipment', 0, 0, 'cast-tr'), kVA: 300 };
+    const lv = makeNode('panel', 0, 160, 'lv-swgr');
+    const bus = makeNode('bus', 0, 340);
+    const pb = makeNode('panel', 0, 420, 'panelboard');
+    const motor = { ...makeNode('equipment', 400, 420, 'motor'), loadKW: 75, qty: 2 };
+    let d = fillProducts(chain(tr, lv, bus, pb), specs);
+    d = addNode(d, motor);
+    d = connect(d, bus.id, motor.id);
+    return d;
+  };
+  it('아래쪽 합산: 분전반 회로 부하 × 수용률 + 전동기 75kW×2, 피더 회로는 이중 합산 안 함', () => {
+    let d = build();
+    const [tr, lv, , pb] = d.nodes;
+    const elcb = pb.items!.find((i) => i.eq === 'elcb')!;
+    d = updateItem(d, pb.id, elcb.id, { loadKW: 5, qty: 4 }); // 20kW
+    expect(downstreamKW(d, tr.id)).toBeCloseTo(170, 5);
+    d = updateNode(d, pb.id, { demand: 0.5 });
+    expect(downstreamKW(d, tr.id)).toBeCloseTo(160, 5);
+    // 저압반 피더 회로에 부하를 적어도, 분전반으로 가는 선의 보내는 회로로 자동 추정돼 빼고 합산 (중복 없음)
+    const feeder = lv.items!.find((i) => i.eq === 'mccb')!;
+    d = updateItem(d, lv.id, feeder.id, { loadKW: 10, qty: undefined });
+    expect(downstreamKW(d, tr.id)).toBeCloseTo(160, 5);
+    // 수량 4 회로 중 분전반·전동기로 가는 2회로가 피더(자동 추정) → 나머지 2회로(20kW)만 합산
+    d = updateItem(d, lv.id, feeder.id, { qty: 4 });
+    expect(downstreamKW(d, tr.id)).toBeCloseTo(180, 5);
+    d = updateEdge(d, d.edges.find((e) => e.to === pb.id)!.id, { feeder: feeder.id });
+    expect(downstreamKW(d, tr.id)).toBeCloseTo(180, 5);
+  });
+  it('변압기 300kVA에 합산 약 189kVA → 부하율 63%, 부하를 늘려 넘으면 경고 → 표준 용량으로', () => {
+    let d = build();
+    const [tr] = d.nodes;
+    expect(transformerLoadPct(d, tr)).toBeCloseTo((150 / 0.9 / 300) * 100, 3);
+    const motor = d.nodes.find((n) => n.eq === 'motor')!;
+    d = updateNode(d, motor.id, { qty: 4 }); // 300kW → 333kVA
+    const w = rules(d).find((i) => i.rule === 'DRW-21' && i.severity === 'warn')!;
+    expect(w.fix?.label).toBe('500kVA로 올리기');
+    expect(rules(applyDFix(d, w.fix!.fix)).find((i) => i.rule === 'DRW-21' && i.severity === 'warn')).toBeUndefined();
+  });
+  it('저압반 아래쪽까지 합산한 전류가 주차단기보다 크면 경고', () => {
+    let d = build();
+    const [, lv] = d.nodes;
+    const main = lv.items!.find((i) => i.eq === 'acb')!;
+    d = updateItem(d, lv.id, main.id, { amps: 200 });
+    const w = rules(d).find((i) => i.rule === 'DRW-22')!;
+    expect(w.message).toContain('150kW');
+    expect(rules(applyDFix(d, w.fix!.fix)).find((i) => i.rule === 'DRW-22')).toBeUndefined();
+  });
+  it('형식 문자열과 형식별 합계 (같은 형식은 수량 합산)', () => {
+    const d = build();
+    const rows = diagramBom(d, specs);
+    const mcb = rows.find((r) => r.equipment.startsWith('MCB'))!;
+    expect(mcb.format).toMatch(/L-Series MCB · .* · 20A · 2P · \d+kA/);
+    const sums = bomByFormat(rows);
+    const elcbSum = sums.find((r) => r.equipment.startsWith('ELCB'))!;
+    expect(elcbSum.qty).toBe(6);
+  });
+  it('파일 저장 → 불러오기: 같은 구성(이름에 "(공유)" 없음), 다른 형식·새 버전 파일은 거부', () => {
+    const d = build();
+    const back = readDiagramFile(diagramFile(d))!;
+    expect(back.name).toBe(d.name);
+    expect(back.nodes).toHaveLength(d.nodes.length);
+    expect(back.nodes.find((n) => n.eq === 'motor')).toMatchObject({ loadKW: 75, qty: 2 });
+    expect(readDiagramFile('{"format":"other"}')).toBeNull();
+    expect(readDiagramFile(JSON.stringify({ format: 'lse-draw', version: 99, code: 'x' }))).toBeNull();
+    expect(readDiagramFile('not json')).toBeNull();
+  });
+});
+
+describe('2회차 수정: 단상 반·불평형·수용률·전압강하·공유 순번·파일 한도', () => {
+  it('220V 반: 주차단기 합산 전류는 단상 식, 불평형 경고 없음', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'panelboard'), { ...makeNode('equipment', 0, 200, 'lighting-outlet'), loadKW: 30 }), specs);
+    d = updateNode(d, d.nodes[0].id, { v: '0.22' });
+    const w = rules(d).find((i) => i.rule === 'DRW-22')!;
+    expect(w.message).toMatch(/약 15\dA/); // 30kW / (220×0.9) ≈ 152A
+    const pb = d.nodes[0];
+    d = updateItem(d, pb.id, pb.items![1].id, { loadKW: 5, phase: 'R' });
+    expect(rules(d).find((i) => i.rule === 'DRW-14')).toBeUndefined();
+  });
+  it('수용률은 상 전류 규칙에도 같게 적용', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'panelboard')), specs);
+    const pb = d.nodes[0];
+    d = updateItem(d, pb.id, pb.items![1].id, { loadKW: 30, amps: 160, variant: undefined, phase: 'R', qty: undefined });
+    expect(rules(d).find((i) => i.rule === 'DRW-15')).toBeDefined();
+    d = updateNode(d, pb.id, { demand: 0.5 });
+    expect(rules(d).find((i) => i.rule === 'DRW-15')).toBeUndefined(); // 152A × 0.5 < 100A
+  });
+  it('MS·EMPR 은 부하를 합산하지 않음 (같은 전동기 중복 방지)', () => {
+    const items = [
+      { id: 'a', eq: 'mms', poles: 3 as const, loadKW: 11 },
+      { id: 'b', eq: 'ms', poles: 3 as const, loadKW: 11 },
+      { id: 'c', eq: 'empr', loadKW: 11 },
+    ];
+    expect(phaseSummary(items).totalKW).toBeCloseTo(11, 5);
+  });
+  it('부하 없이 길이만 넣으면 전압강하는 참고(정격 기준), 300SQ 넘는 차단기는 한 가닥 굵기를 권하지 않음', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'panelboard')), specs);
+    const pb = d.nodes[0];
+    d = updateItem(d, pb.id, pb.items![1].id, { lengthM: 200 });
+    const i18 = rules(d).find((i) => i.rule === 'DRW-18')!;
+    expect(i18.severity).toBe('info');
+    expect(i18.message).toContain('차단기 정격 전류로 계산');
+  });
+  it('공유 코드: 모르는 품목이 빠져도 피더가 원래 회로를 가리킴', () => {
+    const tr = { ...makeNode('equipment', 0, 0, 'cast-tr'), kVA: 1000 };
+    let d = fillProducts(chain(tr, makeNode('panel', 0, 160, 'lv-swgr'), makeNode('panel', 0, 360, 'panelboard')), specs);
+    const lv = d.nodes[1];
+    d = updateNode(d, lv.id, { items: [{ id: 'junk', eq: 'nope' }, ...lv.items!] });
+    const mccb = d.nodes[1].items!.find((i) => i.eq === 'mccb')!;
+    d = updateEdge(d, d.edges[1].id, { feeder: mccb.id });
+    const back = decodeDiagram(encodeDiagram(d))!;
+    expect(back.nodes[1].items!.find((i) => i.id === back.edges[1].feeder)?.eq).toBe('mccb');
+  });
+  it('파일은 공유 링크보다 넉넉한 한도 (긴 이름·라벨 유지), 전압강하 기준도 저장', () => {
+    let d = chain({ ...makeNode('panel', 0, 0, 'panelboard'), label: '가'.repeat(50) });
+    d = { ...d, name: '나'.repeat(50), vdLimit: 3 };
+    const back = readDiagramFile(diagramFile(d))!;
+    expect(back.name).toHaveLength(50);
+    expect(back.nodes[0].label).toHaveLength(50);
+    expect(back.vdLimit).toBe(3);
+  });
+});
+
+describe('3회차 수정: 피더 후보·단상 피더·가장 나쁜 경로·일괄 제안', () => {
+  const mccTree = () => {
+    const tr = { ...makeNode('equipment', 0, 0, 'cast-tr'), kVA: 1000 };
+    const mcc = makeNode('panel', 0, 160, 'mcc');
+    const motor = { ...makeNode('equipment', 0, 360, 'motor'), loadKW: 7.5 };
+    return fillProducts(chain(tr, mcc, motor), specs);
+  };
+  it('MCC → 전동기 선: 전자개폐기(MS)가 아니라 MMS 를 피더로 추정, 특고압반에서 나가는 선은 추정 안 함', () => {
+    const d = mccTree();
+    const f = feederMap(d).get(d.edges[1].id)!;
+    expect(f.item.eq).toBe('mms');
+    const mv = fillProducts(chain(makeNode('source', 0, 0), makeNode('panel', 0, 120, 'mv-swgr'), makeNode('equipment', 0, 300, 'cast-tr')), specs);
+    expect(feederMap(mv).size).toBe(0);
+  });
+  it('220V 로 가는 피더는 단상식 전압강하', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'lv-swgr'), { ...makeNode('equipment', 0, 200, 'lighting-outlet'), loadKW: 4 }), specs);
+    d = updateEdge(d, d.edges[0].id, { cable: 4, lengthM: 50 });
+    const i = (4000 / (220 * 0.9));
+    expect(feederVoltageDrop(d, d.edges[0])).toBeCloseTo(((35.6 * 50 * i) / (1000 * 4) / 220) * 100, 5);
+  });
+  it('들어오는 선이 둘이면 간선 강하는 가장 나쁜 경로', () => {
+    const a = makeNode('panel', 0, 0, 'lv-swgr');
+    const b = makeNode('panel', 300, 0, 'lv-swgr');
+    const pb = { ...makeNode('equipment', 0, 300, 'motor'), loadKW: 30 };
+    let d = chain(a, pb);
+    d = addNode(d, b);
+    d = connect(d, b.id, pb.id);
+    d = updateEdge(d, d.edges[0].id, { cable: 50, lengthM: 20 });
+    d = updateEdge(d, d.edges[1].id, { cable: 16, lengthM: 80 });
+    const worst = Math.max(feederVoltageDrop(d, d.edges[0])!, feederVoltageDrop(d, d.edges[1])!);
+    expect(cumulativeFeederDrop(d, pb.id)).toBeCloseTo(worst, 6);
+  });
+  it('피더 일괄 제안: 분전반 주차단기 100A → 보내는 회로 160A·피더 전선, 적용하면 그 회로가 이 선에 고정', () => {
+    const tr = { ...makeNode('equipment', 0, 0, 'cast-tr'), kVA: 1000 };
+    let d = fillProducts(chain(tr, makeNode('panel', 0, 160, 'lv-swgr'), makeNode('bus', 0, 340), makeNode('panel', 0, 420, 'panelboard')), specs);
+    const e = d.edges[2];
+    const plan = feederPlan(d, e)!;
+    expect(plan.amps).toBe(160);
+    expect(plan.cable).toBe(70); // 160A → 70SQ(허용 192A)
+    const fixes = plan.item
+      ? [
+          { type: 'setItem' as const, node: plan.src.id, item: plan.item.id, patch: { amps: plan.amps } },
+          { type: 'setEdge' as const, edge: e.id, patch: { feeder: plan.item.id, cable: plan.cable } },
+        ]
+      : [{ type: 'addFeeder' as const, node: plan.src.id, edge: e.id, eq: 'mccb', amps: plan.amps, cable: plan.cable }];
+    d = applyDFix(d, { type: 'multi', fixes });
+    const f = feederMap(d).get(e.id)!;
+    expect(f.auto).toBe(false);
+    expect(f.item.amps).toBe(160);
+    expect(d.edges[2].cable).toBe(70);
+  });
+  it('보내는 반에 피더 회로가 없으면 보호협조 고치기는 새 피더 회로 넣기', () => {
+    const tr = { ...makeNode('equipment', 0, 0, 'cast-tr'), kVA: 1000 };
+    let d = fillProducts(chain(tr, makeNode('panel', 0, 160, 'lv-swgr'), makeNode('panel', 0, 360, 'mcc')), specs);
+    const lv = d.nodes[1];
+    // 저압반 분기(MCCB)를 모두 빼고 주차단기만 남김 → 피더 자동 추정 불가
+    d = updateNode(d, lv.id, { items: lv.items!.filter((i) => i.eq === 'acb').map((i) => ({ ...i, amps: 200 })) });
+    const mcc = d.nodes[2];
+    d = updateItem(d, mcc.id, mcc.items![0].id, { amps: 400 });
+    const w = rules(d).find((i) => i.key.endsWith(':19a'))!;
+    expect(w.fix?.label).toContain('700A 피더 회로 넣기'); // 400A × 1.6 = 640 → 표준 700A
+    const fixed = applyDFix(d, w.fix!.fix);
+    expect(fixed.edges[1].feeder).toBeDefined();
+    expect(rules(fixed).find((i) => i.key.endsWith(':19a'))).toBeUndefined();
+  });
+});
+
+describe('3회차 마무리: 자동 상·수량 회로 고정·새 피더 극수', () => {
+  it("상을 '자동'으로 둔 단상 회로는 계산할 때 고르게 나뉘어 불평형 경고 없음", () => {
+    const items = [1, 2, 3].map((k) => ({ id: `a${k}`, eq: 'elcb', poles: 2 as const, loadKW: 3 }));
+    const s1 = phaseSummary(items);
+    expect(s1.kW).toEqual({ R: 3, S: 3, T: 3 });
+    expect(s1.unbalance).toBe(0);
+  });
+  it('수량 4 회로를 피더로 맞추면 1개를 떼어 새 회로로 (나머지 3개는 그대로), 이미 충분하면 고정만', () => {
+    const tr = { ...makeNode('equipment', 0, 0, 'cast-tr'), kVA: 1000 };
+    let d = fillProducts(chain(tr, makeNode('panel', 0, 160, 'lv-swgr'), makeNode('bus', 0, 340), makeNode('panel', 0, 420, 'panelboard')), specs);
+    const lv = d.nodes[1];
+    const mccb = lv.items!.find((i) => i.eq === 'mccb')!; // 400A × 4
+    const e = d.edges[2];
+    d = applyDFix(d, { type: 'multi', fixes: pinFeederFixes(d, e, lv, { ...mccb, amps: 100 }, 160) });
+    // amps 100 < 160 이고 수량 4 → 1개 분리
+    const after = d.nodes[1].items!;
+    expect(after.find((i) => i.id === mccb.id)!.qty).toBe(3);
+    const fid = d.edges[2].feeder!;
+    expect(after.find((i) => i.id === fid)).toMatchObject({ eq: 'mccb', amps: 160 });
+    const onlyPin = pinFeederFixes(d, e, lv, { ...mccb, amps: 400 }, 160);
+    expect(onlyPin).toEqual([{ type: 'setEdge', edge: e.id, patch: { feeder: mccb.id } }]);
+  });
+  it('새 피더 회로: 아래쪽이 220V 면 2P, 800A 넘으면 ACB', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'lv-swgr'), { ...makeNode('equipment', 0, 200, 'lighting-outlet'), loadKW: 4 }), specs);
+    const lv = d.nodes[0];
+    const f1 = pinFeederFixes(d, d.edges[0], lv, undefined, 30)[0];
+    expect(f1).toMatchObject({ type: 'addFeeder', poles: 2, eq: 'mccb' });
+    const f2 = pinFeederFixes(d, d.edges[0], lv, undefined, 1000)[0];
+    expect(f2).toMatchObject({ eq: 'acb' });
   });
 });

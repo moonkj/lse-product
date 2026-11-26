@@ -43,6 +43,7 @@ import {
   connect,
   diagramBom,
   diagramBomCsv,
+  bomByFormat,
   fillProducts,
   moveItem,
   moveNode,
@@ -58,8 +59,11 @@ import {
 import { PRESETS } from '../../lib/draw/presets';
 import { shortCircuitAt } from '../../lib/draw/sc';
 import { CABLE_SIZES, recommendCable } from '../../lib/draw/cable';
-import { RATED_EQ } from '../../lib/draw/ratings';
 import { scheduleCsv } from '../../lib/draw/schedule';
+import { FEEDER_EQ, feederMap, feederPlan, feederVoltageDrop, pinFeederFixes } from '../../lib/draw/feeder';
+import { variantFor } from '../../lib/draw/ratings';
+import { downstreamKW, transformerLoadPct } from '../../lib/draw/load';
+import { diagramFile, readDiagramFile } from '../../lib/draw/share';
 import { edgePath, portPoint } from '../../lib/draw/geometry';
 import { decodeDiagram, diagramShareUrl } from '../../lib/draw/share';
 import { diagramSvg } from '../../lib/draw/exportSvg';
@@ -241,10 +245,24 @@ export default function DrawEditor() {
     } else if (ev.key === 'Delete' || ev.key === 'Backspace') {
       ev.preventDefault();
       commit(removeNode(d, n.id), `'${nodeTitle(n)}'을(를) 지웠습니다`);
+      setNote({ kind: 'deleted', url: nodeTitle(n) });
     }
   };
 
   const apply = (f: DFix, say?: string) => commit(applyDFix(d, f), say);
+  /** 캔버스 상자 아래 줄 메모 — 변압기 부하율, 아래쪽 합산 부하가 있는 반 */
+  const nodeNote = (n: DNode): string | undefined => {
+    if (n.kind === 'equipment' && isTransformer(n.eq)) {
+      const pct = transformerLoadPct(d, n);
+      return pct !== undefined ? `부하율 ${Math.round(pct)}%` : undefined;
+    }
+    if (n.kind === 'panel') {
+      const kw = downstreamKW(d, n.id);
+      return kw ? `합산 ${kw.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}kW` : undefined;
+    }
+    if (n.kind === 'equipment' && n.loadKW) return `${n.loadKW * (n.qty ?? 1)}kW`;
+    return undefined;
+  };
   const nodeIssues = (id: string) => issues.filter((i) => i.node === id);
   const edgeIssues = new Map<string, DIssue['severity']>();
   for (const i of issues) if (i.edge && i.severity !== 'info') edgeIssues.set(i.edge, i.severity === 'error' || edgeIssues.get(i.edge) === 'error' ? 'error' : 'warn');
@@ -252,7 +270,8 @@ export default function DrawEditor() {
   const selNode = sel?.type === 'node' ? d.nodes.find((n) => n.id === sel.id) : undefined;
   const selEdge = sel?.type === 'edge' ? d.edges.find((e) => e.id === sel.id) : undefined;
 
-  const [note, setNote] = useState<{ kind: 'loaded' | 'bad' | 'copied' | 'manual'; url?: string } | null>(null);
+  const [note, setNote] = useState<{ kind: 'loaded' | 'bad' | 'copied' | 'manual' | 'file' | 'badfile' | 'deleted'; url?: string } | null>(null);
+  const saveError = useDrawStore((s) => s.saveError);
   const [params, setParams] = useSearchParams();
   const code = params.get('d');
   // 공유 링크(#/builder?d=…)로 들어오면 사본으로 추가
@@ -449,6 +468,38 @@ export default function DrawEditor() {
         <button type="button" className="btn btn--secondary btn--sm" onClick={downloadSvg} disabled={!d.nodes.length} data-testid="draw-svg">
           그림 SVG
         </button>
+        <button
+          type="button"
+          className="btn btn--secondary btn--sm"
+          onClick={() => {
+            downloadText(`${fileBase}.json`, diagramFile(d), 'application/json;charset=utf-8');
+            announce('단선도 파일(.json)을 저장했습니다');
+          }}
+          disabled={!d.nodes.length}
+          data-testid="draw-save-file"
+        >
+          파일 저장
+        </button>
+        <label className="btn btn--secondary btn--sm drw-file">
+          파일 불러오기
+          <input
+            type="file"
+            accept=".json,application/json"
+            className="visually-hidden"
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              e.target.value = '';
+              if (!f) return;
+              const loaded = f.size < 5_000_000 ? readDiagramFile(await f.text()) : null;
+              if (loaded) {
+                useDrawStore.getState().create(loaded);
+                setNote({ kind: 'file' });
+                announce('단선도 파일을 불러왔습니다');
+              } else setNote({ kind: 'badfile' });
+            }}
+            data-testid="draw-load-file"
+          />
+        </label>
         <button type="button" className="btn btn--secondary btn--sm" onClick={printDiagram} disabled={!d.nodes.length} data-testid="draw-print">
           단선도 인쇄
         </button>
@@ -457,6 +508,16 @@ export default function DrawEditor() {
         <div className={`bld-share-note${note.kind === 'bad' ? ' is-bad' : ''}`} role="status" data-testid="draw-share-note">
           {note.kind === 'loaded' && <span>공유받은 단선도를 내 목록에 사본으로 추가했습니다. 원래 단선도들은 그대로 있습니다.</span>}
           {note.kind === 'bad' && <span>공유 링크를 읽을 수 없습니다. 링크가 잘렸는지 확인하세요.</span>}
+          {note.kind === 'file' && <span>단선도 파일을 불러와 목록에 추가했습니다.</span>}
+          {note.kind === 'deleted' && (
+            <span>
+              '{note.url}'을(를) 지웠습니다.{' '}
+              <button type="button" className="drw-undo-link" onClick={() => (st.undo(), setNote(null))} data-testid="draw-undo-delete">
+                되돌리기
+              </button>
+            </span>
+          )}
+          {note.kind === 'badfile' && <span>단선도 파일이 아니거나 더 새 버전에서 저장한 파일이라 읽을 수 없습니다.</span>}
           {note.kind === 'copied' && <span>공유 링크를 복사했습니다. 받는 사람이 열면 이 단선도가 사본으로 추가됩니다.</span>}
           {note.kind === 'manual' && (
             <label>
@@ -470,6 +531,11 @@ export default function DrawEditor() {
         </div>
       )}
 
+      {saveError && (
+        <p className="bld-share-note is-bad" role="alert" data-testid="draw-save-error">
+          이 브라우저에 저장하지 못했습니다(저장 공간 부족 등). 지금 단선도는 '파일 저장'으로 따로 보관하세요.
+        </p>
+      )}
       {connectFrom && (
         <p className="drw-connecting" role="status" data-testid="draw-connecting">
           '{nodeTitle(d.nodes.find((n) => n.id === connectFrom)!)}'에서 이을 상자를 누르세요. <button type="button" onClick={() => setConnectFrom(null)}>그만두기 (Esc)</button>
@@ -523,6 +589,7 @@ export default function DrawEditor() {
                 <NodeBox
                   key={n.id}
                   n={n}
+                  note={nodeNote(n)}
                   issues={nodeIssues(n.id)}
                   selected={sel?.type === 'node' && sel.id === n.id}
                   connectTarget={!!connectFrom && connectFrom !== n.id}
@@ -561,7 +628,7 @@ export default function DrawEditor() {
                 연결하기
               </button>
             )}
-            <button type="button" onClick={() => commit(removeNode(d, selNode.id), `'${nodeTitle(selNode)}'을(를) 지웠습니다`)}>
+            <button type="button" onClick={() => (commit(removeNode(d, selNode.id), `'${nodeTitle(selNode)}'을(를) 지웠습니다`), setNote({ kind: 'deleted', url: nodeTitle(selNode) }))}>
               지우기
             </button>
             <button type="button" onClick={() => document.querySelector('.drw-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
@@ -612,6 +679,7 @@ export default function DrawEditor() {
 /* ── 상자 ── */
 interface NodeBoxProps {
   n: DNode;
+  note?: string;
   issues: DIssue[];
   selected: boolean;
   connectTarget: boolean;
@@ -626,7 +694,7 @@ interface NodeBoxProps {
   onPortUp: (e: RPointerEvent) => void;
 }
 
-function NodeBox({ n, issues, selected, connectTarget, onPointerDown, onPointerMove, onPointerUp, onKeyDown, onClick, onDoubleClick, onPortDown, onPortMove, onPortUp }: NodeBoxProps) {
+function NodeBox({ n, note, issues, selected, connectTarget, onPointerDown, onPointerMove, onPointerUp, onKeyDown, onClick, onDoubleClick, onPortDown, onPortMove, onPortUp }: NodeBoxProps) {
   const s = nodeSize(n);
   const errors = issues.filter((i) => i.severity === 'error').length;
   const warns = issues.filter((i) => i.severity === 'warn').length;
@@ -683,7 +751,7 @@ function NodeBox({ n, issues, selected, connectTarget, onPointerDown, onPointerM
               <small>{sub}</small>
             </span>
             <span className="drw-node__items">{itemSummary.length ? itemSummary.slice(0, 8).join(' · ') + (itemSummary.length > 8 ? ' …' : '') : '안이 비어 있음'}</span>
-            <span className="drw-node__product">{p ? p.name : pt?.label}</span>
+            <span className="drw-node__product">{note ?? (p ? p.name : pt?.label)}</span>
           </>
         ) : (
           <>
@@ -696,7 +764,7 @@ function NodeBox({ n, issues, selected, connectTarget, onPointerDown, onPointerM
               {n.qty && n.qty > 1 ? <span className="drw-node__qty"> ×{n.qty}</span> : null}
             </span>
             <span className="drw-node__sub">{sub}</span>
-            <span className="drw-node__product">{p?.name ?? (e && e.coverage !== 'owned' && e.coverage !== 'partial' ? '자사 제품 없음' : '')}</span>
+            <span className="drw-node__product">{note ?? p?.name ?? (e && e.coverage !== 'owned' && e.coverage !== 'partial' ? '자사 제품 없음' : '')}</span>
           </>
         )}
         {n.kind === 'bus' && <span className="visually-hidden">, {sub}</span>}
@@ -806,7 +874,7 @@ function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, 
           {a ? nodeTitle(a) : '?'} → {b ? nodeTitle(b) : '?'}
         </p>
         {a?.kind === 'panel' || (a?.kind === 'bus' && b?.kind === 'panel') || edge.cable ? (
-          <EdgeFeeder d={d} edge={edge} onCommit={onCommit} />
+          <EdgeFeeder d={d} edge={edge} specs={specs} onCommit={onCommit} />
         ) : (
           <p className="drw-panel__note">반에서 다른 반으로 가는 선(피더)이면 전선 굵기·길이를 넣어 아래 반의 단락전류를 계산할 수 있습니다.</p>
         )}
@@ -916,6 +984,22 @@ function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, 
       {n.kind === 'equipment' && n.eq && (
         <QtyField value={n.qty ?? 1} onChange={(q) => set({ qty: q > 1 ? q : undefined })} testId="draw-qty" />
       )}
+      {n.kind === 'equipment' && n.eq && !tr && !offline && (
+        <label className="drw-field">
+          부하 (kW, 1대)
+          <input type="number" min={0} step={0.1} value={n.loadKW ?? ''} placeholder="예: 15" onChange={(ev) => set({ loadKW: Number(ev.target.value) > 0 ? Math.min(1_000_000, Number(ev.target.value)) : undefined })} data-testid="draw-load" />
+        </label>
+      )}
+      {(tr || n.kind === 'panel') && (() => {
+        const kw = downstreamKW(d, n.id);
+        if (!kw) return null;
+        const pct = tr ? transformerLoadPct(d, n) : undefined;
+        return (
+          <p className="drw-panel__note" data-testid="draw-downstream">
+            아래쪽 합산 부하 {kw.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}kW{pct !== undefined ? ` · 변압기 부하율 약 ${Math.round(pct)}% (역률 0.9)` : ''}
+          </p>
+        );
+      })()}
 
       {pt && <PanelItems d={d} n={n} specs={specs} issues={issues} onCommit={onCommit} onApply={onApply} onOpen={() => onOpenPanel(n.id)} />}
 
@@ -956,13 +1040,16 @@ function Inspector({ d, node, edge, issues, specs, onCommit, onApply, onSelect, 
 }
 
 /** 선(피더) 정보 — 보내는 회로, 전선 굵기·길이, 아래 반 예상 단락전류 */
-function EdgeFeeder({ d, edge, onCommit }: { d: Diagram; edge: DEdge; onCommit: (d: Diagram, say?: string) => void }) {
+function EdgeFeeder({ d, edge, specs, onCommit }: { d: Diagram; edge: DEdge; specs?: SpecsMap; onCommit: (d: Diagram, say?: string) => void }) {
   const a = feederSource(d, edge);
   const b = d.nodes.find((n) => n.id === edge.to);
   const set = (patch: Partial<DEdge>) => onCommit(updateEdge(d, edge.id, patch));
-  const feederItems = a?.kind === 'panel' ? (a.items ?? []).filter((i) => RATED_EQ.has(i.eq)) : [];
-  const feederA = feederItems.find((i) => i.id === edge.feeder)?.amps;
+  const feederItems = a?.kind === 'panel' ? (a.items ?? []).filter((i) => FEEDER_EQ.has(i.eq)) : [];
+  const fm = feederMap(d).get(edge.id);
+  const feederA = fm?.item.amps;
   const sc = b ? shortCircuitAt(d, b.id) : undefined;
+  const vd = feederVoltageDrop(d, edge);
+  const plan = feederPlan(d, edge);
   return (
     <div className="drw-feeder" data-testid="draw-feeder">
       <h3 className="drw-panel__h">피더</h3>
@@ -970,7 +1057,7 @@ function EdgeFeeder({ d, edge, onCommit }: { d: Diagram; edge: DEdge; onCommit: 
         <label className="drw-field">
           보내는 회로 ({a ? nodeTitle(a) : ''})
           <select value={edge.feeder ?? ''} onChange={(e) => set({ feeder: e.target.value || undefined })} data-testid="draw-feeder-item">
-            <option value="">(주차단기 기준)</option>
+            <option value="">{fm?.auto ? `자동: ${[fm.item.name, eqName(fm.item.eq), fm.item.amps ? `${fm.item.amps}A` : ''].filter(Boolean).join(' · ')}` : '(자동으로 정할 회로 없음)'}</option>
             {feederItems.map((i) => (
               <option key={i.id} value={i.id}>
                 {[i.name, eqName(i.eq), i.amps ? `${i.amps}A` : ''].filter(Boolean).join(' · ')}
@@ -981,12 +1068,12 @@ function EdgeFeeder({ d, edge, onCommit }: { d: Diagram; edge: DEdge; onCommit: 
       )}
       <div className="drw-fields">
         <label className="drw-field">
-          전선 (mm²)
+          전선 (SQ)
           <select value={edge.cable ?? ''} onChange={(e) => set({ cable: Number(e.target.value) || undefined })} data-testid="draw-feeder-cable">
-            <option value="">{feederA && recommendCable(feederA) ? `권장 ${recommendCable(feederA)}` : '(모름)'}</option>
+            <option value="">{feederA && recommendCable(feederA) ? `권장 ${recommendCable(feederA)}SQ` : '(모름)'}</option>
             {CABLE_SIZES.map((c) => (
               <option key={c.mm2} value={c.mm2}>
-                {c.mm2}
+                {c.mm2}SQ
               </option>
             ))}
           </select>
@@ -996,6 +1083,35 @@ function EdgeFeeder({ d, edge, onCommit }: { d: Diagram; edge: DEdge; onCommit: 
           <input type="number" min={0} step={1} value={edge.lengthM ?? ''} onChange={(e) => set({ lengthM: Number(e.target.value) > 0 ? Math.min(5000, Number(e.target.value)) : undefined })} data-testid="draw-feeder-length" />
         </label>
       </div>
+      {plan && (
+        <div className="drw-feeder__plan" data-testid="draw-feeder-plan">
+          <p className="drw-panel__note">
+            제안: 보내는 회로 {plan.amps}A{plan.item ? ` (${plan.item.name || eqName(plan.item.eq)} 올림)` : ' (새 MCCB 회로)'}
+            {plan.cable ? ` · 피더 전선 ${plan.cable}SQ` : ''} — 아래 {b?.kind === 'panel' ? '반 주차단기의 1.6배' : '부하 전류의 1.25배'} 기준
+          </p>
+          <button
+            type="button"
+            className="btn btn--secondary btn--sm"
+            disabled={plan.enough}
+            onClick={() => {
+              const fixes: DFix[] = pinFeederFixes(d, edge, plan.src, plan.item, plan.amps, {
+                cable: plan.cable,
+                name: b ? `${nodeTitle(b)} 피더` : undefined,
+                variantOf: (p, amps) => variantFor(p, amps, specs)?.id,
+              });
+              onCommit(applyDFix(d, { type: 'multi', fixes }), '피더 정격·전선을 제안대로 맞췄습니다');
+            }}
+            data-testid="draw-feeder-apply"
+          >
+            {plan.enough ? '이미 충분합니다' : '제안대로 맞추기'}
+          </button>
+        </div>
+      )}
+      {vd !== undefined && (
+        <p className="drw-panel__note" data-testid="draw-feeder-vd">
+          간선 전압강하 약 {vd.toFixed(1)}% (아래쪽 합산 부하 기준)
+        </p>
+      )}
       {b?.kind === 'panel' && sc && (
         <p className="drw-panel__note" data-testid="draw-feeder-isc">
           {sc.kind === 'ok'
@@ -1147,10 +1263,20 @@ function IssueList({ issues, onApply, onGo, compact }: { issues: DIssue[]; onApp
 
 function Bom({ d, specs, onCsv }: { d: Diagram; specs?: SpecsMap; onCsv: () => void }) {
   const rows = diagramBom(d, specs);
+  const [byFormat, setByFormat] = useState(false);
+  const sums = bomByFormat(rows);
   return (
     <section className="pg-card bld-bom" aria-labelledby="drw-bom-h" data-testid="draw-bom">
       <div className="bld-bom__head">
-        <h2 id="drw-bom-h">제품 목록 {rows.length}</h2>
+        <h2 id="drw-bom-h">제품 목록 {byFormat ? sums.length : rows.length}</h2>
+        <div className="bld-modes drw-bom-modes" role="group" aria-label="제품 목록 보기">
+          <button type="button" aria-pressed={!byFormat} aria-selected={!byFormat} onClick={() => setByFormat(false)} data-testid="draw-bom-rows">
+            위치별
+          </button>
+          <button type="button" aria-pressed={byFormat} aria-selected={byFormat} onClick={() => setByFormat(true)} data-testid="draw-bom-format">
+            형식별 합계
+          </button>
+        </div>
         <div className="bld-bom__actions">
           {d.nodes.some((n) => n.kind === 'panel') && (
             <button
@@ -1174,30 +1300,55 @@ function Bom({ d, specs, onCsv }: { d: Diagram; specs?: SpecsMap; onCsv: () => v
         </div>
       </div>
       <div className="bld-bom__scroll">
-        <table className="bld-table">
-          <thead>
-            <tr>
-              <th scope="col">위치</th>
-              <th scope="col">기기</th>
-              <th scope="col">보유 상태</th>
-              <th scope="col">선택 제품</th>
-              <th scope="col">대표 정격</th>
-              <th scope="col">수량</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.key}>
-                <td>{r.where}</td>
-                <td>{r.equipment}</td>
-                <td>{r.coverage}</td>
-                <td>{r.product}</td>
-                <td>{r.rating}</td>
-                <td>{r.qty}</td>
+        {byFormat ? (
+          <table className="bld-table" data-testid="draw-bom-format-table">
+            <thead>
+              <tr>
+                <th scope="col">기기</th>
+                <th scope="col">형식 (발주용)</th>
+                <th scope="col">보유 상태</th>
+                <th scope="col">수량</th>
+                <th scope="col">위치</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {sums.map((r) => (
+                <tr key={r.key}>
+                  <td>{r.equipment}</td>
+                  <td>{r.format || '(제품 미선택)'}</td>
+                  <td>{r.coverage}</td>
+                  <td>{r.qty}</td>
+                  <td>{r.where.join(', ')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <table className="bld-table">
+            <thead>
+              <tr>
+                <th scope="col">위치</th>
+                <th scope="col">기기</th>
+                <th scope="col">보유 상태</th>
+                <th scope="col">선택 제품</th>
+                <th scope="col">형식 (발주용)</th>
+                <th scope="col">수량</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.key}>
+                  <td>{r.where}</td>
+                  <td>{r.equipment}</td>
+                  <td>{r.coverage}</td>
+                  <td>{r.product}</td>
+                  <td>{r.format || r.rating}</td>
+                  <td>{r.qty}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </section>
   );

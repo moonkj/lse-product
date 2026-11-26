@@ -74,6 +74,10 @@ export interface DNode {
   pctZ?: number;
   /** 모선 길이(px) */
   w?: number;
+  /** 부하 기기 상자의 부하 (kW, 1대 기준) */
+  loadKW?: number;
+  /** 반의 수용률 (0.1~1, 없으면 1) — 이 반 회로 부하 합에 곱한다 (상 전류·주차단기·위쪽 합산 모두 같은 값) */
+  demand?: number;
   items?: PanelItem[];
 }
 
@@ -92,6 +96,8 @@ export interface DEdge {
 export interface Diagram {
   id: string;
   name: string;
+  /** 전압강하 기준 (%) — 없으면 5 */
+  vdLimit?: number;
   nodes: DNode[];
   edges: DEdge[];
   updatedAt: string;

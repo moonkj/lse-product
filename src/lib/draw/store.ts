@@ -35,6 +35,8 @@ function readSaved(): Saved | null {
 }
 
 export interface DrawState extends Saved {
+  /** 브라우저 저장 실패 (용량 초과 등) */
+  saveError: boolean;
   past: Diagram[];
   future: Diagram[];
   /** 지금 단선도 바꾸기 (되돌리기 기록에 남김) */
@@ -57,6 +59,7 @@ const init: Saved = saved ?? { currentId: first.id, order: [first.id], diagrams:
 
 export const useDrawStore = create<DrawState>()((set, get) => ({
   ...init,
+  saveError: false,
   past: [],
   future: [],
   commit: (next) => {
@@ -125,15 +128,29 @@ export const useDrawStore = create<DrawState>()((set, get) => ({
 export const useCurrentDiagram = (): Diagram => useDrawStore((s) => s.diagrams[s.currentId]);
 
 let timer: ReturnType<typeof setTimeout> | undefined;
+let dirty = false;
+function saveNow() {
+  clearTimeout(timer);
+  if (!dirty) return;
+  dirty = false;
+  const { currentId, order, diagrams, saveError } = useDrawStore.getState();
+  try {
+    localStorage.setItem(DRAW_STORAGE_KEY, JSON.stringify({ currentId, order, diagrams } satisfies Saved));
+    if (saveError) useDrawStore.setState({ saveError: false });
+  } catch {
+    // 저장 불가(용량 초과·차단) — 화면에 알리고 메모리로만
+    if (!saveError) useDrawStore.setState({ saveError: true });
+  }
+}
 useDrawStore.subscribe((s, prev) => {
   if (s.diagrams === prev.diagrams && s.currentId === prev.currentId && s.order === prev.order) return;
+  dirty = true;
   clearTimeout(timer);
-  timer = setTimeout(() => {
-    try {
-      const { currentId, order, diagrams } = useDrawStore.getState();
-      localStorage.setItem(DRAW_STORAGE_KEY, JSON.stringify({ currentId, order, diagrams } satisfies Saved));
-    } catch {
-      /* 저장 불가 — 메모리로만 */
-    }
-  }, 300);
+  timer = setTimeout(saveNow, 300);
 });
+// 탭을 닫거나 다른 화면으로 가기 직전에는 기다리지 않고 저장
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', saveNow);
+  document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && saveNow());
+  window.addEventListener('beforeunload', saveNow);
+}

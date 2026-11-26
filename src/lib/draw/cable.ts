@@ -54,7 +54,9 @@ export function voltageDrop(it: PanelItem, mm2?: number): number | undefined {
 }
 
 /** 전압강하가 limit % 이하가 되는 가장 가는 전선 */
-export function cableForDrop(it: PanelItem, limit = VDROP_WARN): number | undefined {
-  const min = recommendCable(it.amps) ?? 0;
-  return CABLE_SIZES.find((c) => c.mm2 >= min && (voltageDrop(it, c.mm2) ?? 0) <= limit)?.mm2;
+export function cableForDrop(it: PanelItem, limit = VDROP_WARN, extra = 0): number | undefined {
+  const min = recommendCable(it.amps);
+  // 차단기가 300SQ 허용전류보다 크면 병렬 전선이 필요 — 한 가닥 굵기로 권하지 않는다
+  if (it.amps && min === undefined) return undefined;
+  return CABLE_SIZES.find((c) => c.mm2 >= (min ?? 0) && (voltageDrop(it, c.mm2) ?? 0) + extra <= limit)?.mm2;
 }
