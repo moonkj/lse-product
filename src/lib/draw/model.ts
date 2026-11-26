@@ -45,6 +45,10 @@ export interface PanelItem {
   amps?: number;
   /** 극수 */
   poles?: 1 | 2 | 3 | 4;
+  /** 회로 부하 (kW, 회로 1개 기준) */
+  loadKW?: number;
+  /** 단상 회로가 붙는 상 */
+  phase?: 'R' | 'S' | 'T';
 }
 
 export interface DNode {

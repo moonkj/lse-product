@@ -7,12 +7,15 @@
  *  09 변압기 아래 저압 주차단기 정격전류·차단용량 (변압기 용량 기준)
  *  10 반 안 분기 회로 정격전류 > 주차단기 정격전류   11 고른 정격전류가 제품·옵션 범위 밖 → 맞는 옵션
  *  12 변압기 아래 저압반 주차단기에 고른 정격전류 < 변압기 2차 정격전류
+ *  13 회로 부하 전류 > 그 회로 차단기 정격     14 설비불평형률 30% 초과 → 상 자동 배분
+ *  15 상 최대 부하 전류 > 주차단기 정격
  */
 import { getData, type SpecsMap } from '../../data/load';
 import type { Coverage } from '../schema';
 import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builder/specParse';
 import { candidateProducts, isInstrumentProduct, smallestVariant } from '../builder/validate';
 import { ampsInRange, ampsOptions, stdAtLeast, variantFor, RATED_EQ } from './ratings';
+import { UNBALANCE_LIMIT, circuitAmps, phaseSummary } from './load';
 import {
   eqName,
   isOffLine,
@@ -34,6 +37,7 @@ export type DFix =
   | { type: 'setProduct'; node: string; item?: string; product: string }
   | { type: 'setItemEq'; node: string; item: string; eq: string }
   | { type: 'setItem'; node: string; item: string; patch: Partial<PanelItem> }
+  | { type: 'balancePhases'; node: string }
   | { type: 'addItem'; node: string; eq: string }
   | { type: 'removeItem'; node: string; item: string }
   | { type: 'insertBetween'; edge: string; eq: string; hv?: VoltageId; lv?: VoltageId };
@@ -271,6 +275,47 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
             fix: { label: `주차단기를 ${up}A로`, fix: { type: 'setItem', node: n.id, item: mainItem.id, patch: { amps: up, variant: variantFor(mainItem.product, up, specs)?.id ?? mainItem.variant } } },
           });
         }
+      // 13~15 부하·상 (저압반)
+      if (n.v === '0.38' || n.v === '0.22') {
+        for (const it of items) {
+          if (it === mainItem || !it.loadKW || !it.amps || !RATED_EQ.has(it.eq)) continue;
+          const ia = circuitAmps(it);
+          if (ia > it.amps) {
+            const up = stdAtLeast(ia);
+            out.push({
+              key: `${n.id}:${it.id}:13`,
+              rule: 'DRW-13',
+              severity: 'warn',
+              message: `${title} › ${it.name || eqName(it.eq)}: 부하 ${it.loadKW}kW의 전류 약 ${fmt(ia, 1)}A가 차단기 ${it.amps}A보다 큽니다 (역률 0.9 가정).`,
+              node: n.id,
+              item: it.id,
+              fix: { label: `차단기를 ${up}A로`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { amps: up, variant: variantFor(it.product, up, specs)?.id ?? it.variant } } },
+            });
+          }
+        }
+        const ps = phaseSummary(items, mainItem?.id);
+        if (ps.unbalance > UNBALANCE_LIMIT)
+          out.push({
+            key: `${n.id}:14`,
+            rule: 'DRW-14',
+            severity: 'warn',
+            message: `${title} 설비불평형률이 ${fmt(ps.unbalance, 0)}%입니다 (R ${fmt(ps.single.R, 1)} · S ${fmt(ps.single.S, 1)} · T ${fmt(ps.single.T, 1)}kW). 30%를 넘지 않게 단상 회로를 상에 고르게 나누세요.`,
+            node: n.id,
+            fix: { label: '상 자동 배분', fix: { type: 'balancePhases', node: n.id } },
+          });
+        if (mainItem?.amps && ps.maxPhaseA > mainItem.amps) {
+          const up = stdAtLeast(ps.maxPhaseA);
+          out.push({
+            key: `${n.id}:15`,
+            rule: 'DRW-15',
+            severity: 'warn',
+            message: `${title} 부하가 가장 큰 상 전류 약 ${fmt(ps.maxPhaseA, 0)}A가 주차단기 ${mainItem.amps}A보다 큽니다.`,
+            node: n.id,
+            item: mainItem.id,
+            fix: { label: `주차단기를 ${up}A로`, fix: { type: 'setItem', node: n.id, item: mainItem.id, patch: { amps: up, variant: variantFor(mainItem.product, up, specs)?.id ?? mainItem.variant } } },
+          });
+        }
+      }
       // 12 변압기 2차 전류보다 작은 주차단기 정격
       if (pt.id === 'lv-swgr' && mainItem?.amps) {
         const tr = upstreamTransformer(d, n.id);

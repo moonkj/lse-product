@@ -166,19 +166,17 @@ test.describe('단선도 그리기', () => {
     expect(png.suggestedFilename()).toMatch(/^단선도_.*\.png$/);
     const pngPath = SHOT + 'drw-export.png';
     await png.saveAs(pngPath);
-    // 인쇄: print 대화상자 대신 호출 여부만
-    await page.evaluate(() => {
-      (window as unknown as { __printed: number }).__printed = 0;
-      window.print = () => {
-        (window as unknown as { __printed: number }).__printed++;
-        // 인쇄 중에는 그림만 보이는 상태
-        (window as unknown as { __svg: boolean }).__svg = !!document.querySelector('.drw-print svg') && document.documentElement.classList.contains('print-diagram');
-      };
-    });
+    // 인쇄: 숨은 인쇄용 창에 단선도 그림만 넣고 그 창을 인쇄 (페이지 화면 스타일과 무관)
     await tid(page, 'draw-print').click();
-    await expect.poll(() => page.evaluate(() => (window as unknown as { __printed: number }).__printed)).toBe(1);
-    expect(await page.evaluate(() => (window as unknown as { __svg: boolean }).__svg)).toBe(true);
-    await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('print-diagram'))).toBe(false);
+    const frame = page.locator('iframe[data-print-frame]');
+    await expect(frame).toHaveCount(1);
+    const inner = page.frameLocator('iframe[data-print-frame]');
+    await expect(inner.locator('svg')).toHaveCount(1);
+    await expect(inner.locator('svg')).toContainText('데이터센터 단선도');
+    await expect(inner.locator('svg rect').first()).toBeAttached();
+    // 그림이 첫 쪽 맨 위에서 시작 (빈 쪽 아님)
+    const top = await inner.locator('svg').evaluate((el) => el.getBoundingClientRect().top);
+    expect(top).toBeLessThanOrEqual(1);
   });
 
   test('휴대폰: 상자를 누르면 아래 빠른 막대(연결하기·지우기·자세히), 연결하기로 잇기', async ({ page }) => {
@@ -241,6 +239,35 @@ test.describe('단선도 그리기', () => {
     await expect(page.locator('[data-eq="panelboard"]')).toContainText('ELCB');
     await tid(page, 'draw-bom-toggle').click();
     await expect(tid(page, 'draw-bom')).toContainText('1층 콘센트');
+  });
+
+  test('분전반 안 구성: 수량 4 차단기는 결선도에 4개, 나누기로 회로 4개, 부하·상 → 불평형 경고 → 상 자동 배분', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await expect(tid(page, 'draw-fill')).toBeEnabled();
+    await tid(page, 'draw-pal-panel-panelboard').click();
+    await tid(page, 'draw-panel-open').click();
+    const ed = tid(page, 'panel-editor');
+    await ed.getByTestId('panel-fill').click();
+    // 기본: ELCB×6, MCB×6 → 결선도 분기 12개
+    await expect(ed.getByTestId('panel-sld-branch')).toHaveCount(12);
+    const r1 = ed.getByTestId('panel-row-1');
+    await r1.getByTestId('panel-qty').fill('4');
+    await expect(ed.getByTestId('panel-sld-branch')).toHaveCount(10);
+    await r1.getByTestId('panel-split').click();
+    await expect(ed.locator('tbody tr')).toHaveCount(6);
+    await expect(ed.getByTestId('panel-row-1').getByTestId('panel-name')).toHaveValue('회로 1-1');
+    await expect(ed.getByTestId('panel-row-4').getByTestId('panel-name')).toHaveValue('회로 1-4');
+    // 부하를 모두 R상에 → 불평형
+    for (const k of [1, 2, 3]) {
+      await ed.getByTestId(`panel-row-${k}`).getByTestId('panel-kw').fill('3');
+    }
+    await expect(ed.getByTestId('panel-issues')).toContainText('설비불평형률');
+    await ed.getByTestId('panel-balance').click();
+    await expect(ed.getByTestId('panel-unbalance')).toHaveText('0%');
+    await expect(ed.getByTestId('panel-issues')).toHaveCount(0);
+    await expect(ed.getByTestId('panel-sld')).toContainText('3kW');
+    await page.screenshot({ path: SHOT + 'drw-panel-load.png' });
   });
 
 });

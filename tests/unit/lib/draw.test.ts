@@ -7,6 +7,8 @@ import { PANEL_TYPES, emptyDiagram, makeNode, sideVoltage, type Diagram } from '
 import { validateDiagram, summarizeDiagram, pickTransformer } from '../../../src/lib/draw/validate';
 import { addItem, addItems, addNode, applyDFix, connect, diagramBom, fillProducts, insertBetween, removeNode, updateItem } from '../../../src/lib/draw/ops';
 import { ampsOptions, variantFor } from '../../../src/lib/draw/ratings';
+import { balancePhases, circuitAmps, phaseSummary } from '../../../src/lib/draw/load';
+import { splitItem } from '../../../src/lib/draw/ops';
 import { PRESETS } from '../../../src/lib/draw/presets';
 import { decodeDiagram, encodeDiagram } from '../../../src/lib/draw/share';
 import { diagramSvg } from '../../../src/lib/draw/exportSvg';
@@ -250,5 +252,52 @@ describe('반 안 구성 (회로표)', () => {
     const back = decodeDiagram(encodeDiagram(d))!;
     const it = back.nodes[0].items!.find((i) => i.name === '1층 콘센트')!;
     expect(it).toMatchObject({ amps: 30, poles: 2, eq: 'elcb', variant: br.variant });
+  });
+});
+
+describe('회로 부하·상 배분', () => {
+  const it2 = (o: object) => ({ id: Math.random().toString(36), eq: 'elcb', poles: 2 as const, ...o });
+  it('전류: 단상 2.2kW ≈ 11.1A, 삼상 10kW ≈ 16.9A (역률 0.9)', () => {
+    expect(circuitAmps(it2({ loadKW: 2.2 }))).toBeCloseTo(11.11, 1);
+    expect(circuitAmps({ id: 'x', eq: 'mccb', poles: 3, loadKW: 10 })).toBeCloseTo(16.88, 1);
+  });
+  it('상별 합계·불평형률, 자동 배분으로 30% 이하', () => {
+    const items = [it2({ loadKW: 3, phase: 'R' }), it2({ loadKW: 3, phase: 'R' }), it2({ loadKW: 3, phase: 'R' }), { id: 'm', eq: 'mccb', poles: 3 as const, loadKW: 6 }];
+    const s1 = phaseSummary(items);
+    expect(s1.kW).toEqual({ R: 11, S: 2, T: 2 });
+    expect(s1.unbalance).toBeCloseTo((9 / (15 / 3)) * 100, 5);
+    const s2 = phaseSummary(balancePhases(items));
+    expect(s2.unbalance).toBe(0);
+  });
+  it('분전반 규칙: 회로 과부하 → 차단기 올리기, 불평형 → 상 자동 배분, 상 전류 > 주차단기 → 주차단기 올리기', () => {
+    let d = fillProducts(chain(makeNode('panel', 0, 0, 'panelboard')), specs);
+    const n = d.nodes[0];
+    const [, elcb, mcb] = n.items!;
+    d = updateItem(d, n.id, elcb.id, { loadKW: 8, qty: undefined, phase: 'R' }); // 8kW 단상 ≈ 40A > 30A
+    const w13 = rules(d).find((i) => i.rule === 'DRW-13')!;
+    expect(w13.fix?.label).toBe('차단기를 50A로');
+    d = applyDFix(d, w13.fix!.fix);
+    d = updateItem(d, n.id, elcb.id, { loadKW: 4 });
+    d = updateItem(d, n.id, mcb.id, { loadKW: 4, qty: undefined, phase: 'R' });
+    d = addItems(d, n.id, 'mcb-rcbo', 1, { loadKW: 4, phase: 'R' });
+    const w14 = rules(d).find((i) => i.rule === 'DRW-14')!;
+    expect(w14.fix?.label).toBe('상 자동 배분');
+    d = applyDFix(d, w14.fix!.fix);
+    expect(rules(d).find((i) => i.rule === 'DRW-14')).toBeUndefined();
+    d = updateItem(d, n.id, elcb.id, { loadKW: 30, amps: 160, variant: undefined, phase: 'R' }); // 상 전류 ≈ 152A > 100A
+    const w15 = rules(d).find((i) => i.rule === 'DRW-15')!;
+    expect(w15.fix?.label).toMatch(/주차단기를 \d+A로/);
+    expect(rules(applyDFix(d, w15.fix!.fix)).find((i) => i.rule === 'DRW-15')).toBeUndefined();
+  });
+  it('수량 4 회로를 나누면 회로 4개 (이름 -1~-4, 같은 제품·정격)', () => {
+    let d = chain(makeNode('panel', 0, 0, 'panelboard'));
+    const n = d.nodes[0];
+    const elcb = n.items!.find((i) => i.eq === 'elcb')!;
+    d = updateItem(d, n.id, elcb.id, { qty: 4, name: '콘센트' });
+    d = splitItem(d, n.id, elcb.id);
+    const parts = d.nodes[0].items!.filter((i) => i.eq === 'elcb');
+    expect(parts.map((i) => i.name)).toEqual(['콘센트-1', '콘센트-2', '콘센트-3', '콘센트-4']);
+    expect(parts.every((i) => !i.qty && i.amps === 30)).toBe(true);
+    expect(new Set(parts.map((i) => i.id)).size).toBe(4);
   });
 });

@@ -23,13 +23,13 @@ function fromBase64Url(code: string): string {
 }
 
 /** 짧게: 상자 [kind번호, x, y, eq, product, v, label, qty, hv, lv, kVA, pctZ, w, items[[eq, product, qty]]] */
-type PackedItem = [string, string?, number?, string?, number?, number?, string?];
+type PackedItem = [string, string?, number?, string?, number?, number?, string?, number?, string?];
 type PackedNode = [number, number, number, string?, string?, string?, string?, number?, string?, string?, number?, number?, number?, PackedItem[]?];
 
 export function encodeDiagram(d: Diagram): string {
   const idx = new Map(d.nodes.map((n, i) => [n.id, i]));
   const nodes: PackedNode[] = d.nodes.map((n) => {
-    const p: PackedNode = [KINDS.indexOf(n.kind), n.x, n.y, n.eq ?? '', n.product ?? '', n.v ?? '', n.label ?? '', n.qty ?? 0, n.hv ?? '', n.lv ?? '', n.kVA ?? 0, n.pctZ ?? 0, n.w ?? 0, (n.items ?? []).map((i) => [i.eq, i.product ?? '', i.qty ?? 0, i.variant ?? '', i.amps ?? 0, i.poles ?? 0, i.name ?? ''] as PackedItem)];
+    const p: PackedNode = [KINDS.indexOf(n.kind), n.x, n.y, n.eq ?? '', n.product ?? '', n.v ?? '', n.label ?? '', n.qty ?? 0, n.hv ?? '', n.lv ?? '', n.kVA ?? 0, n.pctZ ?? 0, n.w ?? 0, (n.items ?? []).map((i) => [i.eq, i.product ?? '', i.qty ?? 0, i.variant ?? '', i.amps ?? 0, i.poles ?? 0, i.name ?? '', i.loadKW ?? 0, i.phase ?? ''] as PackedItem)];
     // 끝의 빈 값은 잘라 짧게
     while (p.length > 3) {
       const last = p[p.length - 1];
@@ -100,6 +100,8 @@ export function decodeDiagram(code: string): Diagram | null {
             ...(amps && i[4] ? { amps } : {}),
             ...(poles ? { poles } : {}),
             ...(typeof i[6] === 'string' && i[6].trim() ? { name: i[6].trim().slice(0, 30) } : {}),
+            ...(num(i[7], 0.01, 100000) && i[7] ? { loadKW: num(i[7], 0.01, 100000) } : {}),
+            ...(i[8] === 'R' || i[8] === 'S' || i[8] === 'T' ? { phase: i[8] } : {}),
           };
         });
     d.nodes.push(n);

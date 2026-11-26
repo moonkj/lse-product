@@ -7,6 +7,16 @@ import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builde
 import { TRANSFORMERS, eqName, isTransformer, makeNode, newId, nodeSize, nodeTitle, panelTypeById, snap, voltageLabel, voltageOf, type DNode, type Diagram, type PanelItem } from './model';
 import { upstreamTransformer } from './validate';
 import { ampsOptions, defaultRating, itemSpecText, stdAtLeast, variantFor } from './ratings';
+import { balancePhases } from './load';
+
+/** 반 하나의 단상 회로를 상에 고르게 나눈다 */
+export function balanceNode(d: Diagram, node: string): Diagram {
+  const n = d.nodes.find((x) => x.id === node);
+  const pt = panelTypeById(n?.eq);
+  if (!n?.items || !pt) return d;
+  const mainId = n.items.find((i) => pt.main.includes(i.eq))?.id;
+  return mapItems(d, node, (items) => balancePhases(items, mainId));
+}
 import type { DFix } from './validate';
 
 const touch = (d: Diagram, patch: Partial<Diagram>): Diagram => ({ ...d, ...patch, updatedAt: new Date().toISOString() });
@@ -75,6 +85,17 @@ export const setItemQty = (d: Diagram, node: string, item: string, qty: number) 
   const q = clampQty(qty);
   return mapItems(d, node, (items) => items.map((i) => (i.id === item ? { ...i, qty: q > 1 ? q : undefined } : i)));
 };
+/** 수량 n 인 회로를 n 개의 회로로 나누기 — 회로마다 이름·부하·상을 따로 줄 수 있게 (이름 뒤에 -1, -2 …) */
+export function splitItem(d: Diagram, node: string, item: string): Diagram {
+  return mapItems(d, node, (items) =>
+    items.flatMap((i) => {
+      if (i.id !== item || (i.qty ?? 1) <= 1) return [i];
+      const n = i.qty!;
+      return Array.from({ length: n }, (_, k) => ({ ...i, id: k === 0 ? i.id : newId('i'), qty: undefined, ...(i.name ? { name: `${i.name}-${k + 1}` } : {}) }));
+    }),
+  );
+}
+
 export function moveItem(d: Diagram, node: string, item: string, dir: -1 | 1): Diagram {
   return mapItems(d, node, (items) => {
     const i = items.findIndex((x) => x.id === item);
@@ -117,6 +138,8 @@ export function applyDFix(d: Diagram, f: DFix): Diagram {
       return updateItem(d, f.node, f.item, { eq: f.eq, product: undefined, variant: undefined });
     case 'setItem':
       return updateItem(d, f.node, f.item, f.patch);
+    case 'balancePhases':
+      return balanceNode(d, f.node);
     case 'addItem':
       return addItem(d, f.node, f.eq);
     case 'removeItem':

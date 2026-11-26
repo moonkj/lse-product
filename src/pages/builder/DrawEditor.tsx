@@ -306,21 +306,43 @@ export default function DrawEditor() {
     };
     img.src = url;
   };
-  const [printing, setPrinting] = useState(false);
+  /**
+   * 단선도 인쇄 — 화면 페이지 대신 숨은 인쇄용 창(iframe)에 그림만 넣어 인쇄한다.
+   * (2026-11-26: 페이지 안에서 인쇄하면 사이트 인쇄 스타일·위치 때문에 빈 쪽이 나오던 문제)
+   * 가로로 긴 단선도는 가로 방향, 그림은 한 쪽 너비에 맞춘다.
+   */
   const printDiagram = () => {
-    setPrinting(true);
-    document.documentElement.classList.add('print-diagram');
-    const done = () => {
-      document.documentElement.classList.remove('print-diagram');
-      setPrinting(false);
-      window.removeEventListener('afterprint', done);
-    };
-    window.addEventListener('afterprint', done);
+    const svg = svgText();
+    const m = svg.match(/width="(\d+(?:\.\d+)?)" height="(\d+(?:\.\d+)?)"/);
+    const landscape = m ? Number(m[1]) > Number(m[2]) : false;
+    document.querySelectorAll('iframe[data-print-frame]').forEach((x) => x.remove());
+    const f = document.createElement('iframe');
+    f.setAttribute('data-print-frame', '');
+    f.setAttribute('data-testid', 'draw-print-frame');
+    f.setAttribute('aria-hidden', 'true');
+    f.tabIndex = -1;
+    f.title = '단선도 인쇄';
+    Object.assign(f.style, { position: 'fixed', right: '0', bottom: '0', width: '0', height: '0', border: '0', visibility: 'hidden' });
+    document.body.appendChild(f);
+    const doc = f.contentDocument;
+    const win = f.contentWindow;
+    if (!doc || !win) return;
+    const title = d.name.replace(/[<>&]/g, '');
+    doc.open();
+    doc.write(
+      `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>${title}</title><style>` +
+        `@page{size:A4 ${landscape ? 'landscape' : 'portrait'};margin:10mm}` +
+        `html,body{margin:0;background:#fff}svg{display:block;width:100%;height:auto;max-height:190mm}` +
+        `</style></head><body>${svg}</body></html>`,
+    );
+    doc.close();
+    const cleanup = () => setTimeout(() => f.remove(), 1000);
+    win.addEventListener('afterprint', cleanup);
     setTimeout(() => {
-      window.print();
-      // 일부 브라우저는 afterprint 를 보내지 않음
-      setTimeout(done, 500);
-    }, 50);
+      win.focus();
+      win.print();
+      announce('단선도 인쇄 창을 열었습니다');
+    }, 150);
   };
 
   const exportCsv = () => {
@@ -576,7 +598,6 @@ export default function DrawEditor() {
       {panelOpen && d.nodes.some((x) => x.id === panelOpen && x.kind === 'panel') && (
         <PanelEditor d={d} n={d.nodes.find((x) => x.id === panelOpen)!} specs={specs} issues={issues} onCommit={commit} onApply={apply} onClose={() => setPanelOpen(null)} />
       )}
-      {printing && <div className="drw-print" aria-hidden="true" dangerouslySetInnerHTML={{ __html: svgText() }} />}
     </div>
   );
 }

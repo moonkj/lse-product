@@ -298,8 +298,6 @@
 
 /* 휴대폰: 고른 상자 빠른 동작 (데스크톱은 숨김) */
 .drw-mobilebar { display: none; }
-/* 단선도 인쇄용 그림 (화면에서는 숨김) */
-.drw-print { display: none; }
 .drw-bar--out { margin-top: calc(var(--space-2) * -1); }
 
 /* 화면 모드 탭 (단선도 그리기 / 템플릿 점검) */
@@ -349,11 +347,6 @@
   .drw .drw-summary { position: static; }
 }
 @media print {
-  html.print-diagram body * { visibility: hidden !important; }
-  html.print-diagram .drw-print,
-  html.print-diagram .drw-print * { visibility: visible !important; }
-  html.print-diagram .drw-print { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
-  html.print-diagram .drw-print svg { width: 100%; height: auto; }
   .drw-bar,
   .drw-palette,
   .drw-panel,
@@ -442,3 +435,24 @@
 .pnl__hint { flex-basis: 100%; font-size: 12px; color: var(--color-text-muted); }
 .drw-items__open { width: 100%; justify-content: center; }
 .drw-item__spec { font-size: 12px; color: var(--color-text-muted); }
+
+/* 반 안 구성: 상별 부하 */
+.pnl__phase { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.pnl__phase-bars { display: flex; flex-direction: column; gap: 4px; min-width: 260px; flex: 1; }
+.pnl__phase-row { display: grid; grid-template-columns: 34px 1fr 72px; align-items: center; gap: 8px; font-size: 12px; }
+.pnl__phase-bar { height: 10px; border-radius: 5px; background: var(--color-surface-2); overflow: hidden; }
+.pnl__phase-fill { display: block; height: 100%; border-radius: 5px; }
+.pnl__phase-fill--R { background: #d92d20; }
+.pnl__phase-fill--S { background: #f2b200; }
+.pnl__phase-fill--T { background: #2e90fa; }
+.pnl__phase-val { text-align: right; font-variant-numeric: tabular-nums; }
+.pnl__phase-sum { display: flex; gap: 20px; margin: 0; }
+.pnl__phase-sum div { display: flex; flex-direction: column; }
+.pnl__phase-sum dt { font-size: 11px; color: var(--color-text-muted); }
+.pnl__phase-sum dd { margin: 0; font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pnl__phase-sum .is-warn dd { color: var(--cov-missing-text, #b42318); }
+.pnl__phase .pnl__hint { flex-basis: 100%; margin: 0; }
+.pnl__kw { width: 80px !important; }
+.pnl__split { width: auto !important; padding: 0 6px; font-size: 11px; margin-right: 2px; }
+.pnl__tools { width: 150px; }
+.pnl__table select[data-testid='panel-phase-sel'] { min-width: 58px; }
