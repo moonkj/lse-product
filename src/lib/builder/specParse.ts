@@ -10,10 +10,31 @@ export function parseNumbers(value: string): number[] {
   return [...cleaned.matchAll(/\d+(?:\.\d+)?/g)].map((m) => Number(m[0])).filter((n) => Number.isFinite(n));
 }
 
-/** 단위를 kV·A·kA 기준으로 맞춘다 (V → kV) */
-function toBase(n: number, key: string, unit?: string): number {
-  if (key === 'ratedVoltage' && unit === 'V') return n / 1000;
-  return n;
+/**
+ * 전류·차단용량 글자에서 숫자가 아닌 조건(전압·극수·%)을 먼저 지운다.
+ * 예) "6 at 240/415VAC (1pole)" → 6, "10 @ 120/240 VAC, 480 Y/277 VAC" → 10, "42 (690Vac), Ics=100%" → 42
+ */
+function stripConditions(value: string): string {
+  return value
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/(?:at|@)\s*[\d./\sY]+\s*V(?:AC|DC|ac|dc)?\b/g, ' ')
+    .replace(/\d+(?:\.\d+)?(?:\s*Y?\s*\/\s*\d+(?:\.\d+)?)*\s*Y?\s*V(?:AC|DC|ac|dc)?\b/g, ' ')
+    .replace(/\d+\s*(?:-\s*\d+\s*)?P(?:ole)?\b/gi, ' ')
+    .replace(/Ics\s*=\s*\d+\s*%|\d+\s*%/g, ' ');
+}
+
+/**
+ * 정격전압 → kV. 단위가 V·V AC·Vac 면 1000 으로 나누고, 단위 없이 "AC 480V"·"AC 1000V / DC 1500V" 처럼
+ * 글자 안에 V 가 붙어 있으면 그 숫자를 V 로 본다 (2026-11-26: 단위 칸이 비어 690V 가 690kV 로 읽히던 문제).
+ */
+function voltageKV(value: string, unit?: string): number[] {
+  const u = (unit ?? '').trim();
+  if (/^kV/i.test(u)) return parseNumbers(value);
+  if (/^V/i.test(u)) return parseNumbers(value).map((n) => n / 1000);
+  const cleaned = value.replace(/\([^)]*\)/g, ' ');
+  if (/\d\s*kV/i.test(cleaned)) return parseNumbers(cleaned);
+  if (/\d\s*V/i.test(cleaned)) return parseNumbers(cleaned).map((n) => n / 1000);
+  return parseNumbers(value);
 }
 
 export interface ProductRatings {
@@ -32,11 +53,10 @@ export interface ProductRatings {
 function collect(items: readonly SpecItem[]) {
   const out = { kV: [] as number[], A: [] as number[], kA: [] as number[], kVA: [] as number[] };
   for (const it of items) {
-    const nums = parseNumbers(it.value).map((n) => toBase(n, it.key, it.unit));
-    if (it.key === 'ratedVoltage') out.kV.push(...nums);
-    else if (it.key === 'ratedCurrent' && (it.unit ?? 'A') === 'A') out.A.push(...nums);
-    else if (it.key === 'breakingCapacity' && (it.unit ?? 'kA') === 'kA') out.kA.push(...nums);
-    else if (it.key === 'capacity' && it.unit === 'kVA') out.kVA.push(...nums);
+    if (it.key === 'ratedVoltage') out.kV.push(...voltageKV(it.value, it.unit));
+    else if (it.key === 'ratedCurrent' && (it.unit ?? 'A') === 'A') out.A.push(...parseNumbers(stripConditions(it.value)));
+    else if (it.key === 'breakingCapacity' && (it.unit ?? 'kA') === 'kA') out.kA.push(...parseNumbers(stripConditions(it.value)));
+    else if (it.key === 'capacity' && it.unit === 'kVA') out.kVA.push(...parseNumbers(it.value));
   }
   return out;
 }

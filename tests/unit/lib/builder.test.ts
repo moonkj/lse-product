@@ -4,7 +4,7 @@ import specsJson from '../../../src/data/specs.json';
 import { getData } from '../../../src/data/load';
 import { TEMPLATES, equipmentOf, slotsOf, templateById } from '../../../src/lib/builder/templates';
 import { parseNumbers, productRatings, trSecondaryA, trShortCircuitKA } from '../../../src/lib/builder/specParse';
-import { applyFix, defaultBuild, emptyBuild, summarize, validateBuild, type Build } from '../../../src/lib/builder/validate';
+import { applyFix, candidateProducts, defaultBuild, emptyBuild, summarize, validateBuild, type Build } from '../../../src/lib/builder/validate';
 import type { ProductSpecs } from '../../../src/lib/schema';
 
 const specs = new Map(Object.entries((specsJson as { products: Record<string, ProductSpecs> }).products));
@@ -36,6 +36,20 @@ describe('정격 숫자 읽기', () => {
     expect(Math.max(...acb.A)).toBe(6300);
     expect(Math.max(...acb.kV)).toBeCloseTo(0.69);
     expect(Math.max(...productRatings(specs.get('P01062')).kV)).toBeGreaterThanOrEqual(24);
+  });
+  it('정격전압 단위: 단위 칸이 비거나 "V AC"여도 V 로 읽음 (690V 를 690kV 로 읽지 않음)', () => {
+    const kv = (value: string, unit?: string) => productRatings({ items: [{ key: 'ratedVoltage', label: '정격전압', value, unit }] } as never).kV;
+    expect(kv('AC 690V (정격사용전압)')).toEqual([0.69]);
+    expect(kv('AC 1000V / DC 1500V 이하')).toEqual([1, 1.5]);
+    expect(kv('690 (Ue)', 'V AC')).toEqual([0.69]);
+    expect(kv('~ 800 (Ue)', 'Vac')).toEqual([0.8]);
+    expect(kv('22.9 / 6.6 / 3.3', 'kV')).toEqual([22.9, 6.6, 3.3]);
+  });
+  it('차단용량에 섞인 전압·극수·%는 숫자로 읽지 않음', () => {
+    const ka = (value: string) => productRatings({ items: [{ key: 'breakingCapacity', label: '차단용량', value, unit: 'kA' }] } as never).kA;
+    expect(ka('6 at 240/415VAC (1pole), 6 at 415VAC (2~4pole)')).toEqual([6, 6]);
+    expect(ka('AC 1P: 10 @ 120/240 VAC; 2 - 3P: 10 @ 240 VAC, 480 Y/277 VAC')).toEqual([10, 10]);
+    expect(ka('42 (690Vac), Ics=100%')).toEqual([42]);
   });
   it('변압기 2차 정격전류·단락전류 계산 (1000kVA, 380V → 약 1,519A · %Z 6% → 약 25kA)', () => {
     expect(Math.round(trSecondaryA(1000, 0.38))).toBe(1519);
@@ -122,6 +136,23 @@ describe('확인 규칙', () => {
     }
   });
 
+  it('계전기·계측기(GIMAC 등)는 PT·CT 2차 입력 정격이라 계통 전압·전류로 판단하지 않음 — 어느 칸에 넣어도 정격 오류·경고 없음', () => {
+    let checked = 0;
+    for (const t of TEMPLATES) {
+      const base = defaultBuild(t, specs);
+      for (const { slot } of slotsOf(t)) {
+        for (const eq of slot.accepts.filter((e) => e === 'protection-relay' || e === 'power-meter')) {
+          for (const p of candidateProducts(eq)) {
+            const b: Build = { ...base, slots: { ...base.slots, [slot.id]: { eq, product: p.id } } };
+            const bad = validateBuild(b, t, specs).filter((i) => i.target?.kind === 'slot' && i.target.id === slot.id && ['BLD-05', 'BLD-06', 'BLD-07', 'BLD-08'].includes(i.rule));
+            expect(bad, `${t.id}.${slot.id} ${p.name}`).toEqual([]);
+            checked++;
+          }
+        }
+      }
+    }
+    expect(checked).toBeGreaterThan(0);
+  });
   it('요약: 채운 칸·확인할 점·보유 아닌 기기 수', () => {
     const s = summarize(defaultBuild(sub, specs), sub, rules(defaultBuild(sub, specs)));
     expect(s.filled).toBe(s.total);

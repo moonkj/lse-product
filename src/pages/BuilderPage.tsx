@@ -8,7 +8,7 @@ import { announce } from '../lib/announce';
 import { COVERAGE_LABELS, COVERAGE_ORDER, pageTitle, todayIso } from '../lib/labels';
 import { downloadText } from '../lib/pages/catalog';
 import { TEMPLATES, equipmentOf, slotsOf, templateById, type Row, type Template } from '../lib/builder/templates';
-import {
+import { isInstrumentProduct,
   DISCLAIMER,
   applyFix,
   candidateProducts,
@@ -482,7 +482,7 @@ function Panel({ t, build, selected, ctx, placement, issues, allIssues, specsLoa
                         {img ? <img src={img} alt="" loading="lazy" /> : null}
                       </span>
                       <span className="bld-product__name">{p.name}</span>
-                      <span className="bld-product__note">{!specs && specsLoading ? '정격 불러오는 중' : !specs?.has(p.id) ? '정격 정보 없음' : fits ? '조건에 맞음' : '정격이 맞지 않음'}</span>
+                      <span className="bld-product__note">{!specs && specsLoading ? '정격 불러오는 중' : !specs?.has(p.id) ? '정격 정보 없음' : isInstrumentProduct(p.id) ? 'PT·CT로 연결 (계통 정격 무관)' : fits ? '조건에 맞음' : '정격이 맞지 않음'}</span>
                     </button>
                   </li>
                 );

@@ -79,6 +79,17 @@ export function candidateProducts(eq: string): Product[] {
   return productsForEquipment(eq).filter((p) => !p.discontinued);
 }
 
+/**
+ * 계전기·계측기는 PT·CT 2차(110V·5A 등)로 신호를 받는다. 카탈로그 '정격전압·정격전류'는 그 입력값이라
+ * 계통 전압·변압기 2차 전류와 비교하면 안 된다 (예: GIMAC-II Plus 230V 입력을 380V 구간 부적합으로 오판).
+ */
+const INSTRUMENT_EQ = ['protection-relay', 'power-meter'];
+let instrumentIds: Set<string> | undefined;
+export function isInstrumentProduct(productId: string): boolean {
+  instrumentIds ??= new Set(INSTRUMENT_EQ.flatMap((e) => productsForEquipment(e).map((p) => p.id)));
+  return instrumentIds.has(productId);
+}
+
 export interface Ctx {
   row: Row;
   slot: Pick<Slot, 'id' | 'label' | 'accepts' | 'default' | 'hint' | 'rating' | 'transformer' | 'required'>;
@@ -86,6 +97,7 @@ export interface Ctx {
 
 /** 제품이 칸 조건(전압·전류·차단용량)에 맞는지 — 모르면 true (판단 보류) */
 export function productFits(p: Product, ctx: Ctx, b: Build, t: Template, specs?: SpecsMap): boolean {
+  if (isInstrumentProduct(p.id)) return true; // PT·CT 2차 입력 기기 — 계통 정격과 비교하지 않음
   const r = productRatings(specs?.get(p.id));
   const kV = maxOf(r.kV);
   if (ctx.row.acdc !== 'dc' && kV !== undefined && kV < ctx.row.kV * 0.95) return false;
@@ -181,6 +193,8 @@ function checkPlacement(target: Target, p: Placement | undefined, ctx: Ctx, b: B
     out.push({ key: `${key}:09`, rule: 'BLD-09', severity: 'info', message: `${product.name}은(는) 정격 정보가 없어 정격을 확인하지 않았습니다. 카탈로그로 확인하세요.`, target });
     return;
   }
+  // 계전기·계측기: 정격은 PT·CT 2차 입력값이라 계통 정격 판단(05~08)을 하지 않음
+  if (isInstrumentProduct(product.id)) return;
   const r = productRatings(spec);
   const betterFix = () => {
     const alt = candidateProducts(p.eq!).find((x) => x.id !== product.id && productFits(x, ctx, b, t, specs) && specs?.has(x.id));
