@@ -49,6 +49,10 @@ export interface PanelItem {
   loadKW?: number;
   /** 단상 회로가 붙는 상 */
   phase?: 'R' | 'S' | 'T';
+  /** 전선 굵기 (mm², 고르지 않으면 권장 굵기) */
+  cable?: number;
+  /** 전선 길이 (m) — 전압강하 계산 */
+  lengthM?: number;
 }
 
 export interface DNode {

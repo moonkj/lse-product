@@ -270,4 +270,26 @@ test.describe('단선도 그리기', () => {
     await page.screenshot({ path: SHOT + 'drw-panel-load.png' });
   });
 
+  test('반 안 구성: 예상 단락전류·차단용량, 전선 권장 굵기, 길이 → 전압강하 경고 → 굵은 전선', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await tid(page, 'draw-preset').selectOption('substation');
+    await page.locator('[data-kind="panel"][data-eq="lv-swgr"]').dblclick();
+    const ed = tid(page, 'panel-editor');
+    await expect(ed.getByTestId('panel-isc')).toContainText('25.3kA');
+    await ed.getByTestId('panel-close').click();
+    await page.locator('[data-kind="panel"][data-eq="panelboard"]').dblclick();
+    await expect(ed.getByTestId('panel-isc')).toHaveCount(0);
+    const r1 = ed.getByTestId('panel-row-1');
+    await expect(r1.getByTestId('panel-cable').locator('option').first()).toHaveText('권장 4');
+    await r1.getByTestId('panel-kw').fill('4');
+    await r1.getByTestId('panel-length').fill('100');
+    await expect(r1.getByTestId('panel-vdrop')).toContainText('%');
+    await expect(ed.getByTestId('panel-issues')).toContainText('전압강하');
+    await page.screenshot({ path: SHOT + 'drw-panel-cable.png' });
+    await ed.locator('.bld-issue', { hasText: '전압강하' }).getByTestId('panel-fix').click();
+    await expect(ed.locator('.bld-issue', { hasText: '전압강하' })).toHaveCount(0);
+    await expect(r1.getByTestId('panel-cable')).toHaveValue('10');
+  });
+
 });

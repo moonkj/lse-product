@@ -419,8 +419,8 @@
 .pnl__table td:nth-child(3) { min-width: 150px; }
 .pnl__table td:nth-child(4) { min-width: 150px; }
 .pnl__table td:nth-child(5) { min-width: 150px; }
-.pnl__table td:nth-child(6) { width: 92px; }
-.pnl__table td:nth-child(7) { width: 70px; }
+.pnl__table td:nth-child(6) { min-width: 88px; }
+.pnl__table td:nth-child(7) { min-width: 68px; }
 .pnl__no { width: 40px; text-align: center; font-weight: 700; }
 .pnl__qty { width: 60px !important; text-align: center; }
 .pnl__none { font-size: 12px; color: var(--color-text-muted); }
@@ -456,3 +456,11 @@
 .pnl__split { width: auto !important; padding: 0 6px; font-size: 11px; margin-right: 2px; }
 .pnl__tools { width: 150px; }
 .pnl__table select[data-testid='panel-phase-sel'] { min-width: 58px; }
+
+/* 반 안 구성: 차단용량·전선·전압강하 */
+.pnl__table { min-width: 1480px; }
+.pnl__len { width: 70px !important; }
+.pnl__num { white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 12px; }
+.pnl__bad { color: var(--cov-missing-text, #b42318); font-weight: 700; }
+.pnl__warn { color: var(--cov-partial-text, #8a5a00); font-weight: 700; }
+.pnl__table select[data-testid='panel-cable'] { min-width: 86px; }

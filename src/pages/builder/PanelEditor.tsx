@@ -11,6 +11,9 @@ import { candidateProducts } from '../../lib/builder/validate';
 import { eqName, panelTypeById, voltageLabel, type DNode, type Diagram, type PanelItem } from '../../lib/draw/model';
 import { addItems, balanceNode, fillProducts, moveItem, removeItem, setItemQty, splitItem, updateItem, updateNode } from '../../lib/draw/ops';
 import { PHASES, UNBALANCE_LIMIT, circuitAmps, isThreePhase, phaseSummary } from '../../lib/draw/load';
+import { CABLE_SIZES, VDROP_INFO, VDROP_WARN, recommendCable, voltageDrop } from '../../lib/draw/cable';
+import { panelShortCircuitKA } from '../../lib/draw/validate';
+import { itemKA } from '../../lib/draw/ratings';
 import { POLED_EQ, RATED_EQ, ampsOptions, itemSpecText, variantFor, variantOptions } from '../../lib/draw/ratings';
 import type { DFix, DIssue } from '../../lib/draw/validate';
 
@@ -38,6 +41,7 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
   const lowV = n.v === '0.38' || n.v === '0.22';
   const ps = phaseSummary(items, mainIdx >= 0 ? items[mainIdx].id : undefined);
   const maxKW = Math.max(ps.kW.R, ps.kW.S, ps.kW.T, 0.0001);
+  const isc = lowV ? panelShortCircuitKA(d, n.id) : undefined;
 
   useEffect(() => {
     const dlg = ref.current;
@@ -60,6 +64,12 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
           </h2>
           <p className="pnl__meta">
             {pt.label} · {voltageLabel(n.v)} · {items.length}종 {items.reduce((s, i) => s + (i.qty ?? 1), 0)}개
+            {isc ? (
+              <>
+                {' '}
+                · <span data-testid="panel-isc">예상 단락전류 약 {isc.toLocaleString('ko-KR', { maximumFractionDigits: 1 })}kA</span>
+              </>
+            ) : null}
           </p>
         </div>
         <div className="pnl__head-actions">
@@ -146,6 +156,10 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                 <th scope="col">극수</th>
                 {lowV && <th scope="col">부하(kW)</th>}
                 {lowV && <th scope="col">상</th>}
+                {lowV && <th scope="col">차단용량</th>}
+                {lowV && <th scope="col">전선(mm²)</th>}
+                {lowV && <th scope="col">길이(m)</th>}
+                {lowV && <th scope="col">전압강하</th>}
                 <th scope="col">수량</th>
                 <th scope="col">
                   <span className="visually-hidden">순서·빼기</span>
@@ -294,6 +308,63 @@ export default function PanelEditor({ d, n, specs, issues, onCommit, onApply, on
                             ))}
                           </select>
                         )}
+                      </td>
+                    )}
+                    {lowV && (
+                      <td className="pnl__num">
+                        {(() => {
+                          const ka = RATED_EQ.has(it.eq) ? itemKA(it, specs) : undefined;
+                          return ka === undefined ? <span className="pnl__none">—</span> : <span className={isc && ka < isc ? 'pnl__bad' : undefined}>{ka}kA</span>;
+                        })()}
+                      </td>
+                    )}
+                    {lowV && (
+                      <td>
+                        {isMain || !RATED_EQ.has(it.eq) ? (
+                          <span className="pnl__none">—</span>
+                        ) : (
+                          <select
+                            aria-label={`${idx + 1}행 전선 굵기`}
+                            value={it.cable ?? ''}
+                            onChange={(e) => set(it, { cable: Number(e.target.value) || undefined })}
+                            data-testid="panel-cable"
+                          >
+                            <option value="">{recommendCable(it.amps) ? `권장 ${recommendCable(it.amps)}` : '-'}</option>
+                            {CABLE_SIZES.map((c) => (
+                              <option key={c.mm2} value={c.mm2}>
+                                {c.mm2}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </td>
+                    )}
+                    {lowV && (
+                      <td>
+                        {isMain || !RATED_EQ.has(it.eq) ? (
+                          <span className="pnl__none">—</span>
+                        ) : (
+                          <input
+                            type="number"
+                            className="pnl__len"
+                            min={0}
+                            step={1}
+                            aria-label={`${idx + 1}행 전선 길이 m`}
+                            value={it.lengthM ?? ''}
+                            placeholder="m"
+                            onChange={(e) => set(it, { lengthM: Number(e.target.value) > 0 ? Math.min(5000, Number(e.target.value)) : undefined })}
+                            data-testid="panel-length"
+                          />
+                        )}
+                      </td>
+                    )}
+                    {lowV && (
+                      <td className="pnl__num" data-testid="panel-vdrop">
+                        {(() => {
+                          const vd = isMain ? undefined : voltageDrop(it);
+                          if (vd === undefined) return <span className="pnl__none">—</span>;
+                          return <span className={vd > VDROP_WARN ? 'pnl__bad' : vd > VDROP_INFO ? 'pnl__warn' : undefined}>{vd.toFixed(1)}%</span>;
+                        })()}
                       </td>
                     )}
                     <td>

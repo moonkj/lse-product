@@ -8,6 +8,8 @@ import { validateDiagram, summarizeDiagram, pickTransformer } from '../../../src
 import { addItem, addItems, addNode, applyDFix, connect, diagramBom, fillProducts, insertBetween, removeNode, updateItem } from '../../../src/lib/draw/ops';
 import { ampsOptions, variantFor } from '../../../src/lib/draw/ratings';
 import { balancePhases, circuitAmps, phaseSummary } from '../../../src/lib/draw/load';
+import { recommendCable, voltageDrop } from '../../../src/lib/draw/cable';
+import { panelShortCircuitKA } from '../../../src/lib/draw/validate';
 import { splitItem } from '../../../src/lib/draw/ops';
 import { PRESETS } from '../../../src/lib/draw/presets';
 import { decodeDiagram, encodeDiagram } from '../../../src/lib/draw/share';
@@ -301,3 +303,51 @@ describe('회로 부하·상 배분', () => {
     expect(new Set(parts.map((i) => i.id)).size).toBe(4);
   });
 });
+
+describe('차단용량·전선·전압강하', () => {
+  const trLv = () => fillProducts(chain({ ...makeNode('equipment', 0, 0, 'cast-tr'), kVA: 1000 }, makeNode('panel', 0, 160, 'lv-swgr'), makeNode('panel', 0, 360, 'panelboard')), specs);
+  it('예상 단락전류는 변압기 바로 아래 반만 (1,000kVA·%Z 6% → 약 25.3kA), 그 아래 분전반은 계산 안 함', () => {
+    const d = trLv();
+    expect(panelShortCircuitKA(d, d.nodes[1].id)).toBeCloseTo(25.3, 1);
+    expect(panelShortCircuitKA(d, d.nodes[2].id)).toBeUndefined();
+  });
+  it('변압기 아래 저압반 분기 MCCB 차단용량이 단락전류보다 작으면 경고 → 맞는 프레임', () => {
+    let d = trLv();
+    const lv = d.nodes[1];
+    const mccb = lv.items!.find((i) => i.eq === 'mccb')!;
+    d = updateItem(d, lv.id, mccb.id, { product: pid('Metasol MCCB'), variant: undefined, amps: 30 });
+    const mm = productRatingsVariant('Metasol MCCB', '30AF');
+    d = updateItem(d, lv.id, mccb.id, { variant: mm });
+    const w = rules(d).find((i) => i.rule === 'DRW-16')!;
+    expect(w.message).toContain('25.3kA');
+    expect(w.fix).toBeDefined();
+    expect(rules(applyDFix(d, w.fix!.fix)).find((i) => i.rule === 'DRW-16' && i.item === mccb.id)).toBeUndefined();
+  });
+  it('권장 전선: 20A → 2.5mm², 100A → 25mm², 1600A → 없음(병렬)', () => {
+    expect(recommendCable(20)).toBe(2.5);
+    expect(recommendCable(100)).toBe(25);
+    expect(recommendCable(1600)).toBeUndefined();
+  });
+  it('가는 전선 → 경고 → 권장 굵기, 긴 전선 전압강하 5% 초과 → 굵은 전선', () => {
+    let d = trLv();
+    const pb = d.nodes[2];
+    const elcb = pb.items!.find((i) => i.eq === 'elcb')!;
+    d = updateItem(d, pb.id, elcb.id, { cable: 2.5 }); // 30A 차단기에 2.5mm²(24A)
+    const w17 = rules(d).find((i) => i.rule === 'DRW-17')!;
+    expect(w17.fix?.label).toBe('4mm²로');
+    d = applyDFix(d, w17.fix!.fix);
+    d = updateItem(d, pb.id, elcb.id, { lengthM: 100, loadKW: 4 }); // 4kW 단상 ≈ 20.2A, 100m, 4mm² → ≈ 8.2%
+    const it = d.nodes[2].items!.find((i) => i.id === elcb.id)!;
+    expect(voltageDrop(it)).toBeCloseTo((35.6 * 100 * circuitAmps(it)) / (1000 * 4) / 220 * 100, 5);
+    const w18 = rules(d).find((i) => i.rule === 'DRW-18')!;
+    d = applyDFix(d, w18.fix!.fix);
+    expect(rules(d).find((i) => i.rule === 'DRW-18')).toBeUndefined();
+    const back = decodeDiagram(encodeDiagram(d))!;
+    expect(back.nodes[2].items!.find((i) => i.lengthM === 100)).toMatchObject({ cable: d.nodes[2].items!.find((i) => i.id === elcb.id)!.cable });
+  });
+});
+
+function productRatingsVariant(name: string, label: string): string {
+  const s = specs.get(pid(name))!;
+  return s.variants!.find((v) => v.label.startsWith(label))!.id;
+}

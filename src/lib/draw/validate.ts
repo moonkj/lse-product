@@ -9,6 +9,8 @@
  *  12 변압기 아래 저압반 주차단기에 고른 정격전류 < 변압기 2차 정격전류
  *  13 회로 부하 전류 > 그 회로 차단기 정격     14 설비불평형률 30% 초과 → 상 자동 배분
  *  15 상 최대 부하 전류 > 주차단기 정격
+ *  16 반 안 차단기 차단용량 < 예상 단락전류 (위 변압기 %Z 기준)  17 고른 전선이 차단기 정격보다 가늚
+ *  18 전압강하 5% 초과 → 굵은 전선
  */
 import { getData, type SpecsMap } from '../../data/load';
 import type { Coverage } from '../schema';
@@ -16,6 +18,8 @@ import { maxOf, productRatings, trSecondaryA, trShortCircuitKA } from '../builde
 import { candidateProducts, isInstrumentProduct, smallestVariant } from '../builder/validate';
 import { ampsInRange, ampsOptions, stdAtLeast, variantFor, RATED_EQ } from './ratings';
 import { UNBALANCE_LIMIT, circuitAmps, phaseSummary } from './load';
+import { VDROP_WARN, cableAmps, cableForDrop, recommendCable, voltageDrop } from './cable';
+import { itemKA, variantForKA } from './ratings';
 import {
   eqName,
   isOffLine,
@@ -119,6 +123,14 @@ function coverageIssue(out: DIssue[], key: string, label: string, eq: string, no
 }
 
 /** 변압기 아래쪽으로 이어진 상자 찾기 — node 에서 위(전원 쪽)로 올라가며 처음 만나는 변압기 */
+/** 반의 예상 단락전류 (kA) — 변압기 바로 아래 반(사이에 다른 반 없음)만: 변압기 2차 단락전류 (무한 모선·전선 임피던스 무시, 보수적). 다른 반을 거친 반은 전선 임피던스를 몰라 계산하지 않음 */
+export function panelShortCircuitKA(d: Diagram, nodeId: string): number | undefined {
+  const tr = upstreamTransformer(d, nodeId);
+  const lv = tr?.lv ? voltageOf(tr.lv) : undefined;
+  if (!tr?.kVA || !lv || lv.dc) return undefined;
+  return trShortCircuitKA(tr.kVA, lv.kV, tr.pctZ ?? 6);
+}
+
 export function upstreamTransformer(d: Diagram, nodeId: string): DNode | undefined {
   const byId = new Map(d.nodes.map((n) => [n.id, n]));
   const seen = new Set<string>([nodeId]);
@@ -314,6 +326,53 @@ export function validateDiagram(d: Diagram, specs?: SpecsMap): DIssue[] {
             item: mainItem.id,
             fix: { label: `주차단기를 ${up}A로`, fix: { type: 'setItem', node: n.id, item: mainItem.id, patch: { amps: up, variant: variantFor(mainItem.product, up, specs)?.id ?? mainItem.variant } } },
           });
+        }
+      }
+      // 16 차단용량 / 17 전선 / 18 전압강하 (저압반)
+      if (n.v === '0.38' || n.v === '0.22') {
+        const isc = panelShortCircuitKA(d, n.id);
+        for (const it of items) {
+          const lbl = `${title} › ${it === mainItem ? '주차단기' : it.name || eqName(it.eq)}`;
+          if (isc && RATED_EQ.has(it.eq) && it.product && it.eq !== 'busway') {
+            const ka = itemKA(it, specs);
+            if (ka !== undefined && ka < isc) {
+              const v = variantForKA(it.product, isc, it.amps, specs);
+              out.push({
+                key: `${n.id}:${it.id}:16`,
+                rule: 'DRW-16',
+                severity: 'warn',
+                message: `${lbl}: 차단용량 ${fmt(ka, 1)}kA가 이 반의 예상 단락전류 약 ${fmt(isc, 1)}kA보다 작습니다 (위 변압기 %Z 기준, 전선 임피던스 무시).`,
+                node: n.id,
+                item: it.id,
+                fix: v ? { label: `${v.label}(으)로 바꾸기`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { variant: v.id } } } : undefined,
+              });
+            }
+          }
+          if (it === mainItem || !it.amps) continue;
+          const rec = recommendCable(it.amps);
+          if (it.cable && rec && it.cable < rec)
+            out.push({
+              key: `${n.id}:${it.id}:17`,
+              rule: 'DRW-17',
+              severity: 'warn',
+              message: `${lbl}: 전선 ${it.cable}mm²(허용 약 ${cableAmps(it.cable)}A)가 차단기 ${it.amps}A보다 가늘어 과전류 때 전선을 보호하지 못합니다.`,
+              node: n.id,
+              item: it.id,
+              fix: { label: `${rec}mm²로`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { cable: rec } } },
+            });
+          const vd = voltageDrop(it);
+          if (vd !== undefined && vd > VDROP_WARN) {
+            const thick = cableForDrop(it);
+            out.push({
+              key: `${n.id}:${it.id}:18`,
+              rule: 'DRW-18',
+              severity: 'warn',
+              message: `${lbl}: 전선 ${it.lengthM}m 전압강하가 약 ${fmt(vd, 1)}%입니다. 5% 이하가 되게 전선을 굵게 하거나 길이를 줄이세요.`,
+              node: n.id,
+              item: it.id,
+              fix: thick ? { label: `${thick}mm²로`, fix: { type: 'setItem', node: n.id, item: it.id, patch: { cable: thick } } } : undefined,
+            });
+          }
         }
       }
       // 12 변압기 2차 전류보다 작은 주차단기 정격

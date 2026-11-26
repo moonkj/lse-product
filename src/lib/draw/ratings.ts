@@ -57,6 +57,24 @@ export function variantFor(productId: string | undefined, amps: number | undefin
     .sort((a, b) => Math.max(...a.A) - Math.max(...b.A))[0];
 }
 
+/** 품목 차단용량 (kA) — 고른 옵션 → 제품 최대 */
+export function itemKA(it: PanelItem, specs?: SpecsMap): number | undefined {
+  const s = it.product ? specs?.get(it.product) : undefined;
+  if (!s) return undefined;
+  const r = productRatings(s);
+  const v = it.variant ? r.variants.find((x) => x.id === it.variant) : undefined;
+  const list = v && v.kA.length ? v.kA : r.kA;
+  return list.length ? Math.max(...list) : undefined;
+}
+/** 차단용량 need kA 이상인 가장 작은 옵션 */
+export function variantForKA(productId: string | undefined, needKA: number, amps: number | undefined, specs?: SpecsMap): { id: string; label: string } | undefined {
+  const s = productId ? specs?.get(productId) : undefined;
+  if (!s) return undefined;
+  return productRatings(s)
+    .variants.filter((v) => v.kA.length && Math.max(...v.kA) >= needKA && (!amps || !v.A.length || Math.max(...v.A) >= amps))
+    .sort((a, b) => Math.max(...a.kA) - Math.max(...b.kA))[0];
+}
+
 /** 표준 정격 중 a 이상인 가장 작은 값 */
 export const stdAtLeast = (a: number) => STD_A.find((n) => n >= a) ?? STD_A[STD_A.length - 1];
 
