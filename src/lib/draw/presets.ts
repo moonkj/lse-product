@@ -9,8 +9,12 @@ type Spec = { k: string; kind: DNode['kind']; x: number; y: number; eq?: string;
 function build(name: string, specs: Spec[], links: [string, string][]): Diagram {
   const d = emptyDiagram(name);
   const ids = new Map<string, string>();
+  // 2026-11-26 상자·글자를 키우며 예시 배치도 같은 비율로 넓힘 (가로 1.3배, 세로 1.35배)
+  const SX = 1.3;
+  const SY = 1.35;
   for (const s of specs) {
-    const n = { ...makeNode(s.kind, s.x, s.y, s.eq), ...s.patch };
+    const patch = s.patch?.w ? { ...s.patch, w: Math.round((s.patch.w * SX) / 20) * 20 } : s.patch;
+    const n = { ...makeNode(s.kind, s.x * SX, s.y * SY, s.eq), ...patch };
     ids.set(s.k, n.id);
     d.nodes.push(n);
   }

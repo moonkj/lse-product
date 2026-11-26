@@ -107,20 +107,20 @@ export interface Diagram {
 
 export const GRID = 20;
 export const snap = (n: number) => Math.round(n / GRID) * GRID;
-export const NODE_W = 160;
-export const NODE_H = 108;
-export const PANEL_W = 200;
-export const PANEL_H = 120;
-export const BUS_H = 14;
+export const NODE_W = 210;
+export const NODE_H = 140;
+export const PANEL_W = 250;
+export const PANEL_H = 156;
+export const BUS_H = 16;
 export const BUS_W = 420;
-export const SOURCE_W = 150;
-export const SOURCE_H = 56;
-export const CANVAS_W = 2400;
-export const CANVAS_H = 1800;
+export const SOURCE_W = 200;
+export const SOURCE_H = 68;
+export const CANVAS_W = 3200;
+export const CANVAS_H = 2600;
 
 /** 상자 크기 한도 (사용자가 끌어서 조정) */
 export const SIZE_MIN = { w: 100, h: 48 };
-export const SIZE_MAX = { w: 640, h: 480 };
+export const SIZE_MAX = { w: 720, h: 560 };
 
 export function defaultSize(kind: DNode['kind']): { w: number; h: number } {
   if (kind === 'bus') return { w: BUS_W, h: BUS_H };

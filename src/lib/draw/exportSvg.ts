@@ -45,35 +45,38 @@ function nodeSvg(n: DNode, state?: 'error' | 'warn'): string {
   const p = n.product ? getData().productById.get(n.product) : undefined;
   const t = (tx: number, ty: number, s: string, size: number, opt = '') => `<text x="${tx}" y="${ty}" font-size="${size}" ${opt}>${esc(s)}</text>`;
   if (n.kind === 'bus') {
-    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#101828"/>${t(x, y - 6, title, 13, 'font-weight="700"')}`;
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#101828"/>${t(x, y - 7, title, 15, 'font-weight="700"')}`;
   }
   if (n.kind === 'source') {
-    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}" fill="#eef2ff" stroke="${stroke}" stroke-width="1.5"/>${t(cx, y + h / 2 + 5, clip(`⚡ ${title}`, w - 16, 13), 13, 'text-anchor="middle" font-weight="700"')}`;
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}" fill="#eef2ff" stroke="${stroke}" stroke-width="1.5"/>${t(cx, y + h / 2 + 6, clip(`⚡ ${title}`, w - 16, 15), 15, 'text-anchor="middle" font-weight="700"')}`;
   }
   if (n.kind === 'panel') {
     const items = (n.items ?? []).map((i) => `${getData().equipmentTypeById.get(i.eq)?.abbr ?? eqName(i.eq)}${i.amps ? ` ${i.amps}A` : ''}${i.qty && i.qty > 1 ? `×${i.qty}` : ''}`).join(' · ');
-    const lines = wrap(items || '안이 비어 있음', w - 16, 11, 3);
+    const lines = wrap(items || '안이 비어 있음', w - 20, 13, Math.max(1, Math.floor((h - 64) / 19)));
     return [
       `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#fff" stroke="${stroke}" stroke-width="2"/>`,
-      `<rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="24" rx="5" fill="#f2f4f7"/>`,
-      t(x + 8, y + 17, clip(title, w - 70, 12), 12, 'font-weight="700"'),
-      t(x + w - 8, y + 17, voltageLabel(n.v), 11, 'text-anchor="end" fill="#667085"'),
-      ...lines.map((l, i) => t(x + 8, y + 42 + i * 15, l, 11)),
-      p ? t(x + 8, y + h - 9, clip(p.name, w - 16, 11), 11, 'fill="#1d4ed8"') : '',
+      `<rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="32" rx="5" fill="#f2f4f7"/>`,
+      t(x + 10, y + 22, clip(title, w - 80, 15), 15, 'font-weight="700"'),
+      t(x + w - 10, y + 22, voltageLabel(n.v), 13, 'text-anchor="end" fill="#667085"'),
+      ...lines.map((l, i) => t(x + 10, y + 54 + i * 19, l, 13)),
+      p ? t(x + 10, y + h - 11, clip(p.name, w - 20, 13), 13, 'fill="#1d4ed8"') : '',
     ].join('');
   }
   const e = n.eq ? getData().equipmentTypeById.get(n.eq) : undefined;
   const sub = isTransformer(n.eq) ? `${voltageLabel(n.hv)}/${voltageLabel(n.lv)} ${n.kVA ?? '-'}kVA` : isOffLine(n.eq) ? '신호·감시' : voltageLabel(n.v);
   const head = `${e?.abbr ? `${e.abbr} ` : ''}${n.label ?? e?.name ?? title}${n.qty && n.qty > 1 ? ` ×${n.qty}` : ''}`;
+  // 상자 높이에 맞춰 기호·글자를 배치 (기본 210×140, 사용자가 키우면 같이 내려감)
+  const k = Math.max(0.7, Math.min(1.6, h / 140));
+  const sy = y + 30 * k;
   const symbol = isTransformer(n.eq)
-    ? `<circle cx="${cx}" cy="${y + 22}" r="9" fill="none" stroke="#101828" stroke-width="1.5"/><circle cx="${cx}" cy="${y + 34}" r="9" fill="none" stroke="#101828" stroke-width="1.5"/>`
-    : `<rect x="${cx - 10}" y="${y + 16}" width="20" height="20" rx="3" fill="none" stroke="#101828" stroke-width="1.5"/>`;
+    ? `<circle cx="${cx}" cy="${sy - 6}" r="11" fill="none" stroke="#101828" stroke-width="1.6"/><circle cx="${cx}" cy="${sy + 8}" r="11" fill="none" stroke="#101828" stroke-width="1.6"/>`
+    : `<rect x="${cx - 12}" y="${sy - 12}" width="24" height="24" rx="3" fill="none" stroke="#101828" stroke-width="1.6"/>`;
   return [
     `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="#fff" stroke="${stroke}" stroke-width="1.5"/>`,
     symbol,
-    t(cx, y + 58, clip(head, w - 12, 12), 12, 'text-anchor="middle" font-weight="700"'),
-    t(cx, y + 72, clip(sub, w - 12, 11), 11, 'text-anchor="middle" fill="#667085"'),
-    p ? t(cx, y + 86, clip(p.name, w - 12, 11), 11, 'text-anchor="middle" fill="#1d4ed8"') : '',
+    t(cx, y + 76 * k, clip(head, w - 14, 15), 15, 'text-anchor="middle" font-weight="700"'),
+    t(cx, y + 96 * k, clip(sub, w - 14, 13), 13, 'text-anchor="middle" fill="#667085"'),
+    p ? t(cx, y + 116 * k, clip(p.name, w - 14, 13), 13, 'text-anchor="middle" fill="#1d4ed8"') : '',
   ].join('');
 }
 
