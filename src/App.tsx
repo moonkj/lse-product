@@ -15,6 +15,8 @@ const loaders = {
   products: () => import('./pages/ProductsPage'),
   // 전력시장 지표 — 계통도 도구줄 '시장 지표' 버튼 (공백 표에서 분리, 2026-11-19)
   market: () => import('./pages/MarketPage'),
+  // 계통 구성 시뮬레이션 (2026-11-26 1단계)
+  builder: () => import('./pages/BuilderPage'),
 };
 const EquipmentPage = lazy(loaders.equipment);
 const ProductPage = lazy(loaders.product);
@@ -22,6 +24,7 @@ const GapPage = lazy(loaders.gap);
 const ComparePage = lazy(loaders.compare);
 const ProductsPage = lazy(loaders.products);
 const MarketPage = lazy(loaders.market);
+const BuilderPage = lazy(loaders.builder);
 
 /**
  * 첫 화면을 그린 뒤 한가할 때 페이지 조각을 미리 받아 둔다 (2026-11-23 사용자: 기기 상세로 넘어갈 때 가끔 "불러오지 못했습니다"가 깜빡임).
@@ -55,6 +58,7 @@ export default function App() {
         <Route path="compare" element={<ComparePage />} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="market" element={<MarketPage />} />
+        <Route path="builder" element={<BuilderPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

@@ -1,0 +1,170 @@
+{
+  "note": "계통 구성 시뮬레이션(/builder) 템플릿 — 2026-11-26 1단계. 줄(row) = 계통의 한 구간, 칸(slot) = 기기 하나. accepts = 그 칸에 맞는 기기 id, default = '기본 구성 채우기'와 고치기 제안에 쓰는 기기. rating 'trSecondary' = 변압기 2차 정격전류로 정격전류·차단용량을 확인하는 칸. rules = 템플릿 고유 확인 규칙(requires: if 칸이 차면 then 칸도 필요 / minCount: 같은 기기 최소 개수 / oneOf: 칸들 중 하나만).",
+  "templates": [
+    {
+      "id": "substation",
+      "label": "수전설비",
+      "desc": "22.9kV 한전 수전부터 변압기를 거쳐 380V 저압 주차단기까지",
+      "params": { "kVA": 1000, "pctZ": 6, "lvKV": 0.38 },
+      "rows": [
+        {
+          "id": "hv",
+          "label": "수전",
+          "voltage": "22.9kV",
+          "kV": 22.9,
+          "slots": [
+            { "id": "incoming", "label": "인입 개폐", "accepts": ["lbs", "alts"], "required": true, "default": "lbs", "hint": "1회선이면 부하개폐기(LBS), 2회선이면 자동부하 전환개폐기(ALTS)" },
+            { "id": "la", "label": "피뢰기", "accepts": ["la"], "required": false, "default": "la", "hint": "낙뢰·개폐 서지로부터 설비 보호" },
+            { "id": "mof", "label": "전력수급용 계기용변성기", "accepts": ["mof"], "required": true, "default": "mof", "hint": "한전 거래용 계량" },
+            { "id": "vcb", "label": "주차단기", "accepts": ["vcb"], "required": true, "default": "vcb", "hint": "특고압 주차단기는 보통 진공차단기(VCB)" },
+            { "id": "relay", "label": "보호계전기", "accepts": ["protection-relay"], "required": true, "default": "protection-relay", "hint": "고장을 감지해 VCB에 차단 신호를 보냄" },
+            { "id": "ctpt", "label": "계기용 변류기·변압기", "accepts": ["ct-pt"], "required": false, "default": "ct-pt", "hint": "보호계전기·계측기에 신호 공급" }
+          ]
+        },
+        {
+          "id": "tr",
+          "label": "변압",
+          "voltage": "22.9kV → 380V",
+          "kV": 22.9,
+          "slots": [
+            { "id": "tr", "label": "변압기", "accepts": ["cast-tr", "oil-tr"], "required": true, "default": "cast-tr", "hint": "실내는 몰드변압기, 옥외·대용량은 유입변압기", "transformer": true }
+          ]
+        },
+        {
+          "id": "lv",
+          "label": "저압 주배전",
+          "voltage": "380V",
+          "kV": 0.38,
+          "slots": [
+            { "id": "lv-main", "label": "저압 주차단기", "accepts": ["acb"], "required": true, "default": "acb", "hint": "변압기 2차측 주차단기는 보통 기중차단기(ACB)", "rating": "trSecondary" },
+            { "id": "lv-swgr", "label": "저압 배전반", "accepts": ["lv-swgr"], "required": false, "default": "lv-swgr", "hint": "저압 기기를 넣는 함(패널)" }
+          ],
+          "addable": { "label": "분기 차단기 추가", "accepts": ["mccb", "busway"], "max": 8 }
+        }
+      ],
+      "rules": [
+        { "type": "requires", "if": "lv-main", "then": "tr", "message": "변압기 없이 22.9kV 수전에서 380V 저압으로 바로 이어졌습니다. 사이에 변압기를 넣으세요." },
+        { "type": "requires", "if": "vcb", "then": "relay", "message": "주차단기(VCB)에 보호계전기가 없습니다. 고장이 나도 차단 신호를 받을 수 없습니다." }
+      ]
+    },
+    {
+      "id": "lv-panel",
+      "label": "저압 배전반",
+      "desc": "변압기 2차측 380V 주차단기부터 분기·비상전원·분전반까지",
+      "params": { "kVA": 1000, "pctZ": 6, "lvKV": 0.38 },
+      "rows": [
+        {
+          "id": "main",
+          "label": "주배전",
+          "voltage": "380V",
+          "kV": 0.38,
+          "slots": [
+            { "id": "lv-main", "label": "주차단기", "accepts": ["acb"], "required": true, "default": "acb", "hint": "변압기 2차측 주차단기는 보통 기중차단기(ACB)", "rating": "trSecondary" },
+            { "id": "lv-swgr", "label": "배전반 함체", "accepts": ["lv-swgr"], "required": true, "default": "lv-swgr", "hint": "저압 기기를 넣는 함(패널)" },
+            { "id": "spd", "label": "서지보호기", "accepts": ["spd"], "required": false, "default": "spd", "hint": "뇌서지·개폐서지 보호" },
+            { "id": "meter", "label": "디지털 계측기", "accepts": ["power-meter"], "required": false, "default": "power-meter", "hint": "전압·전류·전력 감시" }
+          ]
+        },
+        {
+          "id": "feeder",
+          "label": "분기",
+          "voltage": "380V",
+          "kV": 0.38,
+          "slots": [
+            { "id": "feeder-1", "label": "분기 1", "accepts": ["mccb", "busway"], "required": true, "default": "mccb", "hint": "배선용차단기(MCCB)로 분기" },
+            { "id": "feeder-2", "label": "분기 2", "accepts": ["mccb", "busway"], "required": false, "default": "mccb", "hint": "배선용차단기(MCCB)로 분기" },
+            { "id": "mcc", "label": "전동기 제어반", "accepts": ["mcc"], "required": false, "default": "mcc", "hint": "전동기 부하가 있으면" }
+          ],
+          "addable": { "label": "분기 추가", "accepts": ["mccb", "busway", "mms"], "max": 10 }
+        },
+        {
+          "id": "emergency",
+          "label": "비상전원",
+          "voltage": "380V",
+          "kV": 0.38,
+          "slots": [
+            { "id": "gen", "label": "비상발전기", "accepts": ["emergency-gen"], "required": false, "default": "emergency-gen", "hint": "정전 대비 (자사 사업 범위 밖)" },
+            { "id": "ats", "label": "자동절환개폐기", "accepts": ["lv-ats"], "required": false, "default": "lv-ats", "hint": "상용·비상 전원 자동 절환" }
+          ]
+        },
+        {
+          "id": "branch",
+          "label": "분전반",
+          "voltage": "380/220V",
+          "kV": 0.38,
+          "slots": [
+            { "id": "panel", "label": "분전반 함체", "accepts": ["panelboard"], "required": false, "default": "panelboard", "hint": "층·구역별 분전" },
+            { "id": "branch-cb", "label": "분전반 주차단기", "accepts": ["branch-mccb"], "required": false, "default": "branch-mccb", "hint": "분전반용 차단기" },
+            { "id": "elcb", "label": "누전차단기", "accepts": ["elcb", "mcb-rcbo"], "required": false, "default": "elcb", "hint": "감전·누전 보호" }
+          ]
+        }
+      ],
+      "rules": [
+        { "type": "requires", "if": "gen", "then": "ats", "message": "비상발전기를 모선에 바로 연결하면 상용 전원과 겹쳐 들어갈 수 있습니다. 자동절환개폐기(ATS)를 거치세요." },
+        { "type": "requires", "if": "elcb", "then": "panel", "message": "누전차단기를 넣을 분전반 함체가 없습니다." }
+      ]
+    },
+    {
+      "id": "datacenter",
+      "label": "데이터센터 (국내)",
+      "desc": "22.9kV 수전 → 기존 AC(변압기·UPS) 경로와 차세대 DC(SST N+1·800V DC) 경로 → IT 랙",
+      "params": { "kVA": 2000, "pctZ": 6, "lvKV": 0.38 },
+      "rows": [
+        {
+          "id": "hv",
+          "label": "수전",
+          "voltage": "22.9kV 2회선",
+          "kV": 22.9,
+          "slots": [
+            { "id": "incoming", "label": "2회선 자동 전환", "accepts": ["alts", "lbs"], "required": true, "default": "alts", "hint": "데이터센터는 2회선 수전 + 자동부하 전환개폐기(ALTS)" },
+            { "id": "vcb", "label": "주차단기", "accepts": ["vcb"], "required": true, "default": "vcb", "hint": "진공차단기(VCB)" },
+            { "id": "relay", "label": "보호계전기", "accepts": ["protection-relay"], "required": true, "default": "protection-relay", "hint": "VCB 차단 지령" }
+          ]
+        },
+        {
+          "id": "ac",
+          "label": "AC 경로 (기존)",
+          "voltage": "22.9kV → 380V",
+          "kV": 0.38,
+          "slots": [
+            { "id": "tr", "label": "변압기", "accepts": ["cast-tr", "oil-tr"], "required": true, "default": "cast-tr", "hint": "몰드변압기", "transformer": true },
+            { "id": "lv-main", "label": "저압 주차단기", "accepts": ["acb"], "required": true, "default": "acb", "hint": "변압기 2차측 ACB", "rating": "trSecondary" },
+            { "id": "ats", "label": "자동절환개폐기", "accepts": ["lv-ats"], "required": true, "default": "lv-ats", "hint": "상용·비상 절환" },
+            { "id": "gen", "label": "비상발전기", "accepts": ["emergency-gen"], "required": true, "default": "emergency-gen", "hint": "Tier I부터 필요 (자사 사업 범위 밖)" },
+            { "id": "ups", "label": "UPS", "accepts": ["ups"], "required": true, "default": "ups", "hint": "무정전 전원 — 데이터센터 필수" },
+            { "id": "rpp", "label": "랙 분전반", "accepts": ["panelboard"], "required": true, "default": "panelboard", "hint": "랙 전원 분배(RPP)" }
+          ]
+        },
+        {
+          "id": "dc",
+          "label": "DC 경로 (차세대)",
+          "voltage": "22.9kV → 800V DC",
+          "kV": 0.8,
+          "acdc": "dc",
+          "slots": [
+            { "id": "sst-1", "label": "SST 1", "accepts": ["sst"], "required": true, "default": "sst", "hint": "반도체 변압기 — 22.9kV AC를 800V DC로" },
+            { "id": "sst-2", "label": "SST 2", "accepts": ["sst"], "required": false, "default": "sst", "hint": "용량 분담" },
+            { "id": "sst-spare", "label": "예비 SST (N+1)", "accepts": ["sst"], "required": false, "default": "sst", "hint": "한 대가 고장나도 계속 운전" },
+            { "id": "sscb", "label": "반도체 차단기", "accepts": ["sscb", "dc-devices"], "required": true, "default": "sscb", "hint": "DC 고장 전류를 빠르게 차단" },
+            { "id": "dcdc", "label": "DC-DC 컨버터", "accepts": ["dc-dc"], "required": false, "default": "dc-dc", "hint": "ESS를 DC 모선에 연결" },
+            { "id": "ess", "label": "에너지저장장치", "accepts": ["ess"], "required": false, "default": "ess", "hint": "정전 시 DC 전원 유지" }
+          ]
+        },
+        {
+          "id": "load",
+          "label": "부하",
+          "voltage": "AC 220V · 800V DC",
+          "kV": 0.38,
+          "slots": [
+            { "id": "rack", "label": "IT 서버 랙", "accepts": ["it-rack"], "required": true, "default": "it-rack", "hint": "데이터센터 최종 부하 (자사 사업 범위 밖)" }
+          ]
+        }
+      ],
+      "rules": [
+        { "type": "requires", "if": "gen", "then": "ats", "message": "비상발전기를 모선에 바로 연결하면 상용 전원과 겹쳐 들어갈 수 있습니다. 자동절환개폐기(ATS)를 거치세요." },
+        { "type": "requires", "if": "ess", "then": "dcdc", "message": "ESS는 DC-DC 컨버터를 거쳐 800V DC 모선에 연결합니다." },
+        { "type": "minCount", "eq": "sst", "count": 3, "fixSlot": "sst-spare", "message": "SST가 예비(N+1) 없이 운전됩니다. 한 대가 고장나면 DC 경로 용량이 부족해집니다. 예비 SST를 넣으세요." }
+      ]
+    }
+  ]
+}

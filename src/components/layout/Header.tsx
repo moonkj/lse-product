@@ -64,6 +64,21 @@ export default function Header() {
           </svg>
           라인업 현황
         </Link>
+        {/* 계통 구성 시뮬레이션 (2026-11-26) */}
+        <Link
+          to="/builder"
+          className="app-nav__link"
+          data-testid="builder-link"
+          aria-current={pathname.startsWith('/builder') ? 'page' : undefined}
+        >
+          <svg className="app-nav__icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="3" y="3" width="7" height="6" rx="1" />
+            <rect x="14" y="3" width="7" height="6" rx="1" />
+            <rect x="8.5" y="15" width="7" height="6" rx="1" />
+            <path d="M6.5 9v3h11V9M12 12v3" />
+          </svg>
+          계통 구성
+        </Link>
       </nav>
 
       <SearchBox />
