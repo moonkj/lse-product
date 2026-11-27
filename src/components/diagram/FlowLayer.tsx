@@ -5,6 +5,7 @@ import { useSelectedNodeId, useViewMode } from '../../lib/diagram/url';
 import { useView } from '../../lib/diagram/view';
 import { FLOW_DASH, FLOW_DOWN_DASH, FLOW_DOWN_GAP, FLOW_DOWN_PERIOD_SEC, FLOW_GAP, FLOW_PERIOD_SEC, IDLE_DASH, IDLE_GAP, IDLE_SPEED, VOLTAGE_WEIGHT, computeFlowEdges, flowDirMap, igniteOrder, pathMidpoint, pathPoints, useFlowOn } from '../../lib/diagram/flow';
 import { TILE_H, TILE_W } from '../../lib/diagram/geometry';
+import { useSimResult } from './useSim';
 import './flow.css';
 import { diagramOf, getActiveGrid } from '../../lib/diagram/grid';
 
@@ -67,11 +68,13 @@ export default function FlowLayer() {
   const grid = getActiveGrid();
   const dirs = useMemo(() => flowDirMap(diagramOf(data, grid).edges), [data, grid]);
   const busIds = useMemo(() => new Set(model.busNodes.map((b) => b.id)), [model]);
-  const flows = useMemo(
+  const sim = useSimResult();
+  const flows = useMemo(() => {
+    // 사고 시뮬레이션: 전기가 오는 선만 흐름 (정전 선은 멈춤) — 흐름 끄기와 상관없이 보여 줌
+    if (sim) return computeFlowEdges(model.edges, dirs, null, (id) => busIds.has(id)).filter((f) => { const st = sim.edges.get(f.id); return st === 'normal' || st === 'backup'; });
     // 기본 켜짐: 기기를 고르지 않으면 전체 전력선, 고르면 그 기기 상·하류만. ?flow=0 이면 끔
-    () => (on && mode !== 'gap' ? computeFlowEdges(model.edges, dirs, selectedId, (id) => busIds.has(id)) : []),
-    [on, mode, model, dirs, selectedId, busIds],
-  );
+    return on && mode !== 'gap' ? computeFlowEdges(model.edges, dirs, selectedId, (id) => busIds.has(id)) : [];
+  }, [on, mode, model, dirs, selectedId, busIds, sim]);
 
   // 흐름이 지나가는 모선(데이터 모선은 연결선이 아니라 별도 요소) — 같은 트랙·펄스로 그림 (2026-11-19 사용자: 380V 모선만 검은색)
   const busPaths = useMemo(() => {
@@ -114,15 +117,18 @@ export default function FlowLayer() {
   // 처음 화면(전체 흐름)에서 물방울을 띄울 긴 간선 — 길이 상위 IDLE_DROPS 개
   const idleDropIds = useMemo(() => {
     if (selectedId) return new Set<string>();
-    return new Set(
-      flows
+    // 시뮬레이션의 비상 공급 선은 짧아도 모두 물방울
+    const backup = sim ? flows.filter((f) => sim.edges.get(f.id) === 'backup').map((f) => f.id) : [];
+    return new Set([
+      ...backup,
+      ...flows
         .filter((f) => f.dir !== 'bi')
         .map((f) => ({ id: f.id, len: pathLen(f.d) }))
         .sort((a, b) => b.len - a.len)
         .slice(0, IDLE_DROPS)
         .map((x) => x.id),
-    );
-  }, [flows, selectedId]);
+    ]);
+  }, [flows, selectedId, sim]);
   const svgRef = useRef<SVGSVGElement>(null);
   const still = reducedMotion();
   // 탭 숨김·아주 작게 축소면 입자(SMIL)도 멈춤
@@ -159,7 +165,7 @@ export default function FlowLayer() {
   const dropScale = Math.max(0.35, scale);
   const fxRef = useRef<HTMLDivElement>(null);
   const drops = useMemo(() => {
-    if (still || !on || mode === 'gap') return [];
+    if (still || (!on && !sim) || mode === 'gap') return [];
     const node = !!selectedId;
     return flows
       .filter((f) => f.dir !== 'bi' && (node || idleDropIds.has(f.id)))
@@ -170,10 +176,10 @@ export default function FlowLayer() {
         const h1 = hash01(f.id);
         const h2 = hash01(`${f.id}~`);
         const rest = (len * dropScale < 140 ? 1.2 : 0.4) + h1 * 1.6;
-        return { id: f.id, d: f.d, rev: f.dir === 'reverse', node, len, move, rest, phase: h2 };
+        return { id: f.id, d: f.d, rev: f.dir === 'reverse', node, len, move, rest, phase: h2, backup: sim?.edges.get(f.id) === 'backup' };
       })
       .filter((x) => x.len >= 8);
-  }, [flows, selectedId, idleDropIds, dropScale, still, on, mode]);
+  }, [flows, selectedId, idleDropIds, dropScale, still, on, mode, sim]);
   const runKey = selectedId ?? 'all';
   useLayoutEffect(() => {
     const box = fxRef.current;
@@ -226,7 +232,7 @@ export default function FlowLayer() {
   }, [drops, runKey]);
   const animsRef = useRef<Animation[]>([]);
 
-  if (!on || mode === 'gap') return null;
+  if ((!on && !sim) || mode === 'gap') return null;
   const run = selectedId ?? 'all';
   const delayOf = (id: string) => Math.min(IGNITE_MAX, (order.get(id) ?? 0) * IGNITE_STEP);
 
@@ -275,7 +281,7 @@ export default function FlowLayer() {
         <path key={`bt-${b.id}`} className="dflow__track dflow__track--bus" d={b.d} />
       ))}
       {flows.map((f) => (
-        <path key={`t-${run}-${f.id}`} className="dflow__track dflow__ignite" d={f.d} pathLength={1} style={{ '--vw': weightOf(f.id, f.dir), '--ig': `${delayOf(f.id)}s` } as CSSProperties} />
+        <path key={`t-${run}-${f.id}`} className={`dflow__track dflow__ignite${sim?.edges.get(f.id) === 'backup' ? ' dflow__track--backup' : ''}`} d={f.d} pathLength={1} style={{ '--vw': weightOf(f.id, f.dir), '--ig': `${delayOf(f.id)}s` } as CSSProperties} />
       ))}
       {/* 빛 번짐은 그룹 하나에만 filter (경로마다 걸면 프레임마다 다시 래스터 — E4 P0 성능). 전체 흐름(기기 미선택)이면 끔 */}
       <g className="dflow__glow">
@@ -319,7 +325,7 @@ export default function FlowLayer() {
         {drops.map((p) => (
           <div
             key={`p-${run}-${p.id}`}
-            className={`dflow-drop${p.node ? '' : ' dflow-drop--idle'}`}
+            className={`dflow-drop${p.node ? '' : ' dflow-drop--idle'}${p.backup ? ' dflow-drop--backup' : ''}`}
             data-flow-particle={p.id}
             style={{ offsetPath: `path('${p.d}')`, offsetRotate: p.rev ? 'auto 180deg' : 'auto', width: DROP_W / dropScale, height: DROP_H / dropScale } as CSSProperties}
           >

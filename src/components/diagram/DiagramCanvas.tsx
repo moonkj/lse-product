@@ -29,6 +29,9 @@ import { AltBadges, BusNodes, EndpointNodes } from './DiagramExtras';
 import DiagramToolbar from './DiagramToolbar';
 import DiagramLegend from './DiagramLegend';
 import FlowLayer from './FlowLayer';
+import SimPanel from './SimPanel';
+import { useSimResult } from './useSim';
+import { isBreaker, useSimActions, useSimState } from '../../lib/diagram/sim';
 import PlanLayer from '../market/PlanLayer';
 import './DiagramCanvas.css';
 import './sheet.css';
@@ -55,9 +58,12 @@ const SHEET_BOTTOM = 72;
 export const Edges = memo(function Edges({
   model,
   selectedEdges,
+  simEdges,
 }: {
   model: DiagramModel;
   selectedEdges: ReadonlySet<string>;
+  /** 사고 시뮬레이션 선 상태 (정전 = 회색 점선, 비상 = 주황) */
+  simEdges?: ReadonlyMap<string, string>;
 }) {
   const normal = model.edges.filter((e) => !selectedEdges.has(e.id));
   const hot = model.edges.filter((e) => selectedEdges.has(e.id));
@@ -86,7 +92,7 @@ export const Edges = memo(function Edges({
       {[...normal, ...hot].map((e) => (
         <path
           key={e.id}
-          className={`dedge dedge--${e.kind}${e.far ? ' dedge--far' : ''}${selectedEdges.has(e.id) ? ' is-selected' : ''}`}
+          className={`dedge dedge--${e.kind}${e.far ? ' dedge--far' : ''}${selectedEdges.has(e.id) ? ' is-selected' : ''}${simEdges?.get(e.id) === 'dead' ? ' sim-dead' : simEdges?.get(e.id) === 'backup' ? ' sim-backup' : ''}`}
           d={e.d}
           data-testid={`diagram-edge-${e.id}`}
           data-kind={e.kind}
@@ -563,8 +569,26 @@ export default function DiagramCanvas() {
   }, []);
   const selectedRef = useRef(selectedId);
   selectedRef.current = selectedId;
+  // 사고 시뮬레이션: 켜져 있으면 기기를 누를 때 선택 대신 사고·차단기 열기/닫기
+  const simState = useSimState();
+  const simActions = useSimActions();
+  const sim = useSimResult();
+  const simRef = useRef({ on: simState.on, simActions });
+  simRef.current = { on: simState.on, simActions };
   const onActivate = useCallback(
     (id: string, via: 'pointer' | 'keyboard' = 'pointer') => {
+      if (simRef.current.on) {
+        const n = model.nodeById.get(id);
+        if (!n || n.ref) return;
+        if (isBreaker(n.eq)) {
+          simRef.current.simActions.toggleOpen(id);
+          announce(`${n.title} 열기/닫기`);
+        } else {
+          simRef.current.simActions.toggleFault(id);
+          announce(`${n.title} 사고`);
+        }
+        return;
+      }
       if (id === selectedRef.current) {
         // 2026-11-19 사용자: 활성화된 기기를 다시 클릭하면 해제 — 패널은 레일로 접히고 선택 영역 표시도 해제.
         // 키보드(Enter·Space)는 기존대로 상세 패널 제목으로 이동 (B4)
@@ -581,7 +605,7 @@ export default function DiagramCanvas() {
       requestPanelFocus();
       selectNode(id);
     },
-    [selectNode],
+    [selectNode, model],
   );
 
   // 인쇄: 계통도 전체가 한 장에 들어가는 배율을 인쇄 직전에 반영 (툴바 "인쇄" 버튼·Ctrl/Cmd+P 모두)
@@ -598,7 +622,7 @@ export default function DiagramCanvas() {
 
   return (
     <section
-      className={`diagram diagram--${mode}`}
+      className={`diagram diagram--${mode}${sim ? ' diagram--sim' : ''}`}
       aria-labelledby="diagram-title"
       data-testid="diagram"
       data-view-mode={mode}
@@ -633,13 +657,13 @@ export default function DiagramCanvas() {
             <div ref={sheetRef} className="diagram__sheet" data-testid="diagram-sheet" aria-hidden="true" />
             <div ref={innerRef} className="diagram__inner" style={{ width: model.width, height: model.height }}>
               <Bands model={model} mode={mode} highlight />
-              <Edges model={model} selectedEdges={selectedEdges} />
+              <Edges model={model} selectedEdges={selectedEdges} simEdges={sim?.edges} />
               <BusNodes buses={model.busNodes} />
               {/* 흐름은 모선 위·타일 아래 (2026-11-19 사용자: 흐름이 검은 모선 아래로 지나감) */}
               <FlowLayer />
               <EndpointNodes endpoints={model.endpoints} />
               {model.nodes.map((n) => (
-                <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} />
+                <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} sim={sim?.nodes.get(n.id)} />
               ))}
               {model.refs.map((n) => (
                 <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} />
@@ -651,6 +675,7 @@ export default function DiagramCanvas() {
           </div>
         </div>
         <DiagramLegend mode={mode} />
+        <SimPanel />
       </div>
     </section>
   );

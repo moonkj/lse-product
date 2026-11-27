@@ -3,6 +3,7 @@ import { COVERAGE_LABELS, gapConfidence, isDimmedCoverage, isGapCoverage } from 
 import type { NodeItem } from '../../lib/diagram/model';
 import { TILE_H, TILE_W } from '../../lib/diagram/geometry';
 import type { ViewMode } from '../../lib/diagram/url';
+import type { SimNodeState } from '../../lib/diagram/sim';
 import CoverageBadge from '../common/CoverageBadge';
 import EquipmentSymbol from '../common/EquipmentSymbol';
 
@@ -12,6 +13,8 @@ interface Props {
   selected: boolean;
   /** via = 'pointer'(클릭) | 'keyboard'(Enter·Space) — 선택된 타일을 다시 클릭하면 해제, 키보드는 패널로 이동 */
   onActivate: (id: string, via: 'pointer' | 'keyboard') => void;
+  /** 사고 시뮬레이션 상태 (켜졌을 때만) */
+  sim?: SimNodeState;
 }
 
 /**
@@ -23,7 +26,9 @@ interface Props {
  * 60% 미만 축소(개요)에서는 CSS(data-zoom)로 사진·보조 글자를 숨기고 점 + 약칭만 보인다.
  * memo: 줌/패닝은 부모의 transform 만 바뀌므로 노드는 다시 그리지 않는다.
  */
-function DiagramNode({ item, mode, selected, onActivate }: Props) {
+const SIM_LABEL: Partial<Record<SimNodeState, string>> = { dead: '정전', backup: '비상 공급', open: '열림', tripped: '트립', fault: '사고' };
+
+function DiagramNode({ item, mode, selected, onActivate, sim }: Props) {
   const { id, eq, coverage } = item;
   const gapMode = mode === 'gap';
   const emphasized = gapMode && isGapCoverage(coverage);
@@ -54,6 +59,8 @@ function DiagramNode({ item, mode, selected, onActivate }: Props) {
       data-ref={ref ? 'true' : undefined}
       data-dimmed={dimmed ? 'true' : 'false'}
       data-emphasized={emphasized ? 'true' : 'false'}
+      data-sim={sim && sim !== 'normal' ? sim : undefined}
+      data-sim-label={sim ? SIM_LABEL[sim] : undefined}
       onClick={(e) => onActivate(id, e.detail === 0 ? 'keyboard' : 'pointer')}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
