@@ -4,6 +4,7 @@
  */
 import { create } from 'zustand';
 import { emptyDiagram, type Diagram } from './model';
+import { encodeDiagram } from './share';
 
 export const DRAW_STORAGE_KEY = 'lse-draw:v1';
 const HISTORY_LIMIT = 50;
@@ -53,7 +54,41 @@ export interface DrawState extends Saved {
   remove: (id: string) => void;
 }
 
-const saved = readSaved();
+/**
+ * 이름·내용이 완전히 같은 단선도는 하나만 남긴다 (2026-11-27: '예시로 시작'·'단선도 예시로 열기'를 누를 때마다 같은 예시가 쌓였던 것 정리).
+ * 같은 묶음 중 지금 보던 것이 있으면 그것을, 없으면 먼저 만든 것을 남긴다. 조금이라도 고친 단선도는 건드리지 않는다.
+ */
+export function dedupeSaved(v: Saved): { saved: Saved; removed: number } {
+  const keep = new Map<string, string>();
+  const drop = new Set<string>();
+  const keyOf = (id: string) => {
+    const d = v.diagrams[id];
+    try {
+      return `${d.name}|${d.vdLimit ?? ''}|${encodeDiagram(d)}`;
+    } catch {
+      return `id:${id}`;
+    }
+  };
+  for (const id of v.order) {
+    const k = keyOf(id);
+    const first = keep.get(k);
+    if (!first) keep.set(k, id);
+    else if (id === v.currentId) {
+      drop.add(first);
+      keep.set(k, id);
+    } else drop.add(id);
+  }
+  if (!drop.size) return { saved: v, removed: 0 };
+  const order = v.order.filter((id) => !drop.has(id));
+  const diagrams = Object.fromEntries(order.map((id) => [id, v.diagrams[id]]));
+  return { saved: { currentId: order.includes(v.currentId) ? v.currentId : order[0], order, diagrams }, removed: drop.size };
+}
+
+const raw = readSaved();
+const deduped = raw ? dedupeSaved(raw) : undefined;
+/** 처음 열 때 정리한 같은 단선도 수 (화면 안내용) */
+export const DEDUPED_ON_LOAD = deduped?.removed ?? 0;
+const saved = deduped?.saved ?? null;
 const first = emptyDiagram('단선도 1');
 const init: Saved = saved ?? { currentId: first.id, order: [first.id], diagrams: { [first.id]: first } };
 
@@ -148,6 +183,11 @@ useDrawStore.subscribe((s, prev) => {
   clearTimeout(timer);
   timer = setTimeout(saveNow, 300);
 });
+// 처음 열 때 같은 단선도를 정리했으면 바로 저장 (다음에 열 때 다시 정리하지 않게)
+if (DEDUPED_ON_LOAD) {
+  dirty = true;
+  saveNow();
+}
 // 탭을 닫거나 다른 화면으로 가기 직전에는 기다리지 않고 저장
 if (typeof window !== 'undefined') {
   window.addEventListener('pagehide', saveNow);

@@ -71,7 +71,10 @@ import { diagramFile, readDiagramFile } from '../../lib/draw/share';
 import { edgePath, portPoint } from '../../lib/draw/geometry';
 import { decodeDiagram, diagramShareUrl, encodeDiagram } from '../../lib/draw/share';
 import { diagramSvgWithImages } from '../../lib/draw/exportSvg';
-import { useCurrentDiagram, useDrawStore } from '../../lib/draw/store';
+import { DEDUPED_ON_LOAD, useCurrentDiagram, useDrawStore } from '../../lib/draw/store';
+
+/** 처음 연 화면에서 한 번만 정리 안내 */
+let dedupeNoticeShown = false;
 import PanelEditor from './PanelEditor';
 import { itemSpecText } from '../../lib/draw/ratings';
 import './DrawEditor.css';
@@ -300,7 +303,7 @@ export default function DrawEditor() {
   const selNode = sel?.type === 'node' ? d.nodes.find((n) => n.id === sel.id) : undefined;
   const selEdge = sel?.type === 'edge' ? d.edges.find((e) => e.id === sel.id) : undefined;
 
-  const [note, setNote] = useState<{ kind: 'loaded' | 'bad' | 'copied' | 'manual' | 'file' | 'badfile' | 'deleted'; url?: string } | null>(null);
+  const [note, setNote] = useState<{ kind: 'loaded' | 'bad' | 'copied' | 'manual' | 'file' | 'badfile' | 'deleted' | 'deduped'; url?: string } | null>(() => (DEDUPED_ON_LOAD && !dedupeNoticeShown ? ((dedupeNoticeShown = true), { kind: 'deduped', url: String(DEDUPED_ON_LOAD) }) : null));
   const saveError = useDrawStore((s) => s.saveError);
   const [params, setParams] = useSearchParams();
   const code = params.get('d');
@@ -563,6 +566,7 @@ export default function DrawEditor() {
           {note.kind === 'loaded' && <span>공유받은 단선도를 내 목록에 사본으로 추가했습니다. 원래 단선도들은 그대로 있습니다.</span>}
           {note.kind === 'bad' && <span>공유 링크를 읽을 수 없습니다. 링크가 잘렸는지 확인하세요.</span>}
           {note.kind === 'file' && <span>단선도 파일을 불러와 목록에 추가했습니다.</span>}
+          {note.kind === 'deduped' && <span data-testid="draw-deduped">이름과 내용이 완전히 같은 단선도 {note.url}개를 정리했습니다 (같은 것 하나씩은 남김, 고친 단선도는 그대로).</span>}
           {note.kind === 'deleted' && (
             <span>
               '{note.url}'을(를) 지웠습니다.{' '}

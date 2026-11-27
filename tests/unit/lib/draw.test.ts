@@ -672,3 +672,21 @@ describe('상자 크기', () => {
     expect(diagramSvg(d)).toContain('width="320" height="200"');
   });
 });
+
+describe('같은 단선도 정리 (dedupeSaved, 2026-11-27)', () => {
+  it('이름·내용이 완전히 같으면 하나만 (지금 보던 것 우선), 고친 것·이름 다른 것은 그대로', async () => {
+    const { dedupeSaved } = await import('../../../src/lib/draw/store');
+    const base = PRESETS[0].make();
+    const a = { ...structuredClone(base), id: 'a' };
+    const b = { ...structuredClone(base), id: 'b' };
+    const c = { ...structuredClone(base), id: 'c' };
+    const edited = { ...structuredClone(base), id: 'e', nodes: base.nodes.map((n, i) => (i === 0 ? { ...n, x: n.x + 10 } : n)) };
+    const renamed = { ...structuredClone(base), id: 'r', name: '내 단선도' };
+    const v = { currentId: 'b', order: ['a', 'b', 'c', 'e', 'r'], diagrams: { a, b, c, e: edited, r: renamed } };
+    const { saved, removed } = dedupeSaved(v);
+    expect(removed).toBe(2);
+    expect(saved.order).toEqual(['b', 'e', 'r']);
+    expect(saved.currentId).toBe('b');
+    expect(dedupeSaved(saved).removed).toBe(0);
+  });
+});

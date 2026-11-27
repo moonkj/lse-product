@@ -403,4 +403,19 @@ test.describe('단선도 그리기', () => {
     expect(svg).toContain('<image href="data:image/');
     expect(svg).not.toMatch(/width="24" height="24" rx="3" fill="none"/);
   });
+
+  test('저장된 같은 단선도는 열 때 하나만 남기고 안내 (고친 것은 그대로)', async ({ page }) => {
+    await page.goto('./#/');
+    await page.evaluate(() => {
+      const d = (id: string, name: string, x = 100) => ({ id, name, nodes: [{ id: 'n' + id, kind: 'source', x, y: 100, v: '22.9kV' }], edges: [] });
+      const ds = [d('a', '예시'), d('b', '예시'), d('c', '예시'), d('e', '예시', 300)];
+      localStorage.setItem('lse-draw:v1', JSON.stringify({ currentId: 'a', order: ds.map((x) => x.id), diagrams: Object.fromEntries(ds.map((x) => [x.id, x])) }));
+    });
+    await page.goto('./#/builder');
+    await page.reload();
+    await expect(tid(page, 'draw-deduped')).toContainText('2개를 정리');
+    await expect(page.locator('[data-testid="draw-pick"] option')).toHaveCount(2);
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('lse-draw:v1')!).order.length);
+    expect(saved).toBe(2);
+  });
 });
