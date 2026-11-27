@@ -45,6 +45,8 @@ export interface FlowEdge {
   dir: FlowDir;
   /** up = 선택 기기의 상류, down = 하류, all = 기기 선택 없이 전체 */
   role: 'up' | 'down' | 'all';
+  /** 선택 기기에서 몇 단계 떨어졌는지 (상류·하류 모두 1부터) — 차례 점등 순서용. 전체 흐름이면 0 */
+  step: number;
 }
 
 /** diagram.json 엣지의 flow 필드 → id 별 방향 (생략 = forward 는 넣지 않음) */
@@ -75,7 +77,7 @@ export function computeFlowEdges(
 ): FlowEdge[] {
   const dirOf = (e: FlowEdgeInput): FlowDir => dirs.get(e.id) ?? 'forward';
   if (!selectedId) {
-    return edges.filter((e) => e.kind === 'power' && dirOf(e) !== 'none').map((e) => ({ id: e.id, d: e.d, dir: dirOf(e), role: 'all' }));
+    return edges.filter((e) => e.kind === 'power' && dirOf(e) !== 'none').map((e) => ({ id: e.id, d: e.d, dir: dirOf(e), role: 'all', step: 0 }));
   }
 
   // 흐름 방향 기준 들어오는 선 / 나가는 선 (bi 는 양쪽 다)
@@ -102,20 +104,20 @@ export function computeFlowEdges(
   }
 
   const result = new Map<string, FlowEdge>();
-  const add = (e: FlowEdgeInput, role: 'up' | 'down') => {
-    if (!result.has(e.id)) result.set(e.id, { id: e.id, d: e.d, dir: dirOf(e), role });
+  const add = (e: FlowEdgeInput, role: 'up' | 'down', step: number) => {
+    if (!result.has(e.id)) result.set(e.id, { id: e.id, d: e.d, dir: dirOf(e), role, step });
   };
 
   // 상류: 전원 쪽 끝까지
   const seenUp = new Set<string>([selectedId]);
-  const upQueue = [selectedId];
+  const upQueue: { id: string; step: number }[] = [{ id: selectedId, step: 0 }];
   while (upQueue.length) {
-    const n = upQueue.shift()!;
+    const { id: n, step } = upQueue.shift()!;
     for (const a of inArcs.get(n) ?? []) {
-      add(a.edge, 'up');
+      add(a.edge, 'up', step + 1);
       if (!seenUp.has(a.other)) {
         seenUp.add(a.other);
-        upQueue.push(a.other);
+        upQueue.push({ id: a.other, step: step + 1 });
       }
     }
   }
@@ -127,7 +129,7 @@ export function computeFlowEdges(
     const next: typeof frontier = [];
     for (const { id, depth } of frontier) {
       for (const a of outArcs.get(id) ?? []) {
-        add(a.edge, 'down');
+        add(a.edge, 'down', depth + 1);
         if (seenDown.has(a.other)) continue;
         seenDown.add(a.other);
         const d = isBusId(a.other) ? depth : depth + 1;
@@ -197,4 +199,25 @@ export function useSetFlow() {
       ),
     [setParams],
   );
+}
+
+/**
+ * 전압 단계별 흐름 굵기 배율 (2026-11-27) — 초고압은 굵고 진하게, 저압으로 갈수록 가늘게.
+ * 변압기를 지나며 전압이 낮아지는 것이 굵기로 보인다. 계층(L1~L7·REN·MON) 기준.
+ */
+export const VOLTAGE_WEIGHT: Record<string, number> = { L1: 1.7, L2: 1.5, L3: 1.25, L4: 1.2, L5: 1.05, L6: 0.95, L7: 0.8, REN: 1, MON: 0.85 };
+
+/**
+ * 차례 점등 순서 (0 = 가장 먼저) — 전원 쪽 끝 상류부터 선택 기기까지, 이어서 하류.
+ * 전체 흐름(role all)은 위(전원)에서 아래로: y 를 0~maxOrder 로 나눔.
+ */
+export function igniteOrder(flows: readonly FlowEdge[], yOf: (f: FlowEdge) => number = () => 0, height = 1, allSteps = 8): Map<string, number> {
+  const out = new Map<string, number>();
+  const maxUp = Math.max(0, ...flows.filter((f) => f.role === 'up').map((f) => f.step));
+  for (const f of flows) {
+    if (f.role === 'all') out.set(f.id, Math.round((Math.max(0, Math.min(height, yOf(f))) / (height || 1)) * allSteps));
+    else if (f.role === 'up') out.set(f.id, maxUp - f.step);
+    else out.set(f.id, maxUp + f.step - 1);
+  }
+  return out;
 }

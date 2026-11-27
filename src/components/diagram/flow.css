@@ -267,3 +267,70 @@
 .dopts__state.is-on { color: var(--color-link); font-weight: var(--fw-bold); }
 /* 펼친 메뉴가 계통도 위 레이어(계획 겹쳐 보기 z-index 4 등)에 가리지 않게 — 열려 있는 동안 도구줄을 위로 */
 .dtool:has(.dopts__panel) { z-index: 40; }
+
+/* ── 흐름 고도화 (2026-11-27) ──
+   1) 차례 점등: 바탕선·트랙이 전원 쪽부터 차례로 그려짐 (pathLength=1, --ig 지연)
+   2) 빛 입자: 꼬리 달린 빛 점(SMIL animateMotion) — 점등 뒤 출발
+   3) 전압 굵기: --vw 배율(초고압 1.7 ~ 저압 0.8), 변압기 통과 시 테두리가 잠깐 빛남 */
+.dflow__casing { stroke-width: calc(8px * var(--vw, 1)); }
+.dflow__track { stroke-width: calc(6px * var(--vw, 1)); }
+.dflow__path { stroke-width: calc(4px * var(--vw, 1)); }
+.dflow__ignite {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: dflow-ignite 0.38s cubic-bezier(0.3, 0, 0.2, 1) var(--ig, 0s) forwards;
+}
+@keyframes dflow-ignite {
+  to { stroke-dashoffset: 0; }
+}
+/* 펄스(대시)는 점등이 지나간 뒤 나타남 */
+.dflow__path {
+  animation: dflow-move var(--flow-duration, 0.75s) linear infinite, dflow-fade-in 0.3s ease-out calc(var(--ig, 0s) + 0.25s) both;
+}
+.dflow__path--rev {
+  animation: dflow-move-rev var(--flow-duration, 0.75s) linear infinite, dflow-fade-in 0.3s ease-out calc(var(--ig, 0s) + 0.25s) both;
+}
+@keyframes dflow-fade-in {
+  from { opacity: 0; }
+}
+/* 선택 경로는 빛 입자가 주인공 → 대시 펄스는 옅게 */
+.dflow[data-scope='node'] .dflow__path { opacity: 0.55; }
+/* 혜성: 머리 = 하늘색 밝은 점 + 흰 테 + 진한 빛 번짐, 꼬리 = 점점 작고 옅은 파란 점 */
+.dflow__dot {
+  fill: #7fd3ff;
+  stroke: #fff;
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 3px #3fb6ff) drop-shadow(0 0 10px var(--flow-glow));
+}
+.dflow__dot--1, .dflow__dot--2, .dflow__dot--3, .dflow__dot--4 { fill: #3fa3ef; stroke: none; filter: none; }
+.dflow__comet--idle .dflow__dot { fill: var(--flow-pulse-idle, var(--flow-pulse)); stroke: none; filter: none; }
+.dflow[data-tiny='true'] .dflow__particles { display: none; }
+.dflow__tr-glow {
+  fill: none;
+  stroke: var(--flow-pulse);
+  stroke-width: 3px;
+  opacity: 0;
+  animation: dflow-tr-glow 2.4s ease-out var(--ig, 0s) infinite;
+}
+@keyframes dflow-tr-glow {
+  0% { opacity: 0; stroke-width: 2px; }
+  12% { opacity: 0.9; stroke-width: 6px; }
+  45% { opacity: 0; stroke-width: 10px; }
+  100% { opacity: 0; }
+}
+.diagram__viewport.is-panning .dflow__tr-glow,
+.dflow[data-paused='true'] .dflow__tr-glow { animation-play-state: paused; }
+/* 모선 위 흐름 굵기는 그대로 (위 --vw 규칙이 덮지 않게) */
+.dflow__casing--bus { stroke-width: 11px; }
+.dflow__track--bus { stroke-width: 9px; }
+.dflow__path--bus { stroke-width: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .dflow__ignite { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+  .dflow__tr-glow { display: none; }
+  .dflow__path, .dflow__path--rev { animation: none; }
+}
+@media print {
+  .dflow__ignite { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+  .dflow__particles, .dflow__tr-glow { display: none; }
+  .dflow__path, .dflow__path--rev { animation: none; }
+}

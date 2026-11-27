@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
 import { DiagramSchema } from '../../../src/lib/schema';
 import { edgeKind } from '../../../src/lib/diagram/geometry';
-import { computeFlowEdges, flowDirMap, parseFlow, pathMidpoint, type FlowEdgeInput } from '../../../src/lib/diagram/flow';
+import { computeFlowEdges, flowDirMap, igniteOrder, parseFlow, pathMidpoint, type FlowEdgeInput } from '../../../src/lib/diagram/flow';
 
 const E = (id: string, from: string, to: string, kind: FlowEdgeInput['kind'] = 'power'): FlowEdgeInput => ({ id, from, to, kind, d: 'M0 0L10 0' });
 
@@ -56,7 +56,7 @@ describe('computeFlowEdges', () => {
 
   it('reverse 는 to→from 으로 상·하류가 뒤집힘', () => {
     const r = computeFlowEdges([E('r1', 'p', 'q')], new Map([['r1', 'reverse' as const]]), 'p');
-    expect(r).toEqual([{ id: 'r1', d: 'M0 0L10 0', dir: 'reverse', role: 'up' }]);
+    expect(r).toEqual([{ id: 'r1', d: 'M0 0L10 0', dir: 'reverse', role: 'up', step: 1 }]);
   });
 
   it('bi 는 양쪽 다 따라감 (ESS 선택 → PCS 하류 + 충전 쪽 상류 PV)', () => {
@@ -142,5 +142,24 @@ describe('흐름 없음(none) — 보호·계측 분기·기계 연결 (2026-11-
     expect(computeFlowEdges(edges, dirs, null).map((e) => e.id)).toEqual(['a']);
     expect(computeFlowEdges(edges, dirs, 'B').map((e) => e.id)).toEqual(['a']);
     expect(computeFlowEdges(edges, dirs, 'LA')).toEqual([]);
+  });
+});
+
+describe('차례 점등 순서 (igniteOrder, 2026-11-27)', () => {
+  it('전원 쪽 상류가 먼저, 선택 기기 바로 위가 그다음, 이어서 하류', () => {
+    // src → a → SEL → b
+    const es = [E('e1', 'src', 'a'), E('e2', 'a', 'sel'), E('e3', 'sel', 'b')];
+    const flows = computeFlowEdges(es, new Map(), 'sel');
+    const o = igniteOrder(flows);
+    expect(o.get('e1')).toBe(0);
+    expect(o.get('e2')).toBe(1);
+    expect(o.get('e3')).toBe(2);
+    expect(o.get('e1')!).toBeLessThan(o.get('e2')!);
+  });
+  it('전체 흐름은 위(전원)에서 아래로', () => {
+    const flows = computeFlowEdges([E('t', 'a', 'b'), E('u', 'c', 'd')], new Map(), null).map((f, i) => ({ ...f, d: i ? 'M0 900L0 1000' : 'M0 0L0 100' }));
+    const o = igniteOrder(flows, (f) => Number(f.d.split(' ')[1].split('L')[0]), 1000, 10);
+    expect(o.get('t')).toBe(0);
+    expect(o.get('u')).toBe(9);
   });
 });
