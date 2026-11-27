@@ -12,8 +12,16 @@ import { diagramOf, getActiveGrid } from '../../lib/diagram/grid';
 const IGNITE_STEP = 0.11;
 const IGNITE_MAX = 1.6;
 /** 빛 입자 속도 (계통도 좌표/초) — 선택 경로는 빠르고 또렷하게, 전체 흐름은 느리고 옅게 */
-const PARTICLE_SPEED_NODE = 170;
-const PARTICLE_SPEED_ALL = 80;
+const PARTICLE_SPEED_NODE = 95;
+const PARTICLE_SPEED_ALL = 48;
+/** 처음 화면 물방울 수 */
+const IDLE_DROPS = 14;
+/** id → 0~1 (선마다 다른 타이밍을 늘 같게) */
+const hash01 = (s: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return ((h >>> 0) % 10000) / 10000;
+};
 
 const pathLen = (d: string) => {
   const p = pathPoints(d);
@@ -106,6 +114,18 @@ export default function FlowLayer() {
     }
     return [...ids].map((id) => model.nodeById.get(id)!).filter(Boolean);
   }, [flows, edgeById, model]);
+  // 처음 화면(전체 흐름)에서 물방울을 띄울 긴 간선 — 길이 상위 IDLE_DROPS 개
+  const idleDropIds = useMemo(() => {
+    if (selectedId) return new Set<string>();
+    return new Set(
+      flows
+        .filter((f) => f.dir !== 'bi')
+        .map((f) => ({ id: f.id, len: pathLen(f.d) }))
+        .sort((a, b) => b.len - a.len)
+        .slice(0, IDLE_DROPS)
+        .map((x) => x.id),
+    );
+  }, [flows, selectedId]);
   const svgRef = useRef<SVGSVGElement>(null);
   const still = reducedMotion();
   // 탭 숨김·아주 작게 축소면 입자(SMIL)도 멈춤
@@ -116,6 +136,25 @@ export default function FlowLayer() {
     if (hidden || tiny) svg.pauseAnimations();
     else svg.unpauseAnimations();
   }, [hidden, tiny, flows]);
+  // 기기 선택 경로가 있으면 부모(.diagram__inner)에 표시 → 경로 밖 연결선 흐리게 (CSS :has 대신, 성능)
+  const nodeFlow = !!selectedId && flows.length > 0 && on && mode !== 'gap';
+  useEffect(() => {
+    const parent = svgRef.current?.parentElement;
+    parent?.classList.toggle('has-node-flow', nodeFlow);
+    return () => parent?.classList.remove('has-node-flow');
+  }, [nodeFlow]);
+  // 패닝(끌기) 중에는 입자(SMIL)도 멈춤 — CSS 애니메이션은 .is-panning 규칙이 멈춤
+  useEffect(() => {
+    const svg = svgRef.current;
+    const vp = svg?.closest('.diagram__viewport');
+    if (!svg?.pauseAnimations || !vp) return;
+    const mo = new MutationObserver(() => {
+      if (vp.classList.contains('is-panning')) svg.pauseAnimations();
+      else if (!document.hidden) svg.unpauseAnimations();
+    });
+    mo.observe(vp, { attributes: true, attributeFilter: ['class'] });
+    return () => mo.disconnect();
+  }, [on, mode]);
 
   if (!on || mode === 'gap') return null;
   const run = selectedId ?? 'all';
@@ -154,6 +193,14 @@ export default function FlowLayer() {
       data-tiny={(selectedId ? tinyNode : tinyAll) ? 'true' : undefined}
       data-paused={hidden ? 'true' : undefined}
     >
+      <defs>
+        {/* 물방울 본체: 꼬리(왼쪽) 투명 → 머리(오른쪽) 밝은 하늘색 */}
+        <linearGradient id="dflow-drop-grad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="var(--flow-drop-tail, #1f8fe0)" stopOpacity="0" />
+          <stop offset="0.55" stopColor="var(--flow-drop-mid, #3aa8f0)" stopOpacity="0.75" />
+          <stop offset="1" stopColor="var(--flow-drop-head, #9be0ff)" stopOpacity="1" />
+        </linearGradient>
+      </defs>
       {/* 3겹 (E1 P0-2·E4 P0): 흰 바탕선(casing) → 연한 트랙 → 진한 펄스. 바탕선이 밴드·선과 흐름을 떼어 놓아 한눈에 보이게 */}
       {busPaths.map((b) => (
         <path key={`bc-${b.id}`} className="dflow__casing dflow__casing--bus" d={b.d} />
@@ -185,7 +232,10 @@ export default function FlowLayer() {
           ),
         )}
       </g>
-      {/* 빛 입자 (2026-11-27) — 꼬리 달린 빛 점이 선을 따라 흐름. 점등이 끝난 뒤 출발. 움직임 줄이기면 그리지 않음 */}
+      {/* 빛 물방울 (2026-11-27 2차) — 동그라미 대신 진행 방향으로 꼬리가 가늘어지는 물방울. 점등이 끝난 뒤 출발.
+          · 선 길이와 상관없이 같은 속도(짧은 선이 휙휙 지나가지 않게) + 다 지나가면 잠깐 쉼
+          · 선마다 출발 시각·쉬는 시간을 다르게(id 해시) — 짧은 선들이 똑같이 움직이지 않게
+          · 빛 번짐은 필터 대신 반투명 모양(확대해도 버벅이지 않게). 움직임 줄이기면 그리지 않음 */}
       {!still && (
         <g className="dflow__particles" data-testid="flow-particles">
           {flows.map((f) => {
@@ -193,21 +243,31 @@ export default function FlowLayer() {
             const len = pathLen(f.d);
             if (len < 8) return null;
             const node = !!selectedId;
-            const dur = Math.max(0.5, Math.min(9, len / (node ? PARTICLE_SPEED_NODE : PARTICLE_SPEED_ALL)));
-            const start = delayOf(f.id) + 0.3;
+            // 전체 흐름(처음 화면)은 긴 간선 몇 개에만 물방울 (성능 — 짧은 선까지 모두 움직이면 프레임이 끊김)
+            if (!node && !idleDropIds.has(f.id)) return null;
+            const speed = node ? PARTICLE_SPEED_NODE : PARTICLE_SPEED_ALL;
+            const move = len / speed;
+            const h1 = hash01(f.id);
+            const h2 = hash01(`${f.id}~`);
+            // 쉬는 시간: 짧은 선일수록 길게(0.9~2.3초), 긴 선은 짧게 + 선마다 다르게
+            const rest = (len < 160 ? 0.9 : 0.25) + h1 * (len < 160 ? 1.4 : 0.6);
+            const T = move + rest;
+            const tm = move / T;
+            const fade = Math.min(0.06, tm / 4);
+            const start = delayOf(f.id) + 0.3 + h2 * T;
             const rev = f.dir === 'reverse';
-            const w = weightOf(f.id, f.dir);
-            // 선택 경로는 머리 + 꼬리 2개, 전체 흐름은 머리 하나 (성능)
-            const parts = node ? [0, 0.045, 0.09, 0.135, 0.18] : [0];
+            // 크기: 화면에서 일정(배율로 나눔), 전압이 높을수록 조금 크게(제곱근으로 완만하게)
+            const k = (Math.sqrt(weightOf(f.id, f.dir)) * (node ? 1.3 : 0.9)) / Math.max(0.5, scale);
             return (
-              <g key={`p-${run}-${f.id}`} className={`dflow__comet${node ? '' : ' dflow__comet--idle'}`} data-flow-particle={f.id}>
-                {/* 꼬리부터 그려 머리가 맨 위 */}
-                {parts.map((lag, i) => ({ lag, i })).reverse().map(({ lag, i }) => (
-                  <circle key={i} r={((node ? 6.5 : 3.4) * w * (1 - i * 0.17)) / Math.max(0.5, scale)} opacity={0} className={`dflow__dot dflow__dot--${i}`}>
-                    <set attributeName="opacity" to={String(1 - i * 0.2)} begin={`${start + lag}s`} />
-                    <animateMotion path={f.d} dur={`${dur}s`} begin={`${start + lag}s`} repeatCount="indefinite" calcMode="linear" keyPoints={rev ? '1;0' : '0;1'} keyTimes="0;1" />
-                  </circle>
-                ))}
+              <g key={`p-${run}-${f.id}`} className={`dflow__comet${node ? '' : ' dflow__comet--idle'}`} data-flow-particle={f.id} opacity={0}>
+                <animate attributeName="opacity" values="0;1;1;0;0" keyTimes={`0;${fade};${tm - fade};${tm};1`} dur={`${T}s`} begin={`${start}s`} repeatCount="indefinite" />
+                <animateMotion path={f.d} dur={`${T}s`} begin={`${start}s`} repeatCount="indefinite" calcMode="linear" keyPoints={rev ? '1;1;0;0' : '0;0;1;1'} keyTimes={`0;0.0001;${tm};1`} rotate={rev ? 'auto-reverse' : 'auto'} />
+                <g transform={`scale(${k})`}>
+                  {/* 빛 번짐(반투명 큰 물방울) → 본체(그라데이션) → 앞쪽 흰 반짝임 */}
+                  <path className="dflow__drop-halo" d="M5 0C5 3.6 2.8 5.6 0 5.6C-4 5.6 -10 2.4 -19 0C-10 -2.4 -4 -5.6 0 -5.6C2.8 -5.6 5 -3.6 5 0Z" />
+                  <path className="dflow__drop" d="M3.4 0C3.4 2.3 1.9 3.6 0 3.6C-2.6 3.6 -6.5 1.6 -13 0C-6.5 -1.6 -2.6 -3.6 0 -3.6C1.9 -3.6 3.4 -2.3 3.4 0Z" fill="url(#dflow-drop-grad)" />
+                  <ellipse className="dflow__drop-shine" cx="1.1" cy="-1.1" rx="1.3" ry="0.9" />
+                </g>
               </g>
             );
           })}

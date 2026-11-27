@@ -42,7 +42,8 @@
 
 /* 빛 번짐: 펄스 묶음 그룹 하나에만 (성능). 전체 흐름(기기 미선택, 경로 수십 개)·움직임 줄이기·인쇄에서는 끔 */
 .dflow__glow {
-  filter: drop-shadow(0 0 var(--flow-glow-r) var(--flow-glow));
+  /* 2026-11-27: 확대하면 움직이는 펄스 묶음에 걸린 필터를 매 프레임 다시 그려 버벅임 → 필터 끔(빛은 물방울이 맡음) */
+  filter: none;
 }
 .dflow[data-scope='all'] .dflow__glow {
   filter: none;
@@ -108,7 +109,8 @@
 }
 
 /* 기기를 골랐을 때: 흐름 경로 밖의 연결선은 흐리게 */
-.diagram__inner:has(> .dflow[data-scope='node'] .dflow__track) .dedge {
+/* 2026-11-27: :has() 대신 FlowLayer 가 부모에 붙이는 클래스 — 기기를 바꿀 때마다 계통도 전체 스타일을 다시 계산하던 부담 제거 */
+.diagram__inner.has-node-flow .dedge {
   opacity: 0.3;
 }
 
@@ -293,17 +295,14 @@
 @keyframes dflow-fade-in {
   from { opacity: 0; }
 }
-/* 선택 경로는 빛 입자가 주인공 → 대시 펄스는 옅게 */
-.dflow[data-scope='node'] .dflow__path { opacity: 0.55; }
-/* 혜성: 머리 = 하늘색 밝은 점 + 흰 테 + 진한 빛 번짐, 꼬리 = 점점 작고 옅은 파란 점 */
-.dflow__dot {
-  fill: #7fd3ff;
-  stroke: #fff;
-  stroke-width: 2px;
-  filter: drop-shadow(0 0 3px #3fb6ff) drop-shadow(0 0 10px var(--flow-glow));
-}
-.dflow__dot--1, .dflow__dot--2, .dflow__dot--3, .dflow__dot--4 { fill: #3fa3ef; stroke: none; filter: none; }
-.dflow__comet--idle .dflow__dot { fill: var(--flow-pulse-idle, var(--flow-pulse)); stroke: none; filter: none; }
+/* 대시 펄스는 멈춘 옅은 점선으로 — 움직임은 물방울이 맡음 (움직이는 요소를 줄여 버벅임 감소, 2026-11-27) */
+.dflow .dflow__path { opacity: 0.45; animation: dflow-fade-in 0.3s ease-out calc(var(--ig, 0s) + 0.25s) both; }
+/* 물방울 (2차): 필터 없이 반투명 큰 모양으로 빛 번짐 — 확대해도 버벅이지 않게 */
+.dflow__drop-halo { fill: #ffffff; opacity: 0.55; }
+.dflow__drop { stroke: none; }
+.dflow__drop-shine { fill: #fff; opacity: 0.9; }
+.dflow__comet--idle .dflow__drop-halo { opacity: 0.2; }
+.dflow__comet--idle .dflow__drop-shine { opacity: 0.6; }
 .dflow[data-tiny='true'] .dflow__particles { display: none; }
 .dflow__tr-glow {
   fill: none;

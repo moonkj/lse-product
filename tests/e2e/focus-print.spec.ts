@@ -87,12 +87,15 @@ test('전기 흐름: 처음 화면부터 켜짐(전체 전력선, 빛 번짐 끔
   await page.goto('./#/?node=n-vcb');
   await expect(page.getByTestId('flow-layer')).toHaveAttribute('data-scope', 'node');
   expect(await page.locator('.dflow__path').count()).toBeLessThan(allCount);
-  const path = page.locator('.dflow__path').first();
-  await expect(path).toBeAttached();
-  const moved = await path.evaluate(async (el) => {
-    const a = getComputedStyle(el).strokeDashoffset;
-    await new Promise((r) => setTimeout(r, 250));
-    return a !== getComputedStyle(el).strokeDashoffset;
+  // 움직임은 물방울(빛 입자)이 맡음 (2026-11-27) — 경로를 따라 실제로 움직이는지
+  const drop = page.locator('[data-flow-particle]').first();
+  await expect(drop).toBeAttached();
+  await page.waitForTimeout(2500);
+  const moved = await page.evaluate(async () => {
+    const pos = () => [...document.querySelectorAll('[data-flow-particle]')].map((g) => { const r = g.getBoundingClientRect(); return `${Math.round(r.x)},${Math.round(r.y)}`; }).join(' ');
+    const a = pos();
+    await new Promise((r) => setTimeout(r, 300));
+    return a !== pos();
   });
   expect(moved).toBe(true);
   await expect(page.getByTestId('flow-toggle')).toHaveAttribute('aria-pressed', 'true');
