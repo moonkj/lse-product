@@ -304,33 +304,16 @@
 .dflow__comet--idle .dflow__drop-halo { opacity: 0.2; }
 .dflow__comet--idle .dflow__drop-shine { opacity: 0.6; }
 .dflow[data-tiny='true'] .dflow__particles { display: none; }
-.dflow__tr-glow {
-  fill: none;
-  stroke: var(--flow-pulse);
-  stroke-width: 3px;
-  opacity: 0;
-  animation: dflow-tr-glow 2.4s ease-out var(--ig, 0s) infinite;
-}
-@keyframes dflow-tr-glow {
-  0% { opacity: 0; stroke-width: 2px; }
-  12% { opacity: 0.9; stroke-width: 6px; }
-  45% { opacity: 0; stroke-width: 10px; }
-  100% { opacity: 0; }
-}
-.diagram__viewport.is-panning .dflow__tr-glow,
-.dflow[data-paused='true'] .dflow__tr-glow { animation-play-state: paused; }
 /* 모선 위 흐름 굵기는 그대로 (위 --vw 규칙이 덮지 않게) */
 .dflow__casing--bus { stroke-width: 11px; }
 .dflow__track--bus { stroke-width: 9px; }
 .dflow__path--bus { stroke-width: 4px; }
 @media (prefers-reduced-motion: reduce) {
   .dflow__ignite { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
-  .dflow__tr-glow { display: none; }
   .dflow__path, .dflow__path--rev { animation: none; }
 }
 @media print {
   .dflow__ignite { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
-  .dflow__particles, .dflow__tr-glow { display: none; }
   .dflow__path, .dflow__path--rev { animation: none; }
 }
 
@@ -364,22 +347,21 @@
   will-change: transform;
 }
 .dflow-drop--idle .dflow-drop__blob { opacity: 0.75; }
-.dflow-trglow {
+/* 선택한 제품 빛남 — 타일 둘레가 숨 쉬듯 은은하게 밝아졌다 어두워짐 (opacity·transform 만, GPU) */
+.dflow-selglow {
   position: absolute;
-  border-radius: 12px;
-  box-shadow: 0 0 0 3px var(--flow-pulse), 0 0 18px 4px var(--flow-glow);
+  border-radius: 14px;
+  box-shadow: 0 0 0 4px rgb(92 192 255 / 0.9), 0 0 30px 10px rgb(47 154 232 / 0.6);
   opacity: 0;
   will-change: transform, opacity;
-  animation: dflow-trglow 2.4s ease-out infinite;
+  animation: dflow-selglow 2.2s ease-in-out 0.2s infinite;
 }
-@keyframes dflow-trglow {
-  0% { opacity: 0; transform: scale(0.98); }
-  12% { opacity: 0.9; transform: scale(1); }
-  45% { opacity: 0; transform: scale(1.06); }
-  100% { opacity: 0; transform: scale(1.06); }
+@keyframes dflow-selglow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.025); }
 }
-.diagram__viewport.is-panning .dflow-trglow,
-.dflow[data-paused='true'] ~ .dflow-fx .dflow-trglow { animation-play-state: paused; }
+.diagram__viewport.is-panning .dflow-selglow,
+.dflow[data-paused='true'] ~ .dflow-fx .dflow-selglow { animation-play-state: paused; }
 .dflow[data-tiny='true'] ~ .dflow-fx { display: none; }
 @media (prefers-reduced-motion: reduce), print {
   .dflow-fx { display: none; }

@@ -109,17 +109,8 @@ export default function FlowLayer() {
     const yOf = (f: { d: string }) => pathPoints(f.d)[0]?.y ?? 0;
     return igniteOrder(flows, yOf, model.height, 10);
   }, [flows, model.height]);
-  // 흐름이 지나가는 변압기 — 전기가 닿을 때 잠깐 빛남
-  const transformers = useMemo(() => {
-    if (!flows.length) return [];
-    const ids = new Set<string>();
-    for (const f of flows) {
-      const e = edgeById.get(f.id);
-      if (!e) continue;
-      for (const id of [e.from, e.to]) if (model.nodeById.get(id)?.eq.category === 'transformation') ids.add(id);
-    }
-    return [...ids].map((id) => model.nodeById.get(id)!).filter(Boolean);
-  }, [flows, edgeById, model]);
+  // 선택한 제품 타일 (빛남 효과 자리)
+  const selNode = selectedId ? model.nodeById.get(selectedId) : undefined;
   // 처음 화면(전체 흐름)에서 물방울을 띄울 긴 간선 — 길이 상위 IDLE_DROPS 개
   const idleDropIds = useMemo(() => {
     if (selectedId) return new Set<string>();
@@ -336,21 +327,15 @@ export default function FlowLayer() {
             <span className="dflow-drop__blob" />
           </div>
         ))}
-        {selectedId &&
-          transformers.map((n) => {
-            const touching = flows.filter((f) => {
-              const e = edgeById.get(f.id);
-              return !!e && (e.from === n.id || e.to === n.id);
-            });
-            const last = Math.max(0, ...touching.map((f) => delayOf(f.id)));
-            return (
-              <div
-                key={`tg-${run}-${n.id}`}
-                className="dflow-trglow"
-                style={{ left: n.x - TILE_W / 2 - 4, top: n.y - TILE_H / 2 - 4, width: TILE_W + 8, height: TILE_H + 8, animationDelay: `${last + 0.25}s` }}
-              />
-            );
-          })}
+        {/* 선택한 제품 빛남 (2026-11-27 사용자: 변압기 빛남 대신 선택된 제품이 빛나게) — 타일 둘레가 숨 쉬듯 은은하게 */}
+        {selNode && (
+          <div
+            key={`sel-${run}`}
+            className="dflow-selglow"
+            data-testid="flow-selected-glow"
+            style={{ left: selNode.x - TILE_W / 2 - 5, top: selNode.y - TILE_H / 2 - 5, width: TILE_W + 10, height: TILE_H + 10 }}
+          />
+        )}
       </div>
     )}
     </>
