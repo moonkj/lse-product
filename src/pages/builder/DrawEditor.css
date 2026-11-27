@@ -536,3 +536,17 @@
 .drw-node--panel .drw-node__product { padding: 0 10px 7px; }
 .drw-node__badge { font-size: 13px; padding: 2px 8px; top: -11px; right: -11px; }
 .drw-port { width: 16px; height: 16px; margin-left: -8px; bottom: -8px; }
+
+/* 단선도 목록 정리 (2026-11-27) */
+.drw-mgr { width: min(640px, calc(100vw - 32px)); max-height: min(80vh, 720px); padding: 20px; }
+.drw-mgr__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.drw-mgr__head h2 { margin: 0; font-size: 18px; }
+.drw-mgr__desc { color: var(--color-text-muted); font-size: 14px; margin: 8px 0 12px; }
+.drw-mgr__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 50vh; overflow: auto; }
+.drw-mgr__row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer; }
+.drw-mgr__row:has(input:checked) { background: var(--color-surface-2, rgb(217 45 32 / 0.06)); border-color: var(--color-danger, #d92d20); }
+.drw-mgr__name { font-weight: 600; }
+.drw-mgr__tag { font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--color-surface-2, #f2f4f7); color: var(--color-text-muted); }
+.drw-mgr__tag--cur { background: var(--color-brand-soft, #e0eaff); color: var(--color-brand, #1d4ed8); }
+.drw-mgr__meta { margin-left: auto; font-size: 13px; color: var(--color-text-muted); }
+.drw-mgr__foot { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; }

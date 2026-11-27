@@ -71,6 +71,7 @@ import { diagramFile, readDiagramFile } from '../../lib/draw/share';
 import { edgePath, portPoint } from '../../lib/draw/geometry';
 import { decodeDiagram, diagramShareUrl, encodeDiagram } from '../../lib/draw/share';
 import { diagramSvgWithImages } from '../../lib/draw/exportSvg';
+import DiagramManager from './DiagramManager';
 import { DEDUPED_ON_LOAD, useCurrentDiagram, useDrawStore } from '../../lib/draw/store';
 
 /** 처음 연 화면에서 한 번만 정리 안내 */
@@ -305,6 +306,7 @@ export default function DrawEditor() {
 
   const [note, setNote] = useState<{ kind: 'loaded' | 'bad' | 'copied' | 'manual' | 'file' | 'badfile' | 'deleted' | 'deduped'; url?: string } | null>(() => (DEDUPED_ON_LOAD && !dedupeNoticeShown ? ((dedupeNoticeShown = true), { kind: 'deduped', url: String(DEDUPED_ON_LOAD) }) : null));
   const saveError = useDrawStore((s) => s.saveError);
+  const [managing, setManaging] = useState(false);
   const [params, setParams] = useSearchParams();
   const code = params.get('d');
   /**
@@ -476,6 +478,17 @@ export default function DrawEditor() {
             ))}
           </select>
         </label>
+        <button type="button" className="btn btn--secondary btn--sm" onClick={() => setManaging(true)} disabled={st.order.length < 2} title="쌓인 단선도를 한 번에 골라 지우기" data-testid="draw-manage">
+          목록 정리
+        </button>
+        {managing && (
+          <DiagramManager
+            onClose={(n) => {
+              setManaging(false);
+              if (n) announce(`단선도 ${n}개를 지웠습니다`);
+            }}
+          />
+        )}
         <button type="button" className="btn btn--secondary btn--sm" onClick={() => (st.duplicate(), announce('단선도를 복제했습니다'))} data-testid="draw-dup">
           복제
         </button>

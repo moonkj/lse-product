@@ -418,4 +418,26 @@ test.describe('단선도 그리기', () => {
     const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('lse-draw:v1')!).order.length);
     expect(saved).toBe(2);
   });
+
+  test('목록 정리: 같은 이름 단선도는 첫 번째(지금 보는 것)만 남기고 미리 골라 둠 → 한 번에 지우기', async ({ page }) => {
+    await page.goto('./#/');
+    await page.evaluate(() => {
+      const d = (id: string, name: string, x: number) => ({ id, name, nodes: [{ id: 'n' + id, kind: 'source', x, y: 100, v: '22.9kV' }], edges: [] });
+      const ds = [d('a', '예시', 100), d('b', '예시', 200), d('c', '예시', 300), d('m', '내 단선도', 100)];
+      localStorage.setItem('lse-draw:v1', JSON.stringify({ currentId: 'b', order: ds.map((x) => x.id), diagrams: Object.fromEntries(ds.map((x) => [x.id, x])) }));
+    });
+    await page.goto('./#/builder');
+    await page.reload();
+    await tid(page, 'draw-manage').click();
+    const dlg = tid(page, 'draw-manager');
+    await expect(dlg).toBeVisible();
+    await expect(dlg.getByTestId('draw-manager-check').nth(0)).toBeChecked();
+    await expect(dlg.getByTestId('draw-manager-check').nth(1)).not.toBeChecked(); // 지금 보는 것
+    await expect(dlg.getByTestId('draw-manager-check').nth(3)).not.toBeChecked();
+    const axe = await new AxeBuilder({ page }).include('[data-testid="draw-manager"]').analyze();
+    expect(axe.violations.map((v) => v.id)).toEqual([]);
+    page.once('dialog', (dd) => dd.accept());
+    await tid(page, 'draw-manager-remove').click();
+    await expect(page.locator('[data-testid="draw-pick"] option')).toHaveCount(2);
+  });
 });
