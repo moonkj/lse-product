@@ -333,3 +333,54 @@
   .dflow__particles, .dflow__tr-glow { display: none; }
   .dflow__path, .dflow__path--rev { animation: none; }
 }
+
+/* ── 효과 층 (2026-11-27 3차) — SVG 밖 HTML: 물방울(offset-path + WAAPI), 변압기 빛남(opacity·transform) ── */
+.dflow-fx {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  contain: layout style size;
+}
+.dflow-drop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  offset-anchor: 76% 50%;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+/* 리퀴드 덩어리: 양 끝이 부드럽게 사라지는 캡슐 + 밝은 중심 + 옅은 흰 테 (필터 없이) */
+.dflow-drop__blob {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background:
+    radial-gradient(ellipse 30% 60% at 70% 45%, rgb(255 255 255 / 0.95), transparent 70%),
+    linear-gradient(90deg, rgb(47 154 232 / 0) 0%, rgb(47 154 232 / 0.85) 28%, #5cc0ff 62%, #c9efff 86%, rgb(201 239 255 / 0) 100%);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.55), 0 0 6px 1px rgb(92 192 255 / 0.45);
+  transform-origin: 60% 50%;
+  will-change: transform;
+}
+.dflow-drop--idle .dflow-drop__blob { opacity: 0.75; }
+.dflow-trglow {
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 0 0 3px var(--flow-pulse), 0 0 18px 4px var(--flow-glow);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: dflow-trglow 2.4s ease-out infinite;
+}
+@keyframes dflow-trglow {
+  0% { opacity: 0; transform: scale(0.98); }
+  12% { opacity: 0.9; transform: scale(1); }
+  45% { opacity: 0; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1.06); }
+}
+.diagram__viewport.is-panning .dflow-trglow,
+.dflow[data-paused='true'] ~ .dflow-fx .dflow-trglow { animation-play-state: paused; }
+.dflow[data-tiny='true'] ~ .dflow-fx { display: none; }
+@media (prefers-reduced-motion: reduce), print {
+  .dflow-fx { display: none; }
+}
