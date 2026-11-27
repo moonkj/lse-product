@@ -283,3 +283,24 @@
 :root[data-theme='dark'] .scol__head { color: #14171c; }
 :root[data-theme='dark'] .scol__count,
 :root[data-theme='dark'] .scol__code { background: rgb(255 255 255 / 0.45); }
+
+/* 리퀴드 알약 (2026-11-27, useLiquidPill) — 선택 표시를 버튼 뒤 알약 하나가 맡아 바뀔 때 물방울처럼 이동 */
+.vswitch--pill { position: relative; isolation: isolate; }
+.vswitch--pill .vswitch__btn { background: transparent; position: relative; transition: color 0.2s ease 0.16s; }
+.vswitch--pill .vswitch__btn:hover:not([aria-pressed='true']) { background: var(--color-surface-2); }
+.vswitch--pill .vswitch__btn[aria-pressed='true'] { background: transparent; }
+.vswitch--pill { background: var(--color-surface); }
+.vswitch__pill {
+  position: absolute;
+  z-index: -1;
+  border-radius: calc(var(--radius-md) - 2px);
+  background: var(--color-brand);
+  opacity: 0;
+  pointer-events: none;
+}
+.vswitch__pill[data-dir='right'] { transition: right 0.26s cubic-bezier(0.4, 0, 0.2, 1), left 0.5s cubic-bezier(0.5, 1.45, 0.45, 1) 0.05s; }
+.vswitch__pill[data-dir='left'] { transition: left 0.26s cubic-bezier(0.4, 0, 0.2, 1), right 0.5s cubic-bezier(0.5, 1.45, 0.45, 1) 0.05s; }
+@media (prefers-reduced-motion: reduce) {
+  .vswitch__pill[data-dir] { transition: none; }
+  .vswitch--pill .vswitch__btn { transition: none; }
+}

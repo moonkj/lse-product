@@ -1536,3 +1536,29 @@
     display: none;
   }
 }
+
+/* 계층 선택 강조 리퀴드 이동 (2026-11-27) — 상자(frame)와 흐림 구멍(hole)이 같은 규칙으로 움직임.
+   가는 쪽 변이 먼저 빠르게, 반대쪽 변이 탄성 있게 따라붙어 물방울처럼 늘었다 줄어듦 */
+.dfocus { overflow: hidden; }
+.dfocus__hole {
+  position: absolute;
+  border-radius: 8px;
+  box-shadow: 0 0 0 200vmax color-mix(in srgb, var(--color-surface) 55%, transparent);
+  animation: dfocus-in 220ms ease-out both;
+}
+.dfocus__frame { transition: border-color 0.3s ease; }
+.dfocus__hole[data-dir='down'], .dfocus__frame[data-dir='down'] {
+  transition: bottom 0.32s cubic-bezier(0.4, 0, 0.2, 1), top 0.6s cubic-bezier(0.5, 1.25, 0.45, 1) 0.06s, left 0.4s ease, right 0.4s ease, border-color 0.3s ease;
+}
+.dfocus__hole[data-dir='up'], .dfocus__frame[data-dir='up'] {
+  transition: top 0.32s cubic-bezier(0.4, 0, 0.2, 1), bottom 0.6s cubic-bezier(0.5, 1.25, 0.45, 1) 0.06s, left 0.4s ease, right 0.4s ease, border-color 0.3s ease;
+}
+.dfocus__hole[data-dir='right'], .dfocus__frame[data-dir='right'] {
+  transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1), left 0.6s cubic-bezier(0.5, 1.25, 0.45, 1) 0.06s, top 0.4s ease, bottom 0.4s ease, border-color 0.3s ease;
+}
+.dfocus__hole[data-dir='left'], .dfocus__frame[data-dir='left'] {
+  transition: left 0.32s cubic-bezier(0.4, 0, 0.2, 1), right 0.6s cubic-bezier(0.5, 1.25, 0.45, 1) 0.06s, top 0.4s ease, bottom 0.4s ease, border-color 0.3s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dfocus__hole, .dfocus__hole[data-dir], .dfocus__frame[data-dir] { transition: none; animation: none; }
+}

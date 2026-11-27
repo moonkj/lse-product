@@ -1211,8 +1211,6 @@
 .app-nav__pill {
   position: absolute;
   z-index: -1;
-  top: 4px;
-  height: 34px;
   border-radius: var(--radius-pill);
   background: var(--color-on-header);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 4px 14px rgb(0 0 0 / 0.16);
@@ -1221,10 +1219,10 @@
   transform-origin: center;
 }
 .app-nav__pill[data-dir='right'] {
-  transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1), left 0.52s cubic-bezier(0.5, 1.45, 0.45, 1) 0.06s, top 0.2s, height 0.2s;
+  transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1), left 0.52s cubic-bezier(0.5, 1.45, 0.45, 1) 0.06s, top 0.2s, bottom 0.2s;
 }
 .app-nav__pill[data-dir='left'] {
-  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), right 0.52s cubic-bezier(0.5, 1.45, 0.45, 1) 0.06s, top 0.2s, height 0.2s;
+  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), right 0.52s cubic-bezier(0.5, 1.45, 0.45, 1) 0.06s, top 0.2s, bottom 0.2s;
 }
 /* 알약이 있으면 링크 자체 흰 바탕·그림자는 끄고 글자색만 바꿈 */
 .app-nav--pill .app-nav__link[aria-current='page'],

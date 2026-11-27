@@ -8,6 +8,7 @@ import { getDiagramController, useView, viewStore, type ViewState } from '../../
 import { useMediaQuery, useViewMode } from '../../lib/diagram/url';
 import type { JumpState } from '../diagram/DiagramCanvas';
 import './LayerNav.css';
+import { useLiquidPill } from '../../lib/useLiquidPill';
 import { GRID_LABELS, getActiveGrid } from '../../lib/diagram/grid';
 
 /** 내비 짧은 이름 — 전압은 둘째 줄(데이터 voltage)로 내려 한 줄 유지 (5라운드 합의) */
@@ -120,6 +121,13 @@ export default function LayerNav() {
   const axisRef = useRef<HTMLDivElement>(null);
   const rangeRef = useRef<HTMLSpanElement>(null);
   const [rowHeights, setRowHeights] = useState<number[] | null>(null);
+  // 지금 계층 테두리가 계층을 옮길 때 물방울처럼 늘었다 줄며 이동 (2026-11-27 사용자: 레벨 선택에도 리퀴드 효과)
+  const curPillRef = useRef<HTMLSpanElement>(null);
+  useLiquidPill(navRef, curPillRef, `${current ?? ''}|${rowHeights?.join(',') ?? ''}`, {
+    selector: '.layer-nav__btn.is-current',
+    memoryKey: 'layer-nav',
+    onPlace: (el, pill) => pill.style.setProperty('--pill-accent', getComputedStyle(el).getPropertyValue('--layer-accent') || 'var(--color-link)'),
+  });
   const bandHeights = useMemo(() => mainLayers.map((l) => model.layerRect.get(l.id)?.h ?? 1), [model, mainLayers]);
 
   useLayoutEffect(() => {
@@ -325,6 +333,7 @@ export default function LayerNav() {
       aria-label="계층 바로가기"
       data-testid="layer-nav"
     >
+      <span className="layer-nav__curpill" ref={curPillRef} aria-hidden="true" />
       <div className="nav-block">
         <h2 className="nav-section-title">
           계층 바로가기{' '}

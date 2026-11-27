@@ -1,5 +1,7 @@
 import { useHomeView, useSetHomeView, type HomeView } from '../../lib/diagram/url';
 import { announce } from '../../lib/announce';
+import { useRef } from 'react';
+import { useLiquidPill } from '../../lib/useLiquidPill';
 import './stage.css';
 
 /**
@@ -9,6 +11,9 @@ import './stage.css';
 export default function ViewSwitch() {
   const view = useHomeView();
   const setView = useSetHomeView();
+  const boxRef = useRef<HTMLDivElement>(null);
+  const pillRef = useRef<HTMLSpanElement>(null);
+  useLiquidPill(boxRef, pillRef, view, { memoryKey: 'view-switch' });
   const opts: { value: HomeView; label: string; title: string; icon: JSX.Element }[] = [
     {
       value: 'map',
@@ -30,7 +35,8 @@ export default function ViewSwitch() {
     },
   ];
   return (
-    <div className="vswitch" role="group" aria-label="보기 방식" data-testid="view-switch">
+    <div className="vswitch vswitch--pill" role="group" aria-label="보기 방식" data-testid="view-switch" ref={boxRef}>
+      <span className="vswitch__pill" ref={pillRef} aria-hidden="true" />
       {opts.map((o) => (
         <button
           key={o.value}

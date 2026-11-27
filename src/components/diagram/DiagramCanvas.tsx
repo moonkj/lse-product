@@ -210,28 +210,45 @@ export const Bands = memo(function Bands({
 const FocusOverlay = memo(function FocusOverlay({ model }: { model: DiagramModel }) {
   const focus = useView((s) => s.focus);
   const r = focus ? model.layerRect.get(focus) : undefined;
-  if (!r) return null;
+  // 리퀴드 이동 (2026-11-27 사용자: 레벨 선택에도 리퀴드 효과) — 계층을 바꾸면 상자가 가는 쪽 변부터 늘어나고 반대쪽 변이 탄성 있게 따라붙음
+  const prev = useRef<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
   const W = model.width;
   const H = model.height;
   // 덮개는 선택 영역 둘레 G 만큼 띄움 — 밴드 바깥 테두리(outline 3px)·그림자가 덮이지 않고 튀어나와 보이게
   const G = 4;
-  const x0 = Math.max(0, r.x - G);
-  const y0 = Math.max(0, r.y - G);
-  const x1 = Math.min(W, r.x + r.w + G);
-  const y1 = Math.min(H, r.y + r.h + G);
-  const veils = [
-    { left: 0, top: 0, width: W, height: y0 },
-    { left: 0, top: y1, width: W, height: Math.max(0, H - y1) },
-    { left: 0, top: y0, width: x0, height: y1 - y0 },
-    { left: x1, top: y0, width: Math.max(0, W - x1), height: y1 - y0 },
-  ];
+  const box = r ? { x0: Math.max(0, r.x - G), y0: Math.max(0, r.y - G), x1: Math.min(W, r.x + r.w + G), y1: Math.min(H, r.y + r.h + G) } : null;
+  let dir = '';
+  if (box && prev.current) {
+    const p = prev.current;
+    const dx = box.x0 + box.x1 - (p.x0 + p.x1);
+    const dy = box.y0 + box.y1 - (p.y0 + p.y1);
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) dir = Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
+  }
+  useLayoutEffect(() => {
+    if (!box) {
+      prev.current = null;
+      return;
+    }
+    if (dir && frameRef.current && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      const s = dir === 'down' || dir === 'up' ? 'scaleX' : 'scaleY';
+      frameRef.current.animate?.([{ transform: `${s}(1)` }, { transform: `${s}(0.985)`, offset: 0.45 }, { transform: `${s}(1)` }], { duration: 520, easing: 'ease-out' });
+    }
+    prev.current = box;
+  });
+  if (!box || !focus) return null;
+  const { x0, y0, x1, y1 } = box;
+  const edges = { left: x0, top: y0, right: W - x1, bottom: H - y1 };
   return (
-    <div className="dfocus" data-testid="layer-focus" data-layer={focus} aria-hidden="true">
-      {veils.map((v, i) => (v.width > 0 && v.height > 0 ? <div key={i} className="dfocus__veil" style={v} /> : null))}
+    <div className="dfocus" data-testid="layer-focus" data-layer={focus} aria-hidden="true" style={{ width: W, height: H }}>
+      {/* 나머지 영역 흐림 = 선택 상자 둘레의 큰 그림자 하나 (상자와 같이 움직임) */}
+      <div className="dfocus__hole" data-dir={dir} style={edges} />
       <div
+        ref={frameRef}
         className="dfocus__frame"
         data-testid="layer-focus-frame"
-        style={{ left: x0, top: y0, width: x1 - x0, height: y1 - y0, '--band-accent': `var(--band-accent-${focus!.toLowerCase()})` } as React.CSSProperties}
+        data-dir={dir}
+        style={{ ...edges, '--band-accent': `var(--band-accent-${focus.toLowerCase()})` } as React.CSSProperties}
       />
     </div>
   );
