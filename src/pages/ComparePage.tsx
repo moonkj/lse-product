@@ -11,7 +11,7 @@ import ExternalLink from '../components/common/ExternalLink';
 import { OverviewPoints } from '../components/common/EquipmentOverview';
 import EquipmentVisual from '../components/pages/EquipmentVisual';
 import ProductVisual, { hasProductPhoto } from '../components/pages/ProductVisual';
-import { CATEGORY_LABELS, COVERAGE_LABELS, pageTitle } from '../lib/labels';
+import { CATEGORY_LABELS, COVERAGE_LABELS, eqLabel, pageTitle } from '../lib/labels';
 import { layerTitle } from '../lib/diagram/model';
 import { overviewParts, overviewText } from '../lib/overview';
 import { equipmentForProduct, productsForEquipment } from '../lib/pages/catalog';
@@ -437,7 +437,7 @@ function productSections(cols: ProductCol[], specsState: SpecsState): { sections
           text: main.id,
           node: (
             <span>
-              <Link to={`/equipment/${main.id}`}>{main.abbr ? `${main.name} (${main.abbr})` : main.name}</Link>
+              <Link to={`/equipment/${main.id}`}>{eqLabel(main, 'suffix')}</Link>
               {e.length > 1 && <span className="cmp-muted"> 외 기기 {e.length - 1}종</span>}
             </span>
           ),

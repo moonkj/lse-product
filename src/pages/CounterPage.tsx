@@ -7,10 +7,10 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { getData } from '../data/load';
 import PageHeader from '../components/common/PageHeader';
 import CoverageBadge from '../components/common/CoverageBadge';
-import { pageTitle } from '../lib/labels';
+import { eqLabel, pageTitle } from '../lib/labels';
 import { LAYER_LABELS } from '../lib/schema';
 import { candidateProducts } from '../lib/builder/validate';
-import { RESPONSE_LABEL, matchArticle, matchText } from '../lib/counter/match';
+import { ADJACENT_ROLE, RESPONSE_LABEL, matchArticle, matchText } from '../lib/counter/match';
 import { articleUrlOf, slugWords, splitPasted, type Article } from '../lib/counter/article';
 import './pages.css';
 import './CounterPage.css';
@@ -179,7 +179,7 @@ export default function CounterPage() {
                       <li key={id}>
                         <Link to={`/equipment/${id}`} className="cnt-bundle__item">
                           <CoverageBadge coverage={e.coverage} variant="icon" />
-                          <span>{e.abbr ? `${e.abbr} ` : ''}{e.name}</span>
+                          <span>{eqLabel(e)}</span>
                         </Link>
                       </li>
                     );
@@ -198,24 +198,23 @@ export default function CounterPage() {
                 const e = data.equipmentTypeById.get(h.eq)!;
                 const products = candidateProducts(h.eq);
                 const adj = h.adjacentTo ? data.equipmentTypeById.get(h.adjacentTo) : undefined;
+                // 본문에서만 찾은 제품군 — 기사 주제가 아니라 곁가지 언급일 수 있어 '대응'이라 단정하지 않음
+                const bodyOnly = !adj && !!h.bodyTerms?.length && h.bodyTerms.length === h.terms.length;
                 return (
                   <li key={h.eq} className={`pg-card cnt-hit cnt-hit--${e.coverage}`} data-testid={`counter-hit-${h.eq}`}>
                     <div className="cnt-hit__head">
                       <h2 className="cnt-hit__title">
-                        <Link to={`/equipment/${h.eq}`}>
-                          {e.abbr ? `${e.abbr} ` : ''}
-                          {e.name}
-                        </Link>
+                        <Link to={`/equipment/${h.eq}`}>{eqLabel(e)}</Link>
                       </h2>
                       <CoverageBadge coverage={e.coverage} />
                     </div>
                     <p className="cnt-hit__resp">
-                      <b>{RESPONSE_LABEL[e.coverage]}</b> · {LAYER_LABELS[e.layer]}
+                      <b>{adj ? `${adj.name} 관련 자사 제품` : bodyOnly && (e.coverage === 'owned' || e.coverage === 'partial') ? '본문에 언급된 관련 자사 제품' : RESPONSE_LABEL[e.coverage]}</b> · {LAYER_LABELS[e.layer]}
                     </p>
                     <p className="cnt-hit__why">
                       {adj ? (
                         <>
-                          경쟁사 '{adj.name}'은(는) 자사 사업 범위 밖이라, 함께 쓰이는 자사 기기로 연관 대응합니다.
+                          경쟁사 제품({adj.name})은 자사 사업 범위 밖입니다. 이 기기는 {ADJACENT_ROLE[adj.id] ?? `${adj.name}과(와) 함께 쓰는`} 자사 제품이라 같은 현장에 제안할 수 있습니다 (직접 대체품 아님).
                         </>
                       ) : (
                         <>

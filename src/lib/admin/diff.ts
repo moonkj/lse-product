@@ -1,4 +1,5 @@
 /** 원본 대비 초안 변경 내역 + 커밋 메시지용 요약 markdown */
+import { eqLabel } from '../labels';
 import { edgeKind } from '../diagram/geometry';
 import { nodeName, topologyChanged, type Draft } from './draft';
 
@@ -42,7 +43,7 @@ export function computeChanges(base: Draft, draft: Draft): Change[] {
   const out: Change[] = [];
   const eqName = (d: Draft, id: string) => {
     const e = d.equipmentTypes.find((x) => x.id === id);
-    return e ? (e.abbr ? `${e.name}(${e.abbr})` : e.name) : id;
+    return e ? eqLabel(e, 'suffix') : id;
   };
 
   // 기기

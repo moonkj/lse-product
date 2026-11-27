@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { COVERAGE_LABELS, LAYER_LABELS, type EquipmentType } from '../../lib/schema';
-import { COVERAGE_ICONS } from '../../lib/labels';
+import { COVERAGE_ICONS, eqLabel } from '../../lib/labels';
 import { nodeKind, nodeName, type Draft } from '../../lib/admin/draft';
 import { edgeKind, type EdgeKind } from '../../lib/diagram/geometry';
 import { ENTITY_LABELS, KIND_LABELS, type Change, type ChangeEntity } from '../../lib/admin/diff';
@@ -565,5 +565,5 @@ export function CheckPanel({
 }
 
 export function equipmentLabel(e: EquipmentType) {
-  return e.abbr ? `${e.abbr} ${e.name}` : e.name;
+  return eqLabel(e);
 }

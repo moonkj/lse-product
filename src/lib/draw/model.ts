@@ -7,6 +7,7 @@
  *  - panel   : 반(배전반·수배전반·분전반·MCC) — 안에 품목(items)을 담는다
  * 선은 위(from, 전원 쪽) → 아래(to, 부하 쪽) 방향. 변압기는 from 쪽에 붙으면 2차, to 쪽에 붙으면 1차.
  */
+import { eqLabel } from '../labels';
 import { getData } from '../../data/load';
 import type { Layer } from '../schema';
 import { RATED_EQ, defaultRating } from './ratings';
@@ -265,7 +266,7 @@ export function eqName(id?: string): string {
   const pt = panelTypeById(id);
   if (pt) return pt.label;
   const e = getData().equipmentTypeById.get(id);
-  return e ? (e.abbr ? `${e.abbr} ${e.name}` : e.name) : id;
+  return e ? eqLabel(e) : id;
 }
 
 export function nodeTitle(n: DNode): string {

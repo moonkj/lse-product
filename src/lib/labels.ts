@@ -141,3 +141,12 @@ export const isMainLayer = (l: Layer | string): l is Exclude<Layer, 'MON' | 'REN
 /** 공통 문서 제목 */
 export const APP_TITLE = 'LS ELECTRIC 전력계통 제품맵';
 export const pageTitle = (name?: string) => (name ? `${name} · ${APP_TITLE}` : APP_TITLE);
+
+/**
+ * 기기 표시 이름 — 약어 + 이름. 이름에 약어가 이미 들어 있으면 이름만 (예: 'PLC PLC', 'SST 반도체 변압기 (SST)' 중복 방지).
+ * style 'suffix' 는 '이름 (약어)'.
+ */
+export function eqLabel(e: Pick<EquipmentType, 'name' | 'abbr'>, style: 'prefix' | 'suffix' = 'prefix'): string {
+  if (!e.abbr || e.name.toLowerCase().includes(e.abbr.toLowerCase())) return e.name;
+  return style === 'suffix' ? `${e.name} (${e.abbr})` : `${e.abbr} ${e.name}`;
+}

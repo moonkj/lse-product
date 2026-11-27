@@ -10,7 +10,7 @@ import { getData, productImageUrl, type SpecsMap } from '../../data/load';
 import CoverageBadge from '../../components/common/CoverageBadge';
 import { useSpecs } from '../../components/compare/useSpecs';
 import { announce } from '../../lib/announce';
-import { COVERAGE_ORDER, todayIso } from '../../lib/labels';
+import { COVERAGE_ORDER, eqLabel, todayIso } from '../../lib/labels';
 import { LAYER_LABELS, type Layer } from '../../lib/schema';
 import { downloadText } from '../../lib/pages/catalog';
 import { maxOf, productRatings } from '../../lib/builder/specParse';
@@ -807,8 +807,7 @@ function NodeBox({ n, note, onResizeDown, onResizeMove, onResizeUp, issues, sele
               {img ? <img src={img} alt="" loading="lazy" draggable={false} /> : e ? <CoverageBadge coverage={e.coverage} variant="icon" /> : null}
             </span>
             <span className="drw-node__title">
-              {e?.abbr ? `${e.abbr} ` : ''}
-              {n.label ?? e?.name}
+              {e ? eqLabel({ name: n.label ?? e.name, abbr: e.abbr }) : n.label}
               {n.qty && n.qty > 1 ? <span className="drw-node__qty"> ×{n.qty}</span> : null}
             </span>
             <span className="drw-node__sub">{sub}</span>
@@ -889,7 +888,7 @@ function Palette({ onPick }: { onPick: (code: string) => void }) {
       {groups.map((g) => (
         <section key={g.layer}>
           <h3 className="drw-palette__h">{LAYER_LABELS[g.layer]}</h3>
-          <ul className="drw-palette__list">{g.items.map((e) => item(`equipment:${e.id}`, `${e.abbr ? `${e.abbr} ` : ''}${e.name}`, <CoverageBadge coverage={e.coverage} variant="icon" />))}</ul>
+          <ul className="drw-palette__list">{g.items.map((e) => item(`equipment:${e.id}`, eqLabel(e), <CoverageBadge coverage={e.coverage} variant="icon" />))}</ul>
         </section>
       ))}
     </aside>

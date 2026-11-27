@@ -12,6 +12,8 @@
  *   series: [[keyword, equipmentId]],          // 경쟁사 시리즈명, 점수 5
  *   projects: [{ id, label, terms[], equipment[], preset? }],
  *   adjacent: { equipmentId: [equipmentId] },  // 자사 범위 밖 기기 → 함께 쓰이는 자사 기기
+ *   adjacentRole: { equipmentId: '…할 때 함께 쓰는' },  // 연관 기기 문구 (2026-11-27 추가)
+ *   generic: { equipmentId: [equipmentId] },  // 일반어 기기 → 구체 기기: 구체 기기가 걸리고 일반어 점수 ≤ 2 면 일반어 제외 (2026-11-27 추가)
  *   examples: [{ q, competitors[], top?[], includes?[], excludes?[], projects?[] }],  // 매칭 기준 예시
  *   equipment: { id: { name, abbr?, layer, coverage, url, products: [{ id, name, url }] } }
  * }
@@ -68,6 +70,8 @@ const out = {
   series: dict.series,
   projects: dict.projects,
   adjacent: dict.adjacent,
+  adjacentRole: dict.adjacentRole ?? {},
+  generic: dict.generic ?? {},
   // 기준 예시 — 받는 쪽 매칭 구현이 제품맵과 같은 결과를 내는지 테스트용
   examples: dict.examples ?? [],
   equipment,

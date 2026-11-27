@@ -5,7 +5,7 @@ import PageHeader from '../components/common/PageHeader';
 import CoverageBadge from '../components/common/CoverageBadge';
 import { useSpecs } from '../components/compare/useSpecs';
 import { announce } from '../lib/announce';
-import { COVERAGE_LABELS, COVERAGE_ORDER, pageTitle, todayIso } from '../lib/labels';
+import { COVERAGE_LABELS, COVERAGE_ORDER, eqLabel as fmtEq, pageTitle, todayIso } from '../lib/labels';
 import { downloadText } from '../lib/pages/catalog';
 import { TEMPLATES, equipmentOf, slotsOf, templateById, type Row, type Template } from '../lib/builder/templates';
 import { isInstrumentProduct, QTY_MAX,
@@ -41,7 +41,7 @@ const DRAG_TYPE = 'text/x-lse-equipment';
 const eqById = (id: string) => getData().equipmentTypeById.get(id);
 const eqLabel = (id: string) => {
   const e = eqById(id);
-  return e ? (e.abbr ? `${e.abbr} ${e.name}` : e.name) : id;
+  return e ? fmtEq(e) : id;
 };
 const sameTarget = (a: Target | null, b: Target | undefined) => !!a && !!b && a.kind === b.kind && a.id === b.id;
 

@@ -164,7 +164,7 @@ export default function SearchBox() {
                       <>
                         <span className="search__kind">기기</span>
                         <span className="search__main">
-                          <strong>{r.node.eq.abbr ? `${r.node.eq.abbr} · ` : ''}{r.node.eq.name}</strong>
+                          <strong>{r.node.eq.abbr && !r.node.eq.name.toLowerCase().includes(r.node.eq.abbr.toLowerCase()) ? `${r.node.eq.abbr} · ` : ''}{r.node.eq.name}</strong>
                           <span className="search__sub">
                             {layerTitle(r.node.layer)} · {COVERAGE_LABELS[r.node.coverage]}
                           </span>

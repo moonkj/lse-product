@@ -1,3 +1,4 @@
+import { eqLabel } from '../../lib/labels';
 import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { peekSpecs, useData } from '../../data/load';
@@ -17,7 +18,7 @@ export function useCompareItems(kind: CompareKind): { id: string; name: string }
   return list.flatMap((id) => {
     if (kind === 'equipment') {
       const eq = data.equipmentTypeById.get(id);
-      return eq ? [{ id, name: eq.abbr ? `${eq.name} (${eq.abbr})` : eq.name }] : [];
+      return eq ? [{ id, name: eqLabel(eq, 'suffix') }] : [];
     }
     if (!compareIdInData('product', id, data)) return [];
     const { baseId, variantId } = splitCompareId(id);

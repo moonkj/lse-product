@@ -1,4 +1,5 @@
 /** 계통 구성 시뮬레이션 — 제품 목록(BOM) 표·CSV */
+import { eqLabel } from '../labels';
 import { getData, type SpecsMap } from '../../data/load';
 import { COVERAGE_LABELS } from '../schema';
 import { csvCell } from '../pages/catalog';
@@ -42,7 +43,7 @@ export function buildBom(b: Build, t: Template, specs?: SpecsMap): BomRow[] {
       key,
       section,
       slot,
-      equipment: eq.abbr ? `${eq.name} (${eq.abbr})` : eq.name,
+      equipment: eqLabel(eq, 'suffix'),
       coverage: COVERAGE_LABELS[eq.coverage],
       product: product?.name ?? (eq.coverage === 'owned' || eq.coverage === 'partial' ? (candidateProducts(eqId).length ? '(제품 미선택)' : '(개별 제품 없음 · 일괄 공급)') : '자사 제품 없음'),
       rating: ratingText(productId, specs),

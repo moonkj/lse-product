@@ -38,6 +38,9 @@ export const PROJECT_KINDS = dict.projects as ProjectKind[];
 /** 자사 범위 밖 기기를 경쟁사가 낼 때 대신 보여 줄 주변 자사 기기 */
 export const ADJACENT: Record<string, string[]> = dict.adjacent;
 
+/** 연관 기기가 범위 밖 기기와 어떻게 함께 쓰이는지 (화면 문구: '전동기를 기동·제어·보호할 때 함께 쓰는 자사 제품') */
+export const ADJACENT_ROLE: Record<string, string> = dict.adjacentRole;
+
 export interface EquipmentHit {
   eq: string;
   score: number;
@@ -127,7 +130,8 @@ function matchParts(titleIn: string, bodyIn: string): MatchResult {
     for (const [eq] of score) if (!titleScore.has(eq) && (bodyRaw.get(eq) ?? 0) < BODY_MIN_RAW) score.delete(eq);
   }
   // 일반어('breaker', '변압기')는 더 구체적인 같은 계열이 걸렸으면 낮춤
-  const generic: Record<string, string[]> = { mccb: ['acb', 'vcb', 'mcb-rcbo', 'elcb', 'sscb'], 'oil-tr': ['cast-tr', 'main-tr', 'sst'], 'lv-drive': ['mv-drive'], 'mv-swgr': ['lv-swgr', 'gis-154', 'auto-switch'] };
+  //   (사전 generic: 일반어 기기 → 더 구체적인 기기들, 일반어 점수 2 이하일 때만)
+  const generic: Record<string, string[]> = dict.generic;
   for (const [g, specific] of Object.entries(generic)) {
     const h = score.get(g);
     if (h && h.score <= 2 && specific.some((s) => score.has(s))) score.delete(g);

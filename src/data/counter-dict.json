@@ -971,6 +971,116 @@
       "traction",
       "railway",
       2
+    ],
+    [
+      "diesel generator",
+      "generator",
+      3
+    ],
+    [
+      "generator set",
+      "generator",
+      3
+    ],
+    [
+      "genset",
+      "generator",
+      3
+    ],
+    [
+      "gas turbine",
+      "generator",
+      2
+    ],
+    [
+      "steam turbine",
+      "generator",
+      2
+    ],
+    [
+      "generator",
+      "generator",
+      2
+    ],
+    [
+      "발전기",
+      "generator",
+      2
+    ],
+    [
+      "가스터빈",
+      "generator",
+      2
+    ],
+    [
+      "emergency generator",
+      "emergency-gen",
+      3
+    ],
+    [
+      "standby generator",
+      "emergency-gen",
+      3
+    ],
+    [
+      "backup generator",
+      "emergency-gen",
+      3
+    ],
+    [
+      "backup power",
+      "emergency-gen",
+      2
+    ],
+    [
+      "비상발전기",
+      "emergency-gen",
+      3
+    ],
+    [
+      "비상 발전기",
+      "emergency-gen",
+      3
+    ],
+    [
+      "server rack",
+      "it-rack",
+      3
+    ],
+    [
+      "rack pdu",
+      "it-rack",
+      3
+    ],
+    [
+      "서버 랙",
+      "it-rack",
+      3
+    ],
+    [
+      "서버랙",
+      "it-rack",
+      3
+    ],
+    [
+      "lighting",
+      "lighting-outlet",
+      2
+    ],
+    [
+      "wiring device",
+      "lighting-outlet",
+      2
+    ],
+    [
+      "조명",
+      "lighting-outlet",
+      2
+    ],
+    [
+      "콘센트",
+      "lighting-outlet",
+      2
     ]
   ],
   "series": [
@@ -1361,7 +1471,12 @@
         "신재생",
         "bess",
         "energy storage",
-        "풍력"
+        "풍력",
+        "wind turbine",
+        "offshore wind",
+        "solar",
+        "태양광",
+        "해상풍력"
       ],
       "equipment": [
         "pv",
@@ -1378,7 +1493,6 @@
       "label": "공장·산업 설비",
       "terms": [
         "factory",
-        "plant",
         "manufacturing",
         "공장",
         "산업단지",
@@ -1386,7 +1500,10 @@
         "semiconductor fab",
         "반도체 공장",
         "battery plant",
-        "배터리 공장"
+        "배터리 공장",
+        "manufacturing plant",
+        "production plant",
+        "생산공장"
       ],
       "equipment": [
         "mv-swgr",
@@ -1439,6 +1556,43 @@
     "emergency-gen": [
       "lv-ats",
       "alts"
+    ],
+    "lighting-outlet": [
+      "panelboard",
+      "mcb-rcbo",
+      "elcb"
+    ]
+  },
+  "adjacentRole": {
+    "motor": "전동기를 기동·제어·보호할 때 함께 쓰는",
+    "generator": "발전기 전원을 계통에 연결·절체할 때 함께 쓰는",
+    "it-rack": "서버 랙에 전원을 나눠 줄 때 함께 쓰는",
+    "emergency-gen": "비상발전기로 전원을 절체할 때 함께 쓰는",
+    "lighting-outlet": "조명·콘센트 회로를 나누고 보호할 때 함께 쓰는"
+  },
+  "generic": {
+    "mccb": [
+      "acb",
+      "vcb",
+      "mcb-rcbo",
+      "elcb",
+      "sscb"
+    ],
+    "oil-tr": [
+      "cast-tr",
+      "main-tr",
+      "sst"
+    ],
+    "lv-drive": [
+      "mv-drive"
+    ],
+    "mv-swgr": [
+      "lv-swgr",
+      "gis-154",
+      "auto-switch"
+    ],
+    "generator": [
+      "emergency-gen"
     ]
   },
   "examples": [
@@ -1494,6 +1648,29 @@
       "competitors": [],
       "excludes": [
         "ups"
+      ]
+    },
+    {
+      "q": "Caterpillar diesel generator sets for data center backup power",
+      "competitors": [],
+      "includes": [
+        "generator",
+        "lv-ats"
+      ],
+      "projects": [
+        "datacenter"
+      ]
+    },
+    {
+      "q": "Hyundai Electric power transformer plant in Alabama",
+      "competitors": [
+        "hd"
+      ],
+      "includes": [
+        "main-tr"
+      ],
+      "excludesProjects": [
+        "factory"
       ]
     }
   ]

@@ -31,7 +31,7 @@ test.describe('경쟁 대응', () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('./#/counter?q=' + encodeURIComponent('ABB Unveils Intelligent Motor to Accelerate Industrial AI Adoption'));
     await expect(tid(page, 'counter-input')).toHaveValue(/Intelligent Motor/);
-    await expect(tid(page, 'counter-hit-lv-drive')).toContainText('자사 사업 범위 밖이라');
+    await expect(tid(page, 'counter-hit-lv-drive')).toContainText('자사 사업 범위 밖입니다');
     await page.goto('./#/counter?q=' + encodeURIComponent('Eaton wins hyperscale data center UPS and switchgear order'));
     await expect(tid(page, 'counter-project-datacenter')).toBeVisible();
     await expect(tid(page, 'counter-hit-ups')).toContainText('자사 미보유');

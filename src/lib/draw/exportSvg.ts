@@ -2,6 +2,7 @@
  * 단선도 그림 내보내기 — 캔버스와 같은 배치를 독립 SVG 한 장으로 (흰 바탕, 사진 없이 글자·선만).
  * SVG 내려받기·PNG 변환·인쇄에 같이 쓴다. 아래에 제목·기준일·안내 문구 칸.
  */
+import { eqLabel } from '../labels';
 import { getData } from '../../data/load';
 import { DISCLAIMER } from '../builder/validate';
 import { edgePath } from './geometry';
@@ -64,7 +65,7 @@ function nodeSvg(n: DNode, state?: 'error' | 'warn'): string {
   }
   const e = n.eq ? getData().equipmentTypeById.get(n.eq) : undefined;
   const sub = isTransformer(n.eq) ? `${voltageLabel(n.hv)}/${voltageLabel(n.lv)} ${n.kVA ?? '-'}kVA` : isOffLine(n.eq) ? '신호·감시' : voltageLabel(n.v);
-  const head = `${e?.abbr ? `${e.abbr} ` : ''}${n.label ?? e?.name ?? title}${n.qty && n.qty > 1 ? ` ×${n.qty}` : ''}`;
+  const head = `${e ? eqLabel({ name: n.label ?? e.name, abbr: e.abbr }) : (n.label ?? title)}${n.qty && n.qty > 1 ? ` ×${n.qty}` : ''}`;
   // 상자 높이에 맞춰 기호·글자를 배치 (기본 210×140, 사용자가 키우면 같이 내려감)
   const k = Math.max(0.7, Math.min(1.6, h / 140));
   const sy = y + 30 * k;

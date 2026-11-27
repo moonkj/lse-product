@@ -10,6 +10,7 @@
  *  07 차단용량 < 예상 단락전류 (warn, %Z 가정)   08 변압기 용량이 카탈로그 범위 밖 (warn)
  *  09 정격 정보 없음 — 판단 보류 (info)    10 템플릿 규칙 (requires·minCount·oneOf, warn)
  */
+import { eqLabel } from '../labels';
 import { getData } from '../../data/load';
 import type { SpecsMap } from '../../data/load';
 import type { Coverage, EquipmentType, Product } from '../schema';
@@ -77,7 +78,7 @@ export function defaultBuild(t: Template, specs?: SpecsMap): Build {
 const eqById = (id: string) => getData().equipmentTypeById.get(id);
 const eqName = (id: string) => {
   const e = eqById(id);
-  return e ? (e.abbr ? `${e.name}(${e.abbr})` : e.name) : id;
+  return e ? eqLabel(e, 'suffix') : id;
 };
 const fmt = (n: number, d = 0) => n.toLocaleString('ko-KR', { maximumFractionDigits: d });
 
