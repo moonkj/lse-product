@@ -20,7 +20,7 @@ export function useSimResult(): SimResult | null {
   const { on, opened, faults, opts } = useSimState();
   const graph = useSimGraph();
   const grid = getActiveGrid();
-  const key = `${grid}|${[...opened].sort().join(',')}|${[...faults].sort().join(',')}|${opts.faultType}|${opts.failPrimary ? 1 : 0}|${opts.microgrid ? 1 : 0}`;
+  const key = `${grid}|${[...opened].sort().join(',')}|${[...faults].sort().join(',')}|${opts.faultType}|${opts.failPrimary ? 1 : 0}|${opts.microgrid ? 1 : 0}|${opts.alt === 'all' ? 'all' : [...(opts.alt ?? [])].sort().join(',')}`;
   return useMemo(() => {
     if (!on) return null;
     if (cache?.key === key) return cache.result;

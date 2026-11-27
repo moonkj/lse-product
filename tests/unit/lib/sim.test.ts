@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { getData } from '../../../src/data/load';
 import { getDiagramModel } from '../../../src/lib/diagram/model';
 import { flowDirMap } from '../../../src/lib/diagram/flow';
-import { isBreaker, protectiveDevices, simulate, type SimGraph } from '../../../src/lib/diagram/sim';
+import { altGroups, isBreaker, protectiveDevices, simulate, type SimGraph } from '../../../src/lib/diagram/sim';
 
 const data = getData();
 const model = getDiagramModel(data);
@@ -50,8 +50,18 @@ describe('사고 시뮬레이션', () => {
     expect(r.tripped).toEqual(['n-vcb']);
     expect(r.nodes.get('n-acb')).toBe('dead');
   });
-  it('2회선 수전: LBS 를 열어도 ALTS 쪽으로 계속 공급', () => {
+  it('택1 구성: 기본은 묶음의 첫 번째(1회선 LBS) — LBS 를 열면 수전 정전, ALTS 는 미설치', () => {
     const r = simulate(g, S('n-lbs'), S());
+    expect(r.nodes.get('n-alts')).toBe('unused');
+    expect(r.nodes.get('n-mof')).toBe('dead');
+    expect(altGroups(g).map((x) => x.options.map((o) => o.node))).toEqual([['n-lbs', 'n-alts'], ['n-vc', 'n-mv-drive'], ['n-ms', 'n-drive', 'n-soft']]);
+    // 전동기 기동을 인버터로 고르면 MS·소프트스타터는 미설치, 전동기 사고는 인버터만 끊음
+    const m = simulate(g, S(), S('n-motor'), { alt: ['n-drive'] });
+    expect(m.tripped).toEqual(['n-drive']);
+    expect(m.nodes.get('n-ms')).toBe('unused');
+  });
+  it('2회선 수전(ALTS 선택): LBS 쪽을 막아도 ALTS 쪽으로 계속 공급', () => {
+    const r = simulate(g, S('n-lbs'), S(), { alt: ['n-alts'] });
     expect(r.nodes.get('n-mof')).toBe('normal');
     expect(r.dead).toEqual([]);
   });

@@ -68,4 +68,50 @@ test.describe('사고 시뮬레이션', () => {
     const axe = await new AxeBuilder({ page }).include('[data-testid="sim-panel"]').analyze();
     expect(axe.violations.map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([]);
   });
+
+  test('택1 구성 · 중요 부하 유지율 · 보호협조 곡선 · 복구 순서 · 보고서', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/?sim=1');
+    // 2회선 ALTS 시나리오: 택1 선택이 ALTS 로, LBS 는 미설치
+    await tid(page, 'sim-scenario-alts').click();
+    await expect(tid(page, 'sim-alt-0')).toHaveValue('n-alts');
+    await expect(tid(page, 'diagram-node-n-lbs')).toHaveAttribute('data-sim', 'unused');
+    await expect(tid(page, 'diagram-node-n-alts')).not.toHaveAttribute('data-sim', 'dead');
+    // 수전 정전: 중요 부하 유지율 · 복구 순서
+    await tid(page, 'sim-scenario-grid-loss').click();
+    await expect(tid(page, 'sim-important')).toContainText('%');
+    await expect(tid(page, 'sim-restore')).toContainText('재투입');
+    await expect(tid(page, 'sim-restore')).toContainText('ATS 상용 쪽으로 재절체');
+    // 차단 실패: 보호협조 곡선(1차 실패 + 후비)
+    await tid(page, 'sim-scenario-fail').click();
+    await expect(tid(page, 'sim-tcc')).toBeVisible();
+    await expect(tid(page, 'sim-tcc')).toContainText('후비');
+    // 보고서: 인쇄용 숨은 창이 만들어지고 내용이 들어감
+    await page.evaluate(() => { (window as unknown as { print: () => void }).print = () => {}; });
+    await tid(page, 'sim-report').click();
+    const frame = page.locator('iframe[data-sim-report]');
+    await expect(frame).toHaveCount(1);
+    await expect.poll(() => frame.evaluate((f) => (f as HTMLIFrameElement).contentDocument?.body.innerText ?? '')).toContain('사고 시뮬레이션 보고서');
+    const axe = await new AxeBuilder({ page }).include('[data-testid="sim-panel"]').analyze();
+    expect(axe.violations.map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([]);
+    await page.screenshot({ path: SHOT + 'sim-tcc.png' });
+  });
+
+  test('내 단선도(계통 구성)에서 사고 시뮬레이션: 예시 단선도 → 반 열기 → 하류 정전 · 처음으로', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await tid(page, 'draw-preset').selectOption('substation');
+    await tid(page, 'draw-sim').click();
+    await expect(tid(page, 'draw-sim-bar')).toContainText('상자를 누르면');
+    // 첫 번째 '반'(특고압 수배전반)을 누르면 주 차단기 열기 → 하류 정전
+    const panel = page.locator('[data-testid^="draw-node-"][data-kind="panel"]').first();
+    await panel.click();
+    await expect(tid(page, 'draw-sim-bar')).toContainText('정전');
+    expect(await page.locator('.drw-node[data-sim="dead"]').count()).toBeGreaterThan(0);
+    await page.screenshot({ path: SHOT + 'draw-sim.png' });
+    await tid(page, 'draw-sim-reset').click();
+    await expect(page.locator('.drw-node[data-sim="dead"]')).toHaveCount(0);
+    await tid(page, 'draw-sim').click();
+    await expect(tid(page, 'draw-sim-bar')).toHaveCount(0);
+  });
 });

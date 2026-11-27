@@ -83,7 +83,8 @@ function reachUp(from: string, target: string) {
 
 const problems: string[] = [];
 function check(label: string, opened: string[], faults: string[], t: FaultType = 'short', fail = false) {
-  const r = simulate(g, new Set(opened), new Set(faults), { faultType: t, failPrimary: fail });
+  // 검증용 독립 계산은 택1 을 모두 연결한 그래프 → 시뮬레이션도 alt: 'all' 로 같은 조건
+  const r = simulate(g, new Set(opened), new Set(faults), { faultType: t, failPrimary: fail, alt: 'all' });
   const blocked = new Set([...opened, ...faults, ...r.tripped, ...r.failed]);
   const mainAlive = reach(MAIN, blocked);
   const allAlive = reach([...MAIN, ...STANDBY], blocked);

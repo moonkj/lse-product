@@ -21,7 +21,7 @@ import { useSearchParams } from 'react-router-dom';
 import type { EquipmentType } from '../schema';
 import type { FlowDir } from './flow';
 
-export type SimNodeState = 'normal' | 'backup' | 'dead' | 'open' | 'tripped' | 'fault' | 'failed';
+export type SimNodeState = 'normal' | 'backup' | 'dead' | 'open' | 'tripped' | 'fault' | 'failed' | 'unused';
 /** 사고 종류 */
 export type FaultType = 'short' | 'ground' | 'overload';
 export const FAULT_TYPE_LABEL: Record<FaultType, string> = { short: '단락', ground: '지락(누전)', overload: '과부하' };
@@ -32,6 +32,44 @@ export interface SimOptions {
   failPrimary?: boolean;
   /** 마이크로그리드 자립 운전 (태양광·ESS → 380V 모선) */
   microgrid?: boolean;
+  /** 택1 구성에서 고른 기기 id (묶음마다 하나, 없으면 그 묶음의 첫 번째). 'all' = 택1 무시하고 모두 연결 */
+  alt?: readonly string[] | 'all';
+}
+
+/** 택1 묶음 — 같은 이름(label)의 택1(alt) 선들. 묶음마다 바뀌는 쪽 끝 기기가 선택지 */
+export interface AltGroup {
+  label: string;
+  options: { node: string; edgeIds: string[] }[];
+}
+
+/** 계통도의 택1 묶음 (데이터 순서 유지) */
+export function altGroups(g: Pick<SimGraph, 'edges'>): AltGroup[] {
+  const byLabel = new Map<string, SimEdge[]>();
+  for (const e of g.edges) if (e.kind === 'alt') byLabel.set(e.label ?? e.id, [...(byLabel.get(e.label ?? e.id) ?? []), e]);
+  const groups: AltGroup[] = [];
+  for (const [label, es] of byLabel) {
+    if (es.length < 2) continue;
+    // 모든 선이 같이 쓰는 끝은 공통, 나머지 끝이 선택지
+    const common = [es[0].from, es[0].to].find((n) => es.every((e) => e.from === n || e.to === n));
+    const options = new Map<string, string[]>();
+    for (const e of es) {
+      const node = e.from === common ? e.to : e.from;
+      options.set(node, [...(options.get(node) ?? []), e.id]);
+    }
+    groups.push({ label, options: [...options].map(([node, edgeIds]) => ({ node, edgeIds })) });
+  }
+  return groups;
+}
+
+/** 고른 구성에서 쓰지 않는(설치하지 않은) 택1 기기 */
+export function unusedAltNodes(groups: readonly AltGroup[], alt: SimOptions['alt']): Set<string> {
+  const out = new Set<string>();
+  if (alt === 'all') return out;
+  for (const gr of groups) {
+    const chosen = gr.options.find((o) => alt?.includes(o.node))?.node ?? gr.options[0].node;
+    for (const o of gr.options) if (o.node !== chosen) out.add(o.node);
+  }
+  return out;
 }
 
 /** 타임라인 한 줄 */
@@ -50,6 +88,7 @@ export interface SimEdge {
   from: string;
   to: string;
   kind: string;
+  label?: string;
 }
 
 export interface SimGraph {
@@ -78,6 +117,12 @@ export interface SimResult {
   step: Map<string, number>;
   /** 동작 순서 (대표 동작 시간) */
   timeline: SimStep[];
+  /** 평소 주 전원에서 몇 단계 아래인지 (복구 순서: 전원 쪽부터 재투입) */
+  depth: Map<string, number>;
+  /** 중요 부하 — 비상 전원(비상발전기·UPS) 계통에 물린 부하 (평소 구성 기준) */
+  important: string[];
+  /** 복구 순서 (사고 제거 후) */
+  restore: string[];
 }
 
 const MAIN_SOURCE = new Set(['generator']);
@@ -192,7 +237,10 @@ export function protectiveDevices(g: SimGraph, fault: string, alive?: ReadonlySe
   return [...found];
 }
 
-export function simulate(g: SimGraph, opened: ReadonlySet<string>, faults: ReadonlySet<string>, opts: SimOptions = {}): SimResult {
+export function simulate(g0: SimGraph, opened: ReadonlySet<string>, faults: ReadonlySet<string>, opts: SimOptions = {}): SimResult {
+  // 택1: 고르지 않은 기기는 설치하지 않은 것으로 보고 그 기기에 붙은 선을 모두 뺀다
+  const unused = unusedAltNodes(altGroups(g0), opts.alt);
+  const g: SimGraph = unused.size ? { ...g0, edges: g0.edges.filter((e) => !unused.has(e.from) && !unused.has(e.to)) } : g0;
   const ftype = opts.faultType ?? 'short';
   const microgrid = !!opts.microgrid;
   const { out, inn } = arcs(g, microgrid);
@@ -290,10 +338,33 @@ export function simulate(g: SimGraph, opened: ReadonlySet<string>, faults: Reado
     }
   }
 
+  for (const id of unused) nodes.set(id, 'unused');
   const dead = [...allNodes].filter((id) => nodes.get(id) === 'dead');
   const backup = [...allNodes].filter((id) => nodes.get(id) === 'backup');
   const timeline = buildTimeline({ g, faults, opened, primary, failed, backupTrip, opts, ftype, backup, transferred, nodes });
-  return { nodes, edges, tripped: [...tripped], baseline, dead, backup, transferred, failed: [...failed], step, timeline };
+  // 평소 깊이 (주 전원에서 몇 단계)
+  const depth = new Map<string, number>();
+  {
+    const dq = main.map((id) => ({ id, d: 0 }));
+    for (const x of dq) depth.set(x.id, 0);
+    while (dq.length) {
+      const { id, d } = dq.shift()!;
+      for (const a of out.get(id) ?? []) if (!depth.has(a.next)) (depth.set(a.next, d + 1), dq.push({ id: a.next, d: d + 1 }));
+    }
+  }
+  // 중요 부하: 비상발전기·UPS 가 물린 하류 (평소 구성, 비상 전원 자신 제외)
+  const important = [...reach(standby.filter((id) => !MICROGRID_SOURCE.has(g.eqOf(id)?.id ?? '')), out, new Set())].filter((id) => !isStandby(id) && !TRANSFER.has(g.eqOf(id)?.id ?? ''));
+  const name = (id: string) => g.eqOf(id)?.abbr ?? g.eqOf(id)?.name ?? id;
+  const restore: string[] = [];
+  if (faults.size) restore.push(`사고 기기 분리·점검·보수: ${[...faults].map(name).join(', ')}`);
+  const reclose = [...tripped, ...failed].sort((a, b) => (depth.get(a) ?? 99) - (depth.get(b) ?? 99));
+  if (reclose.length) restore.push(`차단기 재투입 — 전원 쪽부터: ${reclose.map(name).join(' → ')}`);
+  if (opened.size) restore.push(`수동 개방한 차단기 재투입: ${[...opened].map(name).join(', ')}`);
+  if (transferred.some((id) => g.eqOf(id)?.id === 'lv-ats')) restore.push('상용 전원 복귀 확인 → ATS 상용 쪽으로 재절체 → 비상발전기 냉각 운전 후 정지');
+  if (transferred.some((id) => g.eqOf(id)?.id === 'alts')) restore.push('ALTS 원래 회선으로 복귀 (자동 복귀 설정 시 자동)');
+  if (backup.some((id) => g.eqOf(id)?.id === 'ups')) restore.push('UPS 상용 전원 복귀 · 배터리 재충전 확인');
+  if (opts.microgrid && backup.some((id) => ['pcs', 'ess'].includes(g.eqOf(id)?.id ?? ''))) restore.push('계통 복귀 시 PCS 동기 투입 → 자립 운전 종료');
+  return { nodes, edges, tripped: [...tripped], baseline, dead, backup, transferred, failed: [...failed], step, timeline, depth, important, restore };
 }
 
 /** 동작 순서 — 대표 동작 시간(제조사·설정마다 다름, 참고용) */
@@ -363,7 +434,7 @@ export function useSimState(): SimUrlState {
     on: params.get('sim') === '1',
     opened: list(params.get('open')),
     faults: list(params.get('fault')),
-    opts: { faultType: ft === 'ground' || ft === 'overload' ? ft : 'short', failPrimary: params.get('fail') === '1', microgrid: params.get('mg') === '1' },
+    opts: { faultType: ft === 'ground' || ft === 'overload' ? ft : 'short', failPrimary: params.get('fail') === '1', microgrid: params.get('mg') === '1', alt: [...list(params.get('alt'))] },
   };
 }
 
@@ -377,12 +448,14 @@ export interface SimScenario {
   ftype?: FaultType;
   fail?: boolean;
   mg?: boolean;
+  alt?: string[];
 }
 export const SIM_SCENARIOS: SimScenario[] = [
   { id: 'grid-loss', label: '수전 정전', desc: '배전선로 사고로 수전이 끊김 — 비상발전기·UPS 가 무엇을 지키는지', fault: ['n-dline'] },
   { id: 'tr-fault', label: '변압기 고장', desc: '몰드변압기 단락 — 상위 VCB 가 끊고 다른 변압기는?', fault: ['n-cast-tr'] },
   { id: 'leak', label: '분기 누전', desc: '조명 회로 지락 — 누전차단기만 끊겨 나머지는 그대로', fault: ['n-light'], ftype: 'ground' },
   { id: 'fail', label: '차단 실패(후비 보호)', desc: '분기 사고에서 MCCB 가 안 끊기면 ACB 가 대신 — 정전 범위 비교', fault: ['n-panel'], fail: true },
+  { id: 'alts', label: '2회선 수전(ALTS)', desc: '2회선 ALTS 로 수전 — 리클로저 쪽 회선이 끊겨도 다른 회선으로 자동 절체', open: ['n-recloser'], alt: ['n-alts'] },
   { id: 'microgrid', label: '마이크로그리드', desc: '수전 차단 시 ESS·태양광이 380V 모선을 자립 운전으로 공급', open: ['n-vcb'], mg: true },
 ];
 
@@ -409,13 +482,26 @@ export function useSimActions() {
   };
   return {
     start: useCallback(() => write((p) => (p.set('sim', '1'), p.delete('node'))), [write]),
-    stop: useCallback(() => write((p) => { for (const k of ['sim', 'open', 'fault', 'fail', 'mg', 'ftype']) p.delete(k); }), [write]),
-    reset: useCallback(() => write((p) => (p.delete('open'), p.delete('fault'), p.delete('fail'), p.delete('mg'), p.delete('ftype'))), [write]),
+    stop: useCallback(() => write((p) => { for (const k of ['sim', 'open', 'fault', 'fail', 'mg', 'ftype', 'alt']) p.delete(k); }), [write]),
+    reset: useCallback(() => write((p) => { for (const k of ['open', 'fault', 'fail', 'mg', 'ftype', 'alt']) p.delete(k); }), [write]),
     setOption: useCallback((key: 'ftype' | 'fail' | 'mg', value: string | null) => write((p) => (value ? p.set(key, value) : p.delete(key))), [write]),
+    /** 택1 묶음에서 기기 고르기 — 같은 묶음의 다른 선택은 지움 */
+    chooseAlt: useCallback(
+      (group: AltGroup, node: string) =>
+        write((p) => {
+          const s = list(p.get('alt'));
+          for (const o of group.options) s.delete(o.node);
+          if (node !== group.options[0].node) s.add(node);
+          if (s.size) p.set('alt', [...s].join(','));
+          else p.delete('alt');
+        }),
+      [write],
+    ),
     scenario: useCallback(
       (sc: SimScenario) =>
         write((p) => {
-          for (const k of ['open', 'fault', 'fail', 'mg', 'ftype']) p.delete(k);
+          for (const k of ['open', 'fault', 'fail', 'mg', 'ftype', 'alt']) p.delete(k);
+          if (sc.alt) p.set('alt', sc.alt.join(','));
           if (sc.open) p.set('open', sc.open.join(','));
           if (sc.fault) p.set('fault', sc.fault.join(','));
           if (sc.ftype && sc.ftype !== 'short') p.set('ftype', sc.ftype);

@@ -28,7 +28,7 @@ interface Props {
  * 60% 미만 축소(개요)에서는 CSS(data-zoom)로 사진·보조 글자를 숨기고 점 + 약칭만 보인다.
  * memo: 줌/패닝은 부모의 transform 만 바뀌므로 노드는 다시 그리지 않는다.
  */
-const SIM_LABEL: Partial<Record<SimNodeState, string>> = { dead: '정전', backup: '비상 공급', open: '열림', tripped: '트립', fault: '사고', failed: '차단 실패' };
+const SIM_LABEL: Partial<Record<SimNodeState, string>> = { dead: '정전', backup: '비상 공급', open: '열림', tripped: '트립', fault: '사고', failed: '차단 실패', unused: '미설치' };
 
 function DiagramNode({ item, mode, selected, onActivate, sim, simStep }: Props) {
   const { id, eq, coverage } = item;

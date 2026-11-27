@@ -550,3 +550,26 @@
 .drw-mgr__tag--cur { background: var(--color-brand-soft, #e0eaff); color: var(--color-brand, #1d4ed8); }
 .drw-mgr__meta { margin-left: auto; font-size: 13px; color: var(--color-text-muted); }
 .drw-mgr__foot { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; }
+
+/* 사고 시뮬레이션 (내 단선도, 2026-11-27) */
+.drw-simbar { position: sticky; top: 0; left: 0; z-index: 6; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: 0 0 8px; padding: 8px 12px; border: 1px solid #f0b48a; border-radius: var(--radius-md); background: #fff7ed; font-size: 13px; }
+.drw-simbar__dead { color: #b42318; }
+.drw-simbar__backup { color: #b45309; }
+.drw-sim-on { background: #c2410c !important; border-color: #c2410c !important; }
+.drw-wrap--sim .drw-node__body { cursor: crosshair; }
+.drw-node[data-sim='dead'] { filter: grayscale(1); opacity: 0.4; }
+.drw-node[data-sim='backup'] { box-shadow: 0 0 0 3px #f59e0b; border-radius: 8px; }
+.drw-node[data-sim='open'] { box-shadow: 0 0 0 3px #475467; border-radius: 8px; }
+.drw-node[data-sim='tripped'] { box-shadow: 0 0 0 3px #c2410c; border-radius: 8px; }
+.drw-node[data-sim='fault'] { box-shadow: 0 0 0 3px #d92d20; border-radius: 8px; }
+.drw-node[data-sim-label]::after {
+  content: attr(data-sim-label);
+  position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+  padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 18px; white-space: nowrap;
+  color: #fff; background: #475467; z-index: 3; pointer-events: none;
+}
+.drw-node[data-sim='backup']::after { background: #b45309; }
+.drw-node[data-sim='tripped']::after { background: #c2410c; }
+.drw-node[data-sim='fault']::after { background: #b42318; }
+.drw-edge--simdead .drw-edge__line { stroke: #b6bdc8 !important; stroke-dasharray: 6 6; }
+.drw-edge--simbackup .drw-edge__line { stroke: #f59e0b !important; }

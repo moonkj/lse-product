@@ -72,6 +72,11 @@ import { edgePath, portPoint } from '../../lib/draw/geometry';
 import { decodeDiagram, diagramShareUrl, encodeDiagram } from '../../lib/draw/share';
 import { diagramSvgWithImages } from '../../lib/draw/exportSvg';
 import DiagramManager from './DiagramManager';
+import { isBreaker, simulate, type SimGraph, type SimNodeState } from '../../lib/diagram/sim';
+
+/** 반 안의 주 차단기 (사고 시뮬레이션에서 반을 차단기처럼 다룸) */
+const PANEL_MAIN_EQ = ['vcb', 'acb', 'mccb', 'lbs', 'alts'];
+const SIM_LABEL: Partial<Record<SimNodeState, string>> = { dead: '정전', backup: '비상 공급', open: '열림', tripped: '트립', fault: '사고', failed: '차단 실패' };
 import { DEDUPED_ON_LOAD, useCurrentDiagram, useDrawStore } from '../../lib/draw/store';
 
 /** 처음 연 화면에서 한 번만 정리 안내 */
@@ -239,7 +244,43 @@ export default function DrawEditor() {
     if (g) st.commitFrom(g.before);
   };
 
+  // ── 사고 시뮬레이션 (2026-11-27: 내 단선도에서도) — 상자 누르기 = 차단기(반은 주 차단기) 열기/닫기, 그 밖은 사고
+  const [simOn, setSimOn] = useState(false);
+  const [simOpen, setSimOpen] = useState<Set<string>>(() => new Set());
+  const [simFault, setSimFault] = useState<Set<string>>(() => new Set());
+  const simGraph = useMemo<SimGraph>(() => {
+    const byId = new Map(d.nodes.map((n) => [n.id, n]));
+    return {
+      edges: d.edges.map((e) => ({ id: e.id, from: e.from, to: e.to, kind: 'power' })),
+      dirs: new Map(),
+      eqOf: (id) => {
+        const n = byId.get(id);
+        if (!n) return undefined;
+        if (n.kind === 'equipment' && n.eq) return eqById(n.eq);
+        if (n.kind === 'panel') {
+          const main = (n.items ?? []).find((i) => PANEL_MAIN_EQ.includes(i.eq));
+          return main ? eqById(main.eq) : undefined;
+        }
+        return undefined;
+      },
+    };
+  }, [d]);
+  const simResult = useMemo(() => (simOn ? simulate(simGraph, simOpen, simFault) : null), [simOn, simGraph, simOpen, simFault]);
+  const toggleIn = (set: Set<string>, id: string) => {
+    const n = new Set(set);
+    if (n.has(id)) n.delete(id);
+    else n.add(id);
+    return n;
+  };
+
   const onNodeClick = (n: DNode) => {
+    if (simOn) {
+      if (n.kind === 'bus' || n.kind === 'source') return;
+      if (isBreaker(simGraph.eqOf(n.id))) setSimOpen((s0) => toggleIn(s0, n.id));
+      else setSimFault((s0) => toggleIn(s0, n.id));
+      announce(`${nodeTitle(n)} ${isBreaker(simGraph.eqOf(n.id)) ? '열기/닫기' : '사고'}`);
+      return;
+    }
     if (connectFrom && connectFrom !== n.id) {
       commit(connect(d, connectFrom, n.id), `'${nodeTitle(d.nodes.find((x) => x.id === connectFrom)!)}'와 '${nodeTitle(n)}'을(를) 이었습니다`);
       setConnectFrom(null);
@@ -506,6 +547,22 @@ export default function DrawEditor() {
           지우기
         </button>
         <span className="drw-bar__sep" aria-hidden="true" />
+        <button
+          type="button"
+          className={`btn btn--sm ${simOn ? 'btn--primary drw-sim-on' : 'btn--secondary'}`}
+          aria-pressed={simOn}
+          onClick={() => {
+            setSimOn((v) => !v);
+            setSimOpen(new Set());
+            setSimFault(new Set());
+            setSel(null);
+            announce(simOn ? '사고 시뮬레이션 끝' : '사고 시뮬레이션 — 상자를 누르면 사고, 차단기·반은 열고 닫기');
+          }}
+          title="내 단선도에서 사고 시뮬레이션 — 상자를 누르면 사고, 차단기·반(주 차단기)은 열고 닫기"
+          data-testid="draw-sim"
+        >
+          ⚠ 사고 시뮬레이션
+        </button>
         <button type="button" className="btn btn--secondary btn--sm" onClick={st.undo} disabled={!st.past.length} title="Ctrl+Z" data-testid="draw-undo">
           ↶ 되돌리기
         </button>
@@ -618,11 +675,28 @@ export default function DrawEditor() {
 
         <div
           ref={wrapRef}
-          className="drw-wrap"
+          className={`drw-wrap${simOn ? ' drw-wrap--sim' : ''}`}
           onDragOver={(e) => e.dataTransfer.types.includes(DRAG_TYPE) && e.preventDefault()}
           onDrop={onCanvasDrop}
           data-testid="draw-canvas-wrap"
         >
+          {simResult && (
+            <div className="drw-simbar" role="status" aria-live="polite" data-testid="draw-sim-bar">
+              {!simOpen.size && !simFault.size ? (
+                <span>상자를 누르면 그 자리에 사고가 납니다 — 전원 쪽 가장 가까운 차단기(반은 주 차단기)가 동작합니다. 차단기·반을 누르면 열고 닫습니다.</span>
+              ) : (
+                <>
+                  <b className="drw-simbar__dead">정전 {simResult.dead.filter((id) => d.nodes.some((n) => n.id === id && n.kind !== 'bus')).length}</b>
+                  <b className="drw-simbar__backup">비상 공급 {simResult.backup.length}</b>
+                  {simResult.tripped.length > 0 && <span>트립: {simResult.tripped.map((id) => nodeTitle(d.nodes.find((n) => n.id === id)!)).join(', ')}</span>}
+                  {simResult.transferred.length > 0 && <span>절체: {simResult.transferred.map((id) => nodeTitle(d.nodes.find((n) => n.id === id)!)).join(', ')}</span>}
+                  <button type="button" className="btn btn--secondary btn--sm" onClick={() => (setSimOpen(new Set()), setSimFault(new Set()))} data-testid="draw-sim-reset">
+                    처음으로
+                  </button>
+                </>
+              )}
+            </div>
+          )}
           <div
             ref={canvasRef}
             className="drw-canvas"
@@ -643,7 +717,7 @@ export default function DrawEditor() {
                   const path = edgePath(a, b);
                   const sev = edgeIssues.get(e.id);
                   return (
-                    <g key={e.id} className={`drw-edge${sev ? ` drw-edge--${sev}` : ''}${sel?.type === 'edge' && sel.id === e.id ? ' is-selected' : ''}`} data-testid={`draw-edge-${e.id}`}>
+                    <g key={e.id} className={`drw-edge${sev ? ` drw-edge--${sev}` : ''}${sel?.type === 'edge' && sel.id === e.id ? ' is-selected' : ''}${simResult?.edges.get(e.id) === 'dead' ? ' drw-edge--simdead' : simResult?.edges.get(e.id) === 'backup' ? ' drw-edge--simbackup' : ''}`} data-testid={`draw-edge-${e.id}`}>
                       <path d={path} className="drw-edge__hit" onPointerDown={(ev) => (ev.stopPropagation(), setSel({ type: 'edge', id: e.id }))} />
                       <path d={path} className="drw-edge__line" />
                     </g>
@@ -667,6 +741,7 @@ export default function DrawEditor() {
                   issues={nodeIssues(n.id)}
                   selected={sel?.type === 'node' && sel.id === n.id}
                   connectTarget={!!connectFrom && connectFrom !== n.id}
+                  sim={simResult?.nodes.get(n.id)}
                   onPointerDown={(e) => onNodePointerDown(e, n)}
                   onPointerMove={onNodePointerMove}
                   onPointerUp={() => onNodePointerUp(n)}
@@ -754,6 +829,8 @@ export default function DrawEditor() {
 interface NodeBoxProps {
   n: DNode;
   note?: string;
+  /** 사고 시뮬레이션 상태 */
+  sim?: SimNodeState;
   onResizeDown: (e: RPointerEvent) => void;
   onResizeMove: (e: RPointerEvent) => void;
   onResizeUp: () => void;
@@ -771,7 +848,7 @@ interface NodeBoxProps {
   onPortUp: (e: RPointerEvent) => void;
 }
 
-function NodeBox({ n, note, onResizeDown, onResizeMove, onResizeUp, issues, selected, connectTarget, onPointerDown, onPointerMove, onPointerUp, onKeyDown, onClick, onDoubleClick, onPortDown, onPortMove, onPortUp }: NodeBoxProps) {
+function NodeBox({ n, note, sim, onResizeDown, onResizeMove, onResizeUp, issues, selected, connectTarget, onPointerDown, onPointerMove, onPointerUp, onKeyDown, onClick, onDoubleClick, onPortDown, onPortMove, onPortUp }: NodeBoxProps) {
   const s = nodeSize(n);
   const errors = issues.filter((i) => i.severity === 'error').length;
   const warns = issues.filter((i) => i.severity === 'warn').length;
@@ -794,6 +871,8 @@ function NodeBox({ n, note, onResizeDown, onResizeMove, onResizeUp, issues, sele
     <div
       className={`drw-node drw-node--${n.kind} drw-node--${state}${selected ? ' is-selected' : ''}${connectTarget ? ' is-target' : ''}`}
       style={{ left: n.x, top: n.y, width: s.w, height: s.h }}
+      data-sim={sim && sim !== 'normal' ? sim : undefined}
+      data-sim-label={sim ? SIM_LABEL[sim] : undefined}
     >
       <button
         type="button"
