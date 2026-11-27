@@ -64,7 +64,6 @@ describe('검색 별칭 (2026-11-18 사용자 결정: 브랜드는 검색 별칭
     ['XGT', 'plc'],
     ['Metasol MMS', 'mms'],
     ['Susol DC', 'dc-devices'],
-    ['M1000', 'mv-drive'],
     ['SSM', 'soft-starter'],
     ['E TAG', 'smart-device'],
     ['GIMAC-TU', 'smart-device'],
@@ -86,6 +85,11 @@ describe('검색 별칭 (2026-11-18 사용자 결정: 브랜드는 검색 별칭
   ])('대표 브랜드 "%s" → 연결 기기 보장 %j', (q, ids) => {
     const got = eqIds(q);
     for (const id of ids) expect(got).toContain(id);
+  });
+  it('"M1000" → 카테고리형 제품 M1000(2026-11-27 추가)이 1위, 고압 인버터 기기도 상위', () => {
+    const r = rank('M1000');
+    expect(label(r[0])).toBe('p:BBB006001');
+    expect(r.slice(0, 3).map(label)).toContain('eq:mv-drive');
   });
   it('기기 약어 정확 일치 질의(ACB)는 별칭 토큰으로 다른 기기를 끼워 넣지 않음', () => {
     expect(eqIds('ACB')).toEqual(['acb']);

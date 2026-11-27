@@ -115,9 +115,9 @@ test.describe('계통 구성 시뮬레이션', () => {
     await expect(tid(page, 'builder-row-l7')).toContainText('380/220V');
     await tid(page, 'builder-fill').click();
     await expect(tid(page, 'builder-summary')).toContainText('확인할 점 0');
-    // 제품맵에 개별 제품이 없는 자사 기기(주변압기)는 그렇게 안내
+    // 주변압기는 카테고리형 제품 'Power Transformer'(2026-11-27 추가)로 채워짐
     await tid(page, 'builder-slot-main-tr').click();
-    await expect(tid(page, 'builder-panel')).toContainText('개별 제품으로 올라 있지 않습니다');
+    await expect(tid(page, 'builder-panel')).toContainText('Power Transformer');
     const axe = await new AxeBuilder({ page }).include('[data-testid="builder-page"]').analyze();
     expect(axe.violations.map((v) => v.id)).toEqual([]);
     await page.screenshot({ path: 'C:/Users/kjmoon/AppData/Local/Temp/claude/692784dc4ab60723/d18e3653-3fd9-4f20-94d1-21c5c8f01a5e/scratchpad/ux/bld-grid.png', fullPage: true });

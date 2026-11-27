@@ -10,7 +10,7 @@ import CoverageBadge from '../components/common/CoverageBadge';
 import { eqLabel, pageTitle } from '../lib/labels';
 import { LAYER_LABELS } from '../lib/schema';
 import { candidateProducts } from '../lib/builder/validate';
-import { ADJACENT_ROLE, RESPONSE_LABEL, matchArticle, matchText } from '../lib/counter/match';
+import { ADJACENT_ROLE, RESPONSE_LABEL, matchArticle, matchText, type EquipmentHit } from '../lib/counter/match';
 import { articleUrlOf, slugWords, splitPasted, type Article } from '../lib/counter/article';
 import './pages.css';
 import './CounterPage.css';
@@ -79,6 +79,28 @@ export default function CounterPage() {
   const loading = !!url && !state?.article && !state?.error;
   const data = getData();
   const empty = !text.trim();
+  // 결과 묶음: 직접 대응 / 범위 밖 기기와 함께 쓰는 관련 제품 / 본문에 곁가지로 언급된 제품 — 사용자가 한눈에 구분하도록
+  const groups = useMemo(() => {
+    const shown = result.hits.slice(0, 12);
+    const cov = (h: EquipmentHit) => data.equipmentTypeById.get(h.eq)?.coverage;
+    const bodyOnly = (h: EquipmentHit) => !h.adjacentTo && !!h.bodyTerms?.length && h.bodyTerms.length === h.terms.length;
+    const outOfScope = shown.filter((h) => !h.adjacentTo && cov(h) === 'na');
+    const related = shown.filter((h) => h.adjacentTo);
+    const srcNames = [...new Set(related.map((h) => data.equipmentTypeById.get(h.adjacentTo!)?.name).filter(Boolean))].join('·');
+    return [
+      { id: 'direct', title: '직접 대응 제품', desc: '기사에 나온 제품군과 같은 종류의 자사 제품입니다.', items: shown.filter((h) => !h.adjacentTo && !bodyOnly(h) && cov(h) !== 'na') },
+      {
+        id: 'related',
+        title: related.length ? `${srcNames} 관련 제품 (직접 대체품 아님)` : '자사 사업 범위 밖',
+        desc: related.length
+          ? `경쟁사 제품(${srcNames})은 자사 사업 범위 밖입니다. 아래는 그 제품과 함께 쓰는 자사 제품으로, 같은 현장에 제안할 수 있는 연관 제품입니다.`
+          : '기사에 나온 제품군이 자사 사업 범위 밖이라 대응 제품이 없습니다.',
+        items: [...outOfScope, ...related],
+      },
+      { id: 'mention', title: '본문에 언급된 관련 제품', desc: '기사 본문에 곁가지로 나온 제품군입니다. 기사 주제와 직접 관련이 없을 수 있습니다.', items: shown.filter((h) => bodyOnly(h) && cov(h) !== 'na') },
+    ].filter((g) => g.items.length > 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
 
   return (
     <div className="pg cnt" data-testid="counter-page">
@@ -193,19 +215,23 @@ export default function CounterPage() {
               대응할 제품군을 찾지 못했습니다. 제품 종류가 드러나는 말(예: 차단기, 변압기, 인버터, switchgear, UPS)이나 경쟁사 시리즈명(예: Masterpact, Emax, SINAMICS)을 넣어 보세요.
             </p>
           ) : (
+            groups.map((g) => (
+            <section key={g.id} className={`cnt-group cnt-group--${g.id}`} aria-labelledby={`cnt-g-${g.id}`} data-testid={`counter-group-${g.id}`}>
+              <h2 id={`cnt-g-${g.id}`} className="cnt-group__title">{g.title} <span className="cnt-group__n">{g.items.length}</span></h2>
+              <p className="cnt-group__desc">{g.desc}</p>
             <ol className="cnt-hits">
-              {result.hits.slice(0, 10).map((h) => {
+              {g.items.map((h) => {
                 const e = data.equipmentTypeById.get(h.eq)!;
                 const products = candidateProducts(h.eq);
                 const adj = h.adjacentTo ? data.equipmentTypeById.get(h.adjacentTo) : undefined;
                 // 본문에서만 찾은 제품군 — 기사 주제가 아니라 곁가지 언급일 수 있어 '대응'이라 단정하지 않음
                 const bodyOnly = !adj && !!h.bodyTerms?.length && h.bodyTerms.length === h.terms.length;
                 return (
-                  <li key={h.eq} className={`pg-card cnt-hit cnt-hit--${e.coverage}`} data-testid={`counter-hit-${h.eq}`}>
+                  <li key={h.eq} className={`pg-card cnt-hit cnt-hit--${e.coverage}${adj ? ' cnt-hit--related' : ''}`} data-testid={`counter-hit-${h.eq}`}>
                     <div className="cnt-hit__head">
-                      <h2 className="cnt-hit__title">
+                      <h3 className="cnt-hit__title">
                         <Link to={`/equipment/${h.eq}`}>{eqLabel(e)}</Link>
-                      </h2>
+                      </h3>
                       <CoverageBadge coverage={e.coverage} />
                     </div>
                     <p className="cnt-hit__resp">
@@ -251,6 +277,8 @@ export default function CounterPage() {
                 );
               })}
             </ol>
+            </section>
+            ))
           )}
         </div>
       )}

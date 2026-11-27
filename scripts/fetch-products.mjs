@@ -155,6 +155,29 @@ export function buildCatalog(menu) {
     walk(top, biz, [], []);
   }
 
+  // 카테고리형 제품 (2026-11-27): 하위 분류·제품 없이 분류 페이지 자체가 제품 소개인 곳(MMS·VC·DC 기기·GIS 등)은
+  // 분류 코드를 id 로 하는 제품으로 넣는다. 산업별 솔루션·에너지절감 분야·소프트웨어·일람표·단종 시리즈는 제외.
+  const hasChild = new Set([...categories.values()].map((c) => c.parentCode).filter(Boolean));
+  const NOT_PRODUCT = /^(BBB007|BBB010|BBB011|BBB012|BBB013|BBB014)/;
+  const NOT_PRODUCT_CODES = new Set(['BBB001012', 'BBB001018']);
+  const GENERIC_NAME = { 저압: '소프트스타터 (저압)', 고압: '소프트스타터 (고압)' };
+  for (const cat of categories.values()) {
+    if (hasChild.has(cat.code) || cat.productIds.length || NOT_PRODUCT.test(cat.code) || NOT_PRODUCT_CODES.has(cat.code) || cat.name.includes('단종')) continue;
+    const id = cat.code;
+    products.set(id, {
+      id,
+      name: (cat.code.startsWith('BBB008') && GENERIC_NAME[cat.name]) || cat.name,
+      categoryCode: id,
+      categoryPath: cat.path.slice(0, -1),
+      url: cat.url,
+      source: 'ko',
+      business: id.startsWith('BBB') ? 'automation' : 'power',
+      discontinued: false,
+      docs: [],
+    });
+    for (let c = cat; c; c = c.parentCode ? categories.get(c.parentCode) : undefined) if (!c.productIds.includes(id)) c.productIds.push(id);
+  }
+
   return {
     products: [...products.values()],
     categories: [...categories.values()],

@@ -57,7 +57,7 @@ test.describe('제품 조회 /products', () => {
     await page.goto('./#/');
     await tid(page, 'products-link').click();
     await expect(tid(page, 'products-title')).toHaveText('제품 조회');
-    await expect(tid(page, 'products-count')).toContainText('전체 231개');
+    await expect(tid(page, 'products-count')).toContainText('전체 282개');
 
     await tid(page, 'products-search').fill('susol mccb');
     await expect(page).toHaveURL(/q=susol/);

@@ -3276,5 +3276,668 @@
     "business": "power",
     "discontinued": false,
     "docs": []
+  },
+  {
+    "id": "AAA001001",
+    "name": "Smart MV",
+    "categoryCode": "AAA001001",
+    "categoryPath": [
+      "CARE"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA001001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA001002",
+    "name": "Smart LV",
+    "categoryCode": "AAA001002",
+    "categoryPath": [
+      "CARE"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA001002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA001003",
+    "name": "Smart Diagnosis",
+    "categoryCode": "AAA001003",
+    "categoryPath": [
+      "CARE"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA001003",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA001004",
+    "name": "AMS",
+    "categoryCode": "AAA001004",
+    "categoryPath": [
+      "CARE"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA001004",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA002",
+    "name": "EMS",
+    "categoryCode": "AAA002",
+    "categoryPath": [
+      "EMS"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA003001",
+    "name": "ECMS",
+    "categoryCode": "AAA003001",
+    "categoryPath": [
+      "SCADA"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA003001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA003002",
+    "name": "PQMS",
+    "categoryCode": "AAA003002",
+    "categoryPath": [
+      "SCADA"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA003002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA003003",
+    "name": "SAS",
+    "categoryCode": "AAA003003",
+    "categoryPath": [
+      "SCADA"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA003003",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA004",
+    "name": "DMS",
+    "categoryCode": "AAA004",
+    "categoryPath": [
+      "DMS"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA004",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA005001",
+    "name": "BEMS",
+    "categoryCode": "AAA005001",
+    "categoryPath": [
+      "xEMS"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA005001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA005002",
+    "name": "FEMS",
+    "categoryCode": "AAA005002",
+    "categoryPath": [
+      "xEMS"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA005002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA006",
+    "name": "Micro Grid",
+    "categoryCode": "AAA006",
+    "categoryPath": [
+      "Micro Grid"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA006",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA007001",
+    "name": "EV-CHARGER Solution",
+    "categoryCode": "AAA007001",
+    "categoryPath": [
+      "EV-CHARGER"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA007001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA007002",
+    "name": "급속 충전기",
+    "categoryCode": "AAA007002",
+    "categoryPath": [
+      "EV-CHARGER"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA007002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA007003",
+    "name": "완속 충전기",
+    "categoryCode": "AAA007003",
+    "categoryPath": [
+      "EV-CHARGER"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA007003",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA008",
+    "name": "AMRS",
+    "categoryCode": "AAA008",
+    "categoryPath": [
+      "AMRS"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA008",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA019001",
+    "name": "AC System",
+    "categoryCode": "AAA019001",
+    "categoryPath": [
+      "Railway Power Supply"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA019001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA019002",
+    "name": "DC System",
+    "categoryCode": "AAA019002",
+    "categoryPath": [
+      "Railway Power Supply"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA019002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA009001",
+    "name": "Substation",
+    "categoryCode": "AAA009001",
+    "categoryPath": [
+      "Power Transmission"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA009001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA009002",
+    "name": "FACTS",
+    "categoryCode": "AAA009002",
+    "categoryPath": [
+      "Power Transmission"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA009002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA009003",
+    "name": "HVDC",
+    "categoryCode": "AAA009003",
+    "categoryPath": [
+      "Power Transmission"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA009003",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA009004",
+    "name": "GIS",
+    "categoryCode": "AAA009004",
+    "categoryPath": [
+      "Power Transmission"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA009004",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA009005",
+    "name": "Power Transformer",
+    "categoryCode": "AAA009005",
+    "categoryPath": [
+      "Power Transmission"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA009005",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA010005",
+    "name": "FCL",
+    "categoryCode": "AAA010005",
+    "categoryPath": [
+      "Power Distribution"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA010005",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA010006",
+    "name": "APS",
+    "categoryCode": "AAA010006",
+    "categoryPath": [
+      "Power Distribution"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA010006",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA011001",
+    "name": "E-House",
+    "categoryCode": "AAA011001",
+    "categoryPath": [
+      "Modular Substation"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA011001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA011002",
+    "name": "MGS",
+    "categoryCode": "AAA011002",
+    "categoryPath": [
+      "Modular Substation"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA011002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA011003",
+    "name": "CSS",
+    "categoryCode": "AAA011003",
+    "categoryPath": [
+      "Modular Substation"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA011003",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA012",
+    "name": "PV System",
+    "categoryCode": "AAA012",
+    "categoryPath": [
+      "PV System"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA012",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA014006",
+    "name": "모터보호용 배선용차단기 (MMS)",
+    "categoryCode": "AAA014006",
+    "categoryPath": [
+      "저압기기(LV)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA014006",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA014009",
+    "name": "순간전압보상장치 (Sag Protector)",
+    "categoryCode": "AAA014009",
+    "categoryPath": [
+      "저압기기(LV)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA014009",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA014011",
+    "name": "디지털계측제어기 (DMC)",
+    "categoryCode": "AAA014011",
+    "categoryPath": [
+      "저압기기(LV)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA014011",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA015002",
+    "name": "고압전자접촉기 (VC)",
+    "categoryCode": "AAA015002",
+    "categoryPath": [
+      "고압기기(MV)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA015002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA015003",
+    "name": "진공 인터럽터 (VI)",
+    "categoryCode": "AAA015003",
+    "categoryPath": [
+      "고압기기(MV)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA015003",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA015004",
+    "name": "한류형 전력퓨즈 (PF)",
+    "categoryCode": "AAA015004",
+    "categoryPath": [
+      "고압기기(MV)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA015004",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA015006",
+    "name": "자동부하 전환개폐기 (ALTS)",
+    "categoryCode": "AAA015006",
+    "categoryPath": [
+      "고압기기(MV)"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA015006",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA017001",
+    "name": "Susol DC 기중차단기 및 개폐기",
+    "categoryCode": "AAA017001",
+    "categoryPath": [
+      "DC 전력기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA017001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA017003",
+    "name": "DC 접촉기 (MC)",
+    "categoryCode": "AAA017003",
+    "categoryPath": [
+      "DC 전력기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA017003",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA017004",
+    "name": "DC 초소형차단기 (MCB)",
+    "categoryCode": "AAA017004",
+    "categoryPath": [
+      "DC 전력기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA017004",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA017005",
+    "name": "DC 서지보호기 (SPD)",
+    "categoryCode": "AAA017005",
+    "categoryPath": [
+      "DC 전력기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA017005",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA017006",
+    "name": "DC 릴레이 (Relay)",
+    "categoryCode": "AAA017006",
+    "categoryPath": [
+      "DC 전력기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA017006",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA018001",
+    "name": "데이터수집장치 (DAU)",
+    "categoryCode": "AAA018001",
+    "categoryPath": [
+      "스마트 기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA018001",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA018002",
+    "name": "디지털 입출력기기 (I/O)",
+    "categoryCode": "AAA018002",
+    "categoryPath": [
+      "스마트 기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA018002",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA018003",
+    "name": "분기 계측기 (Feeder Meter)",
+    "categoryCode": "AAA018003",
+    "categoryPath": [
+      "스마트 기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA018003",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA018005",
+    "name": "표시장치 (Display)",
+    "categoryCode": "AAA018005",
+    "categoryPath": [
+      "스마트 기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA018005",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "AAA018007",
+    "name": "기타 스마트 기기",
+    "categoryCode": "AAA018007",
+    "categoryPath": [
+      "스마트 기기"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/AAA018007",
+    "source": "ko",
+    "business": "power",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "BBB006001",
+    "name": "M1000",
+    "categoryCode": "BBB006001",
+    "categoryPath": [
+      "고압드라이브"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/BBB006001",
+    "source": "ko",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "BBB008001",
+    "name": "소프트스타터 (저압)",
+    "categoryCode": "BBB008001",
+    "categoryPath": [
+      "소프트스타터"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/BBB008001",
+    "source": "ko",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "BBB008002",
+    "name": "소프트스타터 (고압)",
+    "categoryCode": "BBB008002",
+    "categoryPath": [
+      "소프트스타터"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/BBB008002",
+    "source": "ko",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "BBB001021",
+    "name": "통합형 Safety",
+    "categoryCode": "BBB001021",
+    "categoryPath": [
+      "PLC"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/BBB001021",
+    "source": "ko",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
+  },
+  {
+    "id": "BBB001022",
+    "name": "XSC/XSR(Safey PLC/Relay)",
+    "categoryCode": "BBB001022",
+    "categoryPath": [
+      "PLC"
+    ],
+    "url": "https://www.ls-electric.com/ko/product/category/BBB001022",
+    "source": "ko",
+    "business": "automation",
+    "discontinued": false,
+    "docs": []
   }
 ]

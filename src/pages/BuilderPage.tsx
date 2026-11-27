@@ -512,12 +512,12 @@ function Panel({ t, build, selected, ctx, placement, issues, allIssues, specsLoa
           {products.length === 0 ? (
             <p className="bld-panel__none">{eqInfo && (eqInfo.coverage === 'owned' || eqInfo.coverage === 'partial') ? '자사 보유 기기지만 제품맵에 개별 제품으로 올라 있지 않습니다 (시스템·일괄 공급).' : '고를 수 있는 자사 제품이 없습니다.'}</p>
           ) : (
-            <ul className="bld-products" role="radiogroup" aria-label="제품">
+            <div className="bld-products" role="radiogroup" aria-label="제품">
               {products.map((p) => {
                 const fits = productFits(p, ctx, build, t, specs);
                 const img = productImageUrl(p.id, true);
                 return (
-                  <li key={p.id}>
+                  <div key={p.id}>
                     <button
                       type="button"
                       role="radio"
@@ -532,10 +532,10 @@ function Panel({ t, build, selected, ctx, placement, issues, allIssues, specsLoa
                       <span className="bld-product__name">{p.name}</span>
                       <span className="bld-product__note">{!specs && specsLoading ? '정격 불러오는 중' : !specs?.has(p.id) ? '정격 정보 없음' : isInstrumentProduct(p.id) ? 'PT·CT로 연결 (계통 정격 무관)' : fits ? '조건에 맞음' : '정격이 맞지 않음'}</span>
                     </button>
-                  </li>
+                  </div>
                 );
               })}
-            </ul>
+            </div>
           )}
           {placement?.product && (
             <p className="bld-panel__link">
