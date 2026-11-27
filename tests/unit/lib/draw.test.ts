@@ -196,6 +196,17 @@ describe('공유 링크·그림', () => {
     expect(svg).toContain('2026-11-26');
     expect(svg).toContain('설계 검토');
   });
+  it('그림(SVG) 기기 상자: 빈 네모 대신 기호, 제품 사진이 있으면 사진 (2026-11-27)', () => {
+    const vcb = { ...makeNode('equipment', 0, 0, 'vcb'), product: 'P01062' };
+    const tr = makeNode('equipment', 0, 200, 'cast-tr');
+    const d = chain(vcb, tr);
+    const plain = diagramSvg(d);
+    expect(plain).not.toMatch(/<rect x="[^"]+" y="[^"]+" width="24" height="24"/); // 예전 빈 네모 없음
+    expect((plain.match(/scale\(/g) ?? []).length).toBe(2); // 두 상자 모두 기호
+    const withPhoto = diagramSvg(d, [], '', new Map([['P01062', 'data:image/png;base64,AAAA']]));
+    expect(withPhoto).toContain('<image href="data:image/png;base64,AAAA"');
+    expect((withPhoto.match(/scale\(/g) ?? []).length).toBe(1); // 사진 없는 변압기만 기호
+  });
 });
 
 describe('반 안 구성 (회로표)', () => {

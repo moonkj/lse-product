@@ -69,8 +69,8 @@ import { variantFor } from '../../lib/draw/ratings';
 import { downstreamKW, transformerLoadPct } from '../../lib/draw/load';
 import { diagramFile, readDiagramFile } from '../../lib/draw/share';
 import { edgePath, portPoint } from '../../lib/draw/geometry';
-import { decodeDiagram, diagramShareUrl } from '../../lib/draw/share';
-import { diagramSvg } from '../../lib/draw/exportSvg';
+import { decodeDiagram, diagramShareUrl, encodeDiagram } from '../../lib/draw/share';
+import { diagramSvgWithImages } from '../../lib/draw/exportSvg';
 import { useCurrentDiagram, useDrawStore } from '../../lib/draw/store';
 import PanelEditor from './PanelEditor';
 import { itemSpecText } from '../../lib/draw/ratings';
@@ -304,15 +304,28 @@ export default function DrawEditor() {
   const saveError = useDrawStore((s) => s.saveError);
   const [params, setParams] = useSearchParams();
   const code = params.get('d');
+  /**
+   * 예시 열기 — 손대지 않은 같은 예시 단선도가 이미 있으면 새로 만들지 않고 그것을 연다
+   * (2026-11-27: 경쟁 대응 '단선도 예시로 열기'·'예시로 시작'을 누를 때마다 같은 예시가 쌓이던 문제)
+   */
+  const openPreset = (label: string, fresh: Diagram) => {
+    const s0 = useDrawStore.getState();
+    const key = encodeDiagram(fresh);
+    const same = s0.order.find((id) => s0.diagrams[id].name === fresh.name && encodeDiagram(s0.diagrams[id]) === key);
+    if (same) {
+      s0.open(same);
+      announce(`이미 있는 ${label} 예시 단선도를 열었습니다`);
+    } else {
+      s0.create(fresh);
+      announce(`${label} 예시로 새 단선도를 만들었습니다`);
+    }
+  };
   const presetParam = params.get('preset');
   // 경쟁 대응 화면의 '단선도 예시로 열기' (#/builder?preset=datacenter) — 정격을 다 불러온 뒤 새 단선도로
   useEffect(() => {
     if (!presetParam || !specs) return;
     const p = PRESETS.find((x) => x.id === presetParam);
-    if (p) {
-      useDrawStore.getState().create(fillProducts(p.make(), specs));
-      announce(`${p.label} 예시로 새 단선도를 만들었습니다`);
-    }
+    if (p) openPreset(p.label, fillProducts(p.make(), specs));
     setParams({}, { replace: true });
   }, [presetParam, specs, setParams]);
   // 공유 링크(#/builder?d=…)로 들어오면 사본으로 추가
@@ -338,13 +351,14 @@ export default function DrawEditor() {
     }
   };
   const fileBase = `단선도_${d.name.replace(/[\\/:*?"<>|\s]+/g, '_')}_${todayIso()}`;
-  const svgText = () => diagramSvg(d, issues, todayIso());
-  const downloadSvg = () => {
-    downloadText(`${fileBase}.svg`, svgText(), 'image/svg+xml;charset=utf-8');
+  // 제품 사진을 데이터 URL 로 넣은 그림 (사진 없으면 기호)
+  const svgText = () => diagramSvgWithImages(d, issues, todayIso());
+  const downloadSvg = async () => {
+    downloadText(`${fileBase}.svg`, await svgText(), 'image/svg+xml;charset=utf-8');
     announce('단선도 그림(SVG)을 내려받았습니다');
   };
-  const downloadPng = () => {
-    const svg = svgText();
+  const downloadPng = async () => {
+    const svg = await svgText();
     const m = svg.match(/width="(\d+(?:\.\d+)?)" height="(\d+(?:\.\d+)?)"/);
     const w = m ? Number(m[1]) : 1200;
     const h = m ? Number(m[2]) : 800;
@@ -378,8 +392,8 @@ export default function DrawEditor() {
    * (2026-11-26: 페이지 안에서 인쇄하면 사이트 인쇄 스타일·위치 때문에 빈 쪽이 나오던 문제)
    * 가로로 긴 단선도는 가로 방향, 그림은 한 쪽 너비에 맞춘다.
    */
-  const printDiagram = () => {
-    const svg = svgText();
+  const printDiagram = async () => {
+    const svg = await svgText();
     const m = svg.match(/width="(\d+(?:\.\d+)?)" height="(\d+(?:\.\d+)?)"/);
     const landscape = m ? Number(m[1]) > Number(m[2]) : false;
     document.querySelectorAll('iframe[data-print-frame]').forEach((x) => x.remove());
@@ -446,8 +460,7 @@ export default function DrawEditor() {
             onChange={(e) => {
               const p = PRESETS.find((x) => x.id === e.target.value);
               if (!p) return;
-              st.create(fillProducts(p.make(), specs));
-              announce(`${p.label} 예시로 새 단선도를 만들었습니다`);
+              openPreset(p.label, fillProducts(p.make(), specs));
             }}
             disabled={!specs}
             data-testid="draw-preset"

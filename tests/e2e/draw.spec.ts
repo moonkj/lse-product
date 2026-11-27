@@ -389,4 +389,18 @@ test.describe('단선도 그리기', () => {
     await page.screenshot({ path: SHOT + 'drw-wide.png' });
   });
 
+
+  test('예시를 두 번 열어도 손대지 않은 같은 예시는 하나만 · 그림(SVG)에 제품 사진·기호, 빈 네모 없음 (2026-11-27)', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/builder');
+    await tid(page, 'draw-preset').selectOption('datacenter');
+    const count = async () => page.locator('[data-testid="draw-pick"] option').count();
+    const n1 = await count();
+    await tid(page, 'draw-preset').selectOption('datacenter');
+    expect(await count()).toBe(n1);
+    const [dl] = await Promise.all([page.waitForEvent('download'), tid(page, 'draw-svg').click()]);
+    const svg = await (await import('node:fs/promises')).readFile((await dl.path())!, 'utf8');
+    expect(svg).toContain('<image href="data:image/');
+    expect(svg).not.toMatch(/width="24" height="24" rx="3" fill="none"/);
+  });
 });
