@@ -95,7 +95,8 @@ const NOT_FOR: Record<FaultType, Set<string>> = {
   // 지락: 누전·지락 보호가 없는 배선용·전동기용·개폐기·퓨즈는 동작하지 않음 (VCB·ACB 는 OCGR·지락 계전으로 동작한다고 봄)
   ground: new Set(['mccb', 'branch-mccb', 'mms', 'ms', 'pf', 'lbs', 'auto-switch', 'alts', 'lv-ats', 'dc-devices']),
   // 과부하: 퓨즈·개폐기·GIS 는 과부하로 끊지 않음 (열동·과전류 보호 기기만)
-  overload: new Set(['pf', 'lbs', 'auto-switch', 'alts', 'lv-ats', 'ehv-gis', 'gis-154', 'recloser', 'elcb']),
+  // (ELCB 는 과전류 겸용이 일반적이라 과부하에도 동작 — 2026-11-27 전수 검증에서 수정)
+  overload: new Set(['pf', 'lbs', 'auto-switch', 'alts', 'lv-ats', 'ehv-gis', 'gis-154', 'recloser']),
 };
 /** 대표 동작 시간(초) — 기기 종류별 차단 시간 */
 function tripTime(eqId: string | undefined, ftype: FaultType): number {
@@ -106,9 +107,12 @@ function tripTime(eqId: string | undefined, ftype: FaultType): number {
   return 0.08; // VCB·GIS·리클로저 (계전기 + 차단기 3~5 사이클)
 }
 
-/** 누르면 열고 닫는 기기인지 (차단·개폐·보호) */
+/** 전자식 보호(과전류·단락·지락)로 스스로 출력을 끊는 제어기기 — 인버터·소프트스타터 (2026-11-27 전수 검증: 전동기 사고에 380V 전체가 끊기던 문제) */
+const SELF_PROTECTED = new Set(['lv-drive', 'mv-drive', 'soft-starter']);
+
+/** 누르면 열고 닫는 기기인지 (차단·개폐·보호, 자체 보호가 있는 인버터·소프트스타터 포함) */
 export function isBreaker(eq: EquipmentType | undefined): boolean {
-  return !!eq && (eq.category === 'switching' || eq.category === 'protection') && !NOT_BREAKER.has(eq.id);
+  return !!eq && (((eq.category === 'switching' || eq.category === 'protection') && !NOT_BREAKER.has(eq.id)) || SELF_PROTECTED.has(eq.id));
 }
 
 interface Arc {
@@ -203,6 +207,7 @@ export function simulate(g: SimGraph, opened: ReadonlySet<string>, faults: Reado
   // 발전기가 없는 계통(예: 데이터센터 수전)은 전력 경로의 맨 위(들어오는 선이 없는 노드)를 주 전원으로
   if (!main.length) main = [...allNodes].filter((id) => out.has(id) && !inn.has(id) && !standby.includes(id) && id !== ISLAND_LINK);
   const baseline = reach(main, out, new Set());
+  const baselineMain = new Set(baseline);
   for (const id of standby) baseline.add(id); // 비상 전원 자신은 늘 '살아 있음'
   // 신재생 쪽(태양광·ESS → PCS)은 평소에도 스스로 살아 있음 — 비교 기준에 넣어 '정전'으로 세지 않음
   for (const id of reach([...allNodes].filter((x) => MICROGRID_SOURCE.has(g.eqOf(x)?.id ?? '')), arcs(g, false).out, new Set())) baseline.add(id);
@@ -262,8 +267,12 @@ export function simulate(g: SimGraph, opened: ReadonlySet<string>, faults: Reado
   }
   const transferred = [...allNodes].filter((id) => {
     if (!TRANSFER.has(g.eqOf(id)?.id ?? '') || blocked.has(id) || !allAlive.has(id)) return false;
-    // 들어오는 쪽 중 하나라도 평소엔 살아 있었는데 지금 끊김
-    return (inn.get(id) ?? []).some((a) => (baseline.has(a.next) && !allAlive.has(a.next)) || blocked.has(a.next));
+    // 평소 주 전원으로 받던 입력을 잃었고(끊김·막힘), 다른 입력으로 지금 살아 있을 때만 '절체'
+    // (비상발전기 자체 고장처럼 대기 입력만 잃은 경우는 절체가 아님 — 2026-11-27 전수 검증)
+    const ins = inn.get(id) ?? [];
+    const lostMain = ins.some((a) => baselineMain.has(a.next) && (!allAlive.has(a.next) || blocked.has(a.next)));
+    const stillFed = ins.some((a) => allAlive.has(a.next) && !blocked.has(a.next));
+    return lostMain && stillFed;
   });
 
   // 정전 퍼짐 단계: 막힌 지점에서 out 방향으로 몇 단계
@@ -322,6 +331,8 @@ function buildTimeline(x: {
     }
     for (const [t, ids] of byT) steps.push({ t, kind: 'trip', ids, text: '보호기기 차단(트립)' });
   }
+  // 사고는 났는데 동작한 보호기기가 없음 (발전기·승압변압기처럼 상위에 차단기를 그리지 않은 곳)
+  if (x.faults.size && !x.primary.size) steps.push({ t: 0.1, kind: 'trip', ids: [...x.faults], text: '상위 보호기기가 계통도에 없음 — 그 자리에서 전원 정지로 처리' });
   const base = steps.length ? Math.max(...steps.map((s) => s.t)) : 0;
   const ups = x.backup.filter((id) => eqId(id) === 'ups');
   if (ups.length) steps.push({ t: base, kind: 'ups', ids: ups, text: 'UPS 무순단 배터리 공급 (끊김 없음)' });
