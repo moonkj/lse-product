@@ -663,7 +663,7 @@ export default function DiagramCanvas() {
               <FlowLayer />
               <EndpointNodes endpoints={model.endpoints} />
               {model.nodes.map((n) => (
-                <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} sim={sim?.nodes.get(n.id)} />
+                <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} sim={sim?.nodes.get(n.id)} simStep={sim?.step.get(n.id)} />
               ))}
               {model.refs.map((n) => (
                 <DiagramNode key={n.id} item={n} mode={mode} selected={n.id === selectedId} onActivate={onActivate} />

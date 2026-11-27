@@ -19,8 +19,8 @@ const DROP_SCREEN_SPEED_ALL = 26;
 /** 짧은 선도 이보다 빨리 지나가지 않게 (초) */
 const DROP_MIN_MOVE = 1.3;
 /** 물방울 화면 크기(px) — 전압과 상관없이 모두 같음 (분기 기준) */
-const DROP_W = 30;
-const DROP_H = 9;
+const DROP_W = 10;
+const DROP_H = 10;
 /** 처음 화면 물방울 수 */
 const IDLE_DROPS = 14;
 /** id → 0~1 (선마다 다른 타이밍을 늘 같게) */
@@ -204,24 +204,6 @@ export default function FlowLayer() {
         { duration: T * 1000, iterations: Infinity, delay: (delay0(p.id) + p.phase * T) * 1000, easing: 'linear', fill: 'backwards' },
       );
       anims.push(anim);
-      // 리퀴드: 이동 구간 안에서 길이(scaleX)·두께(scaleY)가 바뀜 — 부피를 지키듯 늘면 가늘어지고 뭉치면 통통해짐
-      const blob = el.firstElementChild as HTMLElement | null;
-      if (blob?.animate) {
-        const at = (x: number) => Math.min(0.999, x * tm);
-        anims.push(
-          blob.animate(
-            [
-              { offset: 0, transform: 'scale(0.45, 1.25)' },
-              { offset: at(0.18), transform: 'scale(1.55, 0.78)' },
-              { offset: at(0.5), transform: 'scale(1.15, 0.92)' },
-              { offset: at(0.78), transform: 'scale(1.6, 0.76)' },
-              { offset: at(1), transform: 'scale(0.5, 1.3)' },
-              { offset: 1, transform: 'scale(0.5, 1.3)' },
-            ],
-            { duration: T * 1000, iterations: Infinity, delay: (delay0(p.id) + p.phase * T) * 1000, easing: 'ease-in-out' },
-          ),
-        );
-      }
     }
     animsRef.current = anims;
     return () => {
@@ -327,9 +309,9 @@ export default function FlowLayer() {
             key={`p-${run}-${p.id}`}
             className={`dflow-drop${p.node ? '' : ' dflow-drop--idle'}${p.backup ? ' dflow-drop--backup' : ''}`}
             data-flow-particle={p.id}
-            style={{ offsetPath: `path('${p.d}')`, offsetRotate: p.rev ? 'auto 180deg' : 'auto', width: DROP_W / dropScale, height: DROP_H / dropScale } as CSSProperties}
+            style={{ offsetPath: `path('${p.d}')`, offsetRotate: '0deg', width: DROP_W / dropScale, height: DROP_H / dropScale } as CSSProperties}
           >
-            {/* 리퀴드 덩어리 — 출발할 때 뭉쳤다가 이동하며 길게 늘어나고, 도착하며 다시 뭉침 (2026-11-27 4차) */}
+            {/* 빛 원 (2026-11-27 5차: 리퀴드 캡슐은 모서리에서 선 밖으로 튀어나와 원으로 되돌림, 색은 그대로) */}
             <span className="dflow-drop__blob" />
           </div>
         ))}

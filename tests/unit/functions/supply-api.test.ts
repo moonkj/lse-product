@@ -18,11 +18,11 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('/api/supply', () => {
-  it('캐시 시간 = 앱 갱신 주기(5분)', () => {
+  it('캐시 시간 = 앱 갱신 주기(30분)', () => {
     expect(CACHE_SECONDS).toBe(COLLECT_EVERY_MIN * 60);
   });
 
-  it('정상: 전력거래소 응답 → SupplyData, CORS *, 5분 캐시 헤더, 키는 URL 에만', async () => {
+  it('정상: 전력거래소 응답 → SupplyData, CORS *, 30분 캐시 헤더, 키는 URL 에만', async () => {
     fetchMock.mockResolvedValue(new Response(fixture, { status: 200 }));
     const res = await onRequest({ request: req(), env: { DATA_GO_KR_KEY: 'a+b/c=' } });
     expect(res.status).toBe(200);
@@ -63,5 +63,26 @@ describe('/api/supply', () => {
     expect(opt.headers.get('Access-Control-Allow-Methods')).toContain('GET');
     const post = await onRequest({ request: req('POST'), env: {} });
     expect(post.status).toBe(405);
+  });
+
+  it('전력거래소 실패(호출 한도 초과): 마지막 성공값 + failedAt 으로 200, 실패 응답도 잠시 캐시해 다시 부르지 않음', async () => {
+    const store = new Map<string, Response>();
+    const cache = { match: async (k: Request) => store.get(k.url)?.clone(), put: async (k: Request, r: Response) => void store.set(k.url, r.clone()) };
+    vi.stubGlobal('caches', { default: cache });
+    fetchMock.mockResolvedValueOnce(new Response(fixture, { status: 200 }));
+    const first = await onRequest({ request: req(), env: { DATA_GO_KR_KEY: 'k' } });
+    expect(first.status).toBe(200);
+    // 정상 캐시가 만료됐다고 보고 지움 → 다음 호출은 429
+    for (const k of [...store.keys()]) if (!k.includes('last-good')) store.delete(k);
+    fetchMock.mockResolvedValue(new Response('<returnReasonCode>22</returnReasonCode><returnAuthMsg>LIMITED_NUMBER_OF_SERVICE_REQUESTS_EXCEEDS_ERROR</returnAuthMsg>', { status: 429 }));
+    const second = await onRequest({ request: req(), env: { DATA_GO_KR_KEY: 'k' } });
+    expect(second.status).toBe(200);
+    const body = await second.json();
+    expect(isSupplyData(body)).toBe(true);
+    expect(body.failedAt).toBeTruthy();
+    const calls = fetchMock.mock.calls.length;
+    const third = await onRequest({ request: req(), env: { DATA_GO_KR_KEY: 'k' } });
+    expect(third.status).toBe(200);
+    expect(fetchMock.mock.calls.length).toBe(calls); // 캐시에서 — 전력거래소를 다시 부르지 않음
   });
 });

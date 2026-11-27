@@ -107,19 +107,23 @@ describe('표시 규칙', () => {
     expect(reserveLevel(null)).toBeNull();
   });
 
-  it('20분 넘게 갱신이 없으면 지연', () => {
+  it('90분 넘게 갱신이 없으면 지연 (30분 주기 × 3, 2026-11-27)', () => {
     const asof = '2026-11-19T14:20:00+09:00';
-    expect(isStale(asof, new Date('2026-11-19T05:39:00Z'))).toBe(false); // 14:39 KST (19분)
-    expect(isStale(asof, new Date('2026-11-19T05:41:00Z'))).toBe(true); // 14:41 KST (21분)
+    expect(isStale(asof, new Date('2026-11-19T06:49:00Z'))).toBe(false); // 15:49 KST (89분)
+    expect(isStale(asof, new Date('2026-11-19T06:51:00Z'))).toBe(true); // 15:51 KST (91분)
     expect(isStale('garbage')).toBe(true);
   });
 
-  it('기준 시각은 기기 시간대와 무관하게 KST HH:MM, 다음 갱신 = 생성 + 5분', () => {
+  it('기준 시각은 기기 시간대와 무관하게 KST HH:MM, 다음 갱신 = 생성 + 30분 (지났거나 실패면 마지막으로 읽은 시각 + 30분)', () => {
     expect(hmKst('2026-11-19T14:20:00+09:00')).toBe('14:20');
     expect(hmKst('2026-11-19T15:05:00Z')).toBe('00:05');
     expect(hmKst(undefined)).toBe('--:--');
     const d = buildSupplyData(parseDataGoKrItems(fixture), new Date('2026-11-19T05:21:00Z'))!;
-    expect(nextUpdateHm(d)).toBe('14:26');
+    expect(nextUpdateHm(d, undefined, Date.parse('2026-11-19T05:22:00Z'))).toBe('14:51');
+    // 3시 11분 문제: 생성 + 30분이 이미 지났으면 마지막으로 읽은 시각 기준
+    const now = Date.parse('2026-11-19T07:06:00Z'); // 16:06 KST
+    expect(nextUpdateHm(d, now, now)).toBe('16:36');
+    expect(nextUpdateHm({ ...d, failedAt: '2026-11-19T05:30:00Z' }, Date.parse('2026-11-19T05:30:00Z'), Date.parse('2026-11-19T05:30:00Z'))).toBe('15:00');
   });
 
   it('isSupplyData 는 모양이 틀린 JSON 을 거름', () => {

@@ -55,4 +55,35 @@ describe('사고 시뮬레이션', () => {
     expect(r.nodes.get('n-mof')).toBe('normal');
     expect(r.dead).toEqual([]);
   });
+  it('지락: 분기 MCCB 는 지락을 못 끊어 상위 ACB 가 동작, 누전 회로(조명)는 ELCB·RCBO 가 끊음', () => {
+    const r = simulate(g, S(), S('n-evc'), { faultType: 'ground' });
+    expect(r.tripped).toEqual(['n-acb']);
+    const l = simulate(g, S(), S('n-light'), { faultType: 'ground' });
+    expect(l.tripped.sort()).toEqual(['n-elcb', 'n-mcb']);
+  });
+  it('차단 실패(후비 보호): 분전반 사고에서 MCCB 실패 → ACB 가 동작, 정전 범위가 넓어짐', () => {
+    const normal = simulate(g, S(), S('n-panel'));
+    const fail = simulate(g, S(), S('n-panel'), { failPrimary: true });
+    expect(normal.tripped).toEqual(['n-mccb']);
+    expect(fail.failed).toEqual(['n-mccb']);
+    expect(fail.tripped).toEqual(['n-acb']);
+    expect(fail.dead.length).toBeGreaterThan(normal.dead.length);
+    expect(fail.timeline.map((s) => s.kind)).toEqual(expect.arrayContaining(['fault', 'failed', 'backup-trip']));
+  });
+  it('마이크로그리드: VCB 를 열어도 380V 모선 쪽은 ESS·태양광으로 비상 공급', () => {
+    const off = simulate(g, S('n-vcb'), S());
+    const on = simulate(g, S('n-vcb'), S(), { microgrid: true });
+    expect(off.nodes.get('n-mccb')).toBe('dead');
+    expect(on.nodes.get('n-mccb')).toBe('backup');
+    expect(on.nodes.get('n-pv')).not.toBe('dead');
+    expect(on.timeline.some((s) => s.kind === 'microgrid')).toBe(true);
+  });
+  it('타임라인: 수전 정전 → 트립 → UPS 무순단 → 발전기 기동·ATS 절체 순서, 정전 퍼짐 단계', () => {
+    const r = simulate(g, S(), S('n-dline'));
+    const kinds = r.timeline.map((s) => s.kind);
+    expect(kinds[0]).toBe('fault');
+    expect(kinds).toEqual(expect.arrayContaining(['trip', 'ups', 'genstart']));
+    expect(r.timeline.find((s) => s.kind === 'genstart')!.t).toBeGreaterThan(r.timeline.find((s) => s.kind === 'ups')!.t);
+    expect(r.step.get('n-mccb')!).toBeGreaterThan(r.step.get('n-mof') ?? 0);
+  });
 });

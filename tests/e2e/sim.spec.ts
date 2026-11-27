@@ -36,7 +36,7 @@ test.describe('사고 시뮬레이션', () => {
     await expect(tid(page, 'diagram-node-n-elcb')).toHaveAttribute('data-sim', 'tripped');
     await expect(tid(page, 'diagram-node-n-mcb')).toHaveAttribute('data-sim', 'tripped');
     await expect(tid(page, 'diagram-node-n-panel')).not.toHaveAttribute('data-sim', /.+/);
-    await expect(tid(page, 'sim-tripped')).toHaveCount(2);
+    await expect(tid(page, 'sim-timeline')).toContainText('보호기기 차단');
 
     // 끝내기 → 표시 사라지고 평소처럼 선택됨
     await tid(page, 'sim-stop').click();
@@ -44,5 +44,28 @@ test.describe('사고 시뮬레이션', () => {
     await expect(tid(page, 'diagram-node-n-light')).not.toHaveAttribute('data-sim', /.+/);
     await tid(page, 'diagram-node-n-acb').click({ force: true });
     await expect(page).toHaveURL(/node=n-acb/);
+  });
+
+  test('시나리오·옵션: 분기 누전(지락) → ELCB·RCBO 만 · 차단 실패 → 후비 보호 · 마이크로그리드 · 동작 순서', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 1000 });
+    await page.goto('./#/?sim=1');
+    await tid(page, 'sim-scenario-leak').click();
+    await expect(page).toHaveURL(/ftype=ground/);
+    await expect(tid(page, 'sim-ftype')).toHaveValue('ground');
+    await expect(tid(page, 'diagram-node-n-elcb')).toHaveAttribute('data-sim', 'tripped');
+    await tid(page, 'sim-scenario-fail').click();
+    await expect(tid(page, 'diagram-node-n-mccb')).toHaveAttribute('data-sim', 'failed');
+    await expect(tid(page, 'diagram-node-n-acb')).toHaveAttribute('data-sim', 'tripped');
+    await expect(tid(page, 'sim-timeline')).toContainText('후비 보호');
+    await tid(page, 'sim-scenario-grid-loss').click();
+    await expect(tid(page, 'sim-timeline')).toContainText('UPS 무순단');
+    await expect(tid(page, 'sim-timeline')).toContainText('비상발전기 기동');
+    await expect(tid(page, 'sim-biz')).toContainText('자사 제품 동작');
+    await page.screenshot({ path: SHOT + 'sim-grid.png' });
+    await tid(page, 'sim-scenario-microgrid').click();
+    await expect(tid(page, 'sim-mg')).toBeChecked();
+    await expect(tid(page, 'diagram-node-n-mccb')).toHaveAttribute('data-sim', 'backup');
+    const axe = await new AxeBuilder({ page }).include('[data-testid="sim-panel"]').analyze();
+    expect(axe.violations.map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([]);
   });
 });

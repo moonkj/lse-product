@@ -54,7 +54,7 @@ describe('SupplyPill', () => {
     expect(pop).toHaveTextContent('현재 수요70.0 GW');
     expect(pop).toHaveTextContent('공급능력80.0 GW');
     expect(pop).toHaveTextContent('공급예비력10.00 GW');
-    expect(screen.getByTestId('supply-source')).toHaveTextContent('출처: 전력거래소 공개 데이터 · 14:20 기준 · 다음 갱신 약 14:26');
+    expect(screen.getByTestId('supply-source')).toHaveTextContent('출처: 전력거래소 공개 데이터 · 14:20 기준 · 다음 갱신 약 14:51');
     expect(pop.querySelector('.supply__spark-demand')).not.toBeNull();
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByTestId('supply-popover')).toBeNull();
@@ -69,12 +69,12 @@ describe('SupplyPill', () => {
     expect(pill).toHaveTextContent('주의');
   });
 
-  it('20분 넘게 갱신 없으면 회색 "지연 · 마지막 13:30"', async () => {
-    fetchMock.mockImplementation(() => ok(make(10, '2026-11-19T13:30:00+09:00')));
+  it('90분 넘게 갱신 없으면 회색 "지연 · 마지막 12:30"', async () => {
+    fetchMock.mockImplementation(() => ok(make(10, '2026-11-19T12:30:00+09:00')));
     render(<SupplyPill />);
     const pill = await screen.findByTestId('supply-pill');
     expect(pill).toHaveAttribute('data-tone', 'stale');
-    expect(pill).toHaveTextContent('지연 · 마지막 13:30');
+    expect(pill).toHaveTextContent('지연 · 마지막 12:30');
   });
 
   it('수집 실패(failedAt)면 마지막 값 + "갱신 실패"', async () => {

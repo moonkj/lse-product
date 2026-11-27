@@ -14,7 +14,7 @@ import {
 import { announce } from '../../lib/announce';
 import './supply.css';
 
-/** 다시 읽는 간격 — 전력거래소 공개 주기(5분)·API 캐시(5분)와 같게 */
+/** 다시 읽는 간격 — API 캐시와 같게 (30분, 2026-11-27) */
 export const SUPPLY_POLL_MS = COLLECT_EVERY_MIN * 60_000;
 /**
  * 1순위: Cloudflare Pages Function (전력거래소 값을 5분 캐시로 직접 제공). GitHub Pages 주소에서도 같은 API 를 읽는다.
@@ -231,7 +231,7 @@ export default function SupplyPill({ url, pollMs }: { url?: string | readonly st
             </figure>
           )}
           <p className="supply__src" data-testid="supply-source">
-            {sourceLine} · 다음 갱신 약 {nextUpdateHm(data)} (약 {COLLECT_EVERY_MIN}분마다)
+            {sourceLine} · 다음 갱신 약 {nextUpdateHm(data, checkedAt || undefined)} (약 {COLLECT_EVERY_MIN}분마다)
           </p>
           {failed && (
             <button type="button" className="supply__retry" onClick={() => void reload()}>

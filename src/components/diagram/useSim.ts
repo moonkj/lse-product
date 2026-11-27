@@ -17,14 +17,14 @@ export function useSimGraph(): SimGraph {
 
 /** 시뮬레이션 켜짐이면 결과, 아니면 null */
 export function useSimResult(): SimResult | null {
-  const { on, opened, faults } = useSimState();
+  const { on, opened, faults, opts } = useSimState();
   const graph = useSimGraph();
   const grid = getActiveGrid();
-  const key = `${grid}|${[...opened].sort().join(',')}|${[...faults].sort().join(',')}`;
+  const key = `${grid}|${[...opened].sort().join(',')}|${[...faults].sort().join(',')}|${opts.faultType}|${opts.failPrimary ? 1 : 0}|${opts.microgrid ? 1 : 0}`;
   return useMemo(() => {
     if (!on) return null;
     if (cache?.key === key) return cache.result;
-    const result = simulate(graph, opened, faults);
+    const result = simulate(graph, opened, faults, opts);
     cache = { key, result };
     return result;
     // eslint-disable-next-line react-hooks/exhaustive-deps

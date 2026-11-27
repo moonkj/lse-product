@@ -106,9 +106,36 @@
 /* 비상 공급 흐름 — 주황 트랙·주황 리퀴드 */
 .dflow__track--backup { stroke: #fbbf24; }
 .dflow-drop--backup .dflow-drop__blob {
-  background:
-    radial-gradient(ellipse 30% 60% at 70% 45%, rgb(255 255 255 / 0.95), transparent 70%),
-    linear-gradient(90deg, rgb(217 119 6 / 0) 0%, rgb(217 119 6 / 0.85) 28%, #f59e0b 62%, #fde68a 86%, rgb(253 230 138 / 0) 100%);
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.6), 0 0 6px 1px rgb(245 158 11 / 0.5);
+  background: radial-gradient(circle at 40% 38%, #ffffff 0 16%, #fde68a 34%, #f59e0b 62%, #d97706 100%);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.7), 0 0 6px 1px rgb(245 158 11 / 0.55);
   opacity: 1;
+}
+
+/* ── 2차 (페르소나 토론): 시나리오 · 옵션 · 동작 순서 · 영업 요약 · 정전 퍼짐 ── */
+.dsim { width: min(420px, calc(100% - 24px)); }
+.dsim__scen { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.dsim__chip { min-height: 30px; padding: 0 10px; border: 1px solid #f0b48a; border-radius: 999px; background: #fff7ed; color: #9a3412; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.dsim__chip:hover { background: #ffedd5; }
+.dsim__opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--color-border); }
+.dsim__opt { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; }
+.dsim__opt select { height: 28px; font-size: 12.5px; }
+.dsim__opt--check { cursor: pointer; }
+.dsim__h3 { margin: 10px 0 4px; font-size: 13px; }
+.dsim__tl { list-style: none; margin: 0; padding: 0 0 0 4px; border-left: 2px solid #f0b48a; display: grid; gap: 4px; }
+.dsim__tl-item { display: grid; grid-template-columns: 54px 1fr; gap: 6px; padding-left: 8px; position: relative; }
+.dsim__tl-item::before { content: ''; position: absolute; left: -6px; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: #c2410c; }
+.dsim__tl-item--ups::before, .dsim__tl-item--transfer::before, .dsim__tl-item--genstart::before, .dsim__tl-item--microgrid::before { background: #b45309; }
+.dsim__tl-item--failed::before { background: #7a271a; }
+.dsim__tl-t { font-variant-numeric: tabular-nums; font-weight: 700; color: #9a3412; }
+.dsim__tl-ids { color: var(--color-text-muted); }
+.dsim__biz { margin-top: 10px; padding: 8px 10px; border-radius: var(--radius-md); background: #eff6ff; line-height: 1.5; }
+.dsim__biz p { margin: 0; }
+.dsim__biz p + p { margin-top: 4px; }
+.dsim__gap { color: #9a3412; }
+.dnode[data-sim='failed'] { box-shadow: 0 0 0 3px #7a271a; outline: 2px dashed #7a271a; outline-offset: 3px; }
+.dnode[data-sim='failed']::after { background: #7a271a; }
+/* 정전 퍼짐: 막힌 지점에서 가까운 기기부터 차례로 꺼짐 (--sim-step × 0.12초) */
+.diagram--sim .dnode { transition: filter 0.35s ease, opacity 0.35s ease, box-shadow 0.25s ease; transition-delay: calc(var(--sim-step, 0) * 0.12s); }
+@media (prefers-reduced-motion: reduce) {
+  .diagram--sim .dnode { transition: none; }
 }

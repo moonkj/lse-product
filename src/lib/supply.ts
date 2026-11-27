@@ -19,10 +19,13 @@ export const SUPPLY_FIELDS = ['suppAbility', 'supplyAbility', 'suppAblty', 'sppl
 
 /** 화면·JSON 출처 문구 (항상 표시) */
 export const SUPPLY_SOURCE = '전력거래소 공개 데이터';
-/** 갱신 주기(분) — 전력거래소 5분 공개 · /api/supply 캐시(functions/api/supply.ts CACHE_SECONDS) · 앱 다시 읽기 간격 */
-export const COLLECT_EVERY_MIN = 5;
-/** 이보다 오래 갱신이 없으면 "지연" (공개 지연 여유 포함 4주기). API 가 실패해 배포 때 파일로 대체되면 대개 지연으로 보인다 */
-export const STALE_AFTER_MIN = 20;
+/**
+ * 갱신 주기(분) — /api/supply 캐시(functions/api/supply.ts CACHE_SECONDS) · 앱 다시 읽기 간격.
+ * 2026-11-27: 5분 → 30분 (사용자 요청 + 공공데이터포털 하루 호출 한도 초과(429)로 '갱신 실패'가 나던 문제)
+ */
+export const COLLECT_EVERY_MIN = 30;
+/** 이보다 오래 갱신이 없으면 "지연" (3주기). API 가 실패해 배포 때 파일로 대체되면 대개 지연으로 보인다 */
+export const STALE_AFTER_MIN = 90;
 
 /**
  * 경보 단계 — 공급예비력(GW)이 값 "미만"이면 그 단계. 위에서부터 검사.
@@ -217,10 +220,16 @@ export function hmKst(iso: string | undefined): string {
   return `${String(k.getUTCHours()).padStart(2, '0')}:${String(k.getUTCMinutes()).padStart(2, '0')}`;
 }
 
-/** 다음 갱신 예상 시각 (파일 생성 시각 + 수집 주기) */
-export function nextUpdateHm(d: SupplyData): string {
+/**
+ * 다음 갱신 예상 시각 — (값을 만든 시각 + 주기). 그 시각이 이미 지났거나 갱신에 실패했으면 '앱이 마지막으로 읽은 시각 + 주기'
+ * (2026-11-27: 갱신 실패 시 이미 지난 3시 11분이 '다음 갱신'으로 계속 보이던 문제)
+ */
+export function nextUpdateHm(d: SupplyData, checkedAt?: number, now: number = Date.now()): string {
   const base = Date.parse(d.generatedAt ?? d.asof);
-  return Number.isNaN(base) ? '--:--' : hmKst(new Date(base + COLLECT_EVERY_MIN * 60_000).toISOString());
+  const step = COLLECT_EVERY_MIN * 60_000;
+  let next = Number.isNaN(base) ? NaN : base + step;
+  if ((Number.isNaN(next) || next <= now || d.failedAt) && checkedAt) next = checkedAt + step;
+  return Number.isNaN(next) ? '--:--' : hmKst(new Date(next).toISOString());
 }
 
 export function fmt(v: number | null | undefined, digits = 1): string {

@@ -329,7 +329,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  offset-anchor: 76% 50%;
+  offset-anchor: 50% 50%;
+  offset-rotate: 0deg;
   opacity: 0;
   will-change: transform, opacity;
 }
@@ -338,13 +339,9 @@
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: 999px;
-  background:
-    radial-gradient(ellipse 30% 60% at 70% 45%, rgb(255 255 255 / 0.95), transparent 70%),
-    linear-gradient(90deg, rgb(47 154 232 / 0) 0%, rgb(47 154 232 / 0.85) 28%, #5cc0ff 62%, #c9efff 86%, rgb(201 239 255 / 0) 100%);
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.55), 0 0 6px 1px rgb(92 192 255 / 0.45);
-  transform-origin: 60% 50%;
-  will-change: transform;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #ffffff 0 16%, #c9efff 34%, #5cc0ff 62%, #2f9ae8 100%);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.7), 0 0 6px 1px rgb(92 192 255 / 0.55);
 }
 .dflow-drop--idle .dflow-drop__blob { opacity: 0.75; }
 /* 선택한 제품 빛남 — 타일 둘레가 숨 쉬듯 은은하게 밝아졌다 어두워짐 (opacity·transform 만, GPU) */

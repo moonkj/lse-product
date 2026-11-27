@@ -15,6 +15,8 @@ interface Props {
   onActivate: (id: string, via: 'pointer' | 'keyboard') => void;
   /** 사고 시뮬레이션 상태 (켜졌을 때만) */
   sim?: SimNodeState;
+  /** 정전 퍼짐 단계 (막힌 지점에서 몇 단계 아래) */
+  simStep?: number;
 }
 
 /**
@@ -26,9 +28,9 @@ interface Props {
  * 60% 미만 축소(개요)에서는 CSS(data-zoom)로 사진·보조 글자를 숨기고 점 + 약칭만 보인다.
  * memo: 줌/패닝은 부모의 transform 만 바뀌므로 노드는 다시 그리지 않는다.
  */
-const SIM_LABEL: Partial<Record<SimNodeState, string>> = { dead: '정전', backup: '비상 공급', open: '열림', tripped: '트립', fault: '사고' };
+const SIM_LABEL: Partial<Record<SimNodeState, string>> = { dead: '정전', backup: '비상 공급', open: '열림', tripped: '트립', fault: '사고', failed: '차단 실패' };
 
-function DiagramNode({ item, mode, selected, onActivate, sim }: Props) {
+function DiagramNode({ item, mode, selected, onActivate, sim, simStep }: Props) {
   const { id, eq, coverage } = item;
   const gapMode = mode === 'gap';
   const emphasized = gapMode && isGapCoverage(coverage);
@@ -49,7 +51,7 @@ function DiagramNode({ item, mode, selected, onActivate, sim }: Props) {
       role="button"
       tabIndex={0}
       className={`dnode dnode--${coverage}${ref ? ' dnode--ref' : ''}${photo ? '' : ' dnode--symbol'}${caption ? '' : ' dnode--nocap'}${selected ? ' is-selected' : ''}`}
-      style={{ left: item.x - TILE_W / 2, top: item.y - TILE_H / 2 }}
+      style={{ left: item.x - TILE_W / 2, top: item.y - TILE_H / 2, ...(simStep ? { ['--sim-step' as string]: simStep } : {}) }}
       data-testid={`diagram-node-${id}`}
       data-node-id={id}
       aria-label={nodeLabel(item.title, caption, eq.name, ref ? undefined : COVERAGE_LABELS[coverage])}

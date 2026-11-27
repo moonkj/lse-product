@@ -9,7 +9,7 @@
  *
  * 파싱은 앱·수집 스크립트와 같은 src/lib/supply.ts (wrangler 가 함께 묶음).
  */
-import { buildSupplyData, isNoRetryError, parseDataGoKrItems, serviceError, type SupplyData } from '../../src/lib/supply';
+import { COLLECT_EVERY_MIN, buildSupplyData, isNoRetryError, parseDataGoKrItems, serviceError, type SupplyData } from '../../src/lib/supply';
 
 interface Env {
   DATA_GO_KR_KEY?: string;
@@ -26,7 +26,11 @@ export interface SupplyContext {
 
 export const ENDPOINT = 'https://apis.data.go.kr/B552115/Sukub5mToday/getSukub5mToday';
 /** 캐시 유지 시간(초) — 전력거래소 공개 주기(5분)와 같게. src/lib/supply.ts COLLECT_EVERY_MIN 과 맞출 것 */
-export const CACHE_SECONDS = 300;
+export const CACHE_SECONDS = COLLECT_EVERY_MIN * 60;
+/** 실패하면 이 시간 동안 전력거래소를 다시 부르지 않음 (하루 호출 한도 보호) */
+export const FAIL_HOLD_SECONDS = 600;
+/** 마지막 성공값 보관 (실패 동안 대신 제공) */
+const LAST_GOOD_SECONDS = 86_400;
 const TIMEOUT_MS = 12_000;
 
 const CORS = {
@@ -90,6 +94,12 @@ export async function onRequest(ctx: SupplyContext): Promise<Response> {
     if (hit) return hit;
   }
 
+  const lastGoodKey = new Request(new URL('/api/supply?last-good', request.url).toString(), { method: 'GET' });
+  const save = (k: Request, r: Response) => {
+    if (!cache) return;
+    const put = cache.put(k, r).catch(() => {});
+    if (ctx.waitUntil) ctx.waitUntil(put);
+  };
   try {
     const data = await fetchSupply(key, env.SUPPLY_ENDPOINT || ENDPOINT);
     const res = json(data, 200, { 'Cache-Control': `public, max-age=60, s-maxage=${CACHE_SECONDS}` });
@@ -97,9 +107,21 @@ export async function onRequest(ctx: SupplyContext): Promise<Response> {
       const put = cache.put(cacheKey, res.clone());
       if (ctx.waitUntil) ctx.waitUntil(put);
       else await put;
+      save(lastGoodKey, json(data, 200, { 'Cache-Control': `public, s-maxage=${LAST_GOOD_SECONDS}` }));
     }
     return res;
   } catch (e) {
-    return json({ error: String((e as Error)?.message || e).slice(0, 120) }, 502, { 'Cache-Control': 'no-store' });
+    const msg = String((e as Error)?.message || e).slice(0, 120);
+    // 실패(호출 한도 초과 등): 마지막 성공값에 실패 시각을 달아 제공하고, 그 응답을 잠시(10분) 캐시해 전력거래소를 반복 호출하지 않음
+    const last = cache ? await cache.match(lastGoodKey).catch(() => undefined) : undefined;
+    if (last) {
+      const data = (await last.json()) as SupplyData;
+      const res = json({ ...data, failedAt: new Date().toISOString() }, 200, { 'Cache-Control': `public, max-age=60, s-maxage=${FAIL_HOLD_SECONDS}`, 'X-Supply-Error': encodeURIComponent(msg) });
+      save(cacheKey, res.clone());
+      return res;
+    }
+    const res = json({ error: msg }, 502, { 'Cache-Control': `public, s-maxage=${FAIL_HOLD_SECONDS}` });
+    save(cacheKey, res.clone());
+    return res;
   }
 }
