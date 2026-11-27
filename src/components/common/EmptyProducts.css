@@ -103,3 +103,8 @@ a.fam__card:hover {
 .detail-panel .fam__list {
   grid-template-columns: minmax(0, 1fr);
 }
+
+/* 개별 페이지 없는 구성 모델 (2026-11-27) */
+.fam__note { margin: 0 0 8px; font-size: 13px; color: var(--color-text-muted); }
+.fam__nopage { display: inline-block; margin-top: 4px; font-size: 12px; color: var(--color-text-muted); }
+.fam__card--static { cursor: default; }

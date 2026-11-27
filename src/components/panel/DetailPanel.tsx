@@ -28,7 +28,7 @@ import CompareToggle from '../compare/CompareToggle';
 import { useData } from '../../data/load';
 import { ButtonLink } from '../common/Button';
 import DocsList from '../common/DocsList';
-import EmptyProducts from '../common/EmptyProducts';
+import EmptyProducts, { FamilyInfo } from '../common/EmptyProducts';
 import GapSections from './GapSections';
 import NeighborChips from './NeighborChips';
 import PanelHero from './PanelHero';
@@ -326,7 +326,8 @@ export default function DetailPanel() {
   // 참조 타일: 머리글 계층·전압 = 타일이 놓인 자리(밴드)·참조 라벨, 원래 기기 계층은 참조 안내에 "원래 위치"로 (T2 M5)
   const placeVoltage = node.ref ? (node.refLabel ?? model.layers.find((l) => l.id === node.layer)?.voltage) : eq.voltage;
   const products = productsForEquipment(eq.id);
-  const relatedCount = useData().familyByEquipmentId.get(eq.id)?.products.length ?? 0;
+  const family = useData().familyByEquipmentId.get(eq.id);
+  const relatedCount = family?.products.length ?? 0;
   const anyPhoto = products.slice(0, MAX_PRODUCTS).some((p) => hasProductPhoto(p.id));
   const rep = representative(products);
   const gapView = mode === 'gap' && isGapCoverage(eq.coverage);
@@ -455,6 +456,8 @@ export default function DetailPanel() {
             ) : (
               <EmptyProducts eq={eq} testIdPrefix="detail" className="dp-empty" listClassName="dp-links" />
             )}
+            {/* 시스템 기기: 제품(카테고리형)이 있어도 공식 제품군 설명·구성 모델은 함께 보여 줌 (2026-11-27) */}
+            {products.length > 0 && family && <FamilyInfo family={family} prefix="detail" />}
           </section>
 
           {/* ④ 설명 — 1줄 요약, 펼치기 (기기가 바뀌면 다시 접힘) */}

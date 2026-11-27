@@ -45,6 +45,8 @@ export interface EquipmentHit {
   eq: string;
   score: number;
   terms: string[];
+  /** 프로젝트 묶음에서 가져온 기기 (기사에 제품군이 없을 때 화면이 채움) — 프로젝트 이름 */
+  project?: string;
   /** 그중 본문에서만 찾은 말 */
   bodyTerms?: string[];
   /** 경쟁사 제품이 자사 범위 밖이라 연관 기기로 보여 주는 것 */

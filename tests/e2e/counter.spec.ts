@@ -106,4 +106,12 @@ test.describe('경쟁 대응', () => {
     await expect(tid(page, 'counter-competitor')).toHaveText('Schneider Electric');
     await expect(tid(page, 'counter-project-datacenter')).toBeVisible();
   });
+
+  test('제품군 없이 프로젝트만 잡힌 기사 → 그 계통의 자사 제품 카드 (찾지 못했다고 하지 않음)', async ({ page }) => {
+    await page.goto('./#/counter?q=' + encodeURIComponent('Utility announces grid modernization transmission plan'));
+    await expect(tid(page, 'counter-project-grid')).toBeVisible();
+    await expect(tid(page, 'counter-project-grid')).toContainText('프로젝트로 제안할 수 있는 제품');
+    await expect(tid(page, 'counter-hit-ehv-gis')).toContainText('프로젝트에 들어가는 기기');
+    await expect(tid(page, 'counter-none')).toHaveCount(0);
+  });
 });

@@ -4,7 +4,7 @@ import { LAYER_LABELS } from '../lib/schema';
 import { docsByProductId, useData } from '../data/load';
 import CoverageBadge from '../components/common/CoverageBadge';
 import DocsList from '../components/common/DocsList';
-import EmptyProducts from '../components/common/EmptyProducts';
+import EmptyProducts, { FamilyInfo } from '../components/common/EmptyProducts';
 import EquipmentOverview from '../components/common/EquipmentOverview';
 import CompareToggle from '../components/compare/CompareToggle';
 import { ButtonLink, DIAGRAM_CTA_LABEL } from '../components/common/Button';
@@ -39,7 +39,8 @@ export default function EquipmentPage() {
 
   const node = nodeForEquipment(eq.id);
   const products = productsForEquipment(eq.id);
-  const relatedCount = useData().familyByEquipmentId.get(eq.id)?.products.length ?? 0;
+  const family = useData().familyByEquipmentId.get(eq.id);
+  const relatedCount = family?.products.length ?? 0;
   const showRelated = products.length === 0 && relatedCount > 0;
   const isGap = isGapCoverage(eq.coverage);
   const docProducts = products.filter((p) => (docsByProductId(p.id)?.docs.length ?? 0) > 0).slice(0, DOC_PRODUCTS_MAX);
@@ -140,6 +141,7 @@ export default function EquipmentPage() {
                 linkClassName="pg-chip"
               />
             )}
+            {products.length > 0 && family && <FamilyInfo family={family} prefix="equipment" />}
           </section>
 
           {docProducts.length > 0 && (
