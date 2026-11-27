@@ -1200,3 +1200,40 @@
 @media (pointer: coarse) and (min-width: 901px) {
   .app-nav__link { min-height: 40px; }
 }
+
+/* ── 리퀴드 알약 (2026-11-27 사용자: 메뉴 이동시 리퀴드 효과) ──
+   현재 화면 표시를 링크 자체가 아니라 뒤에 깔린 알약 하나가 맡는다. 옮길 때 가는 쪽 끝이 먼저 빠르게 늘어나고
+   반대쪽 끝이 탄성 있게 따라붙어 물방울처럼 늘었다 줄어듦 + 세로로 살짝 눌렸다 튀어 오름(JS Web Animations). */
+.app-nav--pill {
+  position: relative;
+  isolation: isolate;
+}
+.app-nav__pill {
+  position: absolute;
+  z-index: -1;
+  top: 4px;
+  height: 34px;
+  border-radius: var(--radius-pill);
+  background: var(--color-on-header);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 4px 14px rgb(0 0 0 / 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: center;
+}
+.app-nav__pill[data-dir='right'] {
+  transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1), left 0.52s cubic-bezier(0.5, 1.45, 0.45, 1) 0.06s, top 0.2s, height 0.2s;
+}
+.app-nav__pill[data-dir='left'] {
+  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), right 0.52s cubic-bezier(0.5, 1.45, 0.45, 1) 0.06s, top 0.2s, height 0.2s;
+}
+/* 알약이 있으면 링크 자체 흰 바탕·그림자는 끄고 글자색만 바꿈 */
+.app-nav--pill .app-nav__link[aria-current='page'],
+.app-nav--pill .app-nav__link[aria-current='page']:hover {
+  background: transparent;
+  box-shadow: none;
+  transition: color 0.2s ease 0.18s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-nav__pill[data-dir] { transition: none; }
+  .app-nav--pill .app-nav__link[aria-current='page'] { transition: none; }
+}

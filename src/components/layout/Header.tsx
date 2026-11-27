@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SearchBox from './SearchBox';
 import BrandLogo from '../common/BrandLogo';
@@ -76,6 +76,40 @@ export default function Header() {
   const togglePresent = useUiStore((s) => s.togglePresent);
   const openGuide = useUiStore((s) => s.openGuide);
   const navigate = useNavigate();
+  const navRef = useRef<HTMLElement>(null);
+  const pillRef = useRef<HTMLSpanElement>(null);
+  const lastLeft = useRef<number | null>(null);
+  // 현재 화면 메뉴 위치로 알약을 옮긴다 (경로가 바뀔 때·폭이 바뀔 때)
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    const pill = pillRef.current;
+    if (!nav || !pill) return;
+    const place = (animate: boolean) => {
+      const cur = nav.querySelector<HTMLElement>('.app-nav__link[aria-current="page"]');
+      if (!cur || !cur.offsetWidth) {
+        pill.style.opacity = '0';
+        lastLeft.current = null;
+        return;
+      }
+      const left = cur.offsetLeft;
+      const right = nav.clientWidth - (cur.offsetLeft + cur.offsetWidth);
+      const moving = animate && lastLeft.current !== null && lastLeft.current !== left;
+      pill.dataset.dir = moving ? (left > lastLeft.current! ? 'right' : 'left') : '';
+      pill.dataset.anim = moving ? '1' : '';
+      pill.style.top = `${cur.offsetTop}px`;
+      pill.style.height = `${cur.offsetHeight}px`;
+      pill.style.left = `${left}px`;
+      pill.style.right = `${right}px`;
+      pill.style.opacity = '1';
+      if (moving && !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+        pill.animate?.([{ transform: 'scaleY(1)' }, { transform: 'scaleY(0.82)', offset: 0.45 }, { transform: 'scaleY(1.04)', offset: 0.8 }, { transform: 'scaleY(1)' }], { duration: 520, easing: 'ease-out' });
+      lastLeft.current = left;
+    };
+    place(true);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => place(false)) : undefined;
+    ro?.observe(nav);
+    return () => ro?.disconnect();
+  }, [pathname]);
 
   return (
     <header className="app-header">
@@ -90,7 +124,9 @@ export default function Header() {
           현재 화면 = 흰 알약 채움 + 네이비 굵은 글자(도구줄 눌림 상태와 같은 '채움 = 선택' 문법) */}
       {/* 화면 메뉴 (2026-11-27 디자인 고도화: 하나의 캡슐 안 탭 묶음 · 의미에 맞는 아이콘 · 현재 화면 = 흰 알약 + CI 레드 아이콘 · 설명 툴팁).
           관리자는 화면 오른쪽 맨 아래(AdminCorner). 계통맵/단계별·제품/Gap 전환은 계통도 도구줄. */}
-      <nav className="app-nav" aria-label="화면">
+      <nav className="app-nav app-nav--pill" aria-label="화면" ref={navRef}>
+        {/* 리퀴드 알약 (2026-11-27): 현재 화면 뒤 흰 알약이 메뉴를 옮길 때 앞쪽 끝이 먼저 늘어나고 뒤쪽 끝이 따라붙는 물방울 움직임 */}
+        <span className="app-nav__pill" ref={pillRef} aria-hidden="true" />
         {NAV.map((m) => {
           const current = m.to === '/' ? pathname === '/' : pathname.startsWith(m.to);
           return (
